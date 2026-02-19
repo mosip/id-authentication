@@ -2,7 +2,7 @@ UpdateIdentity:
   Auth_UpdateIdentity_updatePhone_withValidParameters_smoke_Pos_smoke:
       endPoint: /idrepository/v1/identity/
       uniqueIdentifier: TC_IDA_UpdateIdentity_01
-      description: update DOB and Activate UIN 
+      description: Verify that updating identity to modify the phone number succeeds when all parameters are valid
       role: idrepo
       checkErrorsOnlyInResponse: true
       restMethod: patch
@@ -34,7 +34,7 @@ UpdateIdentity:
   Auth_UpdateIdentity_updateAddress_Positive_EKYC_smoke:
       endPoint: /idrepository/v1/identity/
       uniqueIdentifier: TC_IDA_UpdateIdentity_02
-      description: update DOB and Activate UIN for Ekyc
+      description: Verify that updating identity to modify the address succeeds with valid parameters through the eKYC flow
       role: idrepo
       restMethod: patch
       inputTemplate: ida/UpdateIdentity/updateIdentity
@@ -54,7 +54,7 @@ UpdateIdentity:
   Auth_UpdateIdentity_updateName_Positive_valid:
       endPoint: /idrepository/v1/identity/
       uniqueIdentifier: TC_IDA_UpdateIdentity_03
-      description: update DOB and Activate UIN
+      description: Verify that updating identity to modify the name succeeds when all parameters are valid
       role: idrepo
       restMethod: patch
       inputTemplate: ida/UpdateIdentity/updateIdentity
@@ -74,7 +74,7 @@ UpdateIdentity:
   Auth_UpdateIdentity_updateDOB_ValidParam_smoke_Pos_all_valid_smoke:
       endPoint: /idrepository/v1/identity/
       uniqueIdentifier: TC_IDA_UpdateIdentity_04
-      description: update DOB and Activate UIN
+      description: Verify that updating identity to modify the date of birth succeeds when all parameters are valid
       role: idrepo
       restMethod: patch
       inputTemplate: ida/UpdateIdentity/updateIdentity
@@ -94,7 +94,7 @@ UpdateIdentity:
   Auth_UpdateIdentity_DEACTIVATED_and_auth_Pos_all_valid:
       endPoint: /idrepository/v1/identity/
       uniqueIdentifier: TC_IDA_UpdateIdentity_05
-      description: update DOB and Deactivate UIN
+      description: Verify that updating identity and performing authentication succeeds when the identity is deactivated and all parameters are valid
       role: idrepo
       restMethod: patch
       inputTemplate: ida/UpdateIdentity/updateIdentity
@@ -114,7 +114,7 @@ UpdateIdentity:
   Auth_UpdateIdentity_DEACTIVATED_Positive_TRE_all_valid:
       endPoint: /idrepository/v1/identity/
       uniqueIdentifier: TC_IDA_UpdateIdentity_06
-      description: update DOB and Deactivate UIN
+      description: Verify that updating identity succeeds for a deactivated identity through the TRE flow when all parameters are valid
       role: idrepo
       restMethod: patch
       inputTemplate: ida/UpdateIdentity/updateIdentity
@@ -134,7 +134,7 @@ UpdateIdentity:
   Auth_UpdateIdentity_ACTIVATED_Positive_TRE_all_valid_smoke:
       endPoint: /idrepository/v1/identity/
       uniqueIdentifier: TC_IDA_UpdateIdentity_07
-      description: update DOB and Activate UIN
+      description: Verify that updating identity succeeds for an activated identity through the TRE flow when all parameters are valid
       role: idrepo
       restMethod: patch
       inputTemplate: ida/UpdateIdentity/updateIdentity
@@ -154,7 +154,7 @@ UpdateIdentity:
   Auth_UpdateIdentity_ACTIVATED_auditLog_valid_smoke:
       endPoint: /idrepository/v1/identity/
       uniqueIdentifier: TC_IDA_DependentTc_AuthTransaction_UpdateIdentity_08
-      description: update DOB and Activate UIN
+      description: Verify that updating identity for an activated identity generates a valid audit log entry when all parameters are valid
       role: idrepo
       restMethod: patch
       inputTemplate: ida/UpdateIdentity/updateIdentity

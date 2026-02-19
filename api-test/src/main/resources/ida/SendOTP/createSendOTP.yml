@@ -2,7 +2,7 @@ createSendOTP:
   auth_SendOTP_with_valid_uin_smoke_Pos:
     endPoint: "/idauthentication/v1/otp/$partnerKeyURL$"
     uniqueIdentifier: TC_IDA_SendOTP_01
-    description: Send otp to valid UIN
+    description: Verify that sending an OTP succeeds with a valid UIN
     role: resident
     checkErrorsOnlyInResponse: true
     restMethod: post
@@ -23,7 +23,7 @@ createSendOTP:
   auth_SendOTP_RevokedVID_Neg:
     endPoint: "/idauthentication/v1/otp/$partnerKeyURL$"
     uniqueIdentifier: TC_IDA_SendOTP_02
-    description: Send otp to revoked VID
+    description: Verify that sending an OTP fails when the VID is revoked
     role: resident
     checkErrorsOnlyInResponse: true
     restMethod: post
@@ -50,7 +50,7 @@ createSendOTP:
   auth_SendOTP_to_DeactivatedUIN_Neg:
     endPoint: "/idauthentication/v1/otp/$partnerKeyURL$"
     uniqueIdentifier: TC_IDA_SendOTP_03
-    description: Send otp to deactivated UIN
+    description: Verify that sending an OTP fails when the UIN is deactivated
     role: resident
     checkErrorsOnlyInResponse: true
     restMethod: post
@@ -76,7 +76,7 @@ createSendOTP:
 }'
   auth_SendOTP_toVID_ofDeactivatedUIN_Neg:
     endPoint: "/idauthentication/v1/otp/$partnerKeyURL$"
-    description: Send otp to VID of deactivated UIN
+    description: Verify that sending an OTP fails when the VID belongs to a deactivated UIN
     uniqueIdentifier: TC_IDA_SendOTP_04
     role: resident
     checkErrorsOnlyInResponse: true
@@ -103,7 +103,7 @@ createSendOTP:
 }'
   auth_SendOTP_to_onlyLockedEmail_valid_uin_Neg:
     endPoint: "/idauthentication/v1/otp/$partnerKeyURL$"
-    description: Send otp to locked email with valid UIN
+    description: Verify that sending an OTP fails when the UIN is valid but the email is locked
     uniqueIdentifier: TC_IDA_SendOTP_05
     role: resident
     checkErrorsOnlyInResponse: true
@@ -128,7 +128,7 @@ createSendOTP:
 }'
   auth_SendOTP_to_onlyLockedphone_valid_uin_Neg:
     endPoint: "/idauthentication/v1/otp/$partnerKeyURL$"
-    description: Send otp to locked phone with valid UIN
+    description: Verify that sending an OTP fails when the UIN is valid but the phone number is locked
     uniqueIdentifier: TC_IDA_SendOTP_06
     role: resident
     checkErrorsOnlyInResponse: true
@@ -153,7 +153,7 @@ createSendOTP:
 }'
   auth_SendOTP_to_LockedphoneAndEmail_valid_uin_Neg:
     endPoint: "/idauthentication/v1/otp/$partnerKeyURL$"
-    description: Send otp to locked phone and email with valid UIN
+    description: Verify that sending an OTP fails when the UIN is valid but both the phone number and email are locked
     uniqueIdentifier: TC_IDA_SendOTP_07
     role: resident
     checkErrorsOnlyInResponse: true
@@ -179,7 +179,7 @@ createSendOTP:
 }'
   auth_SendOTP_toReactivatedUIN_Neg:
     endPoint: "/idauthentication/v1/otp/$partnerKeyURL$"
-    description: Send otp to reactivated UIN
+    description: Verify that sending an OTP fails when the UIN has been reactivated
     uniqueIdentifier: TC_IDA_SendOTP_08
     role: resident
     checkErrorsOnlyInResponse: true
@@ -200,7 +200,7 @@ createSendOTP:
 }'
   auth_SendOTP_to_blocked_uin_Neg:
     endPoint: "/idauthentication/v1/otp/$partnerKeyURL$"
-    description: Send otp to blocked UIN
+    description: Verify that sending an OTP fails when the UIN is blocked
     uniqueIdentifier: TC_IDA_SendOTP_09
     role: resident
     checkErrorsOnlyInResponse: true
@@ -226,7 +226,7 @@ createSendOTP:
 }'
   auth_SendOTP_toBlockedVID_Neg:
     endPoint: "/idauthentication/v1/otp/$partnerKeyURL$"
-    description: Send otp to blocked VID
+    description: Verify that sending an OTP fails when the VID is blocked
     uniqueIdentifier: TC_IDA_SendOTP_10
     role: resident
     checkErrorsOnlyInResponse: true

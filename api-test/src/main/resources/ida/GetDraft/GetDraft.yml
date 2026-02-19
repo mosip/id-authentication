@@ -2,7 +2,7 @@ GetDraft:
   auth_GetDraft_all_valid_smoke_sid:
       endPoint: /idrepository/v1/identity/draft/{registrationId}
       uniqueIdentifier: TC_IDA_GetDraft_01
-      description: get the Draft from registrationID
+      description: Verify that fetching draft details succeeds when all required fields are valid and a valid SID is provided
       role: idrepo
       restMethod: get
       inputTemplate: ida/GetDraft/getDraft
@@ -16,7 +16,7 @@ GetDraft:
   auth_GetDraft_audit_valid_smoke_sid:
       endPoint: /idrepository/v1/identity/draft/{registrationId}
       uniqueIdentifier: TC_IDA_dependentTC_AuthTransaction_GetDraft_02
-      description: get the Draft from registrationID
+      description: Verify that fetching draft details succeeds for a valid SID and the get-draft action is correctly recorded in the audit log
       role: idrepo
       restMethod: get
       inputTemplate: ida/GetDraft/getDraft

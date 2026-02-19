@@ -2,7 +2,7 @@ EkycDemo:
   auth_EkycDemo_Auth_With_blocked_UIN_Pos:
       endPoint: /idauthentication/v1/kyc/$partnerKeyURL$
       uniqueIdentifier: TC_IDA_EkycDemo_blockedUIN_01
-      description: perform Ekyc Demo auth with blocked UIN
+      description: Verify that eKYC demographic authentication fails when a blocked UIN is used despite valid request parameters
       role: resident
       restMethod: post
       inputTemplate: ida/HotlistTestcases/hotlistTestcases
@@ -33,7 +33,7 @@ EkycDemo:
   auth_EkycDemo_Auth_With_blocked_VID:
       endPoint: /idauthentication/v1/kyc/$partnerKeyURL$
       uniqueIdentifier: TC_IDA_EkycDemo_blockedVID_02
-      description: perform Ekyc Demo auth with blocked VID
+      description: Verify that eKYC demographic authentication fails when a blocked VID is used despite valid request parameters
       role: resident
       restMethod: post
       inputTemplate: ida/HotlistTestcases/hotlistTestcases

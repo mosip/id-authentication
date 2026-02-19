@@ -1,7 +1,7 @@
 BioInternalAuth:
   auth_BioInternalAuth_Biometric_Face_With_Valid_Smoke_Pos:
       endPoint: /idauthentication/v1/internal/auth
-      description: Bio internal auth using face with UIN
+      description: Verify successful internal biometric face authentication with valid inputs
       role: regproc
       restMethod: post
       inputTemplate: ida/BioInternalAuth/bioInternalAuth
@@ -28,7 +28,7 @@ BioInternalAuth:
 }'
   auth_BioInternalAuth_Biometric_RingFinger_With_Valid_Smoke_Pos:
       endPoint: /idauthentication/v1/internal/auth
-      description: Bio internal auth using RingFinger with UIN
+      description: Verify successful internal biometric authentication using ring finger with valid inputs
       role: regproc
       restMethod: post
       inputTemplate: ida/BioInternalAuth/bioInternalAuth
@@ -55,7 +55,7 @@ BioInternalAuth:
 }'
   auth_BioInternalAuth_Biometric_LeftMiddleFingerr_With_Valid_Smoke_Pos:
       endPoint: /idauthentication/v1/internal/auth
-      description: Bio internal auth using LeftMiddleFinger with UIN
+      description: Verify successful internal biometric authentication using left middle finger with valid inputs
       role: regproc
       restMethod: post
       inputTemplate: ida/BioInternalAuth/bioInternalAuth
@@ -82,7 +82,7 @@ BioInternalAuth:
 }'
   auth_BioInternalAuth_Biometric_LeftIndexFingerr_With_Valid_Smoke_Pos:
       endPoint: /idauthentication/v1/internal/auth
-      description: Bio internal auth using LeftIndexFinger with UIN
+      description: Verify successful internal biometric authentication using left index finger with valid inputs
       role: regproc
       restMethod: post
       inputTemplate: ida/BioInternalAuth/bioInternalAuth
@@ -109,7 +109,7 @@ BioInternalAuth:
 }'
   auth_BioInternalAuth_Biometric_LeftLittleFinger_With_Valid_Smoke_Pos:
       endPoint: /idauthentication/v1/internal/auth
-      description: Bio internal auth using LeftLittleFinger with UIN
+      description: Verify successful internal biometric authentication using left little finger with valid inputs
       role: regproc
       restMethod: post
       inputTemplate: ida/BioInternalAuth/bioInternalAuth
@@ -136,7 +136,7 @@ BioInternalAuth:
 }'
   auth_BioInternalAuth_Biometric_RightIndexFinger_With_Valid_Smoke_Pos:
       endPoint: /idauthentication/v1/internal/auth
-      description: Bio internal auth using RightIndexFinger with UIN
+      description: Verify successful internal biometric authentication using right index finger with valid inputs
       role: regproc
       restMethod: post
       inputTemplate: ida/BioInternalAuth/bioInternalAuth
@@ -163,7 +163,7 @@ BioInternalAuth:
 }'
   auth_BioInternalAuth_Biometric_RightRingFinger_With_Valid_Smoke_Pos:
       endPoint: /idauthentication/v1/internal/auth
-      description: Bio internal auth using RightRingFinger with UIN
+      description: Verify successful internal biometric authentication using right ring finger with valid inputs
       role: regproc
       restMethod: post
       inputTemplate: ida/BioInternalAuth/bioInternalAuth
@@ -190,7 +190,7 @@ BioInternalAuth:
 }'
   auth_BioInternalAuth_Biometric_RightMiddleFinger_With_Valid_Smoke_Pos:
       endPoint: /idauthentication/v1/internal/auth
-      description: Bio internal auth using RightMiddleFinger with UIN
+      description: Verify successful internal biometric authentication using right middle finger with valid inputs
       role: regproc
       restMethod: post
       inputTemplate: ida/BioInternalAuth/bioInternalAuth
@@ -217,7 +217,7 @@ BioInternalAuth:
 }'
   auth_BioInternalAuth_Biometric_RightLittleFinger_With_Valid_Smoke_Pos:
       endPoint: /idauthentication/v1/internal/auth
-      description: Bio internal auth using RightLittleFinger with UIN
+      description: Verify successful internal biometric authentication using right little finger with valid inputs
       role: regproc
       restMethod: post
       inputTemplate: ida/BioInternalAuth/bioInternalAuth
@@ -244,7 +244,7 @@ BioInternalAuth:
 }'
   auth_BioInternalAuth_Biometric_LeftThumb_With_Valid_Smoke_Pos:
       endPoint: /idauthentication/v1/internal/auth
-      description: Bio internal auth using LeftThumb with UIN
+      description: Verify successful internal biometric authentication using left thumb with valid inputs
       role: regproc
       restMethod: post
       inputTemplate: ida/BioInternalAuth/bioInternalAuth
@@ -271,7 +271,7 @@ BioInternalAuth:
 }'
   auth_BioInternalAuth_Biometric_RightThumb_With_Valid_Smoke_Pos:
       endPoint: /idauthentication/v1/internal/auth
-      description: Bio internal auth using RightThumb with UIN
+      description: Verify successful internal biometric authentication using right thumb with valid inputs
       role: regproc
       restMethod: post
       inputTemplate: ida/BioInternalAuth/bioInternalAuth
@@ -298,7 +298,7 @@ BioInternalAuth:
 }'
   auth_BioInternalAuth_Biometric_RightIris_With_Valid_Smoke_Pos:
       endPoint: /idauthentication/v1/internal/auth
-      description: Bio internal auth using RightIris with UIN
+      description: Verify successful internal biometric authentication using right iris with valid inputs
       role: regproc
       restMethod: post
       inputTemplate: ida/BioInternalAuth/bioInternalAuth
@@ -325,7 +325,7 @@ BioInternalAuth:
 }'
   auth_BioInternalAuth_Biometric_LeftIris_With_Valid_Smoke_Pos:
       endPoint: /idauthentication/v1/internal/auth
-      description: Bio internal auth using LeftIris with UIN
+      description: Verify successful internal biometric authentication using left iris with valid inputs
       role: regproc
       restMethod: post
       inputTemplate: ida/BioInternalAuth/bioInternalAuth
@@ -352,7 +352,7 @@ BioInternalAuth:
 }'
   auth_BioInternalAuth_Biometric_Face_With_VID_Valid_Smoke_Pos:
       endPoint: /idauthentication/v1/internal/auth
-      description: Bio internal auth using Face with VID
+      description: Verify successful internal biometric face authentication using a valid VID
       role: regproc
       restMethod: post
       inputTemplate: ida/BioInternalAuth/bioInternalAuth
@@ -379,7 +379,7 @@ BioInternalAuth:
 }'
   auth_BioInternalAuth_Biometric_RingFinger_With_VID_Valid_Smoke_Pos:
       endPoint: /idauthentication/v1/internal/auth
-      description: Bio internal auth using RingFinger with VID
+      description: Verify successful internal biometric ring finger authentication using a valid VID
       role: regproc
       restMethod: post
       inputTemplate: ida/BioInternalAuth/bioInternalAuth
@@ -406,7 +406,7 @@ BioInternalAuth:
 }'
   auth_BioInternalAuth_Biometric_LeftMiddleFingerr_With_Valid_VID_Smoke_Pos:
       endPoint: /idauthentication/v1/internal/auth
-      description: Bio internal auth using LeftMiddleFinger with VID
+      description: Verify successful internal biometric left middle finger authentication using a valid VID
       role: regproc
       restMethod: post
       inputTemplate: ida/BioInternalAuth/bioInternalAuth
@@ -433,7 +433,7 @@ BioInternalAuth:
 }'
   auth_BioInternalAuth_Biometric_LeftIndexFingerr_With_VID_Valid_Smoke_Pos:
       endPoint: /idauthentication/v1/internal/auth
-      description: Bio internal auth using LeftIndexFinger with VID
+      description: Verify successful internal biometric left index finger authentication using a valid VID
       role: regproc
       restMethod: post
       inputTemplate: ida/BioInternalAuth/bioInternalAuth
@@ -460,7 +460,7 @@ BioInternalAuth:
 }'
   auth_BioInternalAuth_Biometric_LeftLittleFinger_With_Valid_VID_Smoke_Pos:
       endPoint: /idauthentication/v1/internal/auth
-      description: Bio internal auth using LeftLittleFinger with VID
+      description: Verify successful internal biometric left little finger authentication using a valid VID
       role: regproc
       restMethod: post
       inputTemplate: ida/BioInternalAuth/bioInternalAuth
@@ -487,7 +487,7 @@ BioInternalAuth:
 }'
   auth_BioInternalAuth_Biometric_RightIndexFinger_With_Valid_VID_Smoke_Pos:
       endPoint: /idauthentication/v1/internal/auth
-      description: Bio internal auth using RightIndexFinger with VID
+      description: Verify successful internal biometric right index finger authentication using a valid VID
       role: regproc
       restMethod: post
       inputTemplate: ida/BioInternalAuth/bioInternalAuth
@@ -514,7 +514,7 @@ BioInternalAuth:
 }'
   auth_BioInternalAuth_Biometric_RightRingFinger_With_Valid_VID_Smoke_Pos:
       endPoint: /idauthentication/v1/internal/auth
-      description: Bio internal auth using RightRingFinger with VID
+      description: Verify successful internal biometric authentication using right ring finger with a valid VID
       role: regproc
       restMethod: post
       inputTemplate: ida/BioInternalAuth/bioInternalAuth
@@ -541,7 +541,7 @@ BioInternalAuth:
 }'
   auth_BioInternalAuth_Biometric_RightMiddleFinger_With_Valid_VID_Smoke_Pos:
       endPoint: /idauthentication/v1/internal/auth
-      description: Bio internal auth using RightMiddleFinger with VID
+      description: Verify successful internal biometric authentication using right middle finger with a valid VID
       role: regproc
       restMethod: post
       inputTemplate: ida/BioInternalAuth/bioInternalAuth
@@ -568,7 +568,7 @@ BioInternalAuth:
 }'
   auth_BioInternalAuth_Biometric_RightLittleFinger_With_Valid_VID_Smoke_Pos:
       endPoint: /idauthentication/v1/internal/auth
-      description: Bio internal auth using RightLittleFinger with VID
+      description: Verify successful internal biometric authentication using right little finger with a valid VID
       role: regproc
       restMethod: post
       inputTemplate: ida/BioInternalAuth/bioInternalAuth
@@ -595,7 +595,7 @@ BioInternalAuth:
 }'
   auth_BioInternalAuth_Biometric_LeftThumb_With_Valid_VID_Smoke_Pos:
       endPoint: /idauthentication/v1/internal/auth
-      description: Bio internal auth using LeftThumb with VID
+      description: Verify successful internal biometric authentication using left thumb with a valid VID
       role: regproc
       restMethod: post
       inputTemplate: ida/BioInternalAuth/bioInternalAuth
@@ -622,7 +622,7 @@ BioInternalAuth:
 }'
   auth_BioInternalAuth_Biometric_RightThumb_With_Valid_VID_Smoke_Pos:
       endPoint: /idauthentication/v1/internal/auth
-      description: Bio internal auth using RightThumb with VID
+      description: Verify successful internal biometric authentication using right thumb with a valid VID
       role: regproc
       restMethod: post
       inputTemplate: ida/BioInternalAuth/bioInternalAuth
@@ -649,7 +649,7 @@ BioInternalAuth:
 }'
   auth_BioInternalAuth_Biometric_RightIris_With_Valid_VID_Smoke_Pos:
       endPoint: /idauthentication/v1/internal/auth
-      description: Bio internal auth using RightIris with VID
+      description: Verify successful internal biometric authentication using right iris with a valid VID
       role: regproc
       restMethod: post
       inputTemplate: ida/BioInternalAuth/bioInternalAuth
@@ -676,7 +676,7 @@ BioInternalAuth:
 }'
   auth_BioInternalAuth_Biometric_LeftIris_With_Valid_VID_Smoke_Pos:
       endPoint: /idauthentication/v1/internal/auth
-      description: Bio internal auth using LeftIris with VID
+      description: Verify successful internal biometric authentication using left iris with a valid VID
       role: regproc
       restMethod: post
       inputTemplate: ida/BioInternalAuth/bioInternalAuth
@@ -703,7 +703,7 @@ BioInternalAuth:
 }'
   auth_BioInternalAuth_Biometric_inValid_transactionID:
       endPoint: /idauthentication/v1/internal/auth
-      description: Bio internal auth with invalid transactionId
+      description: Verify that internal biometric authentication fails when an invalid transaction ID is provided
       role: regproc
       restMethod: post
       inputTemplate: ida/BioInternalAuth/bioInternalAuth
@@ -736,7 +736,7 @@ BioInternalAuth:
 }'
   auth_BioInternalAuth_Biometric_blank_transactionID:
       endPoint: /idauthentication/v1/internal/auth
-      description: Bio internal auth with blank transactionId
+      description: Verify that internal biometric authentication fails when the transaction ID is blank
       role: regproc
       restMethod: post
       inputTemplate: ida/BioInternalAuth/bioInternalAuth
@@ -769,7 +769,7 @@ BioInternalAuth:
 }'
   auth_BioInternalAuth_Biometric_inValid_individualIdType:
       endPoint: /idauthentication/v1/internal/auth
-      description: Bio internal auth with invalid individualIdType
+      description: Verify that internal biometric authentication fails when an invalid individual ID type is provided
       role: regproc
       restMethod: post
       inputTemplate: ida/BioInternalAuth/bioInternalAuth
@@ -802,7 +802,7 @@ BioInternalAuth:
 }'
   auth_BioInternalAuth_Biometric_blank_individualIdType:
       endPoint: /idauthentication/v1/internal/auth
-      description: Bio internal auth with blank individualIdType
+      description: Verify that internal biometric authentication fails when the individual ID type is blank
       role: regproc
       restMethod: post
       inputTemplate: ida/BioInternalAuth/bioInternalAuth
@@ -835,7 +835,7 @@ BioInternalAuth:
 }'
   auth_BioInternalAuth_Biometric_Misssing_individualIdType:
       endPoint: /idauthentication/v1/internal/auth
-      description: Bio internal auth with missing individualIdType
+      description: Verify that internal biometric authentication is processed successfully when the optional individual ID type field is missing
       role: regproc
       restMethod: post
       inputTemplate: ida/BioInternalAuth/bioInternalAuth
@@ -868,7 +868,7 @@ BioInternalAuth:
 }'
   auth_BioInternalAuth_Biometric_invalid_bioSubType:
       endPoint: /idauthentication/v1/internal/auth
-      description: Bio internal auth with invalid bioSubType
+      description: Verify that internal biometric authentication fails when an invalid biometric subtype is provided
       role: regproc
       restMethod: post
       inputTemplate: ida/BioInternalAuth/bioInternalAuth
@@ -901,7 +901,7 @@ BioInternalAuth:
 }'
   auth_BioInternalAuth_Biometric_blank_bioSubType:
       endPoint: /idauthentication/v1/internal/auth
-      description: Bio internal auth with blank bioSubType
+      description: Verify that internal biometric authentication fails when the biometric subtype is blank
       role: regproc
       restMethod: post
       inputTemplate: ida/BioInternalAuth/bioInternalAuth
@@ -934,7 +934,7 @@ BioInternalAuth:
 }'
   auth_BioInternalAuth_Biometric_missing_bioType:
       endPoint: /idauthentication/v1/internal/auth
-      description: Bio internal auth with missing bioType
+      description: Verify that internal biometric authentication fails when the biometric type field is missing
       role: regproc
       restMethod: post
       inputTemplate: ida/BioInternalAuth/bioInternalAuth
@@ -967,7 +967,7 @@ BioInternalAuth:
 }'
   auth_BioInternalAuth_Biometric_Blank_bioType:
       endPoint: /idauthentication/v1/internal/auth
-      description: Bio internal auth with blank bioType
+      description: Verify that internal biometric authentication fails when the biometric type is blank
       role: regproc
       restMethod: post
       inputTemplate: ida/BioInternalAuth/bioInternalAuth
@@ -1000,7 +1000,7 @@ BioInternalAuth:
 }'
   auth_BioInternalAuth_Biometric_Invalid_bioType:
       endPoint: /idauthentication/v1/internal/auth
-      description: Bio internal auth with invalid bioType
+      description: Verify that internal biometric authentication fails when an invalid biometric type is provided
       role: regproc
       restMethod: post
       inputTemplate: ida/BioInternalAuth/bioInternalAuth
@@ -1033,7 +1033,7 @@ BioInternalAuth:
 }'
   auth_BioInternalAuth_Biometric_invalid_biovalue:
       endPoint: /idauthentication/v1/internal/auth
-      description: Bio internal auth with invalid bioValue
+      description: Verify that internal biometric authentication fails when an invalid biometric value is provided
       role: regproc
       restMethod: post
       inputTemplate: ida/BioInternalAuth/bioInternalAuth
@@ -1066,7 +1066,7 @@ BioInternalAuth:
 }'
   auth_BioInternalAuth_Face_With_FingerBio_Invalid:
       endPoint: /idauthentication/v1/internal/auth
-      description: Bio internal auth with invalid bioValue and invalid bioType
+      description: Verify that internal authentication fails when face authentication is attempted using fingerprint biometric data
       role: regproc
       restMethod: post
       inputTemplate: ida/BioInternalAuth/bioInternalAuth
@@ -1099,7 +1099,7 @@ BioInternalAuth:
 }'
   auth_BioInternalAuth_Iris_With_FaceBio_Invalid:
       endPoint: /idauthentication/v1/internal/auth
-      description: Bio internal auth with invalid bioValue and invalid bioType
+      description: Verify that internal authentication fails when iris authentication is attempted using face biometric data
       role: regproc
       restMethod: post
       inputTemplate: ida/BioInternalAuth/bioInternalAuth
@@ -1132,7 +1132,7 @@ BioInternalAuth:
 }'
   auth_BioInternalAuth_Finger_With_FaceBio_Invalid:
       endPoint: /idauthentication/v1/internal/auth
-      description: Bio internal auth with invalid bioValue and invalid bioType
+      description: Verify that internal authentication fails when fingerprint authentication is attempted using face biometric data
       role: regproc
       restMethod: post
       inputTemplate: ida/BioInternalAuth/bioInternalAuth

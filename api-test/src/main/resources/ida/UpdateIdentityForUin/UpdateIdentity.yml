@@ -2,7 +2,7 @@ UpdateIdentityForUin:
   Auth_UpdateIdentityForUin_ACTIVATED_Positive_TRE_all_valid_smoke:
       endPoint: /idrepository/v1/identity/
       uniqueIdentifier: TC_IDA_UpdateIdentityForUin_01
-      description: Deactivate the activated UIN
+      description: Verify that updating identity for a UIN succeeds through the TRE flow when the UIN is already activated and all parameters are valid
       role: idrepo
       restMethod: patch
       inputTemplate: ida/UpdateIdentityForUin/updateIdentity
@@ -22,7 +22,7 @@ UpdateIdentityForUin:
   Auth_UpdateIdentityForUin_DEACTIVATE_Positive_valid_smoke:
       endPoint: /idrepository/v1/identity/
       uniqueIdentifier: TC_IDA_UpdateIdentityForUin_02
-      description: Deactivate the activated UIN
+      description: Verify that updating identity for a UIN successfully deactivates the UIN when all parameters are valid
       role: idrepo
       restMethod: patch
       inputTemplate: ida/UpdateIdentityForUin/updateIdentity
@@ -42,7 +42,7 @@ UpdateIdentityForUin:
   Auth_UpdateIdentityForUin_DEACTIVATE_toReactivate_valid_smoke:
       endPoint: /idrepository/v1/identity/
       uniqueIdentifier: TC_IDA_UpdateIdentityForUin_03
-      description: Deactivate the activated UIN
+      description: Verify that updating identity for a UIN successfully reactivates a previously deactivated UIN when all parameters are valid
       role: idrepo
       restMethod: patch
       inputTemplate: ida/UpdateIdentityForUin/updateIdentity
