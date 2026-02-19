@@ -835,7 +835,7 @@ BioInternalAuth:
 }'
   auth_BioInternalAuth_Biometric_Misssing_individualIdType:
       endPoint: /idauthentication/v1/internal/auth
-      description: Verify that internal biometric authentication is processed successfully when the optional individual ID type field is missing
+      description: Verify that biometric internal authentication fails when the individual ID type is missing
       role: regproc
       restMethod: post
       inputTemplate: ida/BioInternalAuth/bioInternalAuth
