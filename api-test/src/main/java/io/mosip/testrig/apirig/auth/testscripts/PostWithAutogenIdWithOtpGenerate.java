@@ -123,10 +123,11 @@ public class PostWithAutogenIdWithOtpGenerate extends IdAuthenticationUtil imple
 		otpReqJson.remove("sendOtpEndPoint");
 
 		Response otpResponse = null;
-		int maxLoopCount = Integer.parseInt(properties.getProperty("uinGenMaxLoopCount"));
+		int maxLoopCount = IdAuthConfigManager.getproperty("uinGenMaxLoopCount").isEmpty() ? 20
+				: Integer.parseInt(IdAuthConfigManager.getproperty("uinGenMaxLoopCount"));
 		int currLoopCount = 0;
 		while (currLoopCount < maxLoopCount) {
-			  {
+			{
 				otpResponse = postWithBodyAndCookie(ApplnURI + sendOtpEndPoint,
 						getJsonFromTemplate(otpReqJson.toString(), sendOtpReqTemplate), COOKIENAME,
 						GlobalConstants.RESIDENT, testCaseDTO.getTestCaseName());
@@ -201,28 +202,18 @@ public class PostWithAutogenIdWithOtpGenerate extends IdAuthenticationUtil imple
 	 */
 	@AfterMethod(alwaysRun = true)
 	public void setResultTestName(ITestResult result) {
-		try {
-			Field method = TestResult.class.getDeclaredField("m_method");
-			method.setAccessible(true);
-			method.set(result, result.getMethod().clone());
-			BaseTestMethod baseTestMethod = (BaseTestMethod) result.getMethod();
-			Field f = baseTestMethod.getClass().getSuperclass().getDeclaredField("m_methodName");
-			f.setAccessible(true);
-			f.set(baseTestMethod, testCaseName);
-		} catch (Exception e) {
-			Reporter.log("Exception : " + e.getMessage());
-		}
+		result.setAttribute("TestCaseName", testCaseName);
 	}
 
 	@AfterClass(alwaysRun = true)
 	public void waittime() {
 		try {
-			if ((!testCaseName.contains(GlobalConstants.ESIGNET_))
-					&& (!testCaseName.contains("Resident_CheckAidStatus"))) {
-				long delayTime = Long.parseLong(properties.getProperty("Delaytime"));
-				logger.info("waiting for " + delayTime + " mili secs after VID Generation In RESIDENT SERVICES");
-				Thread.sleep(delayTime);
-			}
+			logger.info(
+					"waiting for " + IdAuthConfigManager.getproperty("vidGenerationProcessingDelayTimeInMilliSeconds")
+							+ " mili secs VID Generation In RESIDENT SERVICES");
+			Thread.sleep(
+					Long.parseLong(IdAuthConfigManager.getproperty("vidGenerationProcessingDelayTimeInMilliSeconds")));
+
 		} catch (Exception e) {
 			logger.error("Exception : " + e.getMessage());
 			Thread.currentThread().interrupt();

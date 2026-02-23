@@ -9,7 +9,7 @@ OTPInternalAuth:
       outputTemplate: ida/OTPInternalAuth/otpInternalAuthResult
       input: '{
         "requestTime": "$TIMESTAMP$",
-        "individualId": "$ID:AddIdentity_InternalOTP_smoke_UIN$",
+        "individualId": "$ID:AddIdentity_InternalOTP_UIN$",
         "transactionId": "$TRANSACTIONID$",
         "individualIdType": "UIN",
         "bio": false,
@@ -18,7 +18,7 @@ OTPInternalAuth:
         "sendOtp":{
     "transactionID": "$TRANSACTIONID$",
     "requestTime": "$TIMESTAMP$",
-    "individualId": "$ID:AddIdentity_InternalOTP_smoke_UIN$",
+    "individualId": "$ID:AddIdentity_InternalOTP_UIN$",
     "individualIdType": "UIN",
     "sendOtpReqTemplate": "ida/OtpInternalAuth/sendOtp",
     "sendOtpEndPoint": "/idauthentication/v1/internal/otp",
@@ -88,7 +88,7 @@ OTPInternalAuth:
         "sendOtp":{
     "transactionID": "$TRANSACTIONID$",
     "requestTime": "$TIMESTAMP$",
-    "individualId": "$ID:AddIdentity_InternalOTP_smoke_UIN$",
+    "individualId": "$ID:AddIdentity_InternalOTP_UIN$",
     "individualIdType": "UIN",
     "sendOtpReqTemplate": "ida/OtpInternalAuth/sendOtp",
     "sendOtpEndPoint": "/idauthentication/v1/internal/otp",
@@ -129,7 +129,7 @@ OTPInternalAuth:
         "sendOtp":{
     "transactionID": "$TRANSACTIONID$",
     "requestTime": "$TIMESTAMP$",
-    "individualId": "$ID:AddIdentity_InternalOTP_smoke_UIN$",
+    "individualId": "$ID:AddIdentity_InternalOTP_UIN$",
     "individualIdType": "UIN",
     "sendOtpReqTemplate": "ida/OtpInternalAuth/sendOtp",
     "sendOtpEndPoint": "/idauthentication/v1/internal/otp",
@@ -170,7 +170,7 @@ OTPInternalAuth:
         "sendOtp":{
     "transactionID": "$TRANSACTIONID$",
     "requestTime": "$TIMESTAMP$",
-    "individualId": "$ID:AddIdentity_InternalOTP_smoke_UIN$",
+    "individualId": "$ID:AddIdentity_InternalOTP_UIN$",
     "individualIdType": "UIN",
     "sendOtpReqTemplate": "ida/OtpInternalAuth/sendOtp",
     "sendOtpEndPoint": "/idauthentication/v1/internal/otp",
@@ -202,7 +202,7 @@ OTPInternalAuth:
       outputTemplate: ida/OTPInternalAuth/error
       input: '{
         "requestTime": "$TIMESTAMP$",
-        "individualId": "$ID:AddIdentity_InternalOTP_smoke_UIN$",
+        "individualId": "$ID:AddIdentity_InternalOTP_UIN$",
         "transactionId": "ef$##@@$%536267272",
         "individualIdType": "UIN",
         "bio": false,
@@ -211,7 +211,7 @@ OTPInternalAuth:
         "sendOtp":{
     "transactionID": "$TRANSACTIONID$",
     "requestTime": "$TIMESTAMP$",
-    "individualId": "$ID:AddIdentity_InternalOTP_smoke_UIN$",
+    "individualId": "$ID:AddIdentity_InternalOTP_UIN$",
     "individualIdType": "UIN",
     "sendOtpReqTemplate": "ida/OtpInternalAuth/sendOtp",
     "sendOtpEndPoint": "/idauthentication/v1/internal/otp",
@@ -243,7 +243,7 @@ OTPInternalAuth:
       outputTemplate: ida/OTPInternalAuth/error
       input: '{
         "requestTime": "$TIMESTAMP$",
-        "individualId": "$ID:AddIdentity_InternalOTP_smoke_UIN$",
+        "individualId": "$ID:AddIdentity_InternalOTP_UIN$",
         "transactionId": "",
         "individualIdType": "UIN",
         "bio": false,
@@ -252,7 +252,7 @@ OTPInternalAuth:
         "sendOtp":{
     "transactionID": "$TRANSACTIONID$",
     "requestTime": "$TIMESTAMP$",
-    "individualId": "$ID:AddIdentity_InternalOTP_smoke_UIN$",
+    "individualId": "$ID:AddIdentity_InternalOTP_UIN$",
     "individualIdType": "UIN",
     "sendOtpReqTemplate": "ida/OtpInternalAuth/sendOtp",
     "sendOtpEndPoint": "/idauthentication/v1/internal/otp",
@@ -284,7 +284,7 @@ OTPInternalAuth:
       outputTemplate: ida/OTPInternalAuth/error
       input: '{
         "requestTime": "$TIMESTAMP$",
-        "individualId": "$ID:AddIdentity_InternalOTP_smoke_UIN$",
+        "individualId": "$ID:AddIdentity_InternalOTP_UIN$",
         "transactionId": "$TRANSACTIONID$",
         "individualIdType": "dhduddb7e3737382828",
         "bio": false,
@@ -293,7 +293,7 @@ OTPInternalAuth:
         "sendOtp":{
     "transactionID": "$TRANSACTIONID$",
     "requestTime": "$TIMESTAMP$",
-    "individualId": "$ID:AddIdentity_InternalOTP_smoke_UIN$",
+    "individualId": "$ID:AddIdentity_InternalOTP_UIN$",
     "individualIdType": "UIN",
     "sendOtpReqTemplate": "ida/OtpInternalAuth/sendOtp",
     "sendOtpEndPoint": "/idauthentication/v1/internal/otp",
@@ -325,7 +325,7 @@ OTPInternalAuth:
       outputTemplate: ida/OTPInternalAuth/error
       input: '{
         "requestTime": "$TIMESTAMP$",
-        "individualId": "$ID:AddIdentity_InternalOTP_smoke_UIN$",
+        "individualId": "$ID:AddIdentity_InternalOTP_UIN$",
         "transactionId": "$TRANSACTIONID$",
         "individualIdType": "",
         "bio": false,
@@ -334,7 +334,7 @@ OTPInternalAuth:
         "sendOtp":{
     "transactionID": "$TRANSACTIONID$",
     "requestTime": "$TIMESTAMP$",
-    "individualId": "$ID:AddIdentity_InternalOTP_smoke_UIN$",
+    "individualId": "$ID:AddIdentity_InternalOTP_UIN$",
     "individualIdType": "UIN",
     "sendOtpReqTemplate": "ida/OtpInternalAuth/sendOtp",
     "sendOtpEndPoint": "/idauthentication/v1/internal/otp",
@@ -366,7 +366,7 @@ OTPInternalAuth:
       outputTemplate: ida/OTPInternalAuth/error
       input: '{
         "requestTime": "$TIMESTAMP$",
-        "individualId": "$ID:AddIdentity_InternalOTP_smoke_UIN$",
+        "individualId": "$ID:AddIdentity_InternalOTP_UIN$",
         "transactionId": "$TRANSACTIONID$",
         "individualIdType": "$REMOVE$",
         "bio": false,
@@ -375,7 +375,7 @@ OTPInternalAuth:
         "sendOtp":{
     "transactionID": "$TRANSACTIONID$",
     "requestTime": "$TIMESTAMP$",
-    "individualId": "$ID:AddIdentity_InternalOTP_smoke_UIN$",
+    "individualId": "$ID:AddIdentity_InternalOTP_UIN$",
     "individualIdType": "UIN",
     "sendOtpReqTemplate": "ida/OtpInternalAuth/sendOtp",
     "sendOtpEndPoint": "/idauthentication/v1/internal/otp",

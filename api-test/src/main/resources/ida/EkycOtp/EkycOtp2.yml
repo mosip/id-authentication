@@ -35,7 +35,7 @@ EkycOtp:
         "maskedEmail": "$IGNORE$"
     }
 }'
-  auth_EkycOtp_Auth_With_Valid__with_edited_updated_UIN_Smoke:
+  auth_EkycOtp_Auth_With_Valid__with_edited_updated_UIN:
       endPoint: /idauthentication/v1/kyc/$ekycPartnerKeyURL$
       uniqueIdentifier: TC_IDA_EkycOtp_02
       description: Ekyc otp auth with valid updated UIN
@@ -72,7 +72,7 @@ EkycOtp:
         "maskedEmail": "$IGNORE$"
     }
 }'
-  auth_EkycOtp_Auth_With_Infant_Valid_UIN_Smoke:
+  auth_EkycOtp_Auth_With_Infant_Valid_UIN:
       endPoint: /idauthentication/v1/kyc/$ekycPartnerKeyURL$
       uniqueIdentifier: TC_IDA_EkycOtp_03
       description: Ekyc otp auth with infant UIN
@@ -109,7 +109,7 @@ EkycOtp:
         "maskedEmail": "$IGNORE$"
     }
 }'
-  auth_EkycOtp_Auth_With_deactivate_UIN_Smoke:
+  auth_EkycOtp_Auth_With_deactivate_UIN:
       endPoint: /idauthentication/v1/kyc/$ekycPartnerKeyURL$
       uniqueIdentifier: TC_IDA_EkycOtp_04
       description: Ekyc otp auth with deactivated UIN
@@ -146,7 +146,7 @@ EkycOtp:
         "maskedEmail": "$IGNORE$"
     }
 }'
-  auth_EkycOtp_Auth_With_draft_UIN_Smoke:
+  auth_EkycOtp_Auth_With_draft_UIN:
       endPoint: /idauthentication/v1/kyc/$ekycPartnerKeyURL$
       uniqueIdentifier: TC_IDA_EkycOtp_05
       description: Ekyc otp auth with drafted UIN
@@ -189,6 +189,7 @@ EkycOtp:
       description: Ekyc otp auth with valid VID
       role: resident
       restMethod: post
+      additionalDependencies: TC_DependentModule_IdRepo_06
       inputTemplate: ida/EkycOtp/EkycOtp
       outputTemplate: ida/EkycOtp/EkycOtpResult
       input: '{
@@ -263,6 +264,7 @@ EkycOtp:
       role: resident
       checkErrorsOnlyInResponse: true
       restMethod: post
+      additionalDependencies: TC_DependentModule_IdRepo_06
       inputTemplate: ida/EkycOtp/EkycOtp
       outputTemplate: ida/EkycOtp/EkycOtpResult
       input: '{
@@ -338,6 +340,7 @@ EkycOtp:
       role: resident
       checkErrorsOnlyInResponse: true
       restMethod: post
+      additionalDependencies: TC_DependentModule_IdRepo_06
       inputTemplate: ida/EkycOtp/EkycOtp
       outputTemplate: ida/EkycOtp/EkycOtpResult
       input: '{
@@ -413,6 +416,7 @@ EkycOtp:
       role: resident
       checkErrorsOnlyInResponse: true
       restMethod: post
+      additionalDependencies: TC_DependentModule_IdRepo_06
       inputTemplate: ida/EkycOtp/EkycOtp
       outputTemplate: ida/EkycOtp/EkycOtpResult
       input: '{
@@ -443,13 +447,14 @@ EkycOtp:
         "maskedEmail": "$IGNORE$"
     }
 }'
-  auth_EkycOtp_With_revoke_VID_Smoke_Pos:
+  auth_EkycOtp_With_revoke_VID_Pos:
       endPoint: /idauthentication/v1/kyc/$ekycPartnerKeyURL$
       uniqueIdentifier: TC_IDA_EkycOtp_13
       description: Ekyc otp auth with revoked VID
       role: resident
       checkErrorsOnlyInResponse: true
       restMethod: post
+      additionalDependencies: TC_DependentModule_IdRepo_24,TC_IDA_RevokeVID_01
       inputTemplate: ida/EkycOtp/EkycOtp
       outputTemplate: ida/EkycOtp/error
       input: '{
@@ -786,6 +791,7 @@ EkycOtp:
       role: resident
       checkErrorsOnlyInResponse: true
       restMethod: post
+      additionalDependencies: TC_DependentModule_IdRepo_06
       inputTemplate: ida/EkycOtp/EkycOtp
       outputTemplate: ida/EkycOtp/EkycOtpResult
       input: '{
@@ -860,6 +866,7 @@ EkycOtp:
       role: resident
       checkErrorsOnlyInResponse: true
       restMethod: post
+      additionalDependencies: TC_DependentModule_IdRepo_06
       inputTemplate: ida/EkycOtp/EkycOtp
       outputTemplate: ida/EkycOtp/EkycOtpResult
       input: '{
@@ -897,6 +904,7 @@ EkycOtp:
       role: resident
       checkErrorsOnlyInResponse: true
       restMethod: post
+      additionalDependencies: TC_DependentModule_IdRepo_06
       inputTemplate: ida/EkycOtp/EkycOtp
       outputTemplate: ida/EkycOtp/error
       input: '{
@@ -934,6 +942,7 @@ EkycOtp:
       role: resident
       checkErrorsOnlyInResponse: true
       restMethod: post
+      additionalDependencies: TC_DependentModule_IdRepo_06
       inputTemplate: ida/EkycOtp/EkycOtp
       outputTemplate: ida/EkycOtp/EkycOtpResult
       input: '{
@@ -971,6 +980,7 @@ EkycOtp:
       role: resident
       checkErrorsOnlyInResponse: true
       restMethod: post
+      additionalDependencies: TC_DependentModule_IdRepo_06
       inputTemplate: ida/EkycOtp/EkycOtp
       outputTemplate: ida/EkycOtp/error
       input: '{

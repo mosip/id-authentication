@@ -56,7 +56,6 @@
 			<class name="io.mosip.testrig.apirig.auth.testscripts.KycExchange" />
 		</classes>
 	</test>
-
 	<test name="EkycBio">
 		<parameter name="ymlFile" value="ida/EkycBio/EkycBio2.yml" />
 		<parameter name="isInternal" value="false" />

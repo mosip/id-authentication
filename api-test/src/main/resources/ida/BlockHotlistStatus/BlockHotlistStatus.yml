@@ -4,6 +4,7 @@ BlockHotlistStatus:
       uniqueIdentifier: TC_IDA_BlockHotlistStatus_01
       description: get the status of hotlist UIN
       role: idrepo
+      additionalDependencies: TC_IDA_HotlistAPI_14
       checkErrorsOnlyInResponse: true
       restMethod: get
       inputTemplate: ida/BlockHotlistStatus/blockHotlistStatus

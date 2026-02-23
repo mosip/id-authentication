@@ -5,6 +5,7 @@ OtpAuth:
       description: Otp auth with unblocked_partnerid
       role: resident
       restMethod: post
+      additionalDependencies: TC_IDA_HotlistAPI_15,TC_IDA_HotlistAPI_Unblock_08
       checkErrorsOnlyInResponse: true
       inputTemplate: ida/OtpAuth/OtpAuth
       outputTemplate: ida/OtpAuth/OtpAuthResult
@@ -41,6 +42,7 @@ OtpAuth:
       description: Otp auth with blocked misp
       role: resident
       restMethod: post
+      additionalDependencies: TC_IDA_HotlistAPI_16,TC_IDA_HotlistAPI_Unblock_09
       checkErrorsOnlyInResponse: true
       inputTemplate: ida/OtpAuth/OtpAuth
       outputTemplate: ida/OtpAuth/OtpAuthResult

@@ -1,5 +1,5 @@
 DeactivateUINs:
-  auth_DeactivateUINs_Smoke_Pos:
+  auth_DeactivateUINs_Pos:
       endPoint: /idrepository/v1/vid/deactivate
       uniqueIdentifier: TC_IDA_DeactivateVIDs_01
       description: deactivate all VID which is generated from UIN
@@ -8,7 +8,7 @@ DeactivateUINs:
       inputTemplate: ida/DeactivateUin/deactivateUin
       outputTemplate: ida/DeactivateUin/deactivateUinResult
       input: '{
-    "UIN": "$ID:AddIdentity_withValidParameters_used_for_vid_smoke_Pos_UIN$",
+    "UIN": "$ID:AddIdentity_withValidParameters_used_for_vid_Pos_UIN$",
     "requesttime": "$TIMESTAMP$",
     "id": "mosip.vid.deactivate",
     "version": "v1"
@@ -22,6 +22,7 @@ DeactivateUINs:
       description: deactivate VID which is generated from UIN
       role: resident
       restMethod: post
+      additionalDependencies: TC_IDA_DependentTc_AuthTransaction_GenerateVID_08
       inputTemplate: ida/DeactivateUin/deactivateUin
       outputTemplate: ida/DeactivateUin/deactivateUinResult
       input: '{
@@ -39,6 +40,7 @@ DeactivateUINs:
       description: deactivate VID which is generated from UIN
       role: resident
       restMethod: post
+      additionalDependencies: TC_IDA_GenerateVID_06
       inputTemplate: ida/DeactivateUin/deactivateUin
       outputTemplate: ida/DeactivateUin/deactivateUinResult
       input: '{

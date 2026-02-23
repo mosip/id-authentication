@@ -112,7 +112,7 @@ createSendOTP:
     outputTemplate: ida/SendOTP/IDAuthSendotperror
     input: '{
       "transactionID": "1234567190",
-      "individualId": "$ID:AddIdentity_ValidParameters_toLock_email_perfromOtpEmail_auth_smoke_Pos_UIN$",
+      "individualId": "$ID:AddIdentity_ValidParameters_toLock_email_perfromOtpEmail_auth_Pos_UIN$",
       "requestTime": "$TIMESTAMP$",
       "individualIdType": "UIN",
       "otpChannel": [
@@ -137,7 +137,7 @@ createSendOTP:
     outputTemplate: ida/SendOTP/IDAuthSendotperror
     input: '{
       "transactionID": "1234567190",
-      "individualId": "$ID:AddIdentity_ValidParameters_toLock_phone_smoke_Pos_UIN$",
+      "individualId": "$ID:AddIdentity_ValidParameters_toLock_phone_Pos_UIN$",
       "requestTime": "$TIMESTAMP$",
       "individualIdType": "UIN",
       "otpChannel": [
@@ -162,7 +162,7 @@ createSendOTP:
     outputTemplate: ida/SendOTP/IDAuthSendotperror
     input: '{
       "transactionID": "1234567190",
-      "individualId": "$ID:AddIdentity_ValidParameters_toLock_phoneAndEmail_smoke_Pos_UIN$",
+      "individualId": "$ID:AddIdentity_ValidParameters_toLock_phoneAndEmail_Pos_UIN$",
       "requestTime": "$TIMESTAMP$",
       "individualIdType": "UIN",
       "otpChannel": [

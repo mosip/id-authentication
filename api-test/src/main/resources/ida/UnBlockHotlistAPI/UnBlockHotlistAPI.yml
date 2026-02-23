@@ -39,6 +39,7 @@ HotlistAPI:
       description: unblock Perpetual VID without expiry time
       role: hotlist
       restMethod: post
+      additionalDependencies: TC_DependentModule_IdRepo_06
       inputTemplate: ida/UnBlockHotlistAPI/UnblockHotlistAPI
       outputTemplate: ida/UnBlockHotlistAPI/UnblockHotlistAPIResult
       input: '{
@@ -56,6 +57,7 @@ HotlistAPI:
       description: unblock Perpetual VID with expiry time
       role: hotlist
       restMethod: post
+      additionalDependencies: TC_DependentModule_IdRepo_06
       inputTemplate: ida/UnBlockHotlistAPI/UnblockHotlistAPI
       outputTemplate: ida/UnBlockHotlistAPI/UnblockHotlistAPIResult
       input: '{
@@ -73,6 +75,7 @@ HotlistAPI:
       description: unblock device without expiry time
       role: hotlist
       restMethod: post
+      additionalDependencies: TC_IDA_HotlistAPI_09,TC_IDA_HotlistAPI_10
       inputTemplate: ida/UnBlockHotlistAPI/UnblockHotlistAPI
       outputTemplate: ida/UnBlockHotlistAPI/UnblockHotlistAPIResult
       input: '{
@@ -90,6 +93,7 @@ HotlistAPI:
       description: unblock device with expiry time
       role: hotlist
       restMethod: post
+      additionalDependencies: TC_IDA_HotlistAPI_09,TC_IDA_HotlistAPI_10
       inputTemplate: ida/UnBlockHotlistAPI/UnblockHotlistAPI
       outputTemplate: ida/UnBlockHotlistAPI/UnblockHotlistAPIResult
       input: '{
@@ -107,6 +111,7 @@ HotlistAPI:
       description: unblock device provider id with expiry time
       role: hotlist
       restMethod: post
+      additionalDependencies: TC_IDA_HotlistAPI_11
       inputTemplate: ida/UnBlockHotlistAPI/UnblockHotlistAPI
       outputTemplate: ida/UnBlockHotlistAPI/UnblockHotlistAPIResult
       input: '{
