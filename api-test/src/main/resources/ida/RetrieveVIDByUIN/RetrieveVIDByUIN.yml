@@ -6,6 +6,7 @@ RetrieveVIDByUIN:
       role: idrepo
       checkErrorsOnlyInResponse: true
       restMethod: get
+      additionalDependencies: TC_IDA_DependentTc_AuthTransaction_GenerateVID_10
       inputTemplate: ida/RetrieveVIDByUIN/retrieveVIDByUIN
       outputTemplate: ida/RetrieveVIDByUIN/retrieveVIDByUINResult
       input: '{

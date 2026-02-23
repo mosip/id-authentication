@@ -5,11 +5,12 @@ DemoAuth:
       description: perform Demo auth with blocked partner id
       role: resident
       restMethod: post
+      additionalDependencies: TC_IDA_HotlistAPI_15
       inputTemplate: ida/HotlistTestcases/hotlistTestcases
       outputTemplate: ida/HotlistTestcases/HotlistTestcasesResult
       input: '{
         "requestTime": "$TIMESTAMP$",
-        "individualId": "$ID:AddIdentity_Positive_EKYCUIN_valid_smoke_UIN$",
+        "individualId": "$ID:AddIdentity_Positive_EKYCUIN_valid_UIN$",
         "transactionId": "$TRANSACTIONID$",
         "individualIdType": "UIN",
         "bio": false,
@@ -35,6 +36,7 @@ DemoAuth:
       description: perform Demo auth with VID with blocked partner id
       role: resident
       restMethod: post
+      additionalDependencies: TC_IDA_HotlistAPI_15,TC_DependentModule_IdRepo_06
       inputTemplate: ida/HotlistTestcases/hotlistTestcases
       outputTemplate: ida/HotlistTestcases/HotlistTestcasesResult
       input: '{

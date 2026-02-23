@@ -5,6 +5,7 @@ HotlistAPI:
       description: unblock partnerid without expiry time
       role: hotlist
       restMethod: post
+      additionalDependencies: TC_IDA_HotlistAPI_15
       inputTemplate: ida/UnBlockHotlistAPI/UnblockHotlistAPI
       outputTemplate: ida/UnBlockHotlistAPI/UnblockHotlistAPIResult
       input: '{
@@ -22,6 +23,7 @@ HotlistAPI:
       description: unblock apikey without expiry time
       role: hotlist
       restMethod: post
+      additionalDependencies: TC_IDA_HotlistAPI_17
       inputTemplate: ida/UnBlockHotlistAPI/UnblockHotlistAPI
       outputTemplate: ida/UnBlockHotlistAPI/UnblockHotlistAPIResult
       input: '{
@@ -39,6 +41,7 @@ HotlistAPI:
       description: unblock apikey without expiry time
       role: hotlist
       restMethod: post
+      additionalDependencies: TC_IDA_HotlistAPI_16
       inputTemplate: ida/UnBlockHotlistAPI/UnblockHotlistAPI
       outputTemplate: ida/UnBlockHotlistAPI/UnblockHotlistAPIResult
       input: '{

@@ -41,7 +41,7 @@ EkycBio:
       output: '{
         "kycStatus": "true"
 }'
-  auth_EkycBio_Face_With_Valid_uin_with_updated_edited_policy_Smoke_Pos:
+  auth_EkycBio_Face_With_Valid_uin_with_updated_edited_policy_Pos:
       endPoint: /idauthentication/v1/kyc/$ekycPartnerKeyURL$
       uniqueIdentifier: TC_IDA_EkycBio_02
       description: Ekyc bio face auth using valid UIN with updated policy
@@ -128,7 +128,7 @@ EkycBio:
     }
   ]
 }'
-  auth_EkycBio_Face_With_draft_uin_Smoke_Pos:
+  auth_EkycBio_Face_With_draft_uin_Pos:
       endPoint: /idauthentication/v1/kyc/$ekycPartnerKeyURL$
       uniqueIdentifier: TC_IDA_EkycBio_04
       description: Ekyc bio face auth using draft UIN
@@ -212,7 +212,7 @@ EkycBio:
       output: '{
   "kycStatus": "true"
 }'
-  auth_EkycBio_LeftMiddleFingerr_With_Valid_uin_Smoke_Pos:
+  auth_EkycBio_LeftMiddleFingerr_With_Valid_uin_Pos:
       endPoint: /idauthentication/v1/kyc/$ekycPartnerKeyURL$
       uniqueIdentifier: TC_IDA_EkycBio_06
       description: Ekyc bio auth using left middle finger with valid UIN
@@ -254,7 +254,7 @@ EkycBio:
       output: '{
   "kycStatus": "true"
 }'
-  auth_EkycBio_LeftIndexFingerr_With_Valid_uin_Smoke_Pos:
+  auth_EkycBio_LeftIndexFingerr_With_Valid_uin_Pos:
       endPoint: /idauthentication/v1/kyc/$ekycPartnerKeyURL$
       uniqueIdentifier: TC_IDA_EkycBio_07
       description: Ekyc bio auth using left index finger with valid UIN
@@ -296,7 +296,7 @@ EkycBio:
       output: '{
   "kycStatus": "true"
 }'
-  auth_EkycBio_LeftLittleFinger_With_Valid_uin_Smoke_Pos:
+  auth_EkycBio_LeftLittleFinger_With_Valid_uin_Pos:
       endPoint: /idauthentication/v1/kyc/$ekycPartnerKeyURL$
       uniqueIdentifier: TC_IDA_EkycBio_08
       description: Ekyc bio auth using left little finger with valid UIN
@@ -338,7 +338,7 @@ EkycBio:
       output: '{
   "kycStatus": "true"
 }'
-  auth_EkycBio_RightIndexFinger_With_Valid_uin_Smoke_Pos:
+  auth_EkycBio_RightIndexFinger_With_Valid_uin_Pos:
       endPoint: /idauthentication/v1/kyc/$ekycPartnerKeyURL$
       uniqueIdentifier: TC_IDA_EkycBio_09
       description: Ekyc bio auth using right index finger with valid UIN
@@ -380,7 +380,7 @@ EkycBio:
       output: '{
   "kycStatus": "true"
 }'
-  auth_EkycBio_RightRingFinger_With_Valid_uin_Smoke_Pos:
+  auth_EkycBio_RightRingFinger_With_Valid_uin_Pos:
       endPoint: /idauthentication/v1/kyc/$ekycPartnerKeyURL$
       uniqueIdentifier: TC_IDA_EkycBio_10
       description: Ekyc bio auth using right right finger with valid UIN
@@ -422,7 +422,7 @@ EkycBio:
       output: '{
   "kycStatus": "true"
 }'
-  auth_EkycBio_RightMiddleFinger_With_Valid_uin_Smoke_Pos:
+  auth_EkycBio_RightMiddleFinger_With_Valid_uin_Pos:
       endPoint: /idauthentication/v1/kyc/$ekycPartnerKeyURL$
       uniqueIdentifier: TC_IDA_EkycBio_11
       description: Ekyc bio auth using right middle finger with valid UIN
@@ -464,7 +464,7 @@ EkycBio:
       output: '{
   "kycStatus": "true"
 }'
-  auth_EkycBio_RightLittleFinger_With_Valid_uin_Smoke_Pos:
+  auth_EkycBio_RightLittleFinger_With_Valid_uin_Pos:
       endPoint: /idauthentication/v1/kyc/$ekycPartnerKeyURL$
       uniqueIdentifier: TC_IDA_EkycBio_12
       description: Ekyc bio auth using right little finger with valid UIN
@@ -506,7 +506,7 @@ EkycBio:
       output: '{
   "kycStatus": "true"
 }'
-  auth_EkycBio_LeftThumb_With_Valid_uin_Smoke_Pos:
+  auth_EkycBio_LeftThumb_With_Valid_uin_Pos:
       endPoint: /idauthentication/v1/kyc/$ekycPartnerKeyURL$
       uniqueIdentifier: TC_IDA_EkycBio_13
       description: Ekyc bio auth using left thumb with valid UIN
@@ -548,7 +548,7 @@ EkycBio:
       output: '{
   "kycStatus": "true"
 }'
-  auth_EkycBio_RightThumb_With_Valid_uin_Smoke_Pos:
+  auth_EkycBio_RightThumb_With_Valid_uin_Pos:
       endPoint: /idauthentication/v1/kyc/$ekycPartnerKeyURL$
       uniqueIdentifier: TC_IDA_EkycBio_14
       description: Ekyc bio auth using right thumb with valid UIN
@@ -632,7 +632,7 @@ EkycBio:
       output: '{
   "kycStatus": "true"
 }'
-  auth_EkycBio_LeftIris_With_Valid_uin_Smoke_Pos:
+  auth_EkycBio_LeftIris_With_Valid_uin_Pos:
       endPoint: /idauthentication/v1/kyc/$ekycPartnerKeyURL$
       uniqueIdentifier: TC_IDA_EkycBio_16
       description: Ekyc bio auth using left iris with valid UIN
@@ -680,6 +680,7 @@ EkycBio:
       description: Ekyc bio auth with valid perpetual VID
       role: resident
       restMethod: post
+      additionalDependencies: TC_DependentModule_IdRepo_06
       inputTemplate: ida/EkycBio/EkycBio
       outputTemplate: ida/EkycBio/EkycBioResult
       input: '{
@@ -721,6 +722,7 @@ EkycBio:
       description: Ekyc bio auth using ring finger with valid perpetual VID
       role: resident
       restMethod: post
+      additionalDependencies: TC_DependentModule_IdRepo_06
       inputTemplate: ida/EkycBio/EkycBio
       outputTemplate: ida/EkycBio/EkycBioResult
       input: '{
@@ -756,12 +758,13 @@ EkycBio:
       output: '{
   "kycStatus": "true"
 }'
-  auth_EkycBio_LeftMiddleFingerr_With_Valid_VID_Smoke_Pos:
+  auth_EkycBio_LeftMiddleFingerr_With_Valid_VID_Pos:
       endPoint: /idauthentication/v1/kyc/$ekycPartnerKeyURL$
       uniqueIdentifier: TC_IDA_EkycBio_19
       description: Ekyc bio auth using left middle finger with valid perpetual VID
       role: resident
       restMethod: post
+      additionalDependencies: TC_DependentModule_IdRepo_06
       inputTemplate: ida/EkycBio/EkycBio
       outputTemplate: ida/EkycBio/EkycBioResult
       input: '{
@@ -797,12 +800,13 @@ EkycBio:
       output: '{
   "kycStatus": "true"
 }'
-  auth_EkycBio_LeftIndexFingerr_With_Valid_VID_Smoke_Pos:
+  auth_EkycBio_LeftIndexFingerr_With_Valid_VID_Pos:
       endPoint: /idauthentication/v1/kyc/$ekycPartnerKeyURL$
       uniqueIdentifier: TC_IDA_EkycBio_20
       description: Ekyc bio auth using left index finger with valid perpetual VID
       role: resident
       restMethod: post
+      additionalDependencies: TC_DependentModule_IdRepo_06
       inputTemplate: ida/EkycBio/EkycBio
       outputTemplate: ida/EkycBio/EkycBioResult
       input: '{
@@ -838,12 +842,13 @@ EkycBio:
       output: '{
   "kycStatus": "true"
 }'
-  auth_EkycBio_LeftLittleFinger_With_Valid_VID_Smoke_Pos:
+  auth_EkycBio_LeftLittleFinger_With_Valid_VID_Pos:
       endPoint: /idauthentication/v1/kyc/$ekycPartnerKeyURL$
       uniqueIdentifier: TC_IDA_EkycBio_21
       description: Ekyc bio auth using left little finger with valid perpetual VID
       role: resident
       restMethod: post
+      additionalDependencies: TC_DependentModule_IdRepo_06
       inputTemplate: ida/EkycBio/EkycBio
       outputTemplate: ida/EkycBio/EkycBioResult
       input: '{
@@ -879,12 +884,13 @@ EkycBio:
       output: '{
   "kycStatus": "true"
 }'
-  auth_EkycBio_RightIndexFinger_With_Valid_VID_Smoke_Pos:
+  auth_EkycBio_RightIndexFinger_With_Valid_VID_Pos:
       endPoint: /idauthentication/v1/kyc/$ekycPartnerKeyURL$
       uniqueIdentifier: TC_IDA_EkycBio_22
       description: Ekyc bio auth using right index finger with valid perpetual VID
       role: resident
       restMethod: post
+      additionalDependencies: TC_DependentModule_IdRepo_06
       inputTemplate: ida/EkycBio/EkycBio
       outputTemplate: ida/EkycBio/EkycBioResult
       input: '{
@@ -920,12 +926,13 @@ EkycBio:
       output: '{
   "kycStatus": "true"
 }'
-  auth_EkycBio_RightRingFinger_With_Valid_VID_Smoke_Pos:
+  auth_EkycBio_RightRingFinger_With_Valid_VID_Pos:
       endPoint: /idauthentication/v1/kyc/$ekycPartnerKeyURL$
       uniqueIdentifier: TC_IDA_EkycBio_23
       description: Ekyc bio auth using right ring finger with valid perpetual VID
       role: resident
       restMethod: post
+      additionalDependencies: TC_DependentModule_IdRepo_06
       inputTemplate: ida/EkycBio/EkycBio
       outputTemplate: ida/EkycBio/EkycBioResult
       input: '{
@@ -961,12 +968,13 @@ EkycBio:
       output: '{
   "kycStatus": "true"
 }'
-  auth_EkycBio_RightMiddleFinger_With_Valid_VID_Smoke_Pos:
+  auth_EkycBio_RightMiddleFinger_With_Valid_VID_Pos:
       endPoint: /idauthentication/v1/kyc/$ekycPartnerKeyURL$
       uniqueIdentifier: TC_IDA_EkycBio_24
       description: Ekyc bio auth using right middle finger with valid perpetual VID
       role: resident
       restMethod: post
+      additionalDependencies: TC_DependentModule_IdRepo_06
       inputTemplate: ida/EkycBio/EkycBio
       outputTemplate: ida/EkycBio/EkycBioResult
       input: '{
@@ -1002,12 +1010,13 @@ EkycBio:
       output: '{
   "kycStatus": "true"
 }'
-  auth_EkycBio_RightLittleFinger_With_Valid_VID_Smoke_Pos:
+  auth_EkycBio_RightLittleFinger_With_Valid_VID_Pos:
       endPoint: /idauthentication/v1/kyc/$ekycPartnerKeyURL$
       uniqueIdentifier: TC_IDA_EkycBio_25
       description: Ekyc bio auth using right little finger with valid perpetual VID
       role: resident
       restMethod: post
+      additionalDependencies: TC_DependentModule_IdRepo_06
       inputTemplate: ida/EkycBio/EkycBio
       outputTemplate: ida/EkycBio/EkycBioResult
       input: '{
@@ -1043,12 +1052,13 @@ EkycBio:
       output: '{
   "kycStatus": "true"
 }'
-  auth_EkycBio_LeftThumb_With_Valid_VID_Smoke_Pos:
+  auth_EkycBio_LeftThumb_With_Valid_VID_Pos:
       endPoint: /idauthentication/v1/kyc/$ekycPartnerKeyURL$
       uniqueIdentifier: TC_IDA_EkycBio_26
       description: Ekyc bio auth using left thumb with valid perpetual VID
       role: resident
       restMethod: post
+      additionalDependencies: TC_DependentModule_IdRepo_06
       inputTemplate: ida/EkycBio/EkycBio
       outputTemplate: ida/EkycBio/EkycBioResult
       input: '{
@@ -1084,12 +1094,13 @@ EkycBio:
       output: '{
   "kycStatus": "true"
 }'
-  auth_EkycBio_RightThumb_With_Valid_VID_Smoke_Pos:
+  auth_EkycBio_RightThumb_With_Valid_VID_Pos:
       endPoint: /idauthentication/v1/kyc/$ekycPartnerKeyURL$
       uniqueIdentifier: TC_IDA_EkycBio_27
       description: Ekyc bio auth using right thumb with valid perpetual VID
       role: resident
       restMethod: post
+      additionalDependencies: TC_DependentModule_IdRepo_06
       inputTemplate: ida/EkycBio/EkycBio
       outputTemplate: ida/EkycBio/EkycBioResult
       input: '{
@@ -1131,6 +1142,7 @@ EkycBio:
       description: Ekyc bio auth using right iris with valid perpetual VID
       role: resident
       restMethod: post
+      additionalDependencies: TC_DependentModule_IdRepo_06
       inputTemplate: ida/EkycBio/EkycBio
       outputTemplate: ida/EkycBio/EkycBioResult
       input: '{
@@ -1166,12 +1178,13 @@ EkycBio:
       output: '{
   "kycStatus": "true"
 }'
-  auth_EkycBio_LeftIris_With_Valid_VID_Smoke_Pos:
+  auth_EkycBio_LeftIris_With_Valid_VID_Pos:
       endPoint: /idauthentication/v1/kyc/$ekycPartnerKeyURL$
       uniqueIdentifier: TC_IDA_EkycBio_29
       description: Ekyc bio auth using left iris with valid perpetual VID
       role: resident
       restMethod: post
+      additionalDependencies: TC_DependentModule_IdRepo_06
       inputTemplate: ida/EkycBio/EkycBio
       outputTemplate: ida/EkycBio/EkycBioResult
       input: '{
@@ -1259,6 +1272,7 @@ EkycBio:
       description: Ekyc bio auth using left iris with invalid transactionId and valid perpetual VID
       role: resident
       restMethod: post
+      additionalDependencies: TC_DependentModule_IdRepo_06
       inputTemplate: ida/EkycBio/EkycBio
       outputTemplate: ida/EkycBio/errorCommon
       input: '{
@@ -1350,6 +1364,7 @@ EkycBio:
       description: Ekyc bio auth using left iris with blank transactionId and valid perpetual VID
       role: resident
       restMethod: post
+      additionalDependencies: TC_DependentModule_IdRepo_06
       inputTemplate: ida/EkycBio/EkycBio
       outputTemplate: ida/EkycBio/errorCommon
       input: '{
@@ -1396,6 +1411,7 @@ EkycBio:
       description: Ekyc bio auth with revoked perpetual VID
       role: resident
       restMethod: post
+      additionalDependencies: TC_DependentModule_IdRepo_24,TC_IDA_RevokeVID_01
       inputTemplate: ida/EkycBio/EkycBio
       outputTemplate: ida/EkycBio/errorCommon
       input: '{
@@ -1486,6 +1502,7 @@ EkycBio:
       description: Ekyc bio auth using invalid bio sub type and with valid perpetual VID
       role: resident
       restMethod: post
+      additionalDependencies: TC_DependentModule_IdRepo_06
       inputTemplate: ida/EkycBio/EkycBio
       outputTemplate: ida/EkycBio/errorCommon
       input: '{
@@ -1578,6 +1595,7 @@ EkycBio:
       description: Ekyc bio auth using left iris with blank bio sub type and with valid perpetual VID
       role: resident
       restMethod: post
+      additionalDependencies: TC_DependentModule_IdRepo_06
       inputTemplate: ida/EkycBio/EkycBio
       outputTemplate: ida/EkycBio/errorCommon
       input: '{
@@ -1670,6 +1688,7 @@ EkycBio:
       description: Ekyc bio auth with blank bio type and with valid perpetual VID
       role: resident
       restMethod: post
+      additionalDependencies: TC_DependentModule_IdRepo_06
       inputTemplate: ida/EkycBio/EkycBio
       outputTemplate: ida/EkycBio/errorCommon
       input: '{
@@ -1755,7 +1774,7 @@ EkycBio:
     }
   ]
 }'
-  auth_EkycBio_Invalid_bioType_VID:
+  auth_EkycBio_Invalid_bioType:
       endPoint: /idauthentication/v1/kyc/$ekycPartnerKeyURL$
       uniqueIdentifier: TC_IDA_EkycBio_43
       description: Ekyc bio auth with invalid bio type with valid perpetual VID
@@ -1851,6 +1870,7 @@ EkycBio:
       description: Ekyc bio auth using left iris with finger bio value and with valid perpetual VID
       role: resident
       restMethod: post
+      additionalDependencies: TC_DependentModule_IdRepo_06
       inputTemplate: ida/EkycBio/EkycBio
       outputTemplate: ida/EkycBio/errorCommon
       input: '{
@@ -1935,7 +1955,7 @@ EkycBio:
     }
   ]
 }'
-  auth_EkycBio_Finger_With_IRIS_Invalid_VID:
+  auth_EkycBio_Finger_With_IRIS_Invalid:
       endPoint: /idauthentication/v1/kyc/$ekycPartnerKeyURL$
       uniqueIdentifier: TC_IDA_EkycBio_47
       description: Ekyc bio auth using finger with iris value and with valid perpetual VID
@@ -1986,6 +2006,7 @@ EkycBio:
       description: Ekyc bio auth using finger with dummy partnerkey and with valid perpetual VID
       role: resident
       restMethod: post
+      additionalDependencies: TC_DependentModule_IdRepo_06
       inputTemplate: ida/EkycBio/EkycBio
       outputTemplate: ida/EkycBio/errorCommon
       input: '{
@@ -2035,6 +2056,7 @@ EkycBio:
       role: resident
       kycFields: ["email"]
       restMethod: post
+      additionalDependencies: TC_IDA_UpdateIdentityForUin_01
       inputTemplate: ida/EkycBio/EkycBio
       outputTemplate: ida/EkycBio/errorCommon
       input: '{
@@ -2378,7 +2400,7 @@ EkycBio:
 }'
   auth_EkycBio_Face_With_Valid_With_space_in_domain:
       endPoint: /idauthentication/v1/kyc/$ekycPartnerKeyURL$
-      uniqueIdentifier: TC_IDA_EkycBio_38
+      uniqueIdentifier: TC_IDA_EkycBio_59
       description: Ekyc bio auth using face with space in bioSubtype
       role: resident
       kycFields: ["gender"]
