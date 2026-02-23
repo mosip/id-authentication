@@ -15,22 +15,47 @@
 			<class name="io.mosip.testrig.apirig.auth.testscripts.BioAuth" />
 		</classes>
 	</test>
-<!--	<test name="BioAuthDelegatedV2">-->
-<!--		<parameter name="ymlFile"-->
-<!--			value="ida/BioAuthDelegatedV2/BioAuthDelegatedV2.yml" />-->
-<!--		<parameter name="isInternal" value="false" />-->
-<!--		<parameter name="idKeyName" value="kycToken" />-->
-<!--		<classes>-->
-<!--			<class name="io.mosip.testrig.apirig.auth.testscripts.BioAuth" />-->
-<!--		</classes>-->
-<!--	</test>-->
-<!--	<test name="BioAuthKycExchangeV2">-->
-<!--		<parameter name="ymlFile"-->
-<!--			value="ida/BioAuthKycExchangeV2/BioAuthKycExchangeV2.yml" />-->
-<!--		<classes>-->
-<!--			<class name="io.mosip.testrig.apirig.auth.testscripts.KycExchange" />-->
-<!--		</classes>-->
-<!--	</test>-->
+	<test name="BioAuthKYCDelegated">
+		<parameter name="ymlFile"
+			value="ida/BioAuthDelegated/BioAuthDelegated.yml" />
+		<parameter name="isInternal" value="false" />
+		<parameter name="idKeyName" value="kycToken" />
+		<classes>
+			<class name="io.mosip.testrig.apirig.auth.testscripts.BioAuth" />
+		</classes>
+	</test>
+	<test name="BioAuthKYCDelegatedNeg">
+		<parameter name="ymlFile"
+			value="ida/BioAuthDelegatedNeg/BioAuthDelegatedNeg.yml" />
+		<parameter name="isInternal" value="false" />
+		<parameter name="idKeyName" value="kycToken" />
+		<classes>
+			<class name="io.mosip.testrig.apirig.auth.testscripts.BioAuth" />
+		</classes>
+	</test>
+	<test name="BioAuthKYCExchange">
+		<parameter name="ymlFile"
+			value="ida/BioAuthKycExchange/BioAuthKYCExchange.yml" />
+		<classes>
+			<class name="io.mosip.testrig.apirig.auth.testscripts.KycExchange" />
+		</classes>
+	</test>
+	<test name="BioAuthDelegatedV2">
+		<parameter name="ymlFile"
+			value="ida/BioAuthDelegatedV2/BioAuthDelegatedV2.yml" />
+		<parameter name="isInternal" value="false" />
+		<parameter name="idKeyName" value="kycToken" />
+		<classes>
+			<class name="io.mosip.testrig.apirig.auth.testscripts.BioAuth" />
+		</classes>
+	</test>
+	<test name="BioAuthKycExchangeV2">
+		<parameter name="ymlFile"
+			value="ida/BioAuthKycExchangeV2/BioAuthKycExchangeV2.yml" />
+		<classes>
+			<class name="io.mosip.testrig.apirig.auth.testscripts.KycExchange" />
+		</classes>
+	</test>
 
 	<test name="EkycBio">
 		<parameter name="ymlFile" value="ida/EkycBio/EkycBio2.yml" />
@@ -62,6 +87,30 @@
 		<parameter name="isInternal" value="false" />
 		<classes>
 			<class name="io.mosip.testrig.apirig.auth.testscripts.OtpAuthNew" />
+		</classes>
+	</test>
+	<test name="OtpAuthDelegated">
+		<parameter name="ymlFile"
+			value="ida/OtpAuthDelegated/OtpAuthDelegated.yml" />
+		<parameter name="isInternal" value="false" />
+		<parameter name="idKeyName" value="kycToken" />
+		<classes>
+			<class name="io.mosip.testrig.apirig.auth.testscripts.OtpAuthNew" />
+		</classes>
+	</test>
+	<test name="OtpAuthDelegatedNeg">
+		<parameter name="ymlFile"
+			value="ida/OtpAuthDelegatedNeg/OtpAuthDelegatedNeg.yml" />
+		<parameter name="isInternal" value="false" />
+		<classes>
+			<class name="io.mosip.testrig.apirig.auth.testscripts.OtpAuthNew" />
+		</classes>
+	</test>
+	<test name="OtpAuthKycExchange">
+		<parameter name="ymlFile"
+			value="ida/OtpAuthKycExchange/OtpAuthKycExchange.yml" />
+		<classes>
+			<class name="io.mosip.testrig.apirig.auth.testscripts.KycExchange" />
 		</classes>
 	</test>
 
@@ -139,6 +188,34 @@
 		<parameter name="ymlFile" value="ida/DemoAuth/DemoAuth2.yml" />
 		<classes>
 			<class name="io.mosip.testrig.apirig.auth.testscripts.DemoAuth" />
+		</classes>
+	</test>
+	
+	<test name="DemoAuthKYCDelegated">
+		<parameter name="ymlFile"
+			value="ida/DemoAuthDelegated/DemoAuthDelegated.yml" />
+		<parameter name="isInternal" value="false" />
+		<parameter name="idKeyName" value="kycToken" />
+		<classes>
+			<class name="io.mosip.testrig.apirig.auth.testscripts.DemoAuth" />
+		</classes>
+	</test>
+	
+	<test name="DemoAuthKYCDelegatedNeg">
+		<parameter name="ymlFile"
+			value="ida/DemoAuthDelegatedNeg/DemoAuthDelegatedNeg.yml" />
+		<parameter name="isInternal" value="false" />
+		<parameter name="idKeyName" value="kycToken" />
+		<classes>
+			<class name="io.mosip.testrig.apirig.auth.testscripts.DemoAuth" />
+		</classes>
+	</test>
+	
+	<test name="DemoAuthKYCExchange">
+		<parameter name="ymlFile"
+			value="ida/DemoAuthKycExchange/DemoAuthKycExchange.yml" />
+		<classes>
+			<class name="io.mosip.testrig.apirig.auth.testscripts.KycExchange" />
 		</classes>
 	</test>
 
