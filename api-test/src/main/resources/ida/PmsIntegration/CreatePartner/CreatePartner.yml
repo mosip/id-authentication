@@ -1,0 +1,44 @@
+createPartnerSelfRegistration:
+   auth_PartnerSelfRegistration_All_Valid_Smoke_sid:
+      endPoint: /v1/partnermanager/partners
+      uniqueIdentifier: Dependent_Idrepo_createPartnerSelfRegistration_01
+      description: PartnerSelfRegistration with all valid details
+      role: partner
+      restMethod: post
+      inputTemplate: ida/PmsIntegration/CreatePartner/createPartner
+      outputTemplate: ida/PmsIntegration/CreatePartner/createPartnerResult
+      input: '{
+    "address": "Bangalore",
+    "contactNumber": "8553967372",
+    "emailId": "$PARTNEREMAIL$",
+    "organizationName": "$PARTNERID$",
+    "partnerId": "$PARTNERID$",
+    "partnerType": "Auth_Partner",
+    "policyGroup": "$ID:DefinePolicyGroup_All_Valid_Smoke_sid_name$",
+    "requesttime": "$TIMESTAMP$"
+  }'
+      output: ' {
+        "status": "InProgress"
+}'
+
+   auth_PartnerSelfRegistration_Misp_Valid_Smoke_sid:
+      endPoint: /v1/partnermanager/partners
+      uniqueIdentifier: Dependent_Idrepo_createPartnerSelfRegistration_02
+      description: PartnerSelfRegistration Misp valid details 
+      role: partner
+      restMethod: post
+      inputTemplate: ida/PmsIntegration/CreatePartner/createPartner
+      outputTemplate: ida/PmsIntegration/CreatePartner/createPartnerResult
+      input: '{
+    "address": "Bangalore",
+    "contactNumber": "8553967372",
+    "emailId": "$MISPPARTNEREMAIL$",
+    "organizationName": "$MISPPARTNERID$",
+    "partnerId": "$MISPPARTNERID$",
+    "partnerType": "MISP_Partner",
+    "policyGroup": "$ID:DefinePolicyGroup_Misp_Valid_Smoke_sid_name$",
+    "requesttime": "$TIMESTAMP$"
+  }'
+      output: ' {
+        "status": "InProgress"
+}'

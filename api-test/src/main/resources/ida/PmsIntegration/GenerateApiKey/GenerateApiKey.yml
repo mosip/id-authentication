@@ -1,0 +1,17 @@
+GenerateApiKey:
+   auth_GenerateApiKey_Valid_Smoke_sid:
+      endPoint: /v1/partnermanager/partners/$ID:PartnerSelfRegistration_All_Valid_Smoke_sid_partnerId$/generate/apikey
+      uniqueIdentifier: Dependent_Idrepo_GenerateApiKey_01
+      description: Generate Api key with valid details
+      role: esignetpartner
+      checkErrorsOnlyInResponse: true
+      restMethod: patch
+      inputTemplate: ida/PmsIntegration/GenerateApiKey/GenerateApiKey
+      outputTemplate: ida/PmsIntegration/GenerateApiKey/GenerateApiKeyResult
+      input: '{
+        "requesttime": "$TIMESTAMP$",
+        "policyName": "$ID:DefinePolicy_All_Valid_Smoke_sid_name$",
+        "label": "ABCD"
+    }'
+      output: '{
+}'
