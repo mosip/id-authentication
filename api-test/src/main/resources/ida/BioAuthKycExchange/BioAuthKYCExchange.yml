@@ -7,7 +7,7 @@ BioAuthKycExchange:
       restMethod: post
       checkErrorsOnlyInResponse: true
       inputTemplate: ida/BioAuthKycExchange/BioAuthKYCExchange
-      outputTemplate: ida/BioAuthKycExchange/BioKYCAuthDelegatedResult
+      outputTemplate: ida/BioAuthKycExchange/BioAuthKYCExchangeResult
       input: '{
         "requestTime": "$TIMESTAMP$",
         "individualId": "$ID:AddIdentity_For_Kyc_Delegated_Bio_Auth_smoke_Pos_UIN$",
@@ -16,7 +16,7 @@ BioAuthKycExchange:
         "id": "mosip.identity.kycexchange",
         "version": "1.0",
         "kycToken": "$ID:BioAuthDelegated_Biometric_Face_With_Valid_uin_Smoke_Pos_Sid_kycToken$",
-        "consentObtained": [{consentObtainedValue: "gender"}, {consentObtainedValue: "birthdate"}],
+        "consentObtained": [{"consentObtainedValue": "gender"}, {"consentObtainedValue": "birthdate"}],
         "locales": [{localesValue: "eng"}],
         "respType": "JWE"
     }'
@@ -31,7 +31,7 @@ BioAuthKycExchange:
       restMethod: post
       checkErrorsOnlyInResponse: true
       inputTemplate: ida/BioAuthKycExchange/BioAuthKYCExchange
-      outputTemplate: ida/BioAuthKycExchange/BioKYCAuthDelegatedResult
+      outputTemplate: ida/BioAuthKycExchange/BioAuthKYCExchangeResult
       input: '{
         "requestTime": "$TIMESTAMP$",
         "individualId": "$ID:GenerateVID_for_kycDelegated_bio_sid_vid$",
@@ -40,7 +40,7 @@ BioAuthKycExchange:
         "id": "mosip.identity.kycexchange",
         "version": "1.0",
         "kycToken": "$ID:BioAuthDelegated_Biometric_Face_With_Valid_VID_Smoke_Pos_Sid_kycToken$",
-        "consentObtained": [{consentObtainedValue: "gender"}, {consentObtainedValue: "birthdate"}],
+        "consentObtained": [{"consentObtainedValue": "gender"}, {"consentObtainedValue": "birthdate"}],
         "locales": [{localesValue: "eng"}],
         "respType": "JWE"
     }'
@@ -55,7 +55,7 @@ BioAuthKycExchange:
       restMethod: post
       checkErrorsOnlyInResponse: true
       inputTemplate: ida/BioAuthKycExchange/BioAuthKYCExchange
-      outputTemplate: ida/BioAuthKycExchange/BioKYCAuthDelegatedResult
+      outputTemplate: ida/BioAuthKycExchange/BioAuthKYCExchangeResult
       input: '{
         "requestTime": "$TIMESTAMP$",
         "individualId": "$ID:AddIdentity_For_Kyc_Delegated_leftIris_Auth_UIN_smoke_Pos_UIN$",
@@ -64,7 +64,7 @@ BioAuthKycExchange:
         "id": "mosip.identity.kycexchange",
         "version": "1.0",
         "kycToken": "$ID:BioAuthDelegated_Biometric_LeftIris_With_Valid_UIN_Smoke_Pos_Sid_kycToken$",
-        "consentObtained": [{consentObtainedValue: "gender"}, {consentObtainedValue: "birthdate"}],
+        "consentObtained": [{"consentObtainedValue": "gender"}, {"consentObtainedValue": "birthdate"}],
         "locales": [{localesValue: "eng"}],
         "respType": "JWE"
     }'
@@ -79,7 +79,7 @@ BioAuthKycExchange:
       restMethod: post
       checkErrorsOnlyInResponse: true
       inputTemplate: ida/BioAuthKycExchange/BioAuthKYCExchange
-      outputTemplate: ida/BioAuthKycExchange/BioKYCAuthDelegatedResult
+      outputTemplate: ida/BioAuthKycExchange/BioAuthKYCExchangeResult
       input: '{
         "requestTime": "$TIMESTAMP$",
         "individualId": "$ID:GenerateVID_for_kycDelegated_bio_sid_vid$",
@@ -88,7 +88,7 @@ BioAuthKycExchange:
         "id": "mosip.identity.kycexchange",
         "version": "1.0",
         "kycToken": "$ID:BioAuthDelegated_Biometric_LeftIris_With_Valid_VID_Smoke_Pos_Sid_kycToken$",
-        "consentObtained": [{consentObtainedValue: "gender"}, {consentObtainedValue: "birthdate"}],
+        "consentObtained": [{"consentObtainedValue": "gender"}, {"consentObtainedValue": "birthdate"}],
         "locales": [{localesValue: "eng"}],
         "respType": "JWE"
     }'
@@ -103,7 +103,7 @@ BioAuthKycExchange:
       restMethod: post
       checkErrorsOnlyInResponse: true
       inputTemplate: ida/BioAuthKycExchange/BioAuthKYCExchange
-      outputTemplate: ida/BioAuthKycExchange/BioKYCAuthDelegatedResult
+      outputTemplate: ida/BioAuthKycExchange/BioAuthKYCExchangeResult
       input: '{
         "requestTime": "$TIMESTAMP$",
         "individualId": "$ID:AddIdentity_For_Kyc_Delegated_rightIris_Auth_UIN_smoke_Pos_UIN$",
@@ -112,7 +112,7 @@ BioAuthKycExchange:
         "id": "mosip.identity.kycexchange",
         "version": "1.0",
         "kycToken": "$ID:BioAuthDelegated_Biometric_RightIris_With_Valid_UIN_Smoke_Pos_Sid_kycToken$",
-        "consentObtained": [{consentObtainedValue: "gender"}, {consentObtainedValue: "birthdate"}],
+        "consentObtained": [{"consentObtainedValue": "gender"}, {"consentObtainedValue": "birthdate"}],
         "locales": [{localesValue: "eng"}],
         "respType": "JWE"
     }'
@@ -127,7 +127,7 @@ BioAuthKycExchange:
       restMethod: post
       checkErrorsOnlyInResponse: true
       inputTemplate: ida/BioAuthKycExchange/BioAuthKYCExchange
-      outputTemplate: ida/BioAuthKycExchange/BioKYCAuthDelegatedResult
+      outputTemplate: ida/BioAuthKycExchange/BioAuthKYCExchangeResult
       input: '{
         "requestTime": "$TIMESTAMP$",
         "individualId": "$ID:GenerateVID_for_kycDelegated_bio_rightIris_sid_vid$",
@@ -136,7 +136,7 @@ BioAuthKycExchange:
         "id": "mosip.identity.kycexchange",
         "version": "1.0",
         "kycToken": "$ID:BioAuthDelegated_Biometric_RightIris_With_Valid_VID_Smoke_Pos_Sid_kycToken$",
-        "consentObtained": [{consentObtainedValue: "gender"}, {consentObtainedValue: "birthdate"}],
+        "consentObtained": [{"consentObtainedValue": "gender"}, {"consentObtainedValue": "birthdate"}],
         "locales": [{localesValue: "eng"}],
         "respType": "JWE"
     }'
@@ -151,7 +151,7 @@ BioAuthKycExchange:
       restMethod: post
       checkErrorsOnlyInResponse: true
       inputTemplate: ida/BioAuthKycExchange/BioAuthKYCExchange
-      outputTemplate: ida/BioAuthKycExchange/BioKYCAuthDelegatedResult
+      outputTemplate: ida/BioAuthKycExchange/BioAuthKYCExchangeResult
       input: '{
         "requestTime": "$TIMESTAMP$",
         "individualId": "$ID:AddIdentity_For_Kyc_Delegated_Bio_Auth_smoke_Pos_UIN$",
@@ -160,7 +160,7 @@ BioAuthKycExchange:
         "id": "mosip.identity.kycexchange",
         "version": "1.0",
         "kycToken": "$ID:BioAuthDelegated_Biometric_LeftIndexFinger_With_Valid_UIN_Smoke_Pos_Sid_kycToken$",
-        "consentObtained": [{consentObtainedValue: "gender"}, {consentObtainedValue: "birthdate"}],
+        "consentObtained": [{"consentObtainedValue": "gender"}, {"consentObtainedValue": "birthdate"}],
         "locales": [{localesValue: "eng"}],
         "respType": "JWE"
     }'
@@ -175,7 +175,7 @@ BioAuthKycExchange:
       restMethod: post
       checkErrorsOnlyInResponse: true
       inputTemplate: ida/BioAuthKycExchange/BioAuthKYCExchange
-      outputTemplate: ida/BioAuthKycExchange/BioKYCAuthDelegatedResult
+      outputTemplate: ida/BioAuthKycExchange/BioAuthKYCExchangeResult
       input: '{
         "requestTime": "$TIMESTAMP$",
         "individualId": "$ID:GenerateVID_for_kycDelegated_bio_sid_vid$",
@@ -184,7 +184,7 @@ BioAuthKycExchange:
         "id": "mosip.identity.kycexchange",
         "version": "1.0",
         "kycToken": "$ID:BioAuthDelegated_Biometric_LeftIndexFinger_With_Valid_VID_Smoke_Pos_Sid_kycToken$",
-        "consentObtained": [{consentObtainedValue: "gender"}, {consentObtainedValue: "birthdate"}],
+        "consentObtained": [{"consentObtainedValue": "gender"}, {"consentObtainedValue": "birthdate"}],
         "locales": [{localesValue: "eng"}],
         "respType": "JWE"
     }'
@@ -194,12 +194,12 @@ BioAuthKycExchange:
   auth_BioAuthKycExchange_Biometric_RightIndexFinger_With_Valid_UIN_Smoke_Pos:
       endPoint: /idauthentication/v1/kyc-exchange/delegated/$partialPartnerKeyUrl$/$ID:CreateOIDCClient_Misp_Valid_Smoke_sid_clientId$
       uniqueIdentifier: TC_IDA_BioAuthKycExchange_09
-      description: Biometric LeftIndexFinger KYC exchange auth with valid UIN
+      description: Biometric RightIndexFinger KYC exchange auth with valid UIN
       role: resident
       restMethod: post
       checkErrorsOnlyInResponse: true
       inputTemplate: ida/BioAuthKycExchange/BioAuthKYCExchange
-      outputTemplate: ida/BioAuthKycExchange/BioKYCAuthDelegatedResult
+      outputTemplate: ida/BioAuthKycExchange/BioAuthKYCExchangeResult
       input: '{
         "requestTime": "$TIMESTAMP$",
         "individualId": "$ID:AddIdentity_For_Kyc_Delegated_Bio_Auth_smoke_Pos_UIN$",
@@ -208,7 +208,7 @@ BioAuthKycExchange:
         "id": "mosip.identity.kycexchange",
         "version": "1.0",
         "kycToken": "$ID:BioAuthDelegated_Biometric_RightIndexFinger_With_Valid_UIN_Smoke_Pos_Sid_kycToken$",
-        "consentObtained": [{consentObtainedValue: "gender"}, {consentObtainedValue: "birthdate"}],
+        "consentObtained": [{"consentObtainedValue": "gender"}, {"consentObtainedValue": "birthdate"}],
         "locales": [{localesValue: "eng"}],
         "respType": "JWE"
     }'
@@ -223,7 +223,7 @@ BioAuthKycExchange:
       restMethod: post
       checkErrorsOnlyInResponse: true
       inputTemplate: ida/BioAuthKycExchange/BioAuthKYCExchange
-      outputTemplate: ida/BioAuthKycExchange/BioKYCAuthDelegatedResult
+      outputTemplate: ida/BioAuthKycExchange/BioAuthKYCExchangeResult
       input: '{
         "requestTime": "$TIMESTAMP$",
         "individualId": "$ID:GenerateVID_for_kycDelegated_bio_sid_vid$",
@@ -232,7 +232,7 @@ BioAuthKycExchange:
         "id": "mosip.identity.kycexchange",
         "version": "1.0",
         "kycToken": "$ID:BioAuthDelegated_Biometric_RightIndexFinger_With_Valid_VID_Smoke_Pos_Sid_kycToken$",
-        "consentObtained": [{consentObtainedValue: "gender"}, {consentObtainedValue: "birthdate"}],
+        "consentObtained": [{"consentObtainedValue": "gender"}, {"consentObtainedValue": "birthdate"}],
         "locales": [{localesValue: "eng"}],
         "respType": "JWE"
     }'
@@ -247,7 +247,7 @@ BioAuthKycExchange:
       restMethod: post
       checkErrorsOnlyInResponse: true
       inputTemplate: ida/BioAuthKycExchange/BioAuthKYCExchange
-      outputTemplate: ida/BioAuthKycExchange/BioKYCAuthDelegatedResult
+      outputTemplate: ida/BioAuthKycExchange/BioAuthKYCExchangeResult
       input: '{
         "requestTime": "$TIMESTAMP$",
         "individualId": "$ID:AddIdentity_For_Kyc_Delegated_Bio_Auth_smoke_Pos_UIN$",
@@ -256,7 +256,7 @@ BioAuthKycExchange:
         "id": "mosip.identity.kycexchange",
         "version": "1.0",
         "kycToken": "$ID:BioAuthDelegated_Biometric_RightMiddleFinger_With_Valid_UIN_Smoke_Pos_Sid_kycToken$",
-        "consentObtained": [{consentObtainedValue: "gender"}, {consentObtainedValue: "birthdate"}],
+        "consentObtained": [{"consentObtainedValue": "gender"}, {"consentObtainedValue": "birthdate"}],
         "locales": [{localesValue: "eng"}],
         "respType": "JWE"
     }'
@@ -271,7 +271,7 @@ BioAuthKycExchange:
       restMethod: post
       checkErrorsOnlyInResponse: true
       inputTemplate: ida/BioAuthKycExchange/BioAuthKYCExchange
-      outputTemplate: ida/BioAuthKycExchange/BioKYCAuthDelegatedResult
+      outputTemplate: ida/BioAuthKycExchange/BioAuthKYCExchangeResult
       input: '{
         "requestTime": "$TIMESTAMP$",
         "individualId": "$ID:GenerateVID_for_kycDelegated_bio_sid_vid$",
@@ -280,7 +280,7 @@ BioAuthKycExchange:
         "id": "mosip.identity.kycexchange",
         "version": "1.0",
         "kycToken": "$ID:BioAuthDelegated_Biometric_RightMiddleFinger_With_Valid_VID_Smoke_Pos_Sid_kycToken$",
-        "consentObtained": [{consentObtainedValue: "gender"}, {consentObtainedValue: "birthdate"}],
+        "consentObtained": [{"consentObtainedValue": "gender"}, {"consentObtainedValue": "birthdate"}],
         "locales": [{localesValue: "eng"}],
         "respType": "JWE"
     }'
@@ -295,7 +295,7 @@ BioAuthKycExchange:
       restMethod: post
       checkErrorsOnlyInResponse: true
       inputTemplate: ida/BioAuthKycExchange/BioAuthKYCExchange
-      outputTemplate: ida/BioAuthKycExchange/BioKYCAuthDelegatedResult
+      outputTemplate: ida/BioAuthKycExchange/BioAuthKYCExchangeResult
       input: '{
         "requestTime": "$TIMESTAMP$",
         "individualId": "$ID:AddIdentity_For_Kyc_Delegated_Bio_Auth_smoke_Pos_UIN$",
@@ -304,7 +304,7 @@ BioAuthKycExchange:
         "id": "mosip.identity.kycexchange",
         "version": "1.0",
         "kycToken": "$ID:BioAuthDelegated_Biometric_LeftMiddleFinger_With_Valid_UIN_Smoke_Pos_Sid_kycToken$",
-        "consentObtained": [{consentObtainedValue: "gender"}, {consentObtainedValue: "birthdate"}],
+        "consentObtained": [{"consentObtainedValue": "gender"}, {"consentObtainedValue": "birthdate"}],
         "locales": [{localesValue: "eng"}],
         "respType": "JWE"
     }'
@@ -319,7 +319,7 @@ BioAuthKycExchange:
       restMethod: post
       checkErrorsOnlyInResponse: true
       inputTemplate: ida/BioAuthKycExchange/BioAuthKYCExchange
-      outputTemplate: ida/BioAuthKycExchange/BioKYCAuthDelegatedResult
+      outputTemplate: ida/BioAuthKycExchange/BioAuthKYCExchangeResult
       input: '{
         "requestTime": "$TIMESTAMP$",
         "individualId": "$ID:GenerateVID_for_kycDelegated_bio_sid_vid$",
@@ -328,7 +328,7 @@ BioAuthKycExchange:
         "id": "mosip.identity.kycexchange",
         "version": "1.0",
         "kycToken": "$ID:BioAuthDelegated_Biometric_LeftMiddleFinger_With_Valid_VID_Smoke_Pos_Sid_kycToken$",
-        "consentObtained": [{consentObtainedValue: "gender"}, {consentObtainedValue: "birthdate"}],
+        "consentObtained": [{"consentObtainedValue": "gender"}, {"consentObtainedValue": "birthdate"}],
         "locales": [{localesValue: "eng"}],
         "respType": "JWE"
     }'
@@ -343,7 +343,7 @@ BioAuthKycExchange:
       restMethod: post
       checkErrorsOnlyInResponse: true
       inputTemplate: ida/BioAuthKycExchange/BioAuthKYCExchange
-      outputTemplate: ida/BioAuthKycExchange/BioKYCAuthDelegatedResult
+      outputTemplate: ida/BioAuthKycExchange/BioAuthKYCExchangeResult
       input: '{
         "requestTime": "$TIMESTAMP$",
         "individualId": "$ID:AddIdentity_For_Kyc_Delegated_Bio_Auth_smoke_Pos_UIN$",
@@ -352,7 +352,7 @@ BioAuthKycExchange:
         "id": "mosip.identity.kycexchange",
         "version": "1.0",
         "kycToken": "$ID:BioAuthDelegated_Biometric_RightLittleFinger_With_Valid_UIN_Smoke_Pos_Sid_kycToken$",
-        "consentObtained": [{consentObtainedValue: "gender"}, {consentObtainedValue: "birthdate"}],
+        "consentObtained": [{"consentObtainedValue": "gender"}, {"consentObtainedValue": "birthdate"}],
         "locales": [{localesValue: "eng"}],
         "respType": "JWE"
     }'
@@ -367,7 +367,7 @@ BioAuthKycExchange:
       restMethod: post
       checkErrorsOnlyInResponse: true
       inputTemplate: ida/BioAuthKycExchange/BioAuthKYCExchange
-      outputTemplate: ida/BioAuthKycExchange/BioKYCAuthDelegatedResult
+      outputTemplate: ida/BioAuthKycExchange/BioAuthKYCExchangeResult
       input: '{
         "requestTime": "$TIMESTAMP$",
         "individualId": "$ID:GenerateVID_for_kycDelegated_bio_sid_vid$",
@@ -376,7 +376,7 @@ BioAuthKycExchange:
         "id": "mosip.identity.kycexchange",
         "version": "1.0",
         "kycToken": "$ID:BioAuthDelegated_Biometric_RightLittleFinger_With_Valid_VID_Smoke_Pos_Sid_kycToken$",
-        "consentObtained": [{consentObtainedValue: "gender"}, {consentObtainedValue: "birthdate"}],
+        "consentObtained": [{"consentObtainedValue": "gender"}, {"consentObtainedValue": "birthdate"}],
         "locales": [{localesValue: "eng"}],
         "respType": "JWE"
     }'
@@ -391,7 +391,7 @@ BioAuthKycExchange:
       restMethod: post
       checkErrorsOnlyInResponse: true
       inputTemplate: ida/BioAuthKycExchange/BioAuthKYCExchange
-      outputTemplate: ida/BioAuthKycExchange/BioKYCAuthDelegatedResult
+      outputTemplate: ida/BioAuthKycExchange/BioAuthKYCExchangeResult
       input: '{
         "requestTime": "$TIMESTAMP$",
         "individualId": "$ID:AddIdentity_For_Kyc_Delegated_Bio_Auth_smoke_Pos_UIN$",
@@ -400,7 +400,7 @@ BioAuthKycExchange:
         "id": "mosip.identity.kycexchange",
         "version": "1.0",
         "kycToken": "$ID:BioAuthDelegated_Biometric_LeftLittleFinger_With_Valid_UIN_Smoke_Pos_Sid_kycToken$",
-        "consentObtained": [{consentObtainedValue: "gender"}, {consentObtainedValue: "birthdate"}],
+        "consentObtained": [{"consentObtainedValue": "gender"}, {"consentObtainedValue": "birthdate"}],
         "locales": [{localesValue: "eng"}],
         "respType": "JWE"
     }'
@@ -415,7 +415,7 @@ BioAuthKycExchange:
       restMethod: post
       checkErrorsOnlyInResponse: true
       inputTemplate: ida/BioAuthKycExchange/BioAuthKYCExchange
-      outputTemplate: ida/BioAuthKycExchange/BioKYCAuthDelegatedResult
+      outputTemplate: ida/BioAuthKycExchange/BioAuthKYCExchangeResult
       input: '{
         "requestTime": "$TIMESTAMP$",
         "individualId": "$ID:GenerateVID_for_kycDelegated_bio_sid_vid$",
@@ -424,7 +424,7 @@ BioAuthKycExchange:
         "id": "mosip.identity.kycexchange",
         "version": "1.0",
         "kycToken": "$ID:BioAuthDelegated_Biometric_LeftLittleFinger_With_Valid_VID_Smoke_Pos_Sid_kycToken$",
-        "consentObtained": [{consentObtainedValue: "gender"}, {consentObtainedValue: "birthdate"}],
+        "consentObtained": [{"consentObtainedValue": "gender"}, {"consentObtainedValue": "birthdate"}],
         "locales": [{localesValue: "eng"}],
         "respType": "JWE"
     }'
@@ -439,7 +439,7 @@ BioAuthKycExchange:
       restMethod: post
       checkErrorsOnlyInResponse: true
       inputTemplate: ida/BioAuthKycExchange/BioAuthKYCExchange
-      outputTemplate: ida/BioAuthKycExchange/BioKYCAuthDelegatedResult
+      outputTemplate: ida/BioAuthKycExchange/BioAuthKYCExchangeResult
       input: '{
         "requestTime": "$TIMESTAMP$",
         "individualId": "$ID:AddIdentity_For_Kyc_Delegated_Bio_Auth_smoke_Pos_UIN$",
@@ -448,7 +448,7 @@ BioAuthKycExchange:
         "id": "mosip.identity.kycexchange",
         "version": "1.0",
         "kycToken": "$ID:BioAuthDelegated_Biometric_RightThumb_With_Valid_UIN_Smoke_Pos_Sid_kycToken$",
-        "consentObtained": [{consentObtainedValue: "gender"}, {consentObtainedValue: "birthdate"}],
+        "consentObtained": [{"consentObtainedValue": "gender"}, {"consentObtainedValue": "birthdate"}],
         "locales": [{localesValue: "eng"}],
         "respType": "JWE"
     }'
@@ -463,7 +463,7 @@ BioAuthKycExchange:
       restMethod: post
       checkErrorsOnlyInResponse: true
       inputTemplate: ida/BioAuthKycExchange/BioAuthKYCExchange
-      outputTemplate: ida/BioAuthKycExchange/BioKYCAuthDelegatedResult
+      outputTemplate: ida/BioAuthKycExchange/BioAuthKYCExchangeResult
       input: '{
         "requestTime": "$TIMESTAMP$",
         "individualId": "$ID:GenerateVID_for_kycDelegated_bio_sid_vid$",
@@ -472,7 +472,7 @@ BioAuthKycExchange:
         "id": "mosip.identity.kycexchange",
         "version": "1.0",
         "kycToken": "$ID:BioAuthDelegated_Biometric_RightThumb_With_Valid_VID_Smoke_Pos_Sid_kycToken$",
-        "consentObtained": [{consentObtainedValue: "gender"}, {consentObtainedValue: "birthdate"}],
+        "consentObtained": [{"consentObtainedValue": "gender"}, {"consentObtainedValue": "birthdate"}],
         "locales": [{localesValue: "eng"}],
         "respType": "JWE"
     }'
@@ -487,7 +487,7 @@ BioAuthKycExchange:
       restMethod: post
       checkErrorsOnlyInResponse: true
       inputTemplate: ida/BioAuthKycExchange/BioAuthKYCExchange
-      outputTemplate: ida/BioAuthKycExchange/BioKYCAuthDelegatedResult
+      outputTemplate: ida/BioAuthKycExchange/BioAuthKYCExchangeResult
       input: '{
         "requestTime": "$TIMESTAMP$",
         "individualId": "$ID:AddIdentity_For_Kyc_Delegated_Bio_Auth_smoke_Pos_UIN$",
@@ -496,7 +496,7 @@ BioAuthKycExchange:
         "id": "mosip.identity.kycexchange",
         "version": "1.0",
         "kycToken": "$ID:BioAuthDelegated_Biometric_LeftThumb_With_Valid_UIN_Smoke_Pos_Sid_kycToken$",
-        "consentObtained": [{consentObtainedValue: "gender"}, {consentObtainedValue: "birthdate"}],
+        "consentObtained": [{"consentObtainedValue": "gender"}, {"consentObtainedValue": "birthdate"}],
         "locales": [{localesValue: "eng"}],
         "respType": "JWE"
     }'
@@ -506,12 +506,12 @@ BioAuthKycExchange:
   auth_BioAuthKycExchange_Biometric_LeftThumb_With_Valid_VID_Smoke_Pos:
       endPoint: /idauthentication/v1/kyc-exchange/delegated/$partialPartnerKeyUrl$/$ID:CreateOIDCClient_Misp_Valid_Smoke_sid_clientId$
       uniqueIdentifier: TC_IDA_BioAuthKycExchange_22
-      description: Biometric RightThumb KYC exchange auth with valid VID
+      description: Biometric LeftThumb KYC exchange auth with valid VID
       role: resident
       restMethod: post
       checkErrorsOnlyInResponse: true
       inputTemplate: ida/BioAuthKycExchange/BioAuthKYCExchange
-      outputTemplate: ida/BioAuthKycExchange/BioKYCAuthDelegatedResult
+      outputTemplate: ida/BioAuthKycExchange/BioAuthKYCExchangeResult
       input: '{
         "requestTime": "$TIMESTAMP$",
         "individualId": "$ID:GenerateVID_for_kycDelegated_bio_sid_vid$",
@@ -520,7 +520,7 @@ BioAuthKycExchange:
         "id": "mosip.identity.kycexchange",
         "version": "1.0",
         "kycToken": "$ID:BioAuthDelegated_Biometric_LeftThumb_With_Valid_VID_Smoke_Pos_Sid_kycToken$",
-        "consentObtained": [{consentObtainedValue: "gender"}, {consentObtainedValue: "birthdate"}],
+        "consentObtained": [{"consentObtainedValue": "gender"}, {"consentObtainedValue": "birthdate"}],
         "locales": [{localesValue: "eng"}],
         "respType": "JWE"
     }'
@@ -544,7 +544,7 @@ BioAuthKycExchange:
         "id": "mosip.identity.kycexchange",
         "version": "1.0",
         "kycToken": "$ID:BioAuthDelegated_Biometric_LeftThumb_With_Valid_VID_Smoke_Pos_Sid_kycToken$",
-        "consentObtained": [{consentObtainedValue: "gender"}, {consentObtainedValue: "birthdate"}],
+        "consentObtained": [{"consentObtainedValue": "gender"}, {"consentObtainedValue": "birthdate"}],
         "locales": [{localesValue: "eng"}],
         "respType": "JWE"
     }'
@@ -572,7 +572,7 @@ BioAuthKycExchange:
         "id": "mosip.identity.kycexchange",
         "version": "1.0",
         "kycToken": "$ID:BioAuthDelegated_Biometric_LeftThumb_With_Valid_UIN_Smoke_Pos_Sid_kycToken$",
-        "consentObtained": [{consentObtainedValue: "gender"}, {consentObtainedValue: "birthdate"}],
+        "consentObtained": [{"consentObtainedValue": "gender"}, {"consentObtainedValue": "birthdate"}],
         "locales": [{localesValue: "eng"}],
         "respType": "JWE"
     }'
@@ -600,7 +600,7 @@ BioAuthKycExchange:
         "id": "mosip.identity.kycexchange",
         "version": "1.0",
         "kycToken": "$ID:BioAuthDelegated_Biometric_forkYCexchangeWithRandomUIN_Pos_Sid_kycToken$",
-        "consentObtained": [{consentObtainedValue: "gender"}, {consentObtainedValue: "birthdate"}],
+        "consentObtained": [{"consentObtainedValue": "gender"}, {"consentObtainedValue": "birthdate"}],
         "locales": [{localesValue: "eng"}],
         "respType": "JWE"
     }'
@@ -628,7 +628,7 @@ BioAuthKycExchange:
         "id": "mosip.identity.kycexchange",
         "version": "1.0",
         "kycToken": "$ID:BioAuthDelegated_Biometric_forkYCexchangeWithRandomVID_Pos_Sid_kycToken$",
-        "consentObtained": [{consentObtainedValue: "gender"}, {consentObtainedValue: "birthdate"}],
+        "consentObtained": [{"consentObtainedValue": "gender"}, {"consentObtainedValue": "birthdate"}],
         "locales": [{localesValue: "eng"}],
         "respType": "JWE"
     }'
@@ -656,7 +656,7 @@ BioAuthKycExchange:
         "id": "mosip.identity.kycexchange",
         "version": "1.0",
         "kycToken": "$ID:BioAuthDelegated_Biometric_differentIdTypeForKycExchange_Sid_kycToken$",
-        "consentObtained": [{consentObtainedValue: "gender"}, {consentObtainedValue: "birthdate"}],
+        "consentObtained": [{"consentObtainedValue": "gender"}, {"consentObtainedValue": "birthdate"}],
         "locales": [{localesValue: "eng"}],
         "respType": "JWE"
     }'

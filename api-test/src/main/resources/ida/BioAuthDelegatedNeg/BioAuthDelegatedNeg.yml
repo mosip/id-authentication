@@ -719,7 +719,7 @@ BioAuthDelegatedNeg:
   auth_BioAuthDelegatedNeg_Biometric_Face_Lock_uin_Permanent_:
       endPoint: /idauthentication/v1/kyc-auth/delegated/$partialPartnerKeyUrl$/$ID:CreateOIDCClient_Misp_Valid_Smoke_sid_clientId$
       uniqueIdentifier: TC_IDA_BioAuthDelegatedNeg_17
-      description: Bio kyc delegated auth using permanetly locked UIN
+      description: Bio kyc delegated auth using permanently locked UIN
       role: resident
       restMethod: post
       inputTemplate: ida/BioAuthDelegatedNeg/BioAuthDelegated

@@ -84,7 +84,7 @@ OtpAuthKycExchange:
         "requestTime": "$TIMESTAMP$",
         "individualId": "$ID:GenerateVID_All_Valid_Smoke_Perpetual_sid_vid$",
         "transactionID": "$TRANSACTIONID$",
-        "individualIdType": "VID",
+        "individualIdType": "$REMOVE$",
         "id": "mosip.identity.kycexchange",
         "version": "1.0",
         "kycToken": "$ID:OtpAuthDelegated_OTP_Auth_With_Missing_Optional_Field_individualIdType_VID_Sid_kycToken$",

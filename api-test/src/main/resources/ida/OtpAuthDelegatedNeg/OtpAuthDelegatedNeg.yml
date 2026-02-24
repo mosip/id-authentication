@@ -1,4 +1,4 @@
-OtpAuthDelegatedNegNeg:
+OtpAuthDelegatedNeg:
   auth_OtpAuthDelegatedNeg_OTP_Auth_With_Infant_UIN_Smoke_Neg:
       endPoint: /idauthentication/v1/kyc-auth/delegated/$partialPartnerKeyUrl$/$ID:CreateOIDCClient_Misp_Valid_Smoke_sid_clientId$
       uniqueIdentifier: TC_IDA_OtpAuthDelegatedNeg_01
@@ -21,19 +21,19 @@ OtpAuthDelegatedNegNeg:
     "requestTime": "$TIMESTAMP$",
     "individualId": "$ID:AddIdentity_withValidParameters_Infant_smoke_Pos_UIN$",
     "individualIdType": "UIN",
-    "sendOtpReqTemplate": "ida/OtpAuthDelegatedNeg/sendOtp",
+    "sendOtpReqTemplate": "ida/OtpAuth/sendOtp",
     "sendOtpEndPoint": "/idauthentication/v1/otp/$partnerKeyURL$",
     "otpIdentyEnryptRequestPath": "ida/OtpAuthDelegatedNeg/OtpIdentityEncrypt.json"
     }
     }'
-      output: '	{
+      output: '{
       "errors": [
          {
           "errorCode": "IDA-MLC-011"
         }
       ],
  "sendOtpResp": {
-        "sendOtpResTemplate": "ida/OtpAuthDelegatedNeg/sendOtpRes"
+        "sendOtpResTemplate": "ida/OtpAuth/sendOtpRes"
     }
 }'
   auth_OtpAuthDelegatedNeg_OTP_Auth_With_Infant_locked_UIN_Smoke_Neg:
@@ -58,19 +58,19 @@ OtpAuthDelegatedNegNeg:
     "requestTime": "$TIMESTAMP$",
     "individualId": "$ID:AddIdentity_withValidParameters_with_Infant_which_locked_smoke_Pos_UIN$",
     "individualIdType": "UIN",
-    "sendOtpReqTemplate": "ida/OtpAuthDelegatedNeg/sendOtp",
+    "sendOtpReqTemplate": "ida/OtpAuth/sendOtp",
     "sendOtpEndPoint": "/idauthentication/v1/otp/$partnerKeyURL$",
     "otpIdentyEnryptRequestPath": "ida/OtpAuthDelegatedNeg/OtpIdentityEncrypt.json"
     }
     }'
-      output: '	{
+      output: '{
       "errors": [
          {
           "errorCode": "IDA-MLC-011"
          }
       ],
  "sendOtpResp": {
-        "sendOtpResTemplate": "ida/OtpAuthDelegatedNeg/sendOtpRes"
+        "sendOtpResTemplate": "ida/OtpAuth/sendOtpRes"
     }
 }'
   auth_OtpAuthDelegatedNeg_OTP_Auth_With_Invalid_Past_Timestamp_UIN_Neg:
@@ -95,19 +95,19 @@ OtpAuthDelegatedNegNeg:
     "requestTime": "$TIMESTAMP$",
     "individualId": "$ID:AddIdentity_For_Otp_Auth_smoke_Pos_UIN$",
     "individualIdType": "UIN",
-    "sendOtpReqTemplate": "ida/OtpAuthDelegatedNeg/sendOtp",
+    "sendOtpReqTemplate": "ida/OtpAuth/sendOtp",
     "sendOtpEndPoint": "/idauthentication/v1/otp/$partnerKeyURL$",
     "otpIdentyEnryptRequestPath": "ida/OtpAuthDelegatedNeg/OtpIdentityEncrypt.json"
     }
     }'
-      output: '	{
+      output: '{
       "errors": [
         {
           "errorCode": "IDA-MLC-001"
         }
       ],
  "sendOtpResp": {
-        "sendOtpResTemplate": "ida/OtpAuthDelegatedNeg/sendOtpRes"
+        "sendOtpResTemplate": "ida/OtpAuth/sendOtpRes"
     }
 }'
   auth_OtpAuthDelegatedNeg_OTP_Auth_With_Invalid_Past_Timestamp_VID_Neg:
@@ -132,19 +132,19 @@ OtpAuthDelegatedNegNeg:
     "requestTime": "$TIMESTAMP$",
     "individualId": "$ID:GenerateVID_All_Valid_Smoke_Perpetual_sid_vid$",
     "individualIdType": "VID",
-    "sendOtpReqTemplate": "ida/OtpAuthDelegatedNeg/sendOtp",
+    "sendOtpReqTemplate": "ida/OtpAuth/sendOtp",
     "sendOtpEndPoint": "/idauthentication/v1/otp/$partnerKeyURL$",
     "otpIdentyEnryptRequestPath": "ida/OtpAuthDelegatedNeg/OtpIdentityEncrypt.json"
     }
     }'
-      output: '	{
+      output: '{
       "errors": [
         {
           "errorCode": "IDA-MLC-001"
         }
       ],
  "sendOtpResp": {
-        "sendOtpResTemplate": "ida/OtpAuthDelegatedNeg/sendOtpRes"
+        "sendOtpResTemplate": "ida/OtpAuth/sendOtpRes"
     }
 }'
   auth_OtpAuthDelegatedNeg_OTP_Auth_With_Invalid_Future_Timestamp_UIN_Neg:
@@ -169,19 +169,19 @@ OtpAuthDelegatedNegNeg:
     "requestTime": "$TIMESTAMP$",
     "individualId": "$ID:AddIdentity_For_Otp_Auth_smoke_Pos_UIN$",
     "individualIdType": "UIN",
-    "sendOtpReqTemplate": "ida/OtpAuthDelegatedNeg/sendOtp",
+    "sendOtpReqTemplate": "ida/OtpAuth/sendOtp",
     "sendOtpEndPoint": "/idauthentication/v1/otp/$partnerKeyURL$",
     "otpIdentyEnryptRequestPath": "ida/OtpAuthDelegatedNeg/OtpIdentityEncrypt.json"
     }
     }'
-      output: '	{
+      output: '{
       "errors": [
         {
           "errorCode": "IDA-MLC-001"
         }
       ],
  "sendOtpResp": {
-        "sendOtpResTemplate": "ida/OtpAuthDelegatedNeg/sendOtpRes"
+        "sendOtpResTemplate": "ida/OtpAuth/sendOtpRes"
     }
 }'
   auth_OtpAuthDelegatedNeg_OTP_Auth_With_Invalid_Future_Timestamp_VID_Neg:
@@ -206,19 +206,19 @@ OtpAuthDelegatedNegNeg:
     "requestTime": "$TIMESTAMP$",
     "individualId": "$ID:GenerateVID_All_Valid_Smoke_Perpetual_sid_vid$",
     "individualIdType": "VID",
-    "sendOtpReqTemplate": "ida/OtpAuthDelegatedNeg/sendOtp",
+    "sendOtpReqTemplate": "ida/OtpAuth/sendOtp",
     "sendOtpEndPoint": "/idauthentication/v1/otp/$partnerKeyURL$",
     "otpIdentyEnryptRequestPath": "ida/OtpAuthDelegatedNeg/OtpIdentityEncrypt.json"
     }
     }'
-      output: '	{
+      output: '{
       "errors": [
         {
           "errorCode": "IDA-MLC-001"
         }
       ],
  "sendOtpResp": {
-        "sendOtpResTemplate": "ida/OtpAuthDelegatedNeg/sendOtpRes"
+        "sendOtpResTemplate": "ida/OtpAuth/sendOtpRes"
     }
 }'
   auth_OtpAuthDelegatedNeg_OTP_Auth_With_Invalid_Empty_Timestamp_UIN_Neg:
@@ -243,19 +243,19 @@ OtpAuthDelegatedNegNeg:
     "requestTime": "$TIMESTAMP$",
     "individualId": "$ID:AddIdentity_For_Otp_Auth_smoke_Pos_UIN$",
     "individualIdType": "UIN",
-    "sendOtpReqTemplate": "ida/OtpAuthDelegatedNeg/sendOtp",
+    "sendOtpReqTemplate": "ida/OtpAuth/sendOtp",
     "sendOtpEndPoint": "/idauthentication/v1/otp/$partnerKeyURL$",
     "otpIdentyEnryptRequestPath": "ida/OtpAuthDelegatedNeg/OtpIdentityEncrypt.json"
     }
     }'
-      output: '	{
+      output: '{
       "errors": [
         {
           "errorCode": "IDA-MLC-006"
         }
       ],
  "sendOtpResp": {
-        "sendOtpResTemplate": "ida/OtpAuthDelegatedNeg/sendOtpRes"
+        "sendOtpResTemplate": "ida/OtpAuth/sendOtpRes"
     }
 }'
   auth_OtpAuthDelegatedNeg_OTP_Auth_With_Invalid_Empty_Timestamp_VID_Neg:
@@ -280,19 +280,19 @@ OtpAuthDelegatedNegNeg:
     "requestTime": "$TIMESTAMP$",
     "individualId": "$ID:GenerateVID_All_Valid_Smoke_Perpetual_sid_vid$",
     "individualIdType": "VID",
-    "sendOtpReqTemplate": "ida/OtpAuthDelegatedNeg/sendOtp",
+    "sendOtpReqTemplate": "ida/OtpAuth/sendOtp",
     "sendOtpEndPoint": "/idauthentication/v1/otp/$partnerKeyURL$",
     "otpIdentyEnryptRequestPath": "ida/OtpAuthDelegatedNeg/OtpIdentityEncrypt.json"
     }
     }'
-      output: '	{
+      output: '{
       "errors": [
         {
           "errorCode": "IDA-MLC-006"
         }
       ],
  "sendOtpResp": {
-        "sendOtpResTemplate": "ida/OtpAuthDelegatedNeg/sendOtpRes"
+        "sendOtpResTemplate": "ida/OtpAuth/sendOtpRes"
     }
 }'
   auth_OtpAuthDelegatedNeg_OTP_Auth_With_revoke_VID_Smoke_Neg:
@@ -317,19 +317,19 @@ OtpAuthDelegatedNegNeg:
     "requestTime": "$TIMESTAMP$",
     "individualId": "$ID:GenerateVID_to_revoke_smoke_Perpetual_sid_vid$",
     "individualIdType": "VID",
-    "sendOtpReqTemplate": "ida/OtpAuthDelegatedNeg/sendOtp",
+    "sendOtpReqTemplate": "ida/OtpAuth/sendOtp",
     "sendOtpEndPoint": "/idauthentication/v1/otp/$partnerKeyURL$",
     "otpIdentyEnryptRequestPath": "ida/OtpAuthDelegatedNeg/OtpIdentityEncrypt.json"
     }
     }'
-      output: '	{
+      output: '{
       "errors": [
         {
           "errorCode": "IDA-MLC-018"
         }
       ],
  "sendOtpResp": {
-        "sendOtpResTemplate": "ida/OtpAuthDelegatedNeg/sendOtpRes"
+        "sendOtpResTemplate": "ida/OtpAuth/sendOtpRes"
     }
 }'
   auth_OtpAuthDelegatedNeg_OTP_Auth_With_Invalid_individualId_UIN_neg:
@@ -354,7 +354,7 @@ OtpAuthDelegatedNegNeg:
     "requestTime": "$TIMESTAMP$",
     "individualId": "$ID:AddIdentity_For_Otp_Auth_smoke_Pos_UIN$",
     "individualIdType": "UIN",
-    "sendOtpReqTemplate": "ida/OtpAuthDelegatedNeg/sendOtp",
+    "sendOtpReqTemplate": "ida/OtpAuth/sendOtp",
     "sendOtpEndPoint": "/idauthentication/v1/otp/$partnerKeyURL$",
     "otpIdentyEnryptRequestPath": "ida/OtpAuthDelegatedNeg/OtpIdentityEncrypt.json"
     }
@@ -369,12 +369,12 @@ OtpAuthDelegatedNegNeg:
   ],
   "sendOtpResp":{
         "transactionID": "$TRANSACTIONID$",
-        "sendOtpResTemplate":"ida/OtpAuthDelegatedNeg/sendOtpRes"
+        "sendOtpResTemplate":"ida/OtpAuth/sendOtpRes"
     }
 }'
   auth_OtpAuthDelegatedNeg_OTP_Auth_With_Blank_individualId_uin_neg:
       endPoint: /idauthentication/v1/kyc-auth/delegated/$partialPartnerKeyUrl$/$ID:CreateOIDCClient_Misp_Valid_Smoke_sid_clientId$
-      uniqueIdentifier: TC_OtpAuthDelegatedNeg_11
+      uniqueIdentifier: TC_IDA_OtpAuthDelegatedNeg_11
       description: Otp delegated auth with blank individualId using uin
       role: resident
       restMethod: post
@@ -394,7 +394,7 @@ OtpAuthDelegatedNegNeg:
     "requestTime": "$TIMESTAMP$",
     "individualId": "$ID:AddIdentity_For_Otp_Auth_smoke_Pos_UIN$",
     "individualIdType": "UIN",
-    "sendOtpReqTemplate": "ida/OtpAuthDelegatedNeg/sendOtp",
+    "sendOtpReqTemplate": "ida/OtpAuth/sendOtp",
     "sendOtpEndPoint": "/idauthentication/v1/otp/$partnerKeyURL$",
     "otpIdentyEnryptRequestPath": "ida/OtpAuthDelegatedNeg/OtpIdentityEncrypt.json"
     }
@@ -407,7 +407,7 @@ OtpAuthDelegatedNegNeg:
   ],
   "sendOtpResp":{
         "transactionID": "$TRANSACTIONID$",
-        "sendOtpResTemplate":"ida/OtpAuthDelegatedNeg/sendOtpRes"
+        "sendOtpResTemplate":"ida/OtpAuth/sendOtpRes"
     }
 }'
   auth_OtpAuthDelegatedNeg_OTP_Auth_With_Blank_individualId_VID_neg:
@@ -432,7 +432,7 @@ OtpAuthDelegatedNegNeg:
     "requestTime": "$TIMESTAMP$",
     "individualId": "$ID:GenerateVID_All_Valid_Smoke_Perpetual_sid_vid$",
     "individualIdType": "VID",
-    "sendOtpReqTemplate": "ida/OtpAuthDelegatedNeg/sendOtp",
+    "sendOtpReqTemplate": "ida/OtpAuth/sendOtp",
     "sendOtpEndPoint": "/idauthentication/v1/otp/$partnerKeyURL$",
     "otpIdentyEnryptRequestPath": "ida/OtpAuthDelegatedNeg/OtpIdentityEncrypt.json"
     }
@@ -445,7 +445,7 @@ OtpAuthDelegatedNegNeg:
   ],
   "sendOtpResp":{
         "transactionID": "$TRANSACTIONID$",
-        "sendOtpResTemplate":"ida/OtpAuthDelegatedNeg/sendOtpRes"
+        "sendOtpResTemplate":"ida/OtpAuth/sendOtpRes"
     }
 }'
   auth_OtpAuthDelegatedNeg_OTP_Auth_With_Missing_individualId_uin_neg:
@@ -470,7 +470,7 @@ OtpAuthDelegatedNegNeg:
     "requestTime": "$TIMESTAMP$",
     "individualId": "$ID:AddIdentity_For_Otp_Auth_smoke_Pos_UIN$",
     "individualIdType": "UIN",
-    "sendOtpReqTemplate": "ida/OtpAuthDelegatedNeg/sendOtp",
+    "sendOtpReqTemplate": "ida/OtpAuth/sendOtp",
     "sendOtpEndPoint": "/idauthentication/v1/otp/$partnerKeyURL$",
     "otpIdentyEnryptRequestPath": "ida/OtpAuthDelegatedNeg/OtpIdentityEncrypt.json"
     }
@@ -483,7 +483,7 @@ OtpAuthDelegatedNegNeg:
   ],
   "sendOtpResp":{
         "transactionID": "$TRANSACTIONID$",
-        "sendOtpResTemplate":"ida/OtpAuthDelegatedNeg/sendOtpRes"
+        "sendOtpResTemplate":"ida/OtpAuth/sendOtpRes"
     }
 }'
   auth_OtpAuthDelegatedNeg_OTP_Auth_With_Missing_individualId_VID_neg:
@@ -508,7 +508,7 @@ OtpAuthDelegatedNegNeg:
     "requestTime": "$TIMESTAMP$",
     "individualId": "$ID:GenerateVID_All_Valid_Smoke_Perpetual_sid_vid$",
     "individualIdType": "VID",
-    "sendOtpReqTemplate": "ida/OtpAuthDelegatedNeg/sendOtp",
+    "sendOtpReqTemplate": "ida/OtpAuth/sendOtp",
     "sendOtpEndPoint": "/idauthentication/v1/otp/$partnerKeyURL$",
     "otpIdentyEnryptRequestPath": "ida/OtpAuthDelegatedNeg/OtpIdentityEncrypt.json"
     }
@@ -521,7 +521,7 @@ OtpAuthDelegatedNegNeg:
   ],
   "sendOtpResp":{
         "transactionID": "$TRANSACTIONID$",
-        "sendOtpResTemplate":"ida/OtpAuthDelegatedNeg/sendOtpRes"
+        "sendOtpResTemplate":"ida/OtpAuth/sendOtpRes"
     }
 }'
   auth_OtpAuthDelegatedNeg_OTP_Auth_With_Invalid_transactionId_uin_Neg:
@@ -558,7 +558,7 @@ OtpAuthDelegatedNegNeg:
     }
   ],
   "sendOtpResp":{
-        "sendOtpResTemplate":"ida/OtpAuthDelegatedNeg/sendOtpRes"
+        "sendOtpResTemplate":"ida/OtpAuth/sendOtpRes"
     }
 }'
   auth_OtpAuthDelegatedNeg_OTP_Auth_With_Invalid_transactionId_VID_Neg:
@@ -583,7 +583,7 @@ OtpAuthDelegatedNegNeg:
     "requestTime": "$TIMESTAMP$",
     "individualId": "$ID:GenerateVID_All_Valid_Smoke_Perpetual_sid_vid$",
     "individualIdType": "VID",
-    "sendOtpReqTemplate": "ida/OtpAuthDelegatedNeg/sendOtp",
+    "sendOtpReqTemplate": "ida/OtpAuth/sendOtp",
     "sendOtpEndPoint": "/idauthentication/v1/otp/$partnerKeyURL$",
     "otpIdentyEnryptRequestPath": "ida/OtpAuthDelegatedNeg/OtpIdentityEncrypt.json"
     }
@@ -595,7 +595,7 @@ OtpAuthDelegatedNegNeg:
     }
   ],
   "sendOtpResp":{
-        "sendOtpResTemplate":"ida/OtpAuthDelegatedNeg/sendOtpRes"
+        "sendOtpResTemplate":"ida/OtpAuth/sendOtpRes"
     }
 }'
   auth_OtpAuthDelegatedNeg_OTP_Auth_With_Blank_transactionId_uin_Neg:
@@ -620,7 +620,7 @@ OtpAuthDelegatedNegNeg:
     "requestTime": "$TIMESTAMP$",
     "individualId": "$ID:AddIdentity_For_Otp_Auth_smoke_Pos_UIN$",
     "individualIdType": "UIN",
-    "sendOtpReqTemplate": "ida/OtpAuthDelegatedNeg/sendOtp",
+    "sendOtpReqTemplate": "ida/OtpAuth/sendOtp",
     "sendOtpEndPoint": "/idauthentication/v1/otp/$partnerKeyURL$",
     "otpIdentyEnryptRequestPath": "ida/OtpAuthDelegatedNeg/OtpIdentityEncrypt.json"
     }
@@ -632,7 +632,7 @@ OtpAuthDelegatedNegNeg:
     }
   ],
   "sendOtpResp":{
-        "sendOtpResTemplate":"ida/OtpAuthDelegatedNeg/sendOtpRes"
+        "sendOtpResTemplate":"ida/OtpAuth/sendOtpRes"
     }
 }'
   auth_OtpAuthDelegatedNeg_OTP_Auth_With_Blank_transactionId_VID_Neg:
@@ -657,7 +657,7 @@ OtpAuthDelegatedNegNeg:
     "requestTime": "$TIMESTAMP$",
     "individualId": "$ID:GenerateVID_All_Valid_Smoke_Perpetual_sid_vid$",
     "individualIdType": "VID",
-    "sendOtpReqTemplate": "ida/OtpAuthDelegatedNeg/sendOtp",
+    "sendOtpReqTemplate": "ida/OtpAuth/sendOtp",
     "sendOtpEndPoint": "/idauthentication/v1/otp/$partnerKeyURL$",
     "otpIdentyEnryptRequestPath": "ida/OtpAuthDelegatedNeg/OtpIdentityEncrypt.json"
     }
@@ -669,7 +669,7 @@ OtpAuthDelegatedNegNeg:
     }
   ],
   "sendOtpResp":{
-        "sendOtpResTemplate":"ida/OtpAuthDelegatedNeg/sendOtpRes"
+        "sendOtpResTemplate":"ida/OtpAuth/sendOtpRes"
     }
 }'
   auth_OtpAuthDelegatedNeg_OTP_Auth_With_different_transactionId_uin_neg:
@@ -694,7 +694,7 @@ OtpAuthDelegatedNegNeg:
     "requestTime": "$TIMESTAMP$",
     "individualId": "$ID:AddIdentity_For_Otp_Auth_smoke_Pos_UIN$",
     "individualIdType": "UIN",
-    "sendOtpReqTemplate": "ida/OtpAuthDelegatedNeg/sendOtp",
+    "sendOtpReqTemplate": "ida/OtpAuth/sendOtp",
     "sendOtpEndPoint": "/idauthentication/v1/otp/$partnerKeyURL$",
     "otpIdentyEnryptRequestPath": "ida/OtpAuthDelegatedNeg/OtpIdentityEncrypt.json"
     }
@@ -706,7 +706,7 @@ OtpAuthDelegatedNegNeg:
     }
   ],
   "sendOtpResp":{
-        "sendOtpResTemplate":"ida/OtpAuthDelegatedNeg/sendOtpRes"
+        "sendOtpResTemplate":"ida/OtpAuth/sendOtpRes"
     }
 }'
   auth_OtpAuthDelegatedNeg_OTP_Auth_With_Blank_individualIdType_VID_Neg:
@@ -744,7 +744,7 @@ OtpAuthDelegatedNegNeg:
       ],
         "kycStatus": false,
   "sendOtpResp":{
-        "sendOtpResTemplate":"ida/OtpAuthDelegatedNeg/sendOtpRes"
+        "sendOtpResTemplate":"ida/OtpAuth/sendOtpRes"
     }
 }'
   auth_OtpAuthDelegatedNeg_OTP_Auth_With_InValid_OTP_Neg:
@@ -769,7 +769,7 @@ OtpAuthDelegatedNegNeg:
     "requestTime": "$TIMESTAMP$",
     "individualId": "$ID:GenerateVID_All_Valid_Smoke_Perpetual_sid_vid$",
     "individualIdType": "VID",
-    "sendOtpReqTemplate": "ida/OtpAuthDelegatedNeg/sendOtp",
+    "sendOtpReqTemplate": "ida/OtpAuth/sendOtp",
     "sendOtpEndPoint": "/idauthentication/v1/otp/$partnerKeyURL$",
     "otpIdentyEnryptRequestPath": "ida/OtpAuthDelegatedNeg/OtpIdentityEncrypt.json"
     }
@@ -782,7 +782,7 @@ OtpAuthDelegatedNegNeg:
       ],
         "kycStatus": false,
   "sendOtpResp":{
-        "sendOtpResTemplate":"ida/OtpAuthDelegatedNeg/sendOtpRes"
+        "sendOtpResTemplate":"ida/OtpAuth/sendOtpRes"
     }
 }'
   auth_OtpAuthDelegatedNeg_OTP_Auth_With_WRONG_OTP_Neg:
@@ -807,7 +807,7 @@ OtpAuthDelegatedNegNeg:
     "requestTime": "$TIMESTAMP$",
     "individualId": "$ID:GenerateVID_All_Valid_Smoke_Perpetual_sid_vid$",
     "individualIdType": "VID",
-    "sendOtpReqTemplate": "ida/OtpAuthDelegatedNeg/sendOtp",
+    "sendOtpReqTemplate": "ida/OtpAuth/sendOtp",
     "sendOtpEndPoint": "/idauthentication/v1/otp/$partnerKeyURL$",
     "otpIdentyEnryptRequestPath": "ida/OtpAuthDelegatedNeg/OtpIdentityEncrypt.json"
     }
@@ -820,6 +820,6 @@ OtpAuthDelegatedNegNeg:
       ],
         "kycStatus": false,
   "sendOtpResp":{
-        "sendOtpResTemplate":"ida/OtpAuthDelegatedNeg/sendOtpRes"
+        "sendOtpResTemplate":"ida/OtpAuth/sendOtpRes"
     }
 }'
