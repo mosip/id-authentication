@@ -6,7 +6,7 @@ BioAuthDelegated:
       role: resident
       restMethod: post
       inputTemplate: ida/BioAuthDelegated/BioAuthDelegated
-      outputTemplate: ida/BioAuthDelegated/BioKYCAuthDelegatedResult
+      outputTemplate: ida/BioAuthDelegated/BioAuthDelegatedResult
       input: '{
         "requestTime": "$TIMESTAMP$",
         "individualId": "$ID:AddIdentity_For_Kyc_Delegated_Bio_Auth_smoke_Pos_UIN$",
@@ -46,7 +46,7 @@ BioAuthDelegated:
       role: resident
       restMethod: post
       inputTemplate: ida/BioAuthDelegated/BioAuthDelegated
-      outputTemplate: ida/BioAuthDelegated/BioKYCAuthDelegatedResult
+      outputTemplate: ida/BioAuthDelegated/BioAuthDelegatedResult
       input: '{
         "requestTime": "$TIMESTAMP$",
         "individualId": "$ID:GenerateVID_for_kycDelegated_bio_sid_vid$",
@@ -86,7 +86,7 @@ BioAuthDelegated:
       role: resident
       restMethod: post
       inputTemplate: ida/BioAuthDelegated/BioAuthDelegated
-      outputTemplate: ida/BioAuthDelegated/BioKYCAuthDelegatedResult
+      outputTemplate: ida/BioAuthDelegated/BioAuthDelegatedResult
       input: '{
         "requestTime": "$TIMESTAMP$",
         "individualId": "$ID:AddIdentity_For_Kyc_Delegated_leftIris_Auth_UIN_smoke_Pos_UIN$",
@@ -126,7 +126,7 @@ BioAuthDelegated:
       role: resident
       restMethod: post
       inputTemplate: ida/BioAuthDelegated/BioAuthDelegated
-      outputTemplate: ida/BioAuthDelegated/BioKYCAuthDelegatedResult
+      outputTemplate: ida/BioAuthDelegated/BioAuthDelegatedResult
       input: '{
         "requestTime": "$TIMESTAMP$",
         "individualId": "$ID:GenerateVID_for_kycDelegated_bio_sid_vid$",
@@ -166,7 +166,7 @@ BioAuthDelegated:
       role: resident
       restMethod: post
       inputTemplate: ida/BioAuthDelegated/BioAuthDelegated
-      outputTemplate: ida/BioAuthDelegated/BioKYCAuthDelegatedResult
+      outputTemplate: ida/BioAuthDelegated/BioAuthDelegatedResult
       input: '{
         "requestTime": "$TIMESTAMP$",
         "individualId": "$ID:AddIdentity_For_Kyc_Delegated_rightIris_Auth_UIN_smoke_Pos_UIN$",
@@ -206,7 +206,7 @@ BioAuthDelegated:
       role: resident
       restMethod: post
       inputTemplate: ida/BioAuthDelegated/BioAuthDelegated
-      outputTemplate: ida/BioAuthDelegated/BioKYCAuthDelegatedResult
+      outputTemplate: ida/BioAuthDelegated/BioAuthDelegatedResult
       input: '{
         "requestTime": "$TIMESTAMP$",
         "individualId": "$ID:GenerateVID_for_kycDelegated_bio_rightIris_sid_vid$",
@@ -246,7 +246,7 @@ BioAuthDelegated:
       role: resident
       restMethod: post
       inputTemplate: ida/BioAuthDelegated/BioAuthDelegated
-      outputTemplate: ida/BioAuthDelegated/BioKYCAuthDelegatedResult
+      outputTemplate: ida/BioAuthDelegated/BioAuthDelegatedResult
       input: '{
         "requestTime": "$TIMESTAMP$",
         "individualId": "$ID:AddIdentity_For_Kyc_Delegated_Bio_Auth_smoke_Pos_UIN$",
@@ -286,7 +286,7 @@ BioAuthDelegated:
       role: resident
       restMethod: post
       inputTemplate: ida/BioAuthDelegated/BioAuthDelegated
-      outputTemplate: ida/BioAuthDelegated/BioKYCAuthDelegatedResult
+      outputTemplate: ida/BioAuthDelegated/BioAuthDelegatedResult
       input: '{
         "requestTime": "$TIMESTAMP$",
         "individualId": "$ID:GenerateVID_for_kycDelegated_bio_sid_vid$",
@@ -326,7 +326,7 @@ BioAuthDelegated:
       role: resident
       restMethod: post
       inputTemplate: ida/BioAuthDelegated/BioAuthDelegated
-      outputTemplate: ida/BioAuthDelegated/BioKYCAuthDelegatedResult
+      outputTemplate: ida/BioAuthDelegated/BioAuthDelegatedResult
       input: '{
         "requestTime": "$TIMESTAMP$",
         "individualId": "$ID:AddIdentity_For_Kyc_Delegated_Bio_Auth_smoke_Pos_UIN$",
@@ -366,7 +366,7 @@ BioAuthDelegated:
       role: resident
       restMethod: post
       inputTemplate: ida/BioAuthDelegated/BioAuthDelegated
-      outputTemplate: ida/BioAuthDelegated/BioKYCAuthDelegatedResult
+      outputTemplate: ida/BioAuthDelegated/BioAuthDelegatedResult
       input: '{
         "requestTime": "$TIMESTAMP$",
         "individualId": "$ID:GenerateVID_for_kycDelegated_bio_sid_vid$",
@@ -406,7 +406,7 @@ BioAuthDelegated:
       role: resident
       restMethod: post
       inputTemplate: ida/BioAuthDelegated/BioAuthDelegated
-      outputTemplate: ida/BioAuthDelegated/BioKYCAuthDelegatedResult
+      outputTemplate: ida/BioAuthDelegated/BioAuthDelegatedResult
       input: '{
         "requestTime": "$TIMESTAMP$",
         "individualId": "$ID:AddIdentity_For_Kyc_Delegated_Bio_Auth_smoke_Pos_UIN$",
@@ -446,7 +446,7 @@ BioAuthDelegated:
       role: resident
       restMethod: post
       inputTemplate: ida/BioAuthDelegated/BioAuthDelegated
-      outputTemplate: ida/BioAuthDelegated/BioKYCAuthDelegatedResult
+      outputTemplate: ida/BioAuthDelegated/BioAuthDelegatedResult
       input: '{
         "requestTime": "$TIMESTAMP$",
         "individualId": "$ID:GenerateVID_for_kycDelegated_bio_sid_vid$",
@@ -486,7 +486,7 @@ BioAuthDelegated:
       role: resident
       restMethod: post
       inputTemplate: ida/BioAuthDelegated/BioAuthDelegated
-      outputTemplate: ida/BioAuthDelegated/BioKYCAuthDelegatedResult
+      outputTemplate: ida/BioAuthDelegated/BioAuthDelegatedResult
       input: '{
         "requestTime": "$TIMESTAMP$",
         "individualId": "$ID:AddIdentity_For_Kyc_Delegated_Bio_Auth_smoke_Pos_UIN$",
@@ -526,7 +526,7 @@ BioAuthDelegated:
       role: resident
       restMethod: post
       inputTemplate: ida/BioAuthDelegated/BioAuthDelegated
-      outputTemplate: ida/BioAuthDelegated/BioKYCAuthDelegatedResult
+      outputTemplate: ida/BioAuthDelegated/BioAuthDelegatedResult
       input: '{
         "requestTime": "$TIMESTAMP$",
         "individualId": "$ID:GenerateVID_for_kycDelegated_bio_sid_vid$",
@@ -566,7 +566,7 @@ BioAuthDelegated:
       role: resident
       restMethod: post
       inputTemplate: ida/BioAuthDelegated/BioAuthDelegated
-      outputTemplate: ida/BioAuthDelegated/BioKYCAuthDelegatedResult
+      outputTemplate: ida/BioAuthDelegated/BioAuthDelegatedResult
       input: '{
         "requestTime": "$TIMESTAMP$",
         "individualId": "$ID:AddIdentity_For_Kyc_Delegated_Bio_Auth_smoke_Pos_UIN$",
@@ -606,7 +606,7 @@ BioAuthDelegated:
       role: resident
       restMethod: post
       inputTemplate: ida/BioAuthDelegated/BioAuthDelegated
-      outputTemplate: ida/BioAuthDelegated/BioKYCAuthDelegatedResult
+      outputTemplate: ida/BioAuthDelegated/BioAuthDelegatedResult
       input: '{
         "requestTime": "$TIMESTAMP$",
         "individualId": "$ID:GenerateVID_for_kycDelegated_bio_sid_vid$",
@@ -646,7 +646,7 @@ BioAuthDelegated:
       role: resident
       restMethod: post
       inputTemplate: ida/BioAuthDelegated/BioAuthDelegated
-      outputTemplate: ida/BioAuthDelegated/BioKYCAuthDelegatedResult
+      outputTemplate: ida/BioAuthDelegated/BioAuthDelegatedResult
       input: '{
         "requestTime": "$TIMESTAMP$",
         "individualId": "$ID:AddIdentity_For_Kyc_Delegated_Bio_Auth_smoke_Pos_UIN$",
@@ -686,7 +686,7 @@ BioAuthDelegated:
       role: resident
       restMethod: post
       inputTemplate: ida/BioAuthDelegated/BioAuthDelegated
-      outputTemplate: ida/BioAuthDelegated/BioKYCAuthDelegatedResult
+      outputTemplate: ida/BioAuthDelegated/BioAuthDelegatedResult
       input: '{
         "requestTime": "$TIMESTAMP$",
         "individualId": "$ID:GenerateVID_for_kycDelegated_bio_sid_vid$",
@@ -726,7 +726,7 @@ BioAuthDelegated:
       role: resident
       restMethod: post
       inputTemplate: ida/BioAuthDelegated/BioAuthDelegated
-      outputTemplate: ida/BioAuthDelegated/BioKYCAuthDelegatedResult
+      outputTemplate: ida/BioAuthDelegated/BioAuthDelegatedResult
       input: '{
         "requestTime": "$TIMESTAMP$",
         "individualId": "$ID:AddIdentity_For_Kyc_Delegated_Bio_Auth_smoke_Pos_UIN$",
@@ -766,7 +766,7 @@ BioAuthDelegated:
       role: resident
       restMethod: post
       inputTemplate: ida/BioAuthDelegated/BioAuthDelegated
-      outputTemplate: ida/BioAuthDelegated/BioKYCAuthDelegatedResult
+      outputTemplate: ida/BioAuthDelegated/BioAuthDelegatedResult
       input: '{
         "requestTime": "$TIMESTAMP$",
         "individualId": "$ID:GenerateVID_for_kycDelegated_bio_sid_vid$",
@@ -806,7 +806,7 @@ BioAuthDelegated:
       role: resident
       restMethod: post
       inputTemplate: ida/BioAuthDelegated/BioAuthDelegated
-      outputTemplate: ida/BioAuthDelegated/BioKYCAuthDelegatedResult
+      outputTemplate: ida/BioAuthDelegated/BioAuthDelegatedResult
       input: '{
         "requestTime": "$TIMESTAMP$",
         "individualId": "$ID:AddIdentity_For_Kyc_Delegated_Bio_Auth_smoke_Pos_UIN$",
@@ -846,7 +846,7 @@ BioAuthDelegated:
       role: resident
       restMethod: post
       inputTemplate: ida/BioAuthDelegated/BioAuthDelegated
-      outputTemplate: ida/BioAuthDelegated/BioKYCAuthDelegatedResult
+      outputTemplate: ida/BioAuthDelegated/BioAuthDelegatedResult
       input: '{
         "requestTime": "$TIMESTAMP$",
         "individualId": "$ID:GenerateVID_for_kycDelegated_bio_sid_vid$",
@@ -886,7 +886,7 @@ BioAuthDelegated:
       role: resident
       restMethod: post
       inputTemplate: ida/BioAuthDelegated/BioAuthDelegated
-      outputTemplate: ida/BioAuthDelegated/BioKYCAuthDelegatedResult
+      outputTemplate: ida/BioAuthDelegated/BioAuthDelegatedResult
       input: '{
         "requestTime": "$TIMESTAMP$",
         "individualId": "$ID:AddIdentity_withValidParameters_forDelegated_differentIdType_Pos_UIN$",
@@ -926,7 +926,7 @@ BioAuthDelegated:
       role: resident
       restMethod: post
       inputTemplate: ida/BioAuthDelegated/BioAuthDelegated
-      outputTemplate: ida/BioAuthDelegated/BioKYCAuthDelegatedResult
+      outputTemplate: ida/BioAuthDelegated/BioAuthDelegatedResult
       input: '{
         "requestTime": "$TIMESTAMP$",
         "individualId": "$ID:AddIdentity_For_Kyc_Delegated_Bio_Auth_smoke_Pos_UIN$",
@@ -966,7 +966,7 @@ BioAuthDelegated:
       role: resident
       restMethod: post
       inputTemplate: ida/BioAuthDelegated/BioAuthDelegated
-      outputTemplate: ida/BioAuthDelegated/BioKYCAuthDelegatedResult
+      outputTemplate: ida/BioAuthDelegated/BioAuthDelegatedResult
       input: '{
         "requestTime": "$TIMESTAMP$",
         "individualId": "$ID:GenerateVID_for_kycDelegated_bio_sid_vid$",
