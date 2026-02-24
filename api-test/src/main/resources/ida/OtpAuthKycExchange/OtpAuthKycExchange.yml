@@ -1,6 +1,6 @@
 OtpAuthKycExchange:
   auth_OtpAuthKycExchange_OtpAuth_With_Valid_UIN_Smoke_Pos:
-      endPoint: /idauthentication/v1/kyc-exchange/delegated/$partialPartnerKeyUrl$​/$ID:CreateOIDCClient_Misp_Valid_Smoke_sid_clientId$
+      endPoint: /idauthentication/v1/kyc-exchange/delegated/$partialPartnerKeyUrl$/$ID:CreateOIDCClient_Misp_Valid_Smoke_sid_clientId$
       uniqueIdentifier: TC_IDA_OtpAuthKycExchange_01
       description: Otp auth kyc exchange with valid UIN
       role: resident
@@ -24,7 +24,7 @@ OtpAuthKycExchange:
   
 }'
   auth_OtpAuthKycExchange_OtpAuth_With_Valid_VID_Smoke_Pos:
-      endPoint: /idauthentication/v1/kyc-exchange/delegated/$partialPartnerKeyUrl$​/$ID:CreateOIDCClient_Misp_Valid_Smoke_sid_clientId$
+      endPoint: /idauthentication/v1/kyc-exchange/delegated/$partialPartnerKeyUrl$/$ID:CreateOIDCClient_Misp_Valid_Smoke_sid_clientId$
       uniqueIdentifier: TC_IDA_OtpAuthKycExchange_02
       description: Demo auth kyc exchange using valid dob with valid perpetual VID
       role: resident
@@ -48,7 +48,7 @@ OtpAuthKycExchange:
   
 }'
   auth_OtpAuthKycExchange_OtpAuth_With_Optional_individualIdType_VID:
-      endPoint: /idauthentication/v1/kyc-exchange/delegated/$partialPartnerKeyUrl$​/$ID:CreateOIDCClient_Misp_Valid_Smoke_sid_clientId$
+      endPoint: /idauthentication/v1/kyc-exchange/delegated/$partialPartnerKeyUrl$/$ID:CreateOIDCClient_Misp_Valid_Smoke_sid_clientId$
       uniqueIdentifier: TC_IDA_OtpAuthKycExchange_03
       description: OTP auth kyc exchange with optional individualIdType using VID
       role: resident
@@ -72,7 +72,7 @@ OtpAuthKycExchange:
   
 }'
   auth_OtpAuthKycExchange_OtpAuth_With_Missing_Optional_Field_individualIdType_VID:
-      endPoint: /idauthentication/v1/kyc-exchange/delegated/$partialPartnerKeyUrl$​/$ID:CreateOIDCClient_Misp_Valid_Smoke_sid_clientId$
+      endPoint: /idauthentication/v1/kyc-exchange/delegated/$partialPartnerKeyUrl$/$ID:CreateOIDCClient_Misp_Valid_Smoke_sid_clientId$
       uniqueIdentifier: TC_IDA_OtpAuthKycExchange_04
       description: Otp auth kyc exchange with missing optional field individualIdType using VID
       role: resident
@@ -96,7 +96,7 @@ OtpAuthKycExchange:
   
 }'
   auth_OtpAuthKycExchange_OtpAuth_With_locked_email_Smoke_Pos:
-      endPoint: /idauthentication/v1/kyc-exchange/delegated/$partialPartnerKeyUrl$​/$ID:CreateOIDCClient_Misp_Valid_Smoke_sid_clientId$
+      endPoint: /idauthentication/v1/kyc-exchange/delegated/$partialPartnerKeyUrl$/$ID:CreateOIDCClient_Misp_Valid_Smoke_sid_clientId$
       uniqueIdentifier: TC_IDA_OtpAuthKycExchange_05
       description: Otp auth kyc exchange with locked email using valid UIN
       role: resident
@@ -120,7 +120,7 @@ OtpAuthKycExchange:
   
 }'
   auth_OtpAuthKycExchange_OtpAuth_With_locked_phone_Smoke_Pos:
-      endPoint: /idauthentication/v1/kyc-exchange/delegated/$partialPartnerKeyUrl$​/$ID:CreateOIDCClient_Misp_Valid_Smoke_sid_clientId$
+      endPoint: /idauthentication/v1/kyc-exchange/delegated/$partialPartnerKeyUrl$/$ID:CreateOIDCClient_Misp_Valid_Smoke_sid_clientId$
       uniqueIdentifier: TC_IDA_OtpAuthKycExchange_06
       description: Otp auth kyc exchange with locked phone using valid UIN
       role: resident

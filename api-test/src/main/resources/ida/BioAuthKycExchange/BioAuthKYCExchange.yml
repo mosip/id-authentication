@@ -1,6 +1,6 @@
 BioAuthKycExchange:
   auth_BioAuthKycExchange_Biometric_Face_With_Valid_uin_Smoke_Pos:
-      endPoint: /idauthentication/v1/kyc-exchange/delegated/$partialPartnerKeyUrl$​/$ID:CreateOIDCClient_Misp_Valid_Smoke_sid_clientId$
+      endPoint: /idauthentication/v1/kyc-exchange/delegated/$partialPartnerKeyUrl$/$ID:CreateOIDCClient_Misp_Valid_Smoke_sid_clientId$
       uniqueIdentifier: TC_IDA_BioAuthKycExchange_01
       description: Biometric face auth KYC Exchange with valid UIN
       role: resident
@@ -24,7 +24,7 @@ BioAuthKycExchange:
   
 }'
   auth_BioAuthKycExchange_Biometric_Face_With_Valid_VID_Smoke_Pos:
-      endPoint: /idauthentication/v1/kyc-exchange/delegated/$partialPartnerKeyUrl$​/$ID:CreateOIDCClient_Misp_Valid_Smoke_sid_clientId$
+      endPoint: /idauthentication/v1/kyc-exchange/delegated/$partialPartnerKeyUrl$/$ID:CreateOIDCClient_Misp_Valid_Smoke_sid_clientId$
       uniqueIdentifier: TC_IDA_BioAuthKycExchange_02
       description: Biometric face KYC exchange auth with valid VID
       role: resident
@@ -48,7 +48,7 @@ BioAuthKycExchange:
   
 }'
   auth_BioAuthKycExchange_Biometric_LeftIris_With_Valid_UIN_Smoke_Pos:
-      endPoint: /idauthentication/v1/kyc-exchange/delegated/$partialPartnerKeyUrl$​/$ID:CreateOIDCClient_Misp_Valid_Smoke_sid_clientId$
+      endPoint: /idauthentication/v1/kyc-exchange/delegated/$partialPartnerKeyUrl$/$ID:CreateOIDCClient_Misp_Valid_Smoke_sid_clientId$
       uniqueIdentifier: TC_IDA_BioAuthKycExchange_03
       description: Biometric left iris KYC exchange auth with valid UIN
       role: resident
@@ -72,7 +72,7 @@ BioAuthKycExchange:
   
 }'
   auth_BioAuthKycExchange_Biometric_LeftIris_With_Valid_VID_Smoke_Pos:
-      endPoint: /idauthentication/v1/kyc-exchange/delegated/$partialPartnerKeyUrl$​/$ID:CreateOIDCClient_Misp_Valid_Smoke_sid_clientId$
+      endPoint: /idauthentication/v1/kyc-exchange/delegated/$partialPartnerKeyUrl$/$ID:CreateOIDCClient_Misp_Valid_Smoke_sid_clientId$
       uniqueIdentifier: TC_IDA_BioAuthKycExchange_04
       description: Biometric left iris KYC exchange auth with valid VID
       role: resident
@@ -96,7 +96,7 @@ BioAuthKycExchange:
   
 }'
   auth_BioAuthKycExchange_Biometric_RightIris_With_Valid_UIN_Smoke_Pos:
-      endPoint: /idauthentication/v1/kyc-exchange/delegated/$partialPartnerKeyUrl$​/$ID:CreateOIDCClient_Misp_Valid_Smoke_sid_clientId$
+      endPoint: /idauthentication/v1/kyc-exchange/delegated/$partialPartnerKeyUrl$/$ID:CreateOIDCClient_Misp_Valid_Smoke_sid_clientId$
       uniqueIdentifier: TC_IDA_BioAuthKycExchange_05
       description: Biometric Right Iris KYC exchange auth with valid UIN
       role: resident
@@ -120,7 +120,7 @@ BioAuthKycExchange:
   
 }'
   auth_BioAuthKycExchange_Biometric_RightIris_With_Valid_VID_Smoke_Pos:
-      endPoint: /idauthentication/v1/kyc-exchange/delegated/$partialPartnerKeyUrl$​/$ID:CreateOIDCClient_Misp_Valid_Smoke_sid_clientId$
+      endPoint: /idauthentication/v1/kyc-exchange/delegated/$partialPartnerKeyUrl$/$ID:CreateOIDCClient_Misp_Valid_Smoke_sid_clientId$
       uniqueIdentifier: TC_IDA_BioAuthKycExchange_06
       description: Biometric Right Iris KYC exchange auth with valid VID
       role: resident
@@ -144,7 +144,7 @@ BioAuthKycExchange:
   
 }'
   auth_BioAuthKycExchange_Biometric_LeftIndexFinger_With_Valid_UIN_Smoke_Pos:
-      endPoint: /idauthentication/v1/kyc-exchange/delegated/$partialPartnerKeyUrl$​/$ID:CreateOIDCClient_Misp_Valid_Smoke_sid_clientId$
+      endPoint: /idauthentication/v1/kyc-exchange/delegated/$partialPartnerKeyUrl$/$ID:CreateOIDCClient_Misp_Valid_Smoke_sid_clientId$
       uniqueIdentifier: TC_IDA_BioAuthKycExchange_07
       description: Biometric LeftIndexFinger KYC exchange auth with valid UIN
       role: resident
@@ -168,7 +168,7 @@ BioAuthKycExchange:
   
 }'
   auth_BioAuthKycExchange_Biometric_LeftIndexFinger_With_Valid_VID_Smoke_Pos:
-      endPoint: /idauthentication/v1/kyc-exchange/delegated/$partialPartnerKeyUrl$​/$ID:CreateOIDCClient_Misp_Valid_Smoke_sid_clientId$
+      endPoint: /idauthentication/v1/kyc-exchange/delegated/$partialPartnerKeyUrl$/$ID:CreateOIDCClient_Misp_Valid_Smoke_sid_clientId$
       uniqueIdentifier: TC_IDA_BioAuthKycExchange_08
       description: Biometric LeftIndexFinger KYC exchange auth with valid VID
       role: resident
@@ -192,7 +192,7 @@ BioAuthKycExchange:
   
 }'
   auth_BioAuthKycExchange_Biometric_RightIndexFinger_With_Valid_UIN_Smoke_Pos:
-      endPoint: /idauthentication/v1/kyc-exchange/delegated/$partialPartnerKeyUrl$​/$ID:CreateOIDCClient_Misp_Valid_Smoke_sid_clientId$
+      endPoint: /idauthentication/v1/kyc-exchange/delegated/$partialPartnerKeyUrl$/$ID:CreateOIDCClient_Misp_Valid_Smoke_sid_clientId$
       uniqueIdentifier: TC_IDA_BioAuthKycExchange_09
       description: Biometric LeftIndexFinger KYC exchange auth with valid UIN
       role: resident
@@ -216,7 +216,7 @@ BioAuthKycExchange:
   
 }'
   auth_BioAuthKycExchange_Biometric_RightIndexFinger_With_Valid_VID_Smoke_Pos:
-      endPoint: /idauthentication/v1/kyc-exchange/delegated/$partialPartnerKeyUrl$​/$ID:CreateOIDCClient_Misp_Valid_Smoke_sid_clientId$
+      endPoint: /idauthentication/v1/kyc-exchange/delegated/$partialPartnerKeyUrl$/$ID:CreateOIDCClient_Misp_Valid_Smoke_sid_clientId$
       uniqueIdentifier: TC_IDA_BioAuthKycExchange_10
       description: Biometric RightIndexFinger KYC exchange auth with valid VID
       role: resident
@@ -240,7 +240,7 @@ BioAuthKycExchange:
   
 }'
   auth_BioAuthKycExchange_Biometric_RightMiddleFinger_With_Valid_UIN_Smoke_Pos:
-      endPoint: /idauthentication/v1/kyc-exchange/delegated/$partialPartnerKeyUrl$​/$ID:CreateOIDCClient_Misp_Valid_Smoke_sid_clientId$
+      endPoint: /idauthentication/v1/kyc-exchange/delegated/$partialPartnerKeyUrl$/$ID:CreateOIDCClient_Misp_Valid_Smoke_sid_clientId$
       uniqueIdentifier: TC_IDA_BioAuthKycExchange_11
       description: Biometric RightMiddleFinger KYC exchange auth with valid UIN
       role: resident
@@ -264,7 +264,7 @@ BioAuthKycExchange:
   
 }'
   auth_BioAuthKycExchange_Biometric_RightMiddleFinger_With_Valid_VID_Smoke_Pos:
-      endPoint: /idauthentication/v1/kyc-exchange/delegated/$partialPartnerKeyUrl$​/$ID:CreateOIDCClient_Misp_Valid_Smoke_sid_clientId$
+      endPoint: /idauthentication/v1/kyc-exchange/delegated/$partialPartnerKeyUrl$/$ID:CreateOIDCClient_Misp_Valid_Smoke_sid_clientId$
       uniqueIdentifier: TC_IDA_BioAuthKycExchange_12
       description: Biometric RightMiddleFinger KYC exchange auth with valid VID
       role: resident
@@ -288,7 +288,7 @@ BioAuthKycExchange:
   
 }'
   auth_BioAuthKycExchange_Biometric_LeftMiddleFinger_With_Valid_UIN_Smoke_Pos:
-      endPoint: /idauthentication/v1/kyc-exchange/delegated/$partialPartnerKeyUrl$​/$ID:CreateOIDCClient_Misp_Valid_Smoke_sid_clientId$
+      endPoint: /idauthentication/v1/kyc-exchange/delegated/$partialPartnerKeyUrl$/$ID:CreateOIDCClient_Misp_Valid_Smoke_sid_clientId$
       uniqueIdentifier: TC_IDA_BioAuthKycExchange_13
       description: Biometric LeftMiddleFinger KYC exchange auth with valid UIN
       role: resident
@@ -312,7 +312,7 @@ BioAuthKycExchange:
   
 }'
   auth_BioAuthKycExchange_Biometric_LeftMiddleFinger_With_Valid_VID_Smoke_Pos:
-      endPoint: /idauthentication/v1/kyc-exchange/delegated/$partialPartnerKeyUrl$​/$ID:CreateOIDCClient_Misp_Valid_Smoke_sid_clientId$
+      endPoint: /idauthentication/v1/kyc-exchange/delegated/$partialPartnerKeyUrl$/$ID:CreateOIDCClient_Misp_Valid_Smoke_sid_clientId$
       uniqueIdentifier: TC_IDA_BioAuthKycExchange_14
       description: Biometric LeftMiddleFinger KYC exchange auth with valid VID
       role: resident
@@ -336,7 +336,7 @@ BioAuthKycExchange:
   
 }'
   auth_BioAuthKycExchange_Biometric_RightLittleFinger_With_Valid_UIN_Smoke_Pos:
-      endPoint: /idauthentication/v1/kyc-exchange/delegated/$partialPartnerKeyUrl$​/$ID:CreateOIDCClient_Misp_Valid_Smoke_sid_clientId$
+      endPoint: /idauthentication/v1/kyc-exchange/delegated/$partialPartnerKeyUrl$/$ID:CreateOIDCClient_Misp_Valid_Smoke_sid_clientId$
       uniqueIdentifier: TC_IDA_BioAuthKycExchange_15
       description: Biometric RightLittleFinger KYC exchange auth with valid UIN
       role: resident
@@ -360,7 +360,7 @@ BioAuthKycExchange:
   
 }'
   auth_BioAuthKycExchange_Biometric_RightLittleFinger_With_Valid_VID_Smoke_Pos:
-      endPoint: /idauthentication/v1/kyc-exchange/delegated/$partialPartnerKeyUrl$​/$ID:CreateOIDCClient_Misp_Valid_Smoke_sid_clientId$
+      endPoint: /idauthentication/v1/kyc-exchange/delegated/$partialPartnerKeyUrl$/$ID:CreateOIDCClient_Misp_Valid_Smoke_sid_clientId$
       uniqueIdentifier: TC_IDA_BioAuthKycExchange_16
       description: Biometric RightLittleFinger KYC exchange auth with valid VID
       role: resident
@@ -384,7 +384,7 @@ BioAuthKycExchange:
   
 }'
   auth_BioAuthKycExchange_Biometric_LeftLittleFinger_With_Valid_UIN_Smoke_Pos:
-      endPoint: /idauthentication/v1/kyc-exchange/delegated/$partialPartnerKeyUrl$​/$ID:CreateOIDCClient_Misp_Valid_Smoke_sid_clientId$
+      endPoint: /idauthentication/v1/kyc-exchange/delegated/$partialPartnerKeyUrl$/$ID:CreateOIDCClient_Misp_Valid_Smoke_sid_clientId$
       uniqueIdentifier: TC_IDA_BioAuthKycExchange_17
       description: Biometric LeftLittleFinger KYC exchange auth with valid UIN
       role: resident
@@ -408,7 +408,7 @@ BioAuthKycExchange:
   
 }'
   auth_BioAuthKycExchange_Biometric_LeftLittleFinger_With_Valid_VID_Smoke_Pos:
-      endPoint: /idauthentication/v1/kyc-exchange/delegated/$partialPartnerKeyUrl$​/$ID:CreateOIDCClient_Misp_Valid_Smoke_sid_clientId$
+      endPoint: /idauthentication/v1/kyc-exchange/delegated/$partialPartnerKeyUrl$/$ID:CreateOIDCClient_Misp_Valid_Smoke_sid_clientId$
       uniqueIdentifier: TC_IDA_BioAuthKycExchange_18
       description: Biometric LeftLittleFinger KYC exchange auth with valid VID
       role: resident
@@ -432,7 +432,7 @@ BioAuthKycExchange:
   
 }'
   auth_BioAuthKycExchange_Biometric_RightThumb_With_Valid_UIN_Smoke_Pos:
-      endPoint: /idauthentication/v1/kyc-exchange/delegated/$partialPartnerKeyUrl$​/$ID:CreateOIDCClient_Misp_Valid_Smoke_sid_clientId$
+      endPoint: /idauthentication/v1/kyc-exchange/delegated/$partialPartnerKeyUrl$/$ID:CreateOIDCClient_Misp_Valid_Smoke_sid_clientId$
       uniqueIdentifier: TC_IDA_BioAuthKycExchange_19
       description: Biometric RightThumb KYC exchange auth with valid UIN
       role: resident
@@ -456,7 +456,7 @@ BioAuthKycExchange:
   
 }'
   auth_BioAuthKycExchange_Biometric_RightThumb_With_Valid_VID_Smoke_Pos:
-      endPoint: /idauthentication/v1/kyc-exchange/delegated/$partialPartnerKeyUrl$​/$ID:CreateOIDCClient_Misp_Valid_Smoke_sid_clientId$
+      endPoint: /idauthentication/v1/kyc-exchange/delegated/$partialPartnerKeyUrl$/$ID:CreateOIDCClient_Misp_Valid_Smoke_sid_clientId$
       uniqueIdentifier: TC_IDA_BioAuthKycExchange_20
       description: Biometric RightThumb KYC exchange auth with valid VID
       role: resident
@@ -480,7 +480,7 @@ BioAuthKycExchange:
   
 }'
   auth_BioAuthKycExchange_Biometric_LeftThumb_With_Valid_UIN_Smoke_Pos:
-      endPoint: /idauthentication/v1/kyc-exchange/delegated/$partialPartnerKeyUrl$​/$ID:CreateOIDCClient_Misp_Valid_Smoke_sid_clientId$
+      endPoint: /idauthentication/v1/kyc-exchange/delegated/$partialPartnerKeyUrl$/$ID:CreateOIDCClient_Misp_Valid_Smoke_sid_clientId$
       uniqueIdentifier: TC_IDA_BioAuthKycExchange_21
       description: Biometric LeftThumb KYC exchange auth with valid UIN
       role: resident
@@ -504,7 +504,7 @@ BioAuthKycExchange:
   
 }'
   auth_BioAuthKycExchange_Biometric_LeftThumb_With_Valid_VID_Smoke_Pos:
-      endPoint: /idauthentication/v1/kyc-exchange/delegated/$partialPartnerKeyUrl$​/$ID:CreateOIDCClient_Misp_Valid_Smoke_sid_clientId$
+      endPoint: /idauthentication/v1/kyc-exchange/delegated/$partialPartnerKeyUrl$/$ID:CreateOIDCClient_Misp_Valid_Smoke_sid_clientId$
       uniqueIdentifier: TC_IDA_BioAuthKycExchange_22
       description: Biometric RightThumb KYC exchange auth with valid VID
       role: resident
@@ -528,7 +528,7 @@ BioAuthKycExchange:
   
 }'
   auth_BioAuthKycExchange_Biometric_with_already_used_kyc_Token_VID_Neg:
-      endPoint: /idauthentication/v1/kyc-exchange/delegated/$partialPartnerKeyUrl$​/$ID:CreateOIDCClient_Misp_Valid_Smoke_sid_clientId$
+      endPoint: /idauthentication/v1/kyc-exchange/delegated/$partialPartnerKeyUrl$/$ID:CreateOIDCClient_Misp_Valid_Smoke_sid_clientId$
       uniqueIdentifier: TC_IDA_BioAuthKycExchange_23
       description: Kyc exchange with already used token
       role: resident
@@ -556,7 +556,7 @@ BioAuthKycExchange:
       ]
 }'
   auth_BioAuthKycExchange_Biometric_with_already_used_kyc_Token_UIN_Neg:
-      endPoint: /idauthentication/v1/kyc-exchange/delegated/$partialPartnerKeyUrl$​/$ID:CreateOIDCClient_Misp_Valid_Smoke_sid_clientId$
+      endPoint: /idauthentication/v1/kyc-exchange/delegated/$partialPartnerKeyUrl$/$ID:CreateOIDCClient_Misp_Valid_Smoke_sid_clientId$
       uniqueIdentifier: TC_IDA_BioAuthKycExchange_24
       description: Kyc exchange with already used token
       role: resident
@@ -584,7 +584,7 @@ BioAuthKycExchange:
       ]
 }'
   auth_BioAuthKycExchange_Biometric_using_different_individualIdKycAuth_UIN_Neg:
-      endPoint: /idauthentication/v1/kyc-exchange/delegated/$partialPartnerKeyUrl$​/$ID:CreateOIDCClient_Misp_Valid_Smoke_sid_clientId$
+      endPoint: /idauthentication/v1/kyc-exchange/delegated/$partialPartnerKeyUrl$/$ID:CreateOIDCClient_Misp_Valid_Smoke_sid_clientId$
       uniqueIdentifier: TC_IDA_BioAuthKycExchange_25
       description: Kyc exchange with different individualId with random UIN
       role: resident
@@ -612,7 +612,7 @@ BioAuthKycExchange:
       ]
 }'
   auth_BioAuthKycExchange_Biometric_using_different_individualIdKycAuth_VID_Neg:
-      endPoint: /idauthentication/v1/kyc-exchange/delegated/$partialPartnerKeyUrl$​/$ID:CreateOIDCClient_Misp_Valid_Smoke_sid_clientId$
+      endPoint: /idauthentication/v1/kyc-exchange/delegated/$partialPartnerKeyUrl$/$ID:CreateOIDCClient_Misp_Valid_Smoke_sid_clientId$
       uniqueIdentifier: TC_IDA_BioAuthKycExchange_26
       description: Kyc exchange with different individualId with random VID
       role: resident
@@ -640,7 +640,7 @@ BioAuthKycExchange:
       ]
 }'
   auth_BioAuthKycExchange_Biometric_differentIDType_Neg:
-      endPoint: /idauthentication/v1/kyc-exchange/delegated/$partialPartnerKeyUrl$​/$ID:CreateOIDCClient_Misp_Valid_Smoke_sid_clientId$
+      endPoint: /idauthentication/v1/kyc-exchange/delegated/$partialPartnerKeyUrl$/$ID:CreateOIDCClient_Misp_Valid_Smoke_sid_clientId$
       uniqueIdentifier: TC_IDA_BioAuthKycExchange_27
       description: KYC exchange auth with differentId type VID with the UIN used in kyc auth
       role: resident
