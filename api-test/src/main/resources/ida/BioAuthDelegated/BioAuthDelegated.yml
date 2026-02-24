@@ -32,7 +32,7 @@ BioAuthDelegated:
           "serialNo": "78467171",
           "type": "Face",
     "transactionId": "$TRANSACTIONID$",
-    "identityRequestTemplate": "ida/BioAuthDelegated/BioAuthIdentityEncrypt",
+    "identityRequestTemplate": "ida/BioAuth/BioAuthIdentityEncrypt",
     "identityRequestEncUrl": "/idauthentication/v1/internal/encrypt"
     }
     }'
@@ -72,7 +72,7 @@ BioAuthDelegated:
           "serialNo": "78467171",
           "type": "Face",
     "transactionId": "$TRANSACTIONID$",
-    "identityRequestTemplate": "ida/BioAuthDelegated/BioAuthIdentityEncrypt",
+    "identityRequestTemplate": "ida/BioAuth/BioAuthIdentityEncrypt",
     "identityRequestEncUrl": "/idauthentication/v1/internal/encrypt"
     }
     }'
@@ -112,7 +112,7 @@ BioAuthDelegated:
           "serialNo": "78467171",
           "type": "Iris",
     "transactionId": "$TRANSACTIONID$",
-    "identityRequestTemplate": "ida/BioAuthDelegated/BioAuthIdentityEncrypt",
+    "identityRequestTemplate": "ida/BioAuth/BioAuthIdentityEncrypt",
     "identityRequestEncUrl": "/idauthentication/v1/internal/encrypt"
     }
     }'
@@ -152,7 +152,7 @@ BioAuthDelegated:
           "serialNo": "78467171",
           "type": "Iris",
     "transactionId": "$TRANSACTIONID$",
-    "identityRequestTemplate": "ida/BioAuthDelegated/BioAuthIdentityEncrypt",
+    "identityRequestTemplate": "ida/BioAuth/BioAuthIdentityEncrypt",
     "identityRequestEncUrl": "/idauthentication/v1/internal/encrypt"
     }
     }'
@@ -192,7 +192,7 @@ BioAuthDelegated:
           "serialNo": "78467171",
           "type": "Iris",
     "transactionId": "$TRANSACTIONID$",
-    "identityRequestTemplate": "ida/BioAuthDelegated/BioAuthIdentityEncrypt",
+    "identityRequestTemplate": "ida/BioAuth/BioAuthIdentityEncrypt",
     "identityRequestEncUrl": "/idauthentication/v1/internal/encrypt"
     }
     }'
@@ -232,7 +232,7 @@ BioAuthDelegated:
           "serialNo": "78467171",
           "type": "Iris",
     "transactionId": "$TRANSACTIONID$",
-    "identityRequestTemplate": "ida/BioAuthDelegated/BioAuthIdentityEncrypt",
+    "identityRequestTemplate": "ida/BioAuth/BioAuthIdentityEncrypt",
     "identityRequestEncUrl": "/idauthentication/v1/internal/encrypt"
     }
     }'
@@ -272,7 +272,7 @@ BioAuthDelegated:
           "serialNo": "78467171",
           "type": "Finger",
     "transactionId": "$TRANSACTIONID$",
-    "identityRequestTemplate": "ida/BioAuthDelegated/BioAuthIdentityEncrypt",
+    "identityRequestTemplate": "ida/BioAuth/BioAuthIdentityEncrypt",
     "identityRequestEncUrl": "/idauthentication/v1/internal/encrypt"
     }
     }'
@@ -312,7 +312,7 @@ BioAuthDelegated:
           "serialNo": "78467171",
           "type": "Finger",
     "transactionId": "$TRANSACTIONID$",
-    "identityRequestTemplate": "ida/BioAuthDelegated/BioAuthIdentityEncrypt",
+    "identityRequestTemplate": "ida/BioAuth/BioAuthIdentityEncrypt",
     "identityRequestEncUrl": "/idauthentication/v1/internal/encrypt"
     }
     }'
@@ -352,7 +352,7 @@ BioAuthDelegated:
           "serialNo": "78467171",
           "type": "Finger",
     "transactionId": "$TRANSACTIONID$",
-    "identityRequestTemplate": "ida/BioAuthDelegated/BioAuthIdentityEncrypt",
+    "identityRequestTemplate": "ida/BioAuth/BioAuthIdentityEncrypt",
     "identityRequestEncUrl": "/idauthentication/v1/internal/encrypt"
     }
     }'
@@ -392,7 +392,7 @@ BioAuthDelegated:
           "serialNo": "78467171",
           "type": "Finger",
     "transactionId": "$TRANSACTIONID$",
-    "identityRequestTemplate": "ida/BioAuthDelegated/BioAuthIdentityEncrypt",
+    "identityRequestTemplate": "ida/BioAuth/BioAuthIdentityEncrypt",
     "identityRequestEncUrl": "/idauthentication/v1/internal/encrypt"
     }
     }'
@@ -432,7 +432,7 @@ BioAuthDelegated:
           "serialNo": "78467171",
           "type": "Finger",
     "transactionId": "$TRANSACTIONID$",
-    "identityRequestTemplate": "ida/BioAuthDelegated/BioAuthIdentityEncrypt",
+    "identityRequestTemplate": "ida/BioAuth/BioAuthIdentityEncrypt",
     "identityRequestEncUrl": "/idauthentication/v1/internal/encrypt"
     }
     }'
@@ -472,7 +472,7 @@ BioAuthDelegated:
           "serialNo": "78467171",
           "type": "Finger",
     "transactionId": "$TRANSACTIONID$",
-    "identityRequestTemplate": "ida/BioAuthDelegated/BioAuthIdentityEncrypt",
+    "identityRequestTemplate": "ida/BioAuth/BioAuthIdentityEncrypt",
     "identityRequestEncUrl": "/idauthentication/v1/internal/encrypt"
     }
     }'
@@ -512,7 +512,7 @@ BioAuthDelegated:
           "serialNo": "78467171",
           "type": "Finger",
     "transactionId": "$TRANSACTIONID$",
-    "identityRequestTemplate": "ida/BioAuthDelegated/BioAuthIdentityEncrypt",
+    "identityRequestTemplate": "ida/BioAuth/BioAuthIdentityEncrypt",
     "identityRequestEncUrl": "/idauthentication/v1/internal/encrypt"
     }
     }'
@@ -552,7 +552,7 @@ BioAuthDelegated:
           "serialNo": "78467171",
           "type": "Finger",
     "transactionId": "$TRANSACTIONID$",
-    "identityRequestTemplate": "ida/BioAuthDelegated/BioAuthIdentityEncrypt",
+    "identityRequestTemplate": "ida/BioAuth/BioAuthIdentityEncrypt",
     "identityRequestEncUrl": "/idauthentication/v1/internal/encrypt"
     }
     }'
@@ -592,7 +592,7 @@ BioAuthDelegated:
           "serialNo": "78467171",
           "type": "Finger",
     "transactionId": "$TRANSACTIONID$",
-    "identityRequestTemplate": "ida/BioAuthDelegated/BioAuthIdentityEncrypt",
+    "identityRequestTemplate": "ida/BioAuth/BioAuthIdentityEncrypt",
     "identityRequestEncUrl": "/idauthentication/v1/internal/encrypt"
     }
     }'
@@ -632,7 +632,7 @@ BioAuthDelegated:
           "serialNo": "78467171",
           "type": "Finger",
     "transactionId": "$TRANSACTIONID$",
-    "identityRequestTemplate": "ida/BioAuthDelegated/BioAuthIdentityEncrypt",
+    "identityRequestTemplate": "ida/BioAuth/BioAuthIdentityEncrypt",
     "identityRequestEncUrl": "/idauthentication/v1/internal/encrypt"
     }
     }'
@@ -672,7 +672,7 @@ BioAuthDelegated:
           "serialNo": "78467171",
           "type": "Finger",
     "transactionId": "$TRANSACTIONID$",
-    "identityRequestTemplate": "ida/BioAuthDelegated/BioAuthIdentityEncrypt",
+    "identityRequestTemplate": "ida/BioAuth/BioAuthIdentityEncrypt",
     "identityRequestEncUrl": "/idauthentication/v1/internal/encrypt"
     }
     }'
@@ -712,7 +712,7 @@ BioAuthDelegated:
           "serialNo": "78467171",
           "type": "Finger",
     "transactionId": "$TRANSACTIONID$",
-    "identityRequestTemplate": "ida/BioAuthDelegated/BioAuthIdentityEncrypt",
+    "identityRequestTemplate": "ida/BioAuth/BioAuthIdentityEncrypt",
     "identityRequestEncUrl": "/idauthentication/v1/internal/encrypt"
     }
     }'
@@ -752,7 +752,7 @@ BioAuthDelegated:
           "serialNo": "78467171",
           "type": "Finger",
     "transactionId": "$TRANSACTIONID$",
-    "identityRequestTemplate": "ida/BioAuthDelegated/BioAuthIdentityEncrypt",
+    "identityRequestTemplate": "ida/BioAuth/BioAuthIdentityEncrypt",
     "identityRequestEncUrl": "/idauthentication/v1/internal/encrypt"
     }
     }'
@@ -792,7 +792,7 @@ BioAuthDelegated:
           "serialNo": "78467171",
           "type": "Finger",
     "transactionId": "$TRANSACTIONID$",
-    "identityRequestTemplate": "ida/BioAuthDelegated/BioAuthIdentityEncrypt",
+    "identityRequestTemplate": "ida/BioAuth/BioAuthIdentityEncrypt",
     "identityRequestEncUrl": "/idauthentication/v1/internal/encrypt"
     }
     }'
@@ -832,7 +832,7 @@ BioAuthDelegated:
           "serialNo": "78467171",
           "type": "Finger",
     "transactionId": "$TRANSACTIONID$",
-    "identityRequestTemplate": "ida/BioAuthDelegated/BioAuthIdentityEncrypt",
+    "identityRequestTemplate": "ida/BioAuth/BioAuthIdentityEncrypt",
     "identityRequestEncUrl": "/idauthentication/v1/internal/encrypt"
     }
     }'
@@ -872,7 +872,7 @@ BioAuthDelegated:
           "serialNo": "78467171",
           "type": "Finger",
     "transactionId": "$TRANSACTIONID$",
-    "identityRequestTemplate": "ida/BioAuthDelegated/BioAuthIdentityEncrypt",
+    "identityRequestTemplate": "ida/BioAuth/BioAuthIdentityEncrypt",
     "identityRequestEncUrl": "/idauthentication/v1/internal/encrypt"
     }
     }'
@@ -912,7 +912,7 @@ BioAuthDelegated:
           "serialNo": "78467171",
           "type": "Finger",
     "transactionId": "$TRANSACTIONID$",
-    "identityRequestTemplate": "ida/BioAuthDelegated/BioAuthIdentityEncrypt",
+    "identityRequestTemplate": "ida/BioAuth/BioAuthIdentityEncrypt",
     "identityRequestEncUrl": "/idauthentication/v1/internal/encrypt"
     }
     }'
@@ -952,7 +952,7 @@ BioAuthDelegated:
           "serialNo": "78467171",
           "type": "Finger",
     "transactionId": "$TRANSACTIONID$",
-    "identityRequestTemplate": "ida/BioAuthDelegated/BioAuthIdentityEncrypt",
+    "identityRequestTemplate": "ida/BioAuth/BioAuthIdentityEncrypt",
     "identityRequestEncUrl": "/idauthentication/v1/internal/encrypt"
     }
     }'
@@ -992,7 +992,7 @@ BioAuthDelegated:
           "serialNo": "78467171",
           "type": "Finger",
     "transactionId": "$TRANSACTIONID$",
-    "identityRequestTemplate": "ida/BioAuthDelegated/BioAuthIdentityEncrypt",
+    "identityRequestTemplate": "ida/BioAuth/BioAuthIdentityEncrypt",
     "identityRequestEncUrl": "/idauthentication/v1/internal/encrypt"
     }
     }'
