@@ -80,7 +80,6 @@
 				name="io.mosip.testrig.apirig.auth.testscripts.MultiFactorAuthNew" />
 		</classes>
 	</test>
-
 	<test name="OtpAuth">
 		<parameter name="ymlFile" value="ida/OtpAuth/OtpAuth2.yml" />
 		<parameter name="isInternal" value="false" />
