@@ -16,7 +16,7 @@ OtpAuthKycExchange:
         "id": "mosip.identity.kycexchange",
         "version": "1.0",
         "kycToken": "$ID:OtpAuthDelegated_OTP_Auth_With_Valid_UIN_Smoke_Pos_Sid_kycToken$",
-        "consentObtained": [{consentObtainedValue: "gender"}, {consentObtainedValue: "birthdate"}],
+        "consentObtained": [{"consentObtainedValue": "gender"}, {"consentObtainedValue": "birthdate"}],
         "locales": [{localesValue: "eng"}],
         "respType": "JWE"
     }'
@@ -40,7 +40,7 @@ OtpAuthKycExchange:
         "id": "mosip.identity.kycexchange",
         "version": "1.0",
         "kycToken": "$ID:OtpAuthDelegated_OTP_Auth_With_Valid_VID_Smoke_Pos_Sid_kycToken$",
-        "consentObtained": [{consentObtainedValue: "gender"}, {consentObtainedValue: "birthdate"}],
+        "consentObtained": [{"consentObtainedValue": "gender"}, {"consentObtainedValue": "birthdate"}],
         "locales": [{localesValue: "eng"}],
         "respType": "JWE"
     }'
@@ -64,7 +64,7 @@ OtpAuthKycExchange:
         "id": "mosip.identity.kycexchange",
         "version": "1.0",
         "kycToken": "$ID:OtpAuthDelegated_OTP_Auth_With_Optional_individualIdType_VID_Sid_kycToken$",
-        "consentObtained": [{consentObtainedValue: "gender"}, {consentObtainedValue: "birthdate"}],
+        "consentObtained": [{"consentObtainedValue": "gender"}, {"consentObtainedValue": "birthdate"}],
         "locales": [{localesValue: "eng"}],
         "respType": "JWE"
     }'
@@ -88,7 +88,7 @@ OtpAuthKycExchange:
         "id": "mosip.identity.kycexchange",
         "version": "1.0",
         "kycToken": "$ID:OtpAuthDelegated_OTP_Auth_With_Missing_Optional_Field_individualIdType_VID_Sid_kycToken$",
-        "consentObtained": [{consentObtainedValue: "gender"}, {consentObtainedValue: "birthdate"}],
+        "consentObtained": [{"consentObtainedValue": "gender"}, {"consentObtainedValue": "birthdate"}],
         "locales": [{localesValue: "eng"}],
         "respType": "JWE"
     }'
@@ -112,7 +112,7 @@ OtpAuthKycExchange:
         "id": "mosip.identity.kycexchange",
         "version": "1.0",
         "kycToken": "$ID:OtpAuthDelegated_OTP_Auth_With_locked_email_Smoke_Pos_Sid_kycToken$",
-        "consentObtained": [{consentObtainedValue: "gender"}, {consentObtainedValue: "birthdate"}],
+        "consentObtained": [{"consentObtainedValue": "gender"}, {"consentObtainedValue": "birthdate"}],
         "locales": [{localesValue: "eng"}],
         "respType": "JWE"
     }'
@@ -136,7 +136,7 @@ OtpAuthKycExchange:
         "id": "mosip.identity.kycexchange",
         "version": "1.0",
         "kycToken": "$ID:OtpAuthDelegated_OTP_Auth_With_locked_phone_Smoke_Pos_Sid_kycToken$",
-        "consentObtained": [{consentObtainedValue: "gender"}, {consentObtainedValue: "birthdate"}],
+        "consentObtained": [{"consentObtainedValue": "gender"}, {"consentObtainedValue": "birthdate"}],
         "locales": [{localesValue: "eng"}],
         "respType": "JWE"
     }'
