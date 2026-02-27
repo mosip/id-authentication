@@ -28,6 +28,7 @@ import io.mosip.testrig.apirig.utils.AdminTestException;
 import io.mosip.testrig.apirig.utils.AuthenticationTestException;
 import io.mosip.testrig.apirig.utils.EncryptionDecrptionUtil;
 import io.mosip.testrig.apirig.utils.FileUtil;
+import io.mosip.testrig.apirig.utils.NotificationListener;
 import io.mosip.testrig.apirig.utils.OutputValidationUtil;
 import io.mosip.testrig.apirig.utils.PartnerRegistration;
 import io.mosip.testrig.apirig.utils.ReportUtil;
@@ -125,6 +126,7 @@ public class OtpAuthNew extends IdAuthenticationUtil implements ITest {
 		}
 		
 		Response otpResponse = null;
+		NotificationListener.markRequestStart();
 		if(isInternal)
 			otpResponse = postRequestWithCookieAuthHeaderAndSignature(ApplnURI + sendOtpEndPoint, getJsonFromTemplate(otpReqJson.toString(), sendOtpReqTemplate), COOKIENAME, "resident", testCaseDTO.getTestCaseName());
 		else
@@ -193,6 +195,7 @@ public class OtpAuthNew extends IdAuthenticationUtil implements ITest {
 	@AfterMethod(alwaysRun = true)
 	public void setResultTestName(ITestResult result) {
 		result.setAttribute("TestCaseName", testCaseName);
+		NotificationListener.markRequestRemove();
 	}
 
 	@AfterClass

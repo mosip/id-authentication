@@ -28,6 +28,7 @@ import io.mosip.testrig.apirig.testrunner.HealthChecker;
 import io.mosip.testrig.apirig.utils.AdminTestException;
 import io.mosip.testrig.apirig.utils.AuthenticationTestException;
 import io.mosip.testrig.apirig.utils.GlobalConstants;
+import io.mosip.testrig.apirig.utils.NotificationListener;
 import io.mosip.testrig.apirig.utils.OutputValidationUtil;
 import io.mosip.testrig.apirig.utils.ReportUtil;
 import io.mosip.testrig.apirig.utils.SecurityXSSException;
@@ -108,6 +109,7 @@ public class PostWithBodyWithOtpGenerate extends IdAuthenticationUtil implements
 		int maxLoopCount = Integer.parseInt(properties.getProperty("uinGenMaxLoopCount"));
 		int currLoopCount = 0;
 		while (currLoopCount < maxLoopCount) {
+			NotificationListener.markRequestStart();
 			otpResponse = postWithBodyAndCookie(ApplnURI + sendOtpEndPoint,
 					getJsonFromTemplate(otpReqJson.toString(), sendOtpReqTemplate), COOKIENAME,
 					GlobalConstants.RESIDENT, testCaseDTO.getTestCaseName());
@@ -186,5 +188,6 @@ public class PostWithBodyWithOtpGenerate extends IdAuthenticationUtil implements
 	@AfterMethod(alwaysRun = true)
 	public void setResultTestName(ITestResult result) {
 		result.setAttribute("TestCaseName", testCaseName);
+		NotificationListener.markRequestRemove();
 	}
 }
