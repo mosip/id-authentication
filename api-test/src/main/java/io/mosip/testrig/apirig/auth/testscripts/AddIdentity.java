@@ -125,9 +125,7 @@ public class AddIdentity extends IdAuthenticationUtil implements ITest {
 			String picture = properties.getProperty("picturevalue");
 			list.add(picture);
 			attrmap.put("picture", list);
-			KeycloakUserManager.createVidUsers(IdAuthConfigManager.getproperty("new_Resident_User"),
-					IdAuthConfigManager.getproperty("new_Resident_Password"), IdAuthConfigManager.getproperty("new_Resident_Role"),
-					attrmap);
+			KeycloakUserManager.createVidUsers(IdAuthConfigManager.getproperty("new_Resident_User"), attrmap);
 		}
 
 		String jsonInput = testCaseDTO.getInput();
