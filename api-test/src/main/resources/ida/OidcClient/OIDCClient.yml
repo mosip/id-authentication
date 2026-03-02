@@ -2,7 +2,7 @@ CreateOIDCClient:
    auth_CreateOIDCClient_Misp_Valid_Smoke_sid:
       endPoint: /v1/partnermanager/oidc/client
       uniqueIdentifier: TC_PMS_CreateOIDCClient_01
-      description: Create OIDC client Misp valid details
+      description: Verify that OIDC client creation succeeds for a valid MISP partner
       role: partner
       restMethod: post
       inputTemplate: ida/OidcClient/OIDCClient

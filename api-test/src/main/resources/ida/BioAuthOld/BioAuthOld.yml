@@ -2,7 +2,7 @@ BioAuth:
   auth_BioAuth_Biometric_Face_With_Valid_Smoke_Pos:
       endPoint: /idauthentication/v1/auth/$partnerKeyURL$
       uniqueIdentifier: TC_IDA_BioAuth_01
-      description: Biometric face auth with valid UIN
+      description: Validate the biometric face authentication for a valid UIN
       role: resident
       restMethod: post
       inputTemplate: ida/BioAuth/bioAuth
@@ -42,7 +42,7 @@ BioAuth:
   auth_BioAuth_Biometric_RingFinger_With_Valid_Smoke_Pos:
       endPoint: /idauthentication/v1/auth/$partnerKeyURL$
       uniqueIdentifier: TC_IDA_BioAuth_05
-      description: Bio auth with RingFinger using valid UIN
+      description: Validate the biometric ring finger authentication for a valid UIN
       role: resident
       restMethod: post
       inputTemplate: ida/BioAuth/bioAuth
@@ -82,7 +82,7 @@ BioAuth:
   auth_BioAuth_Biometric_LeftMiddleFingerr_With_Valid_Smoke_Pos:
       endPoint: /idauthentication/v1/auth/$partnerKeyURL$
       uniqueIdentifier: TC_IDA_BioAuth_06
-      description: Bio auth with LeftMiddleFinger using valid UIN
+      description: Validate the biometric authentication using the left middle finger for a valid UIN
       role: resident
       restMethod: post
       inputTemplate: ida/BioAuth/bioAuth
@@ -122,7 +122,7 @@ BioAuth:
   auth_BioAuth_Biometric_LeftIndexFingerr_With_Valid_Smoke_Pos:
       endPoint: /idauthentication/v1/auth/$partnerKeyURL$
       uniqueIdentifier: TC_IDA_BioAuth_07
-      description: Bio auth with LeftIndexFinger using valid UIN
+      description: Validate the biometric authentication using the left index finger for a valid UIN
       role: resident
       restMethod: post
       inputTemplate: ida/BioAuth/bioAuth
@@ -162,7 +162,7 @@ BioAuth:
   auth_BioAuth_Biometric_LeftLittleFinger_With_Valid_Smoke_Pos:
       endPoint: /idauthentication/v1/auth/$partnerKeyURL$
       uniqueIdentifier: TC_IDA_BioAuth_08
-      description: Bio auth with LeftLittleFinger using valid UIN
+      description: Validate the biometric authentication using the left little finger for a valid UIN
       role: resident
       restMethod: post
       inputTemplate: ida/BioAuth/bioAuth
@@ -202,7 +202,7 @@ BioAuth:
   auth_BioAuth_Biometric_RightIndexFinger_With_Valid_Smoke_Pos:
       endPoint: /idauthentication/v1/auth/$partnerKeyURL$
       uniqueIdentifier: TC_IDA_BioAuth_09
-      description: Bio auth with RightIndexFinger using valid UIN
+      description: Validate the biometric authentication using the right index finger for a valid UIN
       role: resident
       restMethod: post
       inputTemplate: ida/BioAuth/bioAuth
@@ -242,7 +242,7 @@ BioAuth:
   auth_BioAuth_Biometric_RightRingFinger_With_Valid_Smoke_Pos:
       endPoint: /idauthentication/v1/auth/$partnerKeyURL$
       uniqueIdentifier: TC_IDA_BioAuth_10
-      description: Bio auth with RightRingFinger using valid UIN
+      description: Validate the biometric authentication using the right ring finger for a valid UIN
       role: resident
       restMethod: post
       inputTemplate: ida/BioAuth/bioAuth
@@ -282,7 +282,7 @@ BioAuth:
   auth_BioAuth_Biometric_RightMiddleFinger_With_Valid_Smoke_Pos:
       endPoint: /idauthentication/v1/auth/$partnerKeyURL$
       uniqueIdentifier: TC_IDA_BioAuth_11
-      description: Bio auth with RightMiddleFinger using valid UIN
+      description: Validate the biometric authentication using the right middle finger for a valid UIN
       role: resident
       restMethod: post
       inputTemplate: ida/BioAuth/bioAuth
@@ -322,7 +322,7 @@ BioAuth:
   auth_BioAuth_Biometric_RightLittleFinger_With_Valid_Smoke_Pos:
       endPoint: /idauthentication/v1/auth/$partnerKeyURL$
       uniqueIdentifier: TC_IDA_BioAuth_12
-      description: Bio auth with RightLittleFinger using valid UIN
+      description: Validate the biometric authentication using the right little finger for a valid UIN
       role: resident
       restMethod: post
       inputTemplate: ida/BioAuth/bioAuth
@@ -362,7 +362,7 @@ BioAuth:
   auth_BioAuth_Biometric_LeftThumb_With_Valid_Smoke_Pos:
       endPoint: /idauthentication/v1/auth/$partnerKeyURL$
       uniqueIdentifier: TC_IDA_BioAuth_13
-      description: Bio auth with LeftThumb using valid UIN
+      description: Validate the biometric authentication using the left thumb for a valid UIN
       role: resident
       restMethod: post
       inputTemplate: ida/BioAuth/bioAuth
@@ -402,7 +402,7 @@ BioAuth:
   auth_BioAuth_Biometric_RightThumb_With_Valid_Smoke_Pos:
       endPoint: /idauthentication/v1/auth/$partnerKeyURL$
       uniqueIdentifier: TC_IDA_BioAuth_14
-      description: Bio auth with RightThumb using valid UIN
+      description: Validate the biometric authentication using the right thumb for a valid UIN
       role: resident
       restMethod: post
       inputTemplate: ida/BioAuth/bioAuth
@@ -442,7 +442,7 @@ BioAuth:
   auth_BioAuth_Biometric_RightIris_With_Valid_Smoke_Pos:
       endPoint: /idauthentication/v1/auth/$partnerKeyURL$
       uniqueIdentifier: TC_IDA_BioAuth_15
-      description: Bio auth with RightIris using valid UIN
+      description: Validate the biometric authentication using the right iris for a valid UIN
       role: resident
       restMethod: post
       inputTemplate: ida/BioAuth/bioAuth
@@ -482,7 +482,7 @@ BioAuth:
   auth_BioAuth_Biometric_LeftIris_With_Valid_Smoke_Pos:
       endPoint: /idauthentication/v1/auth/$partnerKeyURL$
       uniqueIdentifier: TC_IDA_BioAuth_16
-      description: Bio auth with LeftIris using valid UIN
+      description: Validate the biometric authentication using the left iris for a valid UIN
       role: resident
       restMethod: post
       inputTemplate: ida/BioAuth/bioAuth
@@ -522,7 +522,7 @@ BioAuth:
   auth_BioAuth_Biometric_Face_With_VID_Valid_Smoke_Pos:
       endPoint: /idauthentication/v1/auth/$partnerKeyURL$
       uniqueIdentifier: TC_IDA_BioAuth_17
-      description: Bio auth with Face using valid VID
+      description: Validate the biometric face authentication for a valid VID
       role: resident
       restMethod: post
       inputTemplate: ida/BioAuth/bioAuth
@@ -562,7 +562,7 @@ BioAuth:
   auth_BioAuth_Biometric_Face_With_RevokedVID_Valid_Smoke_Pos:
       endPoint: /idauthentication/v1/auth/$partnerKeyURL$
       uniqueIdentifier: TC_IDA_BioAuth_18
-      description: Bio auth with Face using revoked VID
+      description: Validate the biometric face authentication behavior when a revoked VID
       role: resident
       restMethod: post
       inputTemplate: ida/BioAuth/bioAuth
@@ -608,7 +608,7 @@ BioAuth:
   auth_BioAuth_Biometric_RingFinger_With_VID_Valid_Smoke_Pos:
       endPoint: /idauthentication/v1/auth/$partnerKeyURL$
       uniqueIdentifier: TC_IDA_BioAuth_19
-      description: Bio auth with RingFinger using VID
+      description: Verify successful biometric authentication using ring finger with a valid VID
       role: resident
       restMethod: post
       inputTemplate: ida/BioAuth/bioAuth
@@ -648,7 +648,7 @@ BioAuth:
   auth_BioAuth_Biometric_LeftMiddleFingerr_With_VID_Valid_Smoke_Pos:
       endPoint: /idauthentication/v1/auth/$partnerKeyURL$
       uniqueIdentifier: TC_IDA_BioAuth_20
-      description: Bio auth with LeftMiddleFinger using VID
+      description: Verify successful biometric authentication using left middle finger with a valid VID
       role: resident
       restMethod: post
       inputTemplate: ida/BioAuth/bioAuth
@@ -688,7 +688,7 @@ BioAuth:
   auth_BioAuth_Biometric_LeftIndexFingerr_With_VID_Valid_Smoke_Pos:
       endPoint: /idauthentication/v1/auth/$partnerKeyURL$
       uniqueIdentifier: TC_IDA_BioAuth_21
-      description: Bio auth with LeftIndexFinger using VID
+      description: Verify successful biometric authentication using left index finger with a valid VID
       role: resident
       restMethod: post
       inputTemplate: ida/BioAuth/bioAuth
@@ -728,7 +728,7 @@ BioAuth:
   auth_BioAuth_Biometric_LeftLittleFinger_With_Valid_VID_Smoke_Pos:
       endPoint: /idauthentication/v1/auth/$partnerKeyURL$
       uniqueIdentifier: TC_IDA_BioAuth_22
-      description: Bio auth with LeftLittleFinger using VID
+      description: Verify successful biometric authentication using left little finger with a valid VID
       role: resident
       restMethod: post
       inputTemplate: ida/BioAuth/bioAuth
@@ -768,7 +768,7 @@ BioAuth:
   auth_BioAuth_Biometric_RightIndexFinger_With_Valid_VID_Smoke_Pos:
       endPoint: /idauthentication/v1/auth/$partnerKeyURL$
       uniqueIdentifier: TC_IDA_BioAuth_23
-      description: Bio auth with RightIndexFinger using VID
+      description: Verify successful biometric authentication using right index finger with a valid VID
       role: resident
       restMethod: post
       inputTemplate: ida/BioAuth/bioAuth
@@ -808,7 +808,7 @@ BioAuth:
   auth_BioAuth_Biometric_RightRingFinger_With_Valid_VID_Smoke_Pos:
       endPoint: /idauthentication/v1/auth/$partnerKeyURL$
       uniqueIdentifier: TC_IDA_BioAuth_24
-      description: Bio auth with RightRingFinger using VID
+      description: Verify successful biometric authentication using right ring finger with a valid VID
       role: resident
       restMethod: post
       inputTemplate: ida/BioAuth/bioAuth
@@ -848,7 +848,7 @@ BioAuth:
   auth_BioAuth_Biometric_RightMiddleFinger_With_Valid_VID_Smoke_Pos:
       endPoint: /idauthentication/v1/auth/$partnerKeyURL$
       uniqueIdentifier: TC_IDA_BioAuth_25
-      description: Bio auth with RightMiddleFinger using VID
+      description: Verify successful biometric authentication using right middle finger with a valid VID
       role: resident
       restMethod: post
       inputTemplate: ida/BioAuth/bioAuth
@@ -888,7 +888,7 @@ BioAuth:
   auth_BioAuth_Biometric_RightLittleFinger_With_VID_Valid_Smoke_Pos:
       endPoint: /idauthentication/v1/auth/$partnerKeyURL$
       uniqueIdentifier: TC_IDA_BioAuth_26
-      description: Bio auth with RightLittleFinger using VID
+      description: Verify successful biometric authentication using right little finger with a valid VID
       role: resident
       restMethod: post
       inputTemplate: ida/BioAuth/bioAuth
@@ -928,7 +928,7 @@ BioAuth:
   auth_BioAuth_Biometric_LeftThumb_With_VID_Valid_Smoke_Pos:
       endPoint: /idauthentication/v1/auth/$partnerKeyURL$
       uniqueIdentifier: TC_IDA_BioAuth_27
-      description: Bio auth with LeftThumb using VID
+      description: Verify successful biometric authentication using left thumb with a valid VID
       role: resident
       restMethod: post
       inputTemplate: ida/BioAuth/bioAuth
@@ -968,7 +968,7 @@ BioAuth:
   auth_BioAuth_Biometric_RightThumb_With_Valid_VID_Smoke_Pos:
       endPoint: /idauthentication/v1/auth/$partnerKeyURL$
       uniqueIdentifier: TC_IDA_BioAuth_28
-      description: Bio auth with RightThumb using VID
+      description: Verify successful biometric authentication using right thumb with a valid VID
       role: resident
       restMethod: post
       inputTemplate: ida/BioAuth/bioAuth
@@ -1008,7 +1008,7 @@ BioAuth:
   auth_BioAuth_Biometric_RightIris_With_Valid_VID_Smoke_Pos:
       endPoint: /idauthentication/v1/auth/$partnerKeyURL$
       uniqueIdentifier: TC_IDA_BioAuth_29
-      description: Bio auth with RightIris using VID
+      description: Verify successful biometric authentication using right iris with a valid VID
       role: resident
       restMethod: post
       inputTemplate: ida/BioAuth/bioAuth
@@ -1048,7 +1048,7 @@ BioAuth:
   auth_BioAuth_Biometric_LeftIris_With_Valid_VID_Smoke_Pos:
       endPoint: /idauthentication/v1/auth/$partnerKeyURL$
       uniqueIdentifier: TC_IDA_BioAuth_30
-      description: Bio auth with LeftIris using VID
+      description: Verify successful biometric authentication using left iris with a valid VID
       role: resident
       restMethod: post
       inputTemplate: ida/BioAuth/bioAuth
@@ -1088,7 +1088,7 @@ BioAuth:
   auth_BioAuth_Biometric_inValid_transactionID:
       endPoint: /idauthentication/v1/auth/$partnerKeyURL$
       uniqueIdentifier: TC_IDA_BioAuth_83
-      description: Bio auth with invalid transactionId using UIN
+      description: Verify that biometric authentication fails when an invalid transaction ID is provided
       role: resident
       restMethod: post
       inputTemplate: ida/BioAuth/bioAuth
@@ -1134,7 +1134,7 @@ BioAuth:
   auth_BioAuth_Biometric_blank_transactionID:
       endPoint: /idauthentication/v1/auth/$partnerKeyURL$
       uniqueIdentifier: TC_IDA_BioAuth_84
-      description: Bio auth with blank transactionId using UIN
+      description: Verify that biometric authentication fails when the transaction ID is blank
       role: resident
       restMethod: post
       inputTemplate: ida/BioAuth/bioAuth
@@ -1180,7 +1180,7 @@ BioAuth:
   auth_BioAuth_Biometric_inValid_individualIdType:
       endPoint: /idauthentication/v1/auth/$partnerKeyURL$
       uniqueIdentifier: TC_IDA_BioAuth_85
-      description: Bio auth with invalid individualIdType using UIN
+      description: Verify that biometric authentication fails when an invalid individual ID type is provided
       role: resident
       restMethod: post
       inputTemplate: ida/BioAuth/bioAuth
@@ -1226,7 +1226,7 @@ BioAuth:
   auth_BioAuth_Biometric_blank_individualIdType:
       endPoint: /idauthentication/v1/auth/$partnerKeyURL$
       uniqueIdentifier: TC_IDA_BioAuth_86
-      description: Bio auth with blank individualIdType using UIN
+      description: Verify that biometric authentication fails when the individual ID type is blank
       role: resident
       restMethod: post
       inputTemplate: ida/BioAuth/bioAuth
@@ -1272,7 +1272,7 @@ BioAuth:
   auth_BioAuth_Biometric_Missing_Optional_Field_individualIdType:
       endPoint: /idauthentication/v1/auth/$partnerKeyURL$
       uniqueIdentifier: TC_IDA_BioAuth_87
-      description: Bio auth with missing individualIdType UIN
+      description: Verify that biometric authentication is processed successfully when the optional individual ID type field is missing
       role: resident
       restMethod: post
       inputTemplate: ida/BioAuth/bioAuth
@@ -1312,7 +1312,7 @@ BioAuth:
   auth_BioAuth_Biometric_invalid_bioSubType:
       endPoint: /idauthentication/v1/auth/$partnerKeyURL$
       uniqueIdentifier: TC_IDA_BioAuth_31
-      description: Bio auth with invalid bioSubType using UIN
+      description: Verify that biometric authentication fails when an invalid biometric subtype is provided
       role: resident
       restMethod: post
       inputTemplate: ida/BioAuth/bioAuth
@@ -1358,7 +1358,7 @@ BioAuth:
   auth_BioAuth_Biometric_blank_bioSubType:
       endPoint: /idauthentication/v1/auth/$partnerKeyURL$
       uniqueIdentifier: TC_IDA_BioAuth_32
-      description: Bio auth with blank bioSubType using UIN
+      description: Verify that biometric authentication fails when the biometric subtype is blank
       role: resident
       restMethod: post
       inputTemplate: ida/BioAuth/bioAuth
@@ -1404,7 +1404,7 @@ BioAuth:
   auth_BioAuth_Biometric_Blank_bioType:
       endPoint: /idauthentication/v1/auth/$partnerKeyURL$
       uniqueIdentifier: TC_IDA_BioAuth_33
-      description: Bio auth with blank bioType using UIN
+      description: Verify that biometric authentication fails when the biometric type is blank
       role: resident
       restMethod: post
       inputTemplate: ida/BioAuth/bioAuth
@@ -1450,7 +1450,7 @@ BioAuth:
   auth_BioAuth_Biometric_Missing_bioType:
       endPoint: /idauthentication/v1/auth/$partnerKeyURL$
       uniqueIdentifier: TC_IDA_BioAuth_88
-      description: Bio auth with missing bioType using UIN
+      description: Verify that biometric authentication fails when the biometric type field is missing
       role: resident
       restMethod: post
       inputTemplate: ida/BioAuth/bioAuth
@@ -1495,7 +1495,7 @@ BioAuth:
   auth_BioAuth_Biometric_Invalid_bioType:
       endPoint: /idauthentication/v1/auth/$partnerKeyURL$
       uniqueIdentifier: TC_IDA_BioAuth_89
-      description: Bio auth with invalid bioType using UIN
+      description: Verify that biometric authentication fails when an invalid biometric type is provided
       role: resident
       restMethod: post
       inputTemplate: ida/BioAuth/bioAuth
@@ -1540,7 +1540,7 @@ BioAuth:
   auth_BioAuth_Biometric_valid_bioType_and_invalid_digitalId_type:
       endPoint: /idauthentication/v1/auth/$partnerKeyURL$
       uniqueIdentifier: TC_IDA_BioAuth_34
-      description: Bio auth with valid bioType and invalid digitalId using UIN
+      description: Verify that biometric authentication fails when a valid biometric type is used with an invalid digital ID type
       role: resident
       restMethod: post
       inputTemplate: ida/BioAuth/bioAuth
@@ -1590,7 +1590,7 @@ BioAuth:
   auth_BioAuth_Biometric_invalid_biovalue:
       endPoint: /idauthentication/v1/auth/$partnerKeyURL$
       uniqueIdentifier: TC_IDA_BioAuth_35
-      description: Bio auth with invalid bioValue using UIN
+      description: Verify that biometric authentication fails when an invalid biometric value is provided
       role: resident
       restMethod: post
       inputTemplate: ida/BioAuth/bioAuth
@@ -1636,7 +1636,7 @@ BioAuth:
   auth_BioAuth_Face_With_FingerBio_Invalid:
       endPoint: /idauthentication/v1/auth/$partnerKeyURL$
       uniqueIdentifier: TC_IDA_BioAuth_90
-      description: Bio auth with face as bioType and iris as bioValue using UIN
+      description: Verify that authentication fails when face authentication is attempted using fingerprint biometric data
       role: resident
       restMethod: post
       inputTemplate: ida/BioAuth/bioAuth
@@ -1682,7 +1682,7 @@ BioAuth:
   auth_BioAuth_Iris_With_FaceBio_Invalid:
       endPoint: /idauthentication/v1/auth/$partnerKeyURL$
       uniqueIdentifier: TC_IDA_BioAuth_91
-      description: Bio auth with iris as bioType and face as bioValue using UIN
+      description: Verify that authentication fails when iris authentication is attempted using face biometric data
       role: resident
       restMethod: post
       inputTemplate: ida/BioAuth/bioAuth
@@ -1728,7 +1728,7 @@ BioAuth:
   auth_BioAuth_Finger_With_FaceBio_Invalid:
       endPoint: /idauthentication/v1/auth/$partnerKeyURL$
       uniqueIdentifier: TC_IDA_BioAuth_92
-      description: Bio auth with finger as bioType and face bioValue using UIN
+      description: Verify that authentication fails when fingerprint authentication is attempted using face biometric data
       role: resident
       restMethod: post
       inputTemplate: ida/BioAuth/bioAuth
@@ -1774,7 +1774,7 @@ BioAuth:
   auth_BioAuth_invalid_Bio-Type_value_as_FIR_instead_of_Finger_uin:
       endPoint: /idauthentication/v1/auth/$partnerKeyURL$
       uniqueIdentifier: TC_IDA_BioAuth_93
-      description: Bio auth with invalid bioType and invalid bioValue using UIN
+      description: Verify that biometric authentication fails when an invalid biometric type value (FIR instead of Finger) is provided
       role: resident
       restMethod: post
       inputTemplate: ida/BioAuth/bioAuth
@@ -1819,7 +1819,7 @@ BioAuth:
   auth_BioAuth_invalid_Bio-Type_value_as_IR_instead_of_IRIS_uin:
       endPoint: /idauthentication/v1/auth/$partnerKeyURL$
       uniqueIdentifier: TC_IDA_BioAuth_40
-      description: Bio auth with invalid bioType and invalid bioValue using UIN
+      description: Verify that biometric authentication fails when an invalid biometric type value (IR instead of IRIS) is provided
       role: resident
       restMethod: post
       inputTemplate: ida/BioAuth/bioAuth
@@ -1864,7 +1864,7 @@ BioAuth:
   auth_BioAuth_invalid_Bio-Type_value_as_FIR_instead_of_Finger_VID:
       endPoint: /idauthentication/v1/auth/$partnerKeyURL$
       uniqueIdentifier: TC_IDA_BioAuth_41
-      description: Bio auth with invalid bioType and invalid bioValue using VID
+      description: Verify that biometric authentication fails when an invalid biometric type value (FIR instead of Finger) is provided with VID
       role: resident
       restMethod: post
       inputTemplate: ida/BioAuth/bioAuth
@@ -1909,7 +1909,7 @@ BioAuth:
   auth_BioAuth_invalid_Bio-Type_value_as_IR_instead_of_IRIS_VID:
       endPoint: /idauthentication/v1/auth/$partnerKeyURL$
       uniqueIdentifier: TC_IDA_BioAuth_42
-      description: Bio auth with invalid bioType and invalid bioValue using VID
+      description: Verify that biometric authentication fails when an invalid biometric type value (IR instead of IRIS) is provided with VID
       role: resident
       restMethod: post
       inputTemplate: ida/BioAuth/bioAuth
@@ -1954,7 +1954,7 @@ BioAuth:
   auth_BioAuth_invalid_Bio-Type_value_as_FC_instead_of_FACE_VID:
       endPoint: /idauthentication/v1/auth/$partnerKeyURL$
       uniqueIdentifier: TC_IDA_BioAuth_44
-      description: Bio auth with invalid bioType and invalid bioValue using VID
+      description: Verify that biometric authentication fails when an invalid biometric type value (FC instead of FACE) is provided with VID
       role: resident
       restMethod: post
       inputTemplate: ida/BioAuth/bioAuth
@@ -1999,7 +1999,7 @@ BioAuth:
   auth_BioAuth_invalid_Bio-Type_value_as_FC_instead_of_FACE_UIN:
       endPoint: /idauthentication/v1/auth/$partnerKeyURL$
       uniqueIdentifier: TC_IDA_BioAuth_45
-      description: Bio auth with invalid bioType and invalid bioValue using UIN
+      description: Verify that biometric authentication fails when an invalid biometric type value (FC instead of FACE) is provided with UIN
       role: resident
       restMethod: post
       inputTemplate: ida/BioAuth/bioAuth
@@ -2044,7 +2044,7 @@ BioAuth:
   auth_BioAuth_Biometric_Face_Unlock_With_Valid_Smoke_Pos:
       endPoint: /idauthentication/v1/auth/$partnerKeyURL$
       uniqueIdentifier: TC_IDA_BioAuth_46
-      description: Bio face auth with unlocked UIN
+      description: Verify successful face authentication unlock using a valid VID
       role: resident
       restMethod: post
       inputTemplate: ida/BioAuth/bioAuth
@@ -2084,7 +2084,7 @@ BioAuth:
   auth_BioAuth_Biometric_Face_Lock_Permanent_:
       endPoint: /idauthentication/v1/auth/$partnerKeyURL$
       uniqueIdentifier: TC_IDA_BioAuth_51
-      description: Bio face auth with permanent locked UIN
+      description: Verify that face authentication is permanently locked after consecutive failed attempts or lock conditions are met
       role: resident
       restMethod: post
       inputTemplate: ida/BioAuth/bioAuth
@@ -2129,7 +2129,7 @@ BioAuth:
 }'
   auth_BioAuth_Biometric_time_difference_datetime_Smoke_Pos:
       endPoint: /idauthentication/v1/auth/$partnerKeyURL$
-      description: Biometric_time_difference_datetime
+      description: Verify successful biometric authentication when the request time and device time have a valid acceptable time difference
       role: resident
       restMethod: post
       inputTemplate: ida/BioAuth/bioAuth
@@ -2173,7 +2173,7 @@ BioAuth:
 }'
   auth_BioAuth_with_dummy_partnerkey_Pos:
       endPoint: /idauthentication/v1/auth/zY22wDwZxwMdlxTZRWrM50m4zBoOiMyUGY/45362768/27822828287
-      description: Bio auth with dummy partnerkey
+      description: Verify successful biometric authentication using a dummy partner key
       role: resident
       restMethod: post
       inputTemplate: ida/BioAuth/bioAuth
@@ -2223,7 +2223,7 @@ BioAuth:
 
   auth_BioAuth_Biometric_Face_Unlock_With_AllValid_Smoke_Pos:
       endPoint: /idauthentication/v1/auth/$partnerKeyURL$
-      description: Bio auth with unlocked UIN
+      description: Verify successful face authentication unlock when all required parameters are valid
       role: resident
       restMethod: post
       inputTemplate: ida/BioAuth/bioAuth
@@ -2262,7 +2262,7 @@ BioAuth:
 }'
   auth_BioAuth_Biometric_Face_Lock_Permanent_Valid_Smoke:
       endPoint: /idauthentication/v1/auth/$partnerKeyURL$
-      description: Bio auth with permanent locked UIN
+      description: Verify that face authentication is permanently locked even when all inputs are valid
       role: resident
       restMethod: post
       inputTemplate: ida/BioAuth/bioAuth

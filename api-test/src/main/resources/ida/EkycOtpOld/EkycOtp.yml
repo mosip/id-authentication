@@ -1,7 +1,7 @@
 EkycOtp:
   auth_EkycOtp_Auth_With_Valid_UIN_Smoke:
       endPoint: /idauthentication/v1/kyc/$partnerKeyURL$
-      description: Ekyc otp auth with valid UIN
+      description: Verify that eKYC OTP authentication succeeds when a valid UIN is provided
       role: resident
       restMethod: post
       inputTemplate: ida/EkycOtp/ekycOtp
@@ -35,7 +35,7 @@ EkycOtp:
 }'
   auth_EkycOtp_With_Missing_individualIdType_smoke:
       endPoint: /idauthentication/v1/kyc/$partnerKeyURL$
-      description: Ekyc otp auth with missing individualId Type
+      description: Verify that eKYC OTP authentication fails when the individual ID type is missing
       role: resident
       restMethod: post
       inputTemplate: ida/EkycOtp/ekycOtp
@@ -69,7 +69,7 @@ EkycOtp:
 }'
   auth_EkycOtp_With_Valid_VID_Smoke_Pos:
       endPoint: /idauthentication/v1/kyc/$partnerKeyURL$
-      description: Ekyc otp auth with valid VID
+      description: Verify that eKYC OTP authentication succeeds when a valid VID is provided
       role: resident
       restMethod: post
       inputTemplate: ida/EkycOtp/ekycOtp
@@ -103,7 +103,7 @@ EkycOtp:
 }'
   auth_EkycOtp_With_revoke_VID_Smoke_Pos:
       endPoint: /idauthentication/v1/kyc/$partnerKeyURL$
-      description: Ekyc otp auth with revoked VID
+      description: Verify that eKYC OTP authentication fails when a revoked VID is used
       role: resident
       restMethod: post
       inputTemplate: ida/EkycOtp/ekycOtp
@@ -142,7 +142,7 @@ EkycOtp:
 }'
   auth_EkycOtp_With_Invalid_individualId_neg:
       endPoint: /idauthentication/v1/kyc/$partnerKeyURL$
-      description: Ekyc otp auth with invalid individualId with UIN as individualId type
+      description: Verify that eKYC OTP authentication fails when an invalid individual ID is provided
       role: resident
       restMethod: post
       inputTemplate: ida/EkycOtp/ekycOtp
@@ -181,7 +181,7 @@ EkycOtp:
 }'
   auth_EkycOtp_With_Invalid_individualId_VID_neg:
       endPoint: /idauthentication/v1/kyc/$partnerKeyURL$
-      description: Ekyc otp auth with invalid individualId with VID as individualId type
+      description: Verify that eKYC OTP authentication fails when an invalid individual ID is provided along with a VID
       role: resident
       restMethod: post
       inputTemplate: ida/EkycOtp/ekycOtp
@@ -220,7 +220,7 @@ EkycOtp:
 }'
   auth_EkycOtp_With_Blank_individualId_neg:
       endPoint: /idauthentication/v1/kyc/$partnerKeyURL$
-      description: Ekyc otp auth with blank individualId using UIN
+      description: Verify that eKYC OTP authentication fails when the individual ID is blank
       role: resident
       restMethod: post
       inputTemplate: ida/EkycOtp/ekycOtp
@@ -259,7 +259,7 @@ EkycOtp:
 }'
   auth_EkycOtp_With_Blank_individualId_VID_neg:
       endPoint: /idauthentication/v1/kyc/$partnerKeyURL$
-      description: Ekyc otp auth with blank individualId using VID
+      description: Verify that eKYC OTP authentication fails when the individual ID is blank and a VID is provided
       role: resident
       restMethod: post
       inputTemplate: ida/EkycOtp/ekycOtp
@@ -298,7 +298,7 @@ EkycOtp:
 }'
   auth_EkycOtp_With_Missing_individualId_neg:
       endPoint: /idauthentication/v1/kyc/$partnerKeyURL$
-      description: Ekyc otp auth with missing individualId using UIN
+      description: Verify that eKYC OTP authentication fails when the individual ID is missing
       role: resident
       restMethod: post
       inputTemplate: ida/EkycOtp/ekycOtp
@@ -337,7 +337,7 @@ EkycOtp:
 }'
   auth_EkycOtp_With_Missing_individualId_VID_neg:
       endPoint: /idauthentication/v1/kyc/$partnerKeyURL$
-      description: Ekyc otp auth with missing individualId using VID
+      description: Verify that eKYC OTP authentication fails when the individual ID is missing and a VID is provided
       role: resident
       restMethod: post
       inputTemplate: ida/EkycOtp/ekycOtp
@@ -376,7 +376,7 @@ EkycOtp:
 }'
   auth_EkycOtp_With_Invalid_transactionId_neg:
       endPoint: /idauthentication/v1/kyc/$partnerKeyURL$
-      description: Ekyc otp auth with invalid transactionId using UIN
+      description: Verify that eKYC OTP authentication fails when an invalid transaction ID is provided
       role: resident
       restMethod: post
       inputTemplate: ida/EkycOtp/ekycOtp
@@ -415,7 +415,7 @@ EkycOtp:
 }'
   auth_EkycOtp_With_Invalid_transactionId_VID_neg:
       endPoint: /idauthentication/v1/kyc/$partnerKeyURL$
-      description: Ekyc otp auth with invalid transactionId using VID
+      description: Verify that eKYC OTP authentication fails when an invalid transaction ID is provided along with a VID
       role: resident
       restMethod: post
       inputTemplate: ida/EkycOtp/ekycOtp
@@ -454,7 +454,7 @@ EkycOtp:
 }'
   auth_EkycOtp_With_Blank_transactionId_neg:
       endPoint: /idauthentication/v1/kyc/$partnerKeyURL$
-      description: Ekyc otp auth with blank transactionId using UIN
+      description: Verify that eKYC OTP authentication fails when the transaction ID is blank
       role: resident
       restMethod: post
       inputTemplate: ida/EkycOtp/ekycOtp
@@ -493,7 +493,7 @@ EkycOtp:
 }'
   auth_EkycOtp_With_Blank_transactionId_VID_neg:
       endPoint: /idauthentication/v1/kyc/$partnerKeyURL$
-      description: Ekyc otp auth with blank transactionId using VID
+      description: Verify that eKYC OTP authentication fails when the transaction ID is blank and a VID is provided
       role: resident
       restMethod: post
       inputTemplate: ida/EkycOtp/ekycOtp
@@ -532,7 +532,7 @@ EkycOtp:
 }'
   auth_EkycOtp_With_Invalid_individualIdType_neg:
       endPoint: /idauthentication/v1/kyc/$partnerKeyURL$
-      description: Ekyc otp auth with invalid individualId type using UIN
+      description: Verify that eKYC OTP authentication fails when an invalid individual ID type is provided
       role: resident
       restMethod: post
       inputTemplate: ida/EkycOtp/ekycOtp
@@ -571,7 +571,7 @@ EkycOtp:
 }'
   auth_EkycOtp_With_Invalid_individualIdType_VID_neg:
       endPoint: /idauthentication/v1/kyc/$partnerKeyURL$
-      description: Ekyc otp auth with invalid individualId type using VID
+      description: Verify that eKYC OTP authentication fails when an invalid individual ID type is provided along with a VID
       role: resident
       restMethod: post
       inputTemplate: ida/EkycOtp/ekycOtp
@@ -610,7 +610,7 @@ EkycOtp:
 }'
   auth_EkycOtp_With_Blank_individualIdType_neg:
       endPoint: /idauthentication/v1/kyc/$partnerKeyURL$
-      description: Ekyc otp auth with blank individualId type using UIN
+      description: Verify that eKYC OTP authentication fails when the individual ID type is blank
       role: resident
       restMethod: post
       inputTemplate: ida/EkycOtp/ekycOtp
@@ -649,7 +649,7 @@ EkycOtp:
 }'
   auth_EkycOtp_With_Blank_individualIdType_VID_neg:
       endPoint: /idauthentication/v1/kyc/$partnerKeyURL$
-      description: Ekyc otp auth with blank individualId type using VID
+      description: Verify that eKYC OTP authentication fails when the individual ID type is blank and a VID is provided
       role: resident
       restMethod: post
       inputTemplate: ida/EkycOtp/ekycOtp
@@ -688,7 +688,7 @@ EkycOtp:
 }'
   auth_EkycOtp_With_Different_transaction_id_VID_neg:
       endPoint: /idauthentication/v1/kyc/$partnerKeyURL$
-      description: Ekyc otp auth with different transactionId using VID
+      description: Verify that eKYC OTP authentication fails when a transaction ID different from the original is provided along with a VID
       role: resident
       restMethod: post
       inputTemplate: ida/EkycOtp/ekycOtp
@@ -727,7 +727,7 @@ EkycOtp:
 }'
   auth_EkycOtp_With_Different_transaction_id_uin_neg:
       endPoint: /idauthentication/v1/kyc/$partnerKeyURL$
-      description: Ekyc otp auth with different transactionId using UIN
+      description: Verify that eKYC OTP authentication fails when a transaction ID different from the original is provided along with a UIN
       role: resident
       restMethod: post
       inputTemplate: ida/EkycOtp/ekycOtp
@@ -766,7 +766,7 @@ EkycOtp:
 }'
   auth_EkycOtp_With_invalid_partner:
       endPoint: /idauthentication/v1/kyc/zY22wDwZxwMdlxTZRWrM50m4zBoOiMyUGY/45362768/27822828287
-      description: Ekyc otp auth with invalid partner
+      description: Verify that eKYC OTP authentication fails when an invalid partner is used
       role: resident
       restMethod: post
       inputTemplate: ida/EkycOtp/ekycOtp

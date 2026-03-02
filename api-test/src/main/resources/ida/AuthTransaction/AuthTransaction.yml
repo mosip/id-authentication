@@ -2,7 +2,7 @@ AuthTransaction:
    auth_AuthTransaction_allValid_smoke_UIN:
       endPoint: /idauthentication/v1/internal/authTransactions/individualId/{individualId}
       uniqueIdentifier: TC_IDA_AuthTransaction_01
-      description: AuthTransaction with valid UIN
+      description: Validate the successful processing of an authentication transaction for a UIN when all input parameters are valid
       role: resident
       checkErrorsOnlyInResponse: true
       restMethod: get
@@ -17,7 +17,7 @@ AuthTransaction:
    auth_AuthTransaction_Invalid_Gender_demoAuth_UIN:
       endPoint: /idauthentication/v1/internal/authTransactions/individualId/{individualId}
       uniqueIdentifier: TC_IDA_AuthTransaction_02
-      description: AuthTransaction with invalid gender using valid UIN
+      description: Validate the authentication transaction for a UIN when an invalid gender value is provided in demographic authentication
       role: resident
       checkErrorsOnlyInResponse: true
       restMethod: get
@@ -33,7 +33,7 @@ AuthTransaction:
    auth_AuthTransaction_valid_Gender_demoAuth_UIN:
       endPoint: /idauthentication/v1/internal/authTransactions/individualId/{individualId}
       uniqueIdentifier: TC_IDA_AuthTransaction_03
-      description: AuthTransaction with valid gender using valid UIN
+      description: Validate the authentication transaction for a UIN when a valid gender value is provided in demographic authentication
       role: resident
       checkErrorsOnlyInResponse: true
       restMethod: get
@@ -49,7 +49,7 @@ AuthTransaction:
    auth_AuthTransaction_allValid_smoke_VID:
       endPoint: /idauthentication/v1/internal/authTransactions/individualId/{individualId}
       uniqueIdentifier: TC_IDA_AuthTransaction_04
-      description: AuthTransaction using valid VID
+      description: Validate the successful processing of an authentication transaction for a VID when all input parameters are valid
       role: resident
       checkErrorsOnlyInResponse: true
       restMethod: get
@@ -65,7 +65,7 @@ AuthTransaction:
    auth_AuthTransaction_WITH_deactivated_VID2:
       endPoint: /idauthentication/v1/internal/authTransactions/individualId/{individualId}
       uniqueIdentifier: TC_IDA_AuthTransaction_05
-      description: AuthTransaction with deactivated VID
+      description: Validate the authentication transaction behavior when a deactivated VID is used in the request
       role: resident
       checkErrorsOnlyInResponse: true
       restMethod: get
@@ -85,7 +85,7 @@ AuthTransaction:
    auth_AuthTransaction_allValid_VID3:
       endPoint: /idauthentication/v1/internal/authTransactions/individualId/{individualId}
       uniqueIdentifier: TC_IDA_AuthTransaction_06
-      description: AuthTransaction with valid perpetual VID
+      description: Validate the successful processing of an authentication transaction for a VID when all provided input parameters are valid
       role: resident
       checkErrorsOnlyInResponse: true
       restMethod: get
@@ -101,7 +101,7 @@ AuthTransaction:
    auth_AuthTransaction_allValid_UIN2:
       endPoint: /idauthentication/v1/internal/authTransactions/individualId/{individualId}
       uniqueIdentifier: TC_IDA_AuthTransaction_07
-      description: AuthTransaction with valid infant UIN
+      description: Validate the successful processing of an authentication transaction for a UIN when all provided input parameters are valid
       role: resident
       checkErrorsOnlyInResponse: true
       restMethod: get
@@ -116,7 +116,7 @@ AuthTransaction:
    auth_AuthTransaction_allValid_UIN3:
       endPoint: /idauthentication/v1/internal/authTransactions/individualId/{individualId}
       uniqueIdentifier: TC_IDA_AuthTransaction_01
-      description: AuthTransaction with valid UIN
+      description: Validate the successful processing of an authentication transaction for a UIN when all input parameters are valid
       role: resident
       checkErrorsOnlyInResponse: true
       restMethod: get
@@ -131,7 +131,7 @@ AuthTransaction:
    auth_AuthTransaction_allValid_UIN4:
       endPoint: /idauthentication/v1/internal/authTransactions/individualId/{individualId}
       uniqueIdentifier: TC_IDA_AuthTransaction_01
-      description: AuthTransaction with valid UIN
+      description: Validate the successful processing of an authentication transaction for a UIN when all input parameters are valid
       role: resident
       checkErrorsOnlyInResponse: true
       restMethod: get
@@ -146,7 +146,7 @@ AuthTransaction:
    auth_AuthTransaction_allValid_UIN5:
       endPoint: /idauthentication/v1/internal/authTransactions/individualId/{individualId}
       uniqueIdentifier: TC_IDA_AuthTransaction_01
-      description: AuthTransaction with valid UIN
+      description: Validate the successful processing of an authentication transaction for a UIN when all input parameters are valid
       role: resident
       checkErrorsOnlyInResponse: true
       restMethod: get
@@ -161,7 +161,7 @@ AuthTransaction:
    auth_AuthTransaction_allValid_UIN6:
       endPoint: /idauthentication/v1/internal/authTransactions/individualId/{individualId}
       uniqueIdentifier: TC_IDA_AuthTransaction_08
-      description: AuthTransaction with valid UIN
+      description: Validate the successful processing of an authentication transaction for a UIN when all input parameters are valid
       role: resident
       checkErrorsOnlyInResponse: true
       restMethod: get
@@ -176,7 +176,7 @@ AuthTransaction:
    auth_AuthTransaction_locked_BioIris_audit_UIN:
       endPoint: /idauthentication/v1/internal/authTransactions/individualId/{individualId}
       uniqueIdentifier: TC_IDA_AuthTransaction_09
-      description: AuthTransaction with UIN after iris auth with locked auth type
+      description: Validate the authentication transaction behavior for a locked UIN when biometric iris audit authentication is attempted
       role: resident
       checkErrorsOnlyInResponse: true
       restMethod: get
@@ -192,7 +192,7 @@ AuthTransaction:
    auth_AuthTransaction_locked_Face_audit_UIN:
       endPoint: /idauthentication/v1/internal/authTransactions/individualId/{individualId}
       uniqueIdentifier: TC_IDA_AuthTransaction_10
-      description: AuthTransaction with UIN after face auth with locked auth type
+      description: Validate the authentication transaction behavior for a locked UIN when face audit authentication is attempted
       role: resident
       checkErrorsOnlyInResponse: true
       restMethod: get
@@ -208,7 +208,7 @@ AuthTransaction:
    auth_AuthTransaction_locked_Demo_audit_UIN:
       endPoint: /idauthentication/v1/internal/authTransactions/individualId/{individualId}
       uniqueIdentifier: TC_IDA_AuthTransaction_11
-      description: AuthTransaction with UIN after demo auth with locked auth type
+      description: Validate the authentication transaction behavior for a locked UIN when demographic audit authentication is attempted
       role: resident
       checkErrorsOnlyInResponse: true
       restMethod: get
@@ -224,7 +224,7 @@ AuthTransaction:
    auth_AuthTransaction_EkyAuth1_audit_UIN:
       endPoint: /idauthentication/v1/internal/authTransactions/individualId/{individualId}
       uniqueIdentifier: TC_IDA_AuthTransaction_12
-      description: AuthTransaction with UIN after performing ekyc auth
+      description: Validate the authentication transaction for a UIN when eKYC authentication is performed under audit conditions
       role: resident
       checkErrorsOnlyInResponse: true
       restMethod: get
@@ -239,7 +239,7 @@ AuthTransaction:
    auth_AuthTransaction_EkyAuth2_audit_UIN:
       endPoint: /idauthentication/v1/internal/authTransactions/individualId/{individualId}
       uniqueIdentifier: TC_IDA_AuthTransaction_13
-      description: AuthTransaction with UIN after performing ekyc auth
+      description: Validate the authentication transaction for a UIN when an alternative eKYC authentication flow is performed under audit conditions
       role: resident
       checkErrorsOnlyInResponse: true
       restMethod: get
@@ -254,7 +254,7 @@ AuthTransaction:
    auth_AuthTransaction_addIdentity_createVid_audit_UIN:
       endPoint: /idauthentication/v1/internal/authTransactions/individualId/{individualId}
       uniqueIdentifier: TC_IDA_AuthTransaction_14
-      description: AuthTransaction with VID after creating vid
+      description: Validate the authentication transaction for a UIN when adding identity details and creating a VID under audit conditions
       role: resident
       checkErrorsOnlyInResponse: true
       restMethod: get
@@ -270,7 +270,7 @@ AuthTransaction:
    auth_AuthTransaction_addIdentity_updateIdentity_audit_UIN:
       endPoint: /idauthentication/v1/internal/authTransactions/individualId/{individualId}
       uniqueIdentifier: TC_IDA_AuthTransaction_15
-      description: AuthTransaction with UIN post updating identity
+      description: Validate the authentication transaction for a UIN when adding identity details and updating identity information under audit conditions
       role: resident
       checkErrorsOnlyInResponse: true
       restMethod: get
@@ -286,7 +286,7 @@ AuthTransaction:
    auth_AuthTransaction_createVid_retrieveVidbyUIN_audit_UIN:
       endPoint: /idauthentication/v1/internal/authTransactions/individualId/{individualId}
       uniqueIdentifier: TC_IDA_AuthTransaction_16
-      description: AuthTransaction with UIN after retrieving Vid by UIN
+      description: Validate the authentication transaction for a UIN when creating a VID and retrieving the VID using the UIN under audit conditions
       role: resident
       checkErrorsOnlyInResponse: true
       restMethod: get
@@ -302,7 +302,7 @@ AuthTransaction:
    auth_AuthTransaction_createVid_retrieveIdentity_audit_UIN:
       endPoint: /idauthentication/v1/internal/authTransactions/individualId/{individualId}
       uniqueIdentifier: TC_IDA_AuthTransaction_17
-      description: AuthTransaction with UIN after retrieving identity
+      description: Validate the authentication transaction for a UIN when creating a VID and retrieving identity details under audit conditions
       role: resident
       checkErrorsOnlyInResponse: true
       restMethod: get
@@ -318,7 +318,7 @@ AuthTransaction:
    auth_AuthTransaction_createVid_retrieveAuthTypeStatus_audit_UIN:
       endPoint: /idauthentication/v1/internal/authTransactions/individualId/{individualId}
       uniqueIdentifier: TC_IDA_AuthTransaction_18
-      description: AuthTransaction with UIN after retrieving auth type status
+      description: Validate the authentication transaction for a UIN when creating a VID and retrieving authentication type status under audit conditions
       role: resident
       checkErrorsOnlyInResponse: true
       restMethod: get
@@ -334,7 +334,7 @@ AuthTransaction:
    auth_AuthTransaction_vid_deactivate_reactivate_audit_UIN:
       endPoint: /idauthentication/v1/internal/authTransactions/individualId/{individualId}
       uniqueIdentifier: TC_IDA_AuthTransaction_19
-      description: AuthTransaction with reactivated valid UIN
+      description: Validate the authentication transaction for a UIN when deactivating and reactivating a VID under audit conditions
       role: resident
       checkErrorsOnlyInResponse: true
       restMethod: get
@@ -350,7 +350,7 @@ AuthTransaction:
    auth_AuthTransaction_draft_demoAuth_audit_UIN:
       endPoint: /idauthentication/v1/internal/authTransactions/individualId/{individualId}
       uniqueIdentifier: TC_IDA_AuthTransaction_20
-      description: AuthTransaction with drafted UIN
+      description: Validate the authentication transaction for a UIN when draft demographic authentication is performed under audit conditions
       role: resident
       checkErrorsOnlyInResponse: true
       restMethod: get
@@ -365,7 +365,7 @@ AuthTransaction:
    auth_AuthTransaction_draft_audit_UIN:
       endPoint: /idauthentication/v1/internal/authTransactions/individualId/{individualId}
       uniqueIdentifier: TC_IDA_AuthTransaction_21
-      description: AuthTransaction with drafted UIN
+      description: Validate the authentication transaction for a UIN when a draft authentication request is processed under audit conditions
       role: resident
       checkErrorsOnlyInResponse: true
       restMethod: get
@@ -380,7 +380,7 @@ AuthTransaction:
    auth_AuthTransaction_regenerateVID_audit_VID:
       endPoint: /idauthentication/v1/internal/authTransactions/individualId/{individualId}
       uniqueIdentifier: TC_IDA_AuthTransaction_22
-      description: AuthTransaction with regenerated valid perpetual VID
+      description: Validate the authentication transaction for a VID when regenerating the VID under audit conditions
       role: resident
       checkErrorsOnlyInResponse: true
       restMethod: get
@@ -396,7 +396,7 @@ AuthTransaction:
    auth_AuthTransaction_UnusedUIN_DemoAuth_audit_UIN:
       endPoint: /idauthentication/v1/internal/authTransactions/individualId/{individualId}
       uniqueIdentifier: TC_IDA_AuthTransaction_23
-      description: AuthTransaction with UIN after performing demo auth with unused UIN
+      description: Validate the authentication transaction for an unused UIN when demographic authentication is performed under audit conditions
       role: resident
       checkErrorsOnlyInResponse: true
       restMethod: get
@@ -415,7 +415,7 @@ AuthTransaction:
    auth_AuthTransaction_withCreatedUIN_audit_UIN:
       endPoint: /idauthentication/v1/internal/authTransactions/individualId/{individualId}
       uniqueIdentifier: TC_IDA_AuthTransaction_24
-      description: AuthTransaction with created UIN
+      description: Validate the authentication transaction for a UIN when using a newly created UIN under audit conditions
       role: resident
       checkErrorsOnlyInResponse: true
       restMethod: get
@@ -430,7 +430,7 @@ AuthTransaction:
    auth_AuthTransaction_withrevokedVID_audit_VID:
       endPoint: /idauthentication/v1/internal/authTransactions/individualId/{individualId}
       uniqueIdentifier: TC_IDA_AuthTransaction_25
-      description: AuthTransaction with revoked VID
+      description: Validate the authentication transaction for a VID when using a revoked VID under audit conditions
       role: resident
       checkErrorsOnlyInResponse: true
       restMethod: get

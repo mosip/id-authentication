@@ -2,7 +2,7 @@ AuthUnlock:
    auth_AuthUnLock_Valid_UIN_All:
       endPoint: /resident/v1/req/auth-unlock
       uniqueIdentifier: TC_IDA_AuthUnlock_01
-      description: unlock demo and bio-Face authType for UIN
+      description: Validate the successful unlocking of a valid UIN across all applicable scenarios
       role: resident
       checkErrorsOnlyInResponse: true
       restMethod: post
@@ -36,7 +36,7 @@ AuthUnlock:
    auth_AuthUnLock_Valid_UIN_DEMO_UNLOCK_All:
       endPoint: /resident/v1/req/auth-unlock
       uniqueIdentifier: TC_IDA_AuthUnlock_
-      description: unlock authTypes for UIN
+      description: Validate the successful unlocking of a valid UIN using demographic authentication across all applicable scenarios
       role: resident
       checkErrorsOnlyInResponse: true
       restMethod: post

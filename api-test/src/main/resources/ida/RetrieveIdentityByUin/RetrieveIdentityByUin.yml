@@ -2,7 +2,7 @@ RetrieveIdentity:
   auth_RetrieveIdentity_With_Valid_UIN_Smoke_Pos:
       endPoint: /idrepository/v1/identity/idvid/{id}
       uniqueIdentifier: TC_IDA_DependentTc_AuthTransaction_RetrieveIdentity_01
-      description: Retrieve Identity passing valid UIN
+      description: Verify that retrieving identity succeeds with a valid UIN
       role: idrepo
       checkErrorsOnlyInResponse: true
       restMethod: get

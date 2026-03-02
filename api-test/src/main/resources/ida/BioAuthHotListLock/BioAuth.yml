@@ -2,7 +2,7 @@ BioAuth:
   auth_BioAuth_Biometric_Face_With_blocked_UIN_Pos:
       endPoint: /idauthentication/v1/auth/$partnerKeyURL$
       uniqueIdentifier: TC_IDA_BioAuth_69
-      description: Biometric face auth with blocked UIN
+      description: Validate the biometric face authentication behavior when a blocked UIN is used
       role: resident
       restMethod: post
       additionalDependencies: TC_IDA_HotlistAPI_01,TC_IDA_HotlistAPI_06
@@ -43,7 +43,7 @@ BioAuth:
   auth_BioAuth_Biometric_Face_With_Locked_UIN_Pos:
       endPoint: /idauthentication/v1/auth/$partnerKeyURL$
       uniqueIdentifier: TC_IDA_BioAuth_80
-      description: Biometric face auth with locked UIN
+      description: Validate the biometric face authentication behavior when a locked UIN is used
       role: resident
       restMethod: post
       additionalDependencies: TC_IDA_AuthLock_01
@@ -84,7 +84,7 @@ BioAuth:
   auth_BioAuth_Biometric_Face_With_blocked_VID_Pos:
       endPoint: /idauthentication/v1/auth/$partnerKeyURL$
       uniqueIdentifier: TC_IDA_BioAuth_71
-      description: Biometric face auth with blocked VID
+      description: Validate the biometric face authentication behavior when a blocked VID is used
       role: resident
       restMethod: post
       additionalDependencies: TC_DependentModule_IdRepo_06,TC_IDA_HotlistAPI_07,TC_IDA_HotlistAPI_08
@@ -125,7 +125,7 @@ BioAuth:
   auth_BioAuth_Biometric_Face_With_blocked_deviceProviderId:
       endPoint: /idauthentication/v1/auth/$partnerKeyURL$
       uniqueIdentifier: TC_IDA_BioAuth_72
-      description: Biometric face auth with blocked deviceProviderId
+      description: Validate the biometric face authentication behavior when the deviceProviderId is blocked
       role: resident
       restMethod: post
       additionalDependencies: TC_IDA_HotlistAPI_11
@@ -166,7 +166,7 @@ BioAuth:
   auth_BioAuth_Biometric_RingFinger_With_blocked_deviceProviderId:
       endPoint: /idauthentication/v1/auth/$partnerKeyURL$
       uniqueIdentifier: TC_IDA_BioAuth_73
-      description: Biometric RingFinger auth with blocked deviceProviderId
+      description: Validate the biometric ring finger authentication behavior when the deviceProviderId is blocked
       role: resident
       restMethod: post
       additionalDependencies: TC_IDA_HotlistAPI_11
@@ -207,7 +207,7 @@ BioAuth:
   auth_BioAuth_Biometric_LeftIndexFingerr_With_blocked_deviceProviderId:
       endPoint: /idauthentication/v1/auth/$partnerKeyURL$
       uniqueIdentifier: TC_IDA_BioAuth_74
-      description: Biometric LeftIndexFinger auth with blocked deviceProviderId
+      description: Validate the biometric authentication using the left index finger when the deviceProviderId is blocked
       role: resident
       restMethod: post
       additionalDependencies: TC_IDA_HotlistAPI_11
@@ -248,7 +248,7 @@ BioAuth:
   auth_BioAuth_Biometric_IRIS_With_blocked_deviceProviderId:
       endPoint: /idauthentication/v1/auth/$partnerKeyURL$
       uniqueIdentifier: TC_IDA_BioAuth_75
-      description: Biometric Iris auth with blocked deviceProviderId
+      description: Validate the biometric iris authentication behavior when the deviceProviderId is blocked
       role: resident
       restMethod: post
       additionalDependencies: TC_IDA_HotlistAPI_11
@@ -289,7 +289,7 @@ BioAuth:
   auth_EkycBio_Face_With_blocked_deviceProviderId:
       endPoint: /idauthentication/v1/kyc/$ekycPartnerKeyURL$
       uniqueIdentifier: TC_IDA_BioAuth_76
-      description: Ekyc bio auth with face with blocked deviceProviderId
+      description: Validate the eKYC face biometric authentication behavior when the deviceProviderId is blocked
       role: resident
       restMethod: post
       additionalDependencies: TC_IDA_HotlistAPI_11
@@ -330,7 +330,7 @@ BioAuth:
   auth_EkycBio_RingFinger_With_blocked_deviceProviderId:
       endPoint: /idauthentication/v1/kyc/$ekycPartnerKeyURL$
       uniqueIdentifier: TC_IDA_BioAuth_77
-      description: Ekyc bio auth with RingFinger with blocked deviceProviderId
+      description: Validate the eKYC ring finger biometric authentication behavior when the deviceProviderId is blocked
       role: resident
       restMethod: post
       additionalDependencies: TC_IDA_HotlistAPI_11
@@ -371,7 +371,7 @@ BioAuth:
   auth_EkycBio_LeftMiddleFingerr_With_blocked_deviceProviderId:
       endPoint: /idauthentication/v1/kyc/$ekycPartnerKeyURL$
       uniqueIdentifier: TC_IDA_BioAuth_78
-      description: Ekyc bio auth with LeftMiddleFinger with blocked deviceProviderId
+      description: Validate the eKYC left middle finger biometric authentication behavior when the deviceProviderId is blocked
       role: resident
       restMethod: post
       additionalDependencies: TC_IDA_HotlistAPI_11
@@ -413,7 +413,7 @@ BioAuth:
   auth_EkycBio_RIGHTIRIS_With_blocked_deviceProviderId:
       endPoint: /idauthentication/v1/kyc/$ekycPartnerKeyURL$
       uniqueIdentifier: TC_IDA_BioAuth_79
-      description: Ekyc bio auth with RIGHTIRIS with blocked deviceProviderId
+      description: Validate the eKYC right iris biometric authentication behavior when the deviceProviderId is blocked
       role: resident
       restMethod: post
       additionalDependencies: TC_IDA_HotlistAPI_11

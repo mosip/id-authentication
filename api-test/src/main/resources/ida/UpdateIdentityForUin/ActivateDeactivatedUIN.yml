@@ -2,7 +2,7 @@ UpdateIdentityForUin:
   Auth_UpdateIdentityForUin_ACTIVATE_theDeactiavtedUIN_valid_smoke:
       endPoint: /idrepository/v1/identity/
       uniqueIdentifier: TC_IDA_UpdateIdentityForUin_04
-      description: Activate the Deactivated UIN
+      description: Verify that updating identity for a UIN successfully activates a previously deactivated UIN when all parameters are valid
       role: idrepo
       restMethod: patch
       inputTemplate: ida/UpdateIdentityForUin/updateIdentity
