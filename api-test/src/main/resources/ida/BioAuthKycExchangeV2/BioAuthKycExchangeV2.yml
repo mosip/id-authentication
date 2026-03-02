@@ -15,7 +15,7 @@ BioAuthKycExchangeV2:
         "individualIdType": "UIN",
         "id": "mosip.identity.kycexchange",
         "version": "1.0",
-        "kycToken": "$ID:BioAuthDelegatedV2_Biometric_Face_With_Valid_uin_Smoke_Pos_Sid_kycToken$",
+        "kycToken": "$ID:BioAuthDelegated_Biometric_Face_With_Valid_uin_Smoke_Pos_Sid_kycToken$",
         "locales": [{localesValue: "eng"}],
         "respType": "JWE"
     }'

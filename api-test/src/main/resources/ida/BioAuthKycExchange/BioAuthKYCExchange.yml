@@ -10,7 +10,7 @@ BioAuthKycExchange:
       outputTemplate: ida/BioAuthKycExchange/BioAuthKYCExchangeResult
       input: '{
         "requestTime": "$TIMESTAMP$",
-        "individualId": "$ID:AddIdentity_For_Kyc_Delegated_Bio_Auth_smoke_Pos_UIN$",
+        "individualId": "$ID:AddIdentity_For_Kyc_Delegated_Bio_Auth_Smoke_Pos_UIN$",
         "transactionID": "$TRANSACTIONID$",
         "individualIdType": "UIN",
         "id": "mosip.identity.kycexchange",
@@ -154,7 +154,7 @@ BioAuthKycExchange:
       outputTemplate: ida/BioAuthKycExchange/BioAuthKYCExchangeResult
       input: '{
         "requestTime": "$TIMESTAMP$",
-        "individualId": "$ID:AddIdentity_For_Kyc_Delegated_Bio_Auth_smoke_Pos_UIN$",
+        "individualId": "$ID:AddIdentity_For_Kyc_Delegated_Bio_Auth_Smoke_Pos_UIN$",
         "transactionID": "$TRANSACTIONID$",
         "individualIdType": "UIN",
         "id": "mosip.identity.kycexchange",
@@ -202,7 +202,7 @@ BioAuthKycExchange:
       outputTemplate: ida/BioAuthKycExchange/BioAuthKYCExchangeResult
       input: '{
         "requestTime": "$TIMESTAMP$",
-        "individualId": "$ID:AddIdentity_For_Kyc_Delegated_Bio_Auth_smoke_Pos_UIN$",
+        "individualId": "$ID:AddIdentity_For_Kyc_Delegated_Bio_Auth_Smoke_Pos_UIN$",
         "transactionID": "$TRANSACTIONID$",
         "individualIdType": "UIN",
         "id": "mosip.identity.kycexchange",
@@ -250,7 +250,7 @@ BioAuthKycExchange:
       outputTemplate: ida/BioAuthKycExchange/BioAuthKYCExchangeResult
       input: '{
         "requestTime": "$TIMESTAMP$",
-        "individualId": "$ID:AddIdentity_For_Kyc_Delegated_Bio_Auth_smoke_Pos_UIN$",
+        "individualId": "$ID:AddIdentity_For_Kyc_Delegated_Bio_Auth_Smoke_Pos_UIN$",
         "transactionID": "$TRANSACTIONID$",
         "individualIdType": "UIN",
         "id": "mosip.identity.kycexchange",
@@ -298,7 +298,7 @@ BioAuthKycExchange:
       outputTemplate: ida/BioAuthKycExchange/BioAuthKYCExchangeResult
       input: '{
         "requestTime": "$TIMESTAMP$",
-        "individualId": "$ID:AddIdentity_For_Kyc_Delegated_Bio_Auth_smoke_Pos_UIN$",
+        "individualId": "$ID:AddIdentity_For_Kyc_Delegated_Bio_Auth_Smoke_Pos_UIN$",
         "transactionID": "$TRANSACTIONID$",
         "individualIdType": "UIN",
         "id": "mosip.identity.kycexchange",
@@ -346,7 +346,7 @@ BioAuthKycExchange:
       outputTemplate: ida/BioAuthKycExchange/BioAuthKYCExchangeResult
       input: '{
         "requestTime": "$TIMESTAMP$",
-        "individualId": "$ID:AddIdentity_For_Kyc_Delegated_Bio_Auth_smoke_Pos_UIN$",
+        "individualId": "$ID:AddIdentity_For_Kyc_Delegated_Bio_Auth_Smoke_Pos_UIN$",
         "transactionID": "$TRANSACTIONID$",
         "individualIdType": "UIN",
         "id": "mosip.identity.kycexchange",
@@ -394,7 +394,7 @@ BioAuthKycExchange:
       outputTemplate: ida/BioAuthKycExchange/BioAuthKYCExchangeResult
       input: '{
         "requestTime": "$TIMESTAMP$",
-        "individualId": "$ID:AddIdentity_For_Kyc_Delegated_Bio_Auth_smoke_Pos_UIN$",
+        "individualId": "$ID:AddIdentity_For_Kyc_Delegated_Bio_Auth_Smoke_Pos_UIN$",
         "transactionID": "$TRANSACTIONID$",
         "individualIdType": "UIN",
         "id": "mosip.identity.kycexchange",
@@ -442,7 +442,7 @@ BioAuthKycExchange:
       outputTemplate: ida/BioAuthKycExchange/BioAuthKYCExchangeResult
       input: '{
         "requestTime": "$TIMESTAMP$",
-        "individualId": "$ID:AddIdentity_For_Kyc_Delegated_Bio_Auth_smoke_Pos_UIN$",
+        "individualId": "$ID:AddIdentity_For_Kyc_Delegated_Bio_Auth_Smoke_Pos_UIN$",
         "transactionID": "$TRANSACTIONID$",
         "individualIdType": "UIN",
         "id": "mosip.identity.kycexchange",
@@ -490,7 +490,7 @@ BioAuthKycExchange:
       outputTemplate: ida/BioAuthKycExchange/BioAuthKYCExchangeResult
       input: '{
         "requestTime": "$TIMESTAMP$",
-        "individualId": "$ID:AddIdentity_For_Kyc_Delegated_Bio_Auth_smoke_Pos_UIN$",
+        "individualId": "$ID:AddIdentity_For_Kyc_Delegated_Bio_Auth_Smoke_Pos_UIN$",
         "transactionID": "$TRANSACTIONID$",
         "individualIdType": "UIN",
         "id": "mosip.identity.kycexchange",
@@ -566,7 +566,7 @@ BioAuthKycExchange:
       outputTemplate: ida/DelegateError
       input: '{
         "requestTime": "$TIMESTAMP$",
-        "individualId": "$ID:AddIdentity_For_Kyc_Delegated_Bio_Auth_smoke_Pos_UIN$",
+        "individualId": "$ID:AddIdentity_For_Kyc_Delegated_Bio_Auth_Smoke_Pos_UIN$",
         "transactionID": "$TRANSACTIONID$",
         "individualIdType": "UIN",
         "id": "mosip.identity.kycexchange",

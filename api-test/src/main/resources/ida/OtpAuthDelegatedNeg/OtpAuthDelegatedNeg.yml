@@ -45,9 +45,9 @@ OtpAuthDelegatedNeg:
       inputTemplate: ida/OtpAuthDelegatedNeg/OtpAuthDelegatedNeg
       outputTemplate: ida/DelegateError
       input: '{
-        "otpChannel": "$ID:AddIdentity_withValidParameters_with_Infant_which_locked_smoke_Pos_EMAIL$",
+        "otpChannel": "$ID:AddIdentity_withValidParameters_with_Infant_which_locked_Pos_EMAIL$",
         "requestTime": "$TIMESTAMP$",
-        "individualId": "$ID:AddIdentity_withValidParameters_with_Infant_which_locked_smoke_Pos_UIN$",
+        "individualId": "$ID:AddIdentity_withValidParameters_with_Infant_which_locked_Pos_UIN$",
         "transactionId": "$TRANSACTIONID$",
         "individualIdType": "UIN",
         "bio": false,
@@ -56,7 +56,7 @@ OtpAuthDelegatedNeg:
         "sendOtp":{
     "transactionID": "$TRANSACTIONID$",
     "requestTime": "$TIMESTAMP$",
-    "individualId": "$ID:AddIdentity_withValidParameters_with_Infant_which_locked_smoke_Pos_UIN$",
+    "individualId": "$ID:AddIdentity_withValidParameters_with_Infant_which_locked_Pos_UIN$",
     "individualIdType": "UIN",
     "sendOtpReqTemplate": "ida/OtpAuth/sendOtp",
     "sendOtpEndPoint": "/idauthentication/v1/otp/$partnerKeyURL$",

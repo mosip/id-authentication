@@ -106,7 +106,7 @@ OtpAuthKycExchange:
       outputTemplate: ida/OtpAuthKycExchange/OtpAuthKycExchangeResult
       input: '{
         "requestTime": "$TIMESTAMP$",
-        "individualId": "$ID:AddIdentity_ValidParameters_toLock_email_perfromOtpEmail_auth_smoke_Pos_UIN$",
+        "individualId": "$ID:AddIdentity_ValidParameters_toLock_email_perfromOtpEmail_auth_Pos_UIN$",
         "transactionID": "$TRANSACTIONID$",
         "individualIdType": "UIN",
         "id": "mosip.identity.kycexchange",
