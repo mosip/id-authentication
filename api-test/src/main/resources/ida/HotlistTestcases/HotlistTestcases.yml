@@ -2,7 +2,7 @@ DemoAuth:
   auth_DemoAuth_blocked_UIN_Pos:
       endPoint: /idauthentication/v1/auth/$partnerKeyURL$
       uniqueIdentifier: TC_IDA_DemoAuth_blockedUIN_01
-      description: perform Demo auth with blocked UIN
+      description: Verify that demo authentication fails when a blocked UIN is used under positive validation conditions
       role: resident
       restMethod: post
       additionalDependencies: TC_IDA_HotlistAPI_01,TC_IDA_HotlistAPI_06
@@ -34,7 +34,7 @@ DemoAuth:
   auth_DemoAuth_Locked_UIN_Pos:
       endPoint: /idauthentication/v1/auth/$partnerKeyURL$
       uniqueIdentifier: TC_IDA_DemoAuth_blockedUIN_02
-      description: perform Demo auth with locked UIN
+      description: Verify that demo authentication fails when a locked UIN is used under positive validation conditions
       role: resident
       restMethod: post
       additionalDependencies: TC_IDA_AuthLock_01
@@ -66,7 +66,7 @@ DemoAuth:
   auth_DemoAuth_blocked_VID_Pos:
       endPoint: /idauthentication/v1/auth/$partnerKeyURL$
       uniqueIdentifier: TC_IDA_DemoAuth_blockedVID_03
-      description: perform Demo auth with blocked VID
+      description: Verify that demo authentication fails when a blocked VID is used under positive validation conditions
       role: resident
       restMethod: post
       additionalDependencies: TC_DependentModule_IdRepo_06,TC_IDA_HotlistAPI_07,TC_IDA_HotlistAPI_08

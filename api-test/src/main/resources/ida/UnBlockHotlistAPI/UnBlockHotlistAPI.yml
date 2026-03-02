@@ -2,7 +2,7 @@ HotlistAPI:
    auth_HotlistAPI_All_Valid_Smoke_UIN_without_expirytime_sid:
       endPoint: /v1/hotlist/unblock
       uniqueIdentifier: TC_IDA_HotlistAPI_Unblock_01
-      description: unblock UIN without expiry time
+      description: Verify that the Hotlist API succeeds when all inputs are valid for a UIN without providing expiry time and session ID
       role: hotlist
       restMethod: post
       inputTemplate: ida/UnBlockHotlistAPI/UnblockHotlistAPI
@@ -19,7 +19,7 @@ HotlistAPI:
    auth_HotlistAPI_All_Valid_Smoke_UIN_with_expirytime_sid:
       endPoint: /v1/hotlist/unblock
       uniqueIdentifier: TC_IDA_HotlistAPI_Unblock_02
-      description: unblock UIN with expiry time
+      description: Verify that the Hotlist API succeeds when all inputs are valid for a UIN with expiry time and session ID provided
       role: hotlist
       restMethod: post
       inputTemplate: ida/UnBlockHotlistAPI/UnblockHotlistAPI
@@ -36,7 +36,7 @@ HotlistAPI:
    auth_HotlistAPI_All_Valid_Smoke_VID_without_expirytime_sid:
       endPoint: /v1/hotlist/unblock
       uniqueIdentifier: TC_IDA_HotlistAPI_Unblock_03
-      description: unblock Perpetual VID without expiry time
+      description: Verify that the Hotlist API succeeds when all inputs are valid for a VID without providing expiry time and session ID
       role: hotlist
       restMethod: post
       additionalDependencies: TC_DependentModule_IdRepo_06
@@ -54,7 +54,7 @@ HotlistAPI:
    auth_HotlistAPI_All_Valid_Smoke_VID_with_expirytime_sid:
       endPoint: /v1/hotlist/unblock
       uniqueIdentifier: TC_IDA_HotlistAPI_Unblock_04
-      description: unblock Perpetual VID with expiry time
+      description: Verify that the Hotlist API succeeds when all inputs are valid for a VID with expiry time and session ID provided
       role: hotlist
       restMethod: post
       additionalDependencies: TC_DependentModule_IdRepo_06
@@ -72,7 +72,7 @@ HotlistAPI:
    auth_HotlistAPI_All_Valid_Smoke_DEVICE_sid:
       endPoint: /v1/hotlist/unblock
       uniqueIdentifier: TC_IDA_HotlistAPI_Unblock_05
-      description: unblock device without expiry time
+      description: Verify that the Hotlist API succeeds when all inputs are valid for a device with a session ID provided
       role: hotlist
       restMethod: post
       additionalDependencies: TC_IDA_HotlistAPI_09,TC_IDA_HotlistAPI_10
@@ -90,7 +90,7 @@ HotlistAPI:
    auth_HotlistAPI_All_Valid_Smoke_DEVICE_with_expirytie_sid:
       endPoint: /v1/hotlist/unblock
       uniqueIdentifier: TC_IDA_HotlistAPI_Unblock_06
-      description: unblock device with expiry time
+      description: Verify that the Hotlist API succeeds when all inputs are valid for a device with expiry time and session ID provided
       role: hotlist
       restMethod: post
       additionalDependencies: TC_IDA_HotlistAPI_09,TC_IDA_HotlistAPI_10
@@ -108,7 +108,7 @@ HotlistAPI:
    auth_HotlistAPI_All_Valid_Smoke_deviceProviderId:
       endPoint: /v1/hotlist/unblock
       uniqueIdentifier: TC_IDA_HotlistAPI_Unblock_07
-      description: unblock device provider id with expiry time
+      description: Verify that the Hotlist API succeeds when all inputs are valid for a device using the device provider ID
       role: hotlist
       restMethod: post
       additionalDependencies: TC_IDA_HotlistAPI_11

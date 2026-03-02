@@ -2,7 +2,7 @@ ReactivateVIDs:
   auth_ReactivateVIDs_audit_Smoke_Pos:
       endPoint: /idrepository/v1/vid/reactivate
       uniqueIdentifier: TC_IDA_DependentTc_AuthTransaction_ReactivateVID_01
-      description: Reactivate VID for UIN
+      description: Verify that reactivating VIDs generates a valid audit entry 
       role: resident
       restMethod: post
       additionalDependencies: TC_IDA_DependentTc_AuthTransaction_GenerateVID_08

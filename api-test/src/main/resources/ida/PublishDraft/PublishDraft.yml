@@ -2,7 +2,7 @@ PublishDraft:
   auth_PublishDraft_all_valid_smoke:
       endPoint: /idrepository/v1/identity/draft/publish/{registrationId}
       uniqueIdentifier: TC_IDA_PublishDraft_01
-      description: publish Draft using registrationID
+      description: Verify that publishing a draft succeeds when all inputs are valid 
       role: idrepo
       restMethod: get
       inputTemplate: ida/PublishDraft/publishDraft
@@ -16,7 +16,7 @@ PublishDraft:
   auth_PublishDraft_audit_valid_smoke:
       endPoint: /idrepository/v1/identity/draft/publish/{registrationId}
       uniqueIdentifier: TC_IDA_dependentTC_AuthTransaction_PublishDraft_02
-      description: publish Draft using registrationID
+      description: Verify that publishing a draft triggers a valid audit entry when all inputs are correct 
       role: idrepo
       restMethod: get
       inputTemplate: ida/PublishDraft/publishDraft

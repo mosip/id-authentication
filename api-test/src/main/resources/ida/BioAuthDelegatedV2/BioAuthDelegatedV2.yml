@@ -2,7 +2,7 @@ BioAuthDelegatedV2:
   auth_BioAuthDelegatedV2_Biometric_Face_With_Valid_uin_Smoke_Pos_Sid:
       endPoint: /idauthentication/v1/kyc-auth/v2/delegated/$partialPartnerKeyUrl$​/$ID:CreateOIDCClient_Misp_Valid_Smoke_sid_clientId$
       uniqueIdentifier: TC_IDA_BioAuthDelegatedV2_01
-      description: Biometric face KYC delagated auth V2 with valid UIN
+      description: Validate the delegated V2 biometric face authentication for a valid UIN in a smoke positive scenario using SID
       role: resident
       restMethod: post
       inputTemplate: ida/BioAuthDelegatedV2/BioAuthDelegatedV2
