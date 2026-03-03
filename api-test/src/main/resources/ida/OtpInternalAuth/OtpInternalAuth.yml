@@ -2,7 +2,7 @@ OTPInternalAuth:
   auth_OTP_Internal_Auth_With_Valid_Smoke_Pos:
       endPoint: /idauthentication/v1/internal/auth
       uniqueIdentifier: TC_IDA_OTPInternalAuth_01
-      description: Otp internal auth with valid UIN
+      description: Verify that internal OTP authentication succeeds in a smoke test scenario with valid inputs
       role: resident
       restMethod: post
       inputTemplate: ida/OTPInternalAuth/otpInternalAuth
@@ -37,7 +37,7 @@ OTPInternalAuth:
   auth_OTP_Internal_Auth_With_Valid_VID_Smoke_Pos:
       endPoint: /idauthentication/v1/internal/auth
       uniqueIdentifier: TC_IDA_OTPInternalAuth_02
-      description: Otp internal auth with valid using VID
+      description: Verify that internal OTP authentication succeeds with a valid VID in a smoke test scenario
       role: resident
       restMethod: post
       inputTemplate: ida/OTPInternalAuth/otpInternalAuth
@@ -72,7 +72,7 @@ OTPInternalAuth:
   auth_OTP_Internal_Auth_With_Invalid_individualId_neg:
       endPoint: /idauthentication/v1/internal/auth
       uniqueIdentifier: TC_IDA_OTPInternalAuth_03
-      description: Otp internal auth with invalid individualId using UIN
+      description: Verify that internal OTP authentication fails when an invalid individual ID is used
       role: resident
       restMethod: post
       inputTemplate: ida/OTPInternalAuth/otpInternalAuth
@@ -113,7 +113,7 @@ OTPInternalAuth:
   auth_OTP_Internal_Auth_With_Blank_individualId_neg:
       endPoint: /idauthentication/v1/internal/auth
       uniqueIdentifier: TC_IDA_OTPInternalAuth_04
-      description: Otp internal auth with blank individualId using UIN
+      description: Verify that internal OTP authentication fails when a blank individual ID is used
       role: resident
       restMethod: post
       inputTemplate: ida/OTPInternalAuth/otpInternalAuth
@@ -154,7 +154,7 @@ OTPInternalAuth:
   auth_OTP_Internal_Auth_With_Missing_individualId_neg:
       endPoint: /idauthentication/v1/internal/auth
       uniqueIdentifier: TC_IDA_OTPInternalAuth_05
-      description: Otp internal auth with missing individualId using UIN
+      description: Verify that internal OTP authentication fails when the individual ID is missing
       role: resident
       restMethod: post
       inputTemplate: ida/OTPInternalAuth/otpInternalAuth
@@ -195,7 +195,7 @@ OTPInternalAuth:
   auth_OTP_Internal_Auth_Invalid_transactionId_neg:
       endPoint: /idauthentication/v1/internal/auth
       uniqueIdentifier: TC_IDA_OTPInternalAuth_06
-      description: Otp internal auth with invalid transactionId using UIN
+      description: Verify that internal OTP authentication fails when an invalid transaction ID is used
       role: resident
       restMethod: post
       inputTemplate: ida/OTPInternalAuth/otpInternalAuth
@@ -236,7 +236,7 @@ OTPInternalAuth:
   auth_OTP_Internal_Auth_Blank_transactionId_neg:
       endPoint: /idauthentication/v1/internal/auth
       uniqueIdentifier: TC_IDA_OTPInternalAuth_07
-      description: Otp internal auth with blank transactionId using UIN
+      description: Verify that internal OTP authentication fails when a blank transaction ID is used
       role: resident
       restMethod: post
       inputTemplate: ida/OTPInternalAuth/otpInternalAuth
@@ -277,7 +277,7 @@ OTPInternalAuth:
   auth_OTP_Internal_Auth_Invalid_individualIdType_neg:
       endPoint: /idauthentication/v1/internal/auth
       uniqueIdentifier: TC_IDA_OTPInternalAuth_08
-      description: Otp internal auth with invalid individualIdType using UIN
+      description: Verify that internal OTP authentication fails when an invalid individual ID type is used
       role: resident
       restMethod: post
       inputTemplate: ida/OTPInternalAuth/otpInternalAuth
@@ -318,7 +318,7 @@ OTPInternalAuth:
   auth_OTP_Internal_Auth_Blank_individualIdType_neg:
       endPoint: /idauthentication/v1/internal/auth
       uniqueIdentifier: TC_IDA_OTPInternalAuth_09
-      description: Otp internal auth with blank individualIdType using UIN
+      description: Verify that OTP internal authentication fails when the individual ID type is blank
       role: resident
       restMethod: post
       inputTemplate: ida/OTPInternalAuth/otpInternalAuth
@@ -359,7 +359,7 @@ OTPInternalAuth:
   auth_OTP_Internal_Auth_Missing_individualIdType_neg:
       endPoint: /idauthentication/v1/internal/auth
       uniqueIdentifier: TC_IDA_OTPInternalAuth_10
-      description: Otp internal auth with missing individualIdType using UIN
+      description: Verify that OTP internal authentication fails when the individual ID type is missing
       role: resident
       restMethod: post
       inputTemplate: ida/OTPInternalAuth/otpInternalAuth

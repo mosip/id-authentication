@@ -1,7 +1,7 @@
 EkycBio:
   auth_EkycBio_Face_With_Valid_Smoke_Pos:
       endPoint: /idauthentication/v1/kyc/$partnerKeyURL$
-      description: Ekyc bio auth using face with valid UIN
+      description: Verify that eKYC biometric authentication using face works successfully with valid inputs
       role: resident
       restMethod: post
       inputTemplate: ida/EkycBio/ekycBio
@@ -40,7 +40,7 @@ EkycBio:
 }'
   auth_EkycBio_RingFinger_With_Valid_Smoke_Pos:
       endPoint: /idauthentication/v1/kyc/$partnerKeyURL$
-      description: Ekyc bio auth using ring finger with valid UIN
+      description: Verify that eKYC biometric authentication using the ring finger works successfully with valid inputs
       role: resident
       restMethod: post
       inputTemplate: ida/EkycBio/ekycBio
@@ -79,7 +79,7 @@ EkycBio:
 }'
   auth_EkycBio_LeftMiddleFingerr_With_Valid_Smoke_Pos:
       endPoint: /idauthentication/v1/kyc/$partnerKeyURL$
-      description: Ekyc bio auth using left middle finger with valid UIN
+      description: Verify that eKYC biometric authentication using the left middle finger works successfully with valid inputs
       role: resident
       restMethod: post
       inputTemplate: ida/EkycBio/ekycBio
@@ -118,7 +118,7 @@ EkycBio:
 }'
   auth_EkycBio_LeftIndexFingerr_With_Valid_Smoke_Pos:
       endPoint: /idauthentication/v1/kyc/$partnerKeyURL$
-      description: Ekyc bio auth using left index finger with valid UIN
+      description: Verify that eKYC biometric authentication using the left index finger works successfully with valid inputs
       role: resident
       restMethod: post
       inputTemplate: ida/EkycBio/ekycBio
@@ -157,7 +157,7 @@ EkycBio:
 }'
   auth_EkycBio_LeftLittleFinger_With_Valid_Smoke_Pos:
       endPoint: /idauthentication/v1/kyc/$partnerKeyURL$
-      description: Ekyc bio auth using left little finger with valid UIN
+      description: Verify that eKYC biometric authentication using the left little finger works successfully with valid inputs
       role: resident
       restMethod: post
       inputTemplate: ida/EkycBio/ekycBio
@@ -196,7 +196,7 @@ EkycBio:
 }'
   auth_EkycBio_RightIndexFinger_With_Valid_Smoke_Pos:
       endPoint: /idauthentication/v1/kyc/$partnerKeyURL$
-      description: Ekyc bio auth using right index finger with valid UIN
+      description: Verify that eKYC biometric authentication using the right index finger works successfully with valid inputs
       role: resident
       restMethod: post
       inputTemplate: ida/EkycBio/ekycBio
@@ -235,7 +235,7 @@ EkycBio:
 }'
   auth_EkycBio_RightRingFinger_With_Valid_Smoke_Pos:
       endPoint: /idauthentication/v1/kyc/$partnerKeyURL$
-      description: Ekyc bio auth using right ring finger with valid UIN
+      description: Verify that eKYC biometric authentication using the right ring finger works successfully with valid inputs
       role: resident
       restMethod: post
       inputTemplate: ida/EkycBio/ekycBio
@@ -274,7 +274,7 @@ EkycBio:
 }'
   auth_EkycBio_RightMiddleFinger_With_Valid_Smoke_Pos:
       endPoint: /idauthentication/v1/kyc/$partnerKeyURL$
-      description: Ekyc bio auth using right middle finger with valid UIN
+      description: Verify that eKYC biometric authentication using the right middle finger works successfully with valid inputs
       role: resident
       restMethod: post
       inputTemplate: ida/EkycBio/ekycBio
@@ -313,7 +313,7 @@ EkycBio:
 }'
   auth_EkycBio_RightLittleFinger_With_Valid_Smoke_Pos:
       endPoint: /idauthentication/v1/kyc/$partnerKeyURL$
-      description: Ekyc bio auth using right little finger with valid UIN
+      description: Verify that eKYC biometric authentication using the right little finger works successfully with valid inputs
       role: resident
       restMethod: post
       inputTemplate: ida/EkycBio/ekycBio
@@ -352,7 +352,7 @@ EkycBio:
 }'
   auth_EkycBio_LeftThumb_With_Valid_Smoke_Pos:
       endPoint: /idauthentication/v1/kyc/$partnerKeyURL$
-      description: Ekyc bio auth using left thumb with valid UIN
+      description: Verify that eKYC biometric authentication using the left thumb works successfully with valid inputs
       role: resident
       restMethod: post
       inputTemplate: ida/EkycBio/ekycBio
@@ -391,7 +391,7 @@ EkycBio:
 }'
   auth_EkycBio_RightThumb_With_Valid_Smoke_Pos:
       endPoint: /idauthentication/v1/kyc/$partnerKeyURL$
-      description: Ekyc bio auth using right thumb with valid UIN
+      description: Verify that eKYC biometric authentication using the right thumb works successfully with valid inputs
       role: resident
       restMethod: post
       inputTemplate: ida/EkycBio/ekycBio
@@ -430,7 +430,7 @@ EkycBio:
 }'
   auth_EkycBio_RightIris_With_Valid_Smoke_Pos:
       endPoint: /idauthentication/v1/kyc/$partnerKeyURL$
-      description: Ekyc bio auth using right iris with valid UIN
+      description: Verify that eKYC biometric authentication using the right iris works successfully with valid inputs
       role: resident
       restMethod: post
       inputTemplate: ida/EkycBio/ekycBio
@@ -469,7 +469,7 @@ EkycBio:
 }'
   auth_EkycBio_LeftIris_With_Valid_Smoke_Pos:
       endPoint: /idauthentication/v1/kyc/$partnerKeyURL$
-      description: Ekyc bio auth using left iris with valid UIN
+      description: Verify that eKYC biometric authentication using the left iris works successfully with valid inputs
       role: resident
       restMethod: post
       inputTemplate: ida/EkycBio/ekycBio
@@ -508,7 +508,7 @@ EkycBio:
 }'
   auth_EkycBio_Face_With_Valid_VID_Smoke_Pos:
       endPoint: /idauthentication/v1/kyc/$partnerKeyURL$
-      description: Ekyc bio auth using face with valid perpetual VID
+      description: Verify that eKYC biometric authentication using face succeeds with a valid VID
       role: resident
       restMethod: post
       inputTemplate: ida/EkycBio/ekycBio
@@ -547,7 +547,7 @@ EkycBio:
 }'
   auth_EkycBio_RingFinger_With_Valid_VID_Smoke_Pos:
       endPoint: /idauthentication/v1/kyc/$partnerKeyURL$
-      description: Ekyc bio auth using ring finger with valid perpetual VID
+      description: Verify that eKYC biometric authentication using the ring finger succeeds with a valid VID
       role: resident
       restMethod: post
       inputTemplate: ida/EkycBio/ekycBio
@@ -586,7 +586,7 @@ EkycBio:
 }'
   auth_EkycBio_LeftMiddleFingerr_With_Valid_VID_Smoke_Pos:
       endPoint: /idauthentication/v1/kyc/$partnerKeyURL$
-      description: Ekyc bio auth using left middle finger with valid perpetual VID
+      description: Verify that eKYC biometric authentication using the left middle finger succeeds with a valid VID
       role: resident
       restMethod: post
       inputTemplate: ida/EkycBio/ekycBio
@@ -625,7 +625,7 @@ EkycBio:
 }'
   auth_EkycBio_LeftIndexFingerr_With_Valid_VID_Smoke_Pos:
       endPoint: /idauthentication/v1/kyc/$partnerKeyURL$
-      description: Ekyc bio auth using left index finger with valid perpetual VID
+      description: Verify that eKYC biometric authentication using the left index finger succeeds with a valid VID 
       role: resident
       restMethod: post
       inputTemplate: ida/EkycBio/ekycBio
@@ -664,7 +664,7 @@ EkycBio:
 }'
   auth_EkycBio_LeftLittleFinger_With_Valid_VID_Smoke_Pos:
       endPoint: /idauthentication/v1/kyc/$partnerKeyURL$
-      description: Ekyc bio auth using left little finger with valid perpetual VID
+      description: Verify that eKYC biometric authentication using the left little finger succeeds with a valid VID 
       role: resident
       restMethod: post
       inputTemplate: ida/EkycBio/ekycBio
@@ -703,7 +703,7 @@ EkycBio:
 }'
   auth_EkycBio_RightIndexFinger_With_Valid_VID_Smoke_Pos:
       endPoint: /idauthentication/v1/kyc/$partnerKeyURL$
-      description: Ekyc bio auth using right index finger with valid perpetual VID
+      description: Verify that eKYC biometric authentication using the right index finger succeeds with a valid VID
       role: resident
       restMethod: post
       inputTemplate: ida/EkycBio/ekycBio
@@ -742,7 +742,7 @@ EkycBio:
 }'
   auth_EkycBio_RightRingFinger_With_Valid_VID_Smoke_Pos:
       endPoint: /idauthentication/v1/kyc/$partnerKeyURL$
-      description: Ekyc bio auth using right ring finger with valid perpetual VID
+      description: Verify that eKYC biometric authentication using the right ring finger succeeds with a valid VID
       role: resident
       restMethod: post
       inputTemplate: ida/EkycBio/ekycBio
@@ -781,7 +781,7 @@ EkycBio:
 }'
   auth_EkycBio_RightMiddleFinger_With_Valid_VID_Smoke_Pos:
       endPoint: /idauthentication/v1/kyc/$partnerKeyURL$
-      description: Ekyc bio auth using right middle finger with valid perpetual VID
+      description: Verify that eKYC biometric authentication using the right middle finger succeeds with a valid VID
       role: resident
       restMethod: post
       inputTemplate: ida/EkycBio/ekycBio
@@ -820,7 +820,7 @@ EkycBio:
 }'
   auth_EkycBio_RightLittleFinger_With_Valid_VID_Smoke_Pos:
       endPoint: /idauthentication/v1/kyc/$partnerKeyURL$
-      description: Ekyc bio auth using right middle little finger with valid perpetual VID
+      description: Verify that eKYC biometric authentication using the right little finger succeeds with a valid VID
       role: resident
       restMethod: post
       inputTemplate: ida/EkycBio/ekycBio
@@ -859,7 +859,7 @@ EkycBio:
 }'
   auth_EkycBio_LeftThumb_With_Valid_VID_Smoke_Pos:
       endPoint: /idauthentication/v1/kyc/$partnerKeyURL$
-      description: Ekyc bio auth using left thumb with valid perpetual VID
+      description: Verify that eKYC biometric authentication using the left thumb succeeds with a valid VID
       role: resident
       restMethod: post
       inputTemplate: ida/EkycBio/ekycBio
@@ -898,7 +898,7 @@ EkycBio:
 }'
   auth_EkycBio_RightThumb_With_Valid_VID_Smoke_Pos:
       endPoint: /idauthentication/v1/kyc/$partnerKeyURL$
-      description: Ekyc bio auth using right thumb with valid perpetual VID
+      description: Verify that eKYC biometric authentication using the right thumb succeeds with a valid VID
       role: resident
       restMethod: post
       inputTemplate: ida/EkycBio/ekycBio
@@ -937,7 +937,7 @@ EkycBio:
 }'
   auth_EkycBio_RightIris_With_Valid_VID_Smoke_Pos:
       endPoint: /idauthentication/v1/kyc/$partnerKeyURL$
-      description: Ekyc bio auth using right iris with valid perpetual VID
+      description: Verify that eKYC biometric authentication using the right iris succeeds with a valid VID
       role: resident
       restMethod: post
       inputTemplate: ida/EkycBio/ekycBio
@@ -976,7 +976,7 @@ EkycBio:
 }'
   auth_EkycBio_LeftIris_With_Valid_VID_Smoke_Pos:
       endPoint: /idauthentication/v1/kyc/$partnerKeyURL$
-      description: Ekyc bio auth using left iris with valid perpetual VID
+      description: Verify that eKYC biometric authentication using the left iris succeeds with a valid VID
       role: resident
       restMethod: post
       inputTemplate: ida/EkycBio/ekycBio
@@ -1015,7 +1015,7 @@ EkycBio:
 }'
   auth_EkycBio_inValid_transactionID:
       endPoint: /idauthentication/v1/kyc/$partnerKeyURL$
-      description: Ekyc bio auth with invalid transactionId with valid UIN
+      description: Verify that eKYC biometric authentication fails or returns an appropriate error when an invalid transaction ID is provided
       role: resident
       restMethod: post
       inputTemplate: ida/EkycBio/ekycBio
@@ -1059,7 +1059,7 @@ EkycBio:
 }'
   auth_EkycBio_inValid_transactionID_vid:
       endPoint: /idauthentication/v1/kyc/$partnerKeyURL$
-      description: Ekyc bio auth with invalid transactionId with valid perpetual VID
+      description: Verify that eKYC biometric authentication fails or returns an appropriate error when an invalid transaction ID is provided along with a VID
       role: resident
       restMethod: post
       inputTemplate: ida/EkycBio/ekycBio
@@ -1103,7 +1103,7 @@ EkycBio:
 }'
   auth_EkycBio_blank_transactionID:
       endPoint: /idauthentication/v1/kyc/$partnerKeyURL$
-      description: Ekyc bio auth with blank transactionId with UIN
+      description: Verify that eKYC biometric authentication fails or returns an appropriate error when the transaction ID is left blank
       role: resident
       restMethod: post
       inputTemplate: ida/EkycBio/ekycBio
@@ -1147,7 +1147,7 @@ EkycBio:
 }'
   auth_EkycBio_blank_transactionID_vid:
       endPoint: /idauthentication/v1/kyc/$partnerKeyURL$
-      description: Ekyc bio auth using blank transactionId with perpetual valid VID
+      description: Verify that eKYC biometric authentication fails or returns an appropriate error when the transaction ID is blank and a VID is provided
       role: resident
       restMethod: post
       inputTemplate: ida/EkycBio/ekycBio
@@ -1191,7 +1191,7 @@ EkycBio:
 }'
   auth_EkycBio_inValid_individualIdType:
       endPoint: /idauthentication/v1/kyc/$partnerKeyURL$
-      description: Ekyc bio auth using invalid individualId Type with UIN
+      description: Verify that eKYC biometric authentication fails or returns an appropriate error when an invalid individual ID type is provided
       role: resident
       restMethod: post
       inputTemplate: ida/EkycBio/ekycBio
@@ -1235,7 +1235,7 @@ EkycBio:
 }'
   auth_EkycBio_inValid_individualIdType_VID:
       endPoint: /idauthentication/v1/kyc/$partnerKeyURL$
-      description: Ekyc bio auth using invalid individualId type with VID
+      description: Verify that eKYC biometric authentication fails or returns an appropriate error when an invalid individual ID type is provided along with a VID
       role: resident
       restMethod: post
       inputTemplate: ida/EkycBio/ekycBio
@@ -1279,7 +1279,7 @@ EkycBio:
 }'
   auth_EkycBio_blank_individualIdType:
       endPoint: /idauthentication/v1/kyc/$partnerKeyURL$
-      description: Ekyc bio auth using blank individualId type with UIN
+      description: Verify that eKYC biometric authentication fails or returns an appropriate error when the individual ID type is left blank
       role: resident
       restMethod: post
       inputTemplate: ida/EkycBio/ekycBio
@@ -1323,7 +1323,7 @@ EkycBio:
 }'
   auth_EkycBio_blank_individualIdType_VID:
       endPoint: /idauthentication/v1/kyc/$partnerKeyURL$
-      description: Ekyc bio auth using blank individualId type with VID
+      description: Verify that eKYC biometric authentication fails or returns an appropriate error when the individual ID type is blank and a VID is provided
       role: resident
       restMethod: post
       inputTemplate: ida/EkycBio/ekycBio
@@ -1367,7 +1367,7 @@ EkycBio:
 }'
   auth_EkycBio_with_revoked_VID:
       endPoint: /idauthentication/v1/kyc/$partnerKeyURL$
-      description: Ekyc bio auth using revoked VID
+      description: Verify that eKYC biometric authentication fails or returns an appropriate error when a revoked VID is used
       role: resident
       restMethod: post
       inputTemplate: ida/EkycBio/ekycBio
@@ -1411,7 +1411,7 @@ EkycBio:
 }'
   auth_EkycBio_Missing_Optional_Field_individualIdType_smoke:
       endPoint: /idauthentication/v1/kyc/$partnerKeyURL$
-      description: Ekyc bio auth with missing individualId type field with UIN
+      description: Verify that eKYC biometric authentication succeeds when the optional individual ID type field is missing
       role: resident
       restMethod: post
       inputTemplate: ida/EkycBio/ekycBio
@@ -1450,7 +1450,7 @@ EkycBio:
 }'
   auth_EkycBio_Missing_Optional_Field_individualIdType_smoke_VID:
       endPoint: /idauthentication/v1/kyc/$partnerKeyURL$
-      description: Ekyc bio auth with missing individualId type with VID
+      description: Verify that eKYC biometric authentication succeeds when the optional individual ID type field is missing and a valid VID is provided
       role: resident
       restMethod: post
       inputTemplate: ida/EkycBio/ekycBio
@@ -1489,7 +1489,7 @@ EkycBio:
 }'
   auth_EkycBio_invalid_bioSubType:
       endPoint: /idauthentication/v1/kyc/$partnerKeyURL$
-      description: Ekyc bio auth with invalid bio sub type with UIN
+      description: Verify that eKYC biometric authentication fails or returns an appropriate error when an invalid biometric sub-type is provided
       role: resident
       restMethod: post
       inputTemplate: ida/EkycBio/ekycBio
@@ -1533,7 +1533,7 @@ EkycBio:
 }'
   auth_EkycBio_invalid_bioSubType_VID:
       endPoint: /idauthentication/v1/kyc/$partnerKeyURL$
-      description: Ekyc bio auth with invalid bio sub type with VID
+      description: Verify that eKYC biometric authentication fails or returns an appropriate error when an invalid biometric sub-type is provided along with a VID
       role: resident
       restMethod: post
       inputTemplate: ida/EkycBio/ekycBio
@@ -1577,7 +1577,7 @@ EkycBio:
 }'
   auth_EkycBio_blank_bioSubType:
       endPoint: /idauthentication/v1/kyc/$partnerKeyURL$
-      description: Ekyc bio auth with blank bio sub type with UIN
+      description: Verify that eKYC biometric authentication fails or returns an appropriate error when the biometric sub-type field is left blank
       role: resident
       restMethod: post
       inputTemplate: ida/EkycBio/ekycBio
@@ -1621,7 +1621,7 @@ EkycBio:
 }'
   auth_EkycBio_blank_bioSubType_VID:
       endPoint: /idauthentication/v1/kyc/$partnerKeyURL$
-      description: Ekyc bio auth with blank bio sub type with VID
+      description: Verify that eKYC biometric authentication fails or returns an appropriate error when the biometric sub-type field is blank and a VID is provided
       role: resident
       restMethod: post
       inputTemplate: ida/EkycBio/ekycBio
@@ -1665,7 +1665,7 @@ EkycBio:
 }'
   auth_EkycBio_Blank_bioType:
       endPoint: /idauthentication/v1/kyc/$partnerKeyURL$
-      description: Ekyc bio auth using blank bio type with UIN
+      description: Verify that eKYC biometric authentication fails or returns an appropriate error when the biometric type field is left blank
       role: resident
       restMethod: post
       inputTemplate: ida/EkycBio/ekycBio
@@ -1709,7 +1709,7 @@ EkycBio:
 }'
   auth_EkycBio_Blank_bioType_VID:
       endPoint: /idauthentication/v1/kyc/$partnerKeyURL$
-      description: Ekyc bio auth using blank bio type with VID
+      description: Verify that eKYC biometric authentication fails or returns an appropriate error when the biometric type field is blank and a VID is provided
       role: resident
       restMethod: post
       inputTemplate: ida/EkycBio/ekycBio
@@ -1753,7 +1753,7 @@ EkycBio:
 }'
   auth_EkycBio_Missing_bioType:
       endPoint: /idauthentication/v1/kyc/$partnerKeyURL$
-      description: Ekyc bio auth with missing bio type with UIN
+      description: Verify that eKYC biometric authentication fails or returns an appropriate error when the biometric type field is missing
       role: resident
       restMethod: post
       inputTemplate: ida/EkycBio/ekycBio
@@ -1796,7 +1796,7 @@ EkycBio:
 }'
   auth_EkycBio_Missing_bioType_VID:
       endPoint: /idauthentication/v1/kyc/$partnerKeyURL$
-      description: Ekyc bio auth with missing bio type with VID
+      description: Verify that eKYC biometric authentication fails or returns an appropriate error when the biometric type field is missing and a VID is provided
       role: resident
       restMethod: post
       inputTemplate: ida/EkycBio/ekycBio
@@ -1839,7 +1839,7 @@ EkycBio:
 }'
   auth_EkycBio_Invalid_bioType:
       endPoint: /idauthentication/v1/kyc/$partnerKeyURL$
-      description: Ekyc bio auth using invalid bio type with UIN
+      description: Verify that eKYC biometric authentication fails or returns an appropriate error when an invalid biometric type is provided
       role: resident
       restMethod: post
       inputTemplate: ida/EkycBio/ekycBio
@@ -1882,7 +1882,7 @@ EkycBio:
 }'
   auth_EkycBio_Invalid_bioType_VID:
       endPoint: /idauthentication/v1/kyc/$partnerKeyURL$
-      description: Ekyc bio auth using invalid bio type with VID
+      description: Verify that eKYC biometric authentication fails or returns an appropriate error when an invalid biometric type is provided along with a VID
       role: resident
       restMethod: post
       inputTemplate: ida/EkycBio/ekycBio
@@ -1925,7 +1925,7 @@ EkycBio:
 }'
   auth_EkycBio_invalid_biovalue:
       endPoint: /idauthentication/v1/kyc/$partnerKeyURL$
-      description: Ekyc bio auth using invalid bio value with UIN
+      description: Verify that eKYC biometric authentication fails or returns an appropriate error when an invalid biometric value is provided
       role: resident
       restMethod: post
       inputTemplate: ida/EkycBio/ekycBio
@@ -1969,7 +1969,7 @@ EkycBio:
 }'
   auth_EkycBio_invalid_biovalue_VID:
       endPoint: /idauthentication/v1/kyc/$partnerKeyURL$
-      description: Ekyc bio auth using invalid bio value with VID
+      description: Verify that eKYC biometric authentication fails or returns an appropriate error when an invalid biometric value is provided along with a VID
       role: resident
       restMethod: post
       inputTemplate: ida/EkycBio/ekycBio
@@ -2013,7 +2013,7 @@ EkycBio:
 }'
   auth_EkycBio_Iris_With_FaceBio_Invalid:
       endPoint: /idauthentication/v1/kyc/$partnerKeyURL$
-      description: Ekyc bio auth using iris with face bio value with UIN
+      description: Verify that eKYC biometric authentication fails or returns an appropriate error when iris biometric is provided along with an invalid face biometric
       role: resident
       restMethod: post
       inputTemplate: ida/EkycBio/ekycBio
@@ -2057,7 +2057,7 @@ EkycBio:
 }'
   auth_EkycBio_Iris_With_FaceBio_Invalid_VID:
       endPoint: /idauthentication/v1/kyc/$partnerKeyURL$
-      description: Ekyc bio auth using iris with face bio value with VID
+      description: Verify that eKYC biometric authentication fails or returns an appropriate error when iris biometric is provided along with an invalid face biometric and a VID
       role: resident
       restMethod: post
       inputTemplate: ida/EkycBio/ekycBio
@@ -2101,7 +2101,7 @@ EkycBio:
 }'
   auth_EkycBio_Finger_With_FaceBio_Invalid:
       endPoint: /idauthentication/v1/kyc/$partnerKeyURL$
-      description: Ekyc bio auth using finger with face bio value with UIN
+      description: Verify that eKYC biometric authentication fails or returns an appropriate error when finger biometric is provided along with an invalid face biometric
       role: resident
       restMethod: post
       inputTemplate: ida/EkycBio/ekycBio
@@ -2145,7 +2145,7 @@ EkycBio:
 }'
   auth_EkycBio_Finger_With_FaceBio_Invalid_VID:
       endPoint: /idauthentication/v1/kyc/$partnerKeyURL$
-      description: Ekyc bio auth using finger with face bio value with VID
+      description: Verify that eKYC biometric authentication fails or returns an appropriate error when finger biometric is provided along with an invalid face biometric and a VID
       role: resident
       restMethod: post
       inputTemplate: ida/EkycBio/ekycBio
@@ -2189,7 +2189,7 @@ EkycBio:
 }'
   auth_EkycBio_Finger_With_dummy_partnerkey_Pos:
       endPoint: /idauthentication/v1/kyc/zY22wDwZxwMdlxTZRWrM50m4zBoOiMyUGY/45362768/27822828287
-      description: Ekyc bio auth using finger with dummy partner key with VID
+      description: Verify that eKYC biometric authentication using finger succeeds when a dummy partner key is provided
       role: resident
       restMethod: post
       inputTemplate: ida/EkycBio/ekycBio

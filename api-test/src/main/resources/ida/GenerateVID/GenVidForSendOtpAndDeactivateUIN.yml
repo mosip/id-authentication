@@ -2,7 +2,7 @@ GenerateVID:
    auth_GenerateVID_tosendOTP_Smoke_sid:
       endPoint: /resident/v1/vid
       uniqueIdentifier: TC_IDA_GenerateVID_07
-      description: generate Vid to send otp
+      description: Verify that VID generation succeeds for a valid SID and OTP is successfully sent
       role: resident
       checkErrorsOnlyInResponse: true
       restMethod: post

@@ -2,7 +2,7 @@ OtpAuth:
   auth_OTP_Auth_With_unblocked_partnerid_Pos:
       endPoint: /idauthentication/v1/auth/$partnerKeyURL$
       uniqueIdentifier: TC_IDA_OtpAuth_Unblock_01
-      description: Otp auth with unblocked_partnerid
+      description: Verify that OTP authentication succeeds with an unblocked partner ID
       role: resident
       restMethod: post
       additionalDependencies: TC_IDA_HotlistAPI_15,TC_IDA_HotlistAPI_Unblock_08
@@ -39,7 +39,7 @@ OtpAuth:
   auth_OTP_Auth_With_blocked_misp_Pos:
       endPoint: /idauthentication/v1/auth/$partnerKeyURL$
       uniqueIdentifier: TC_IDA_OtpAuth_blockedMisp_02
-      description: Otp auth with blocked misp
+      description: Verify that OTP authentication succeeds with a blocked MISP
       role: resident
       restMethod: post
       additionalDependencies: TC_IDA_HotlistAPI_16,TC_IDA_HotlistAPI_Unblock_09

@@ -2,7 +2,7 @@ CreateVID:
   auth_GenerateVID_All_Valid_Smoke_Perpetual_sid:
       endPoint: /idrepository/v1/vid
       uniqueIdentifier: TC_IDA_CreateVID_01
-      description: generate Perpetual VID for authentication
+      description: Verify that a VID is successfully generated with all valid inputs for a perpetual duration when SID is provided
       role: idrepo
       restMethod: post
       inputTemplate: ida/CreateVID/createVid
@@ -21,7 +21,7 @@ CreateVID:
   auth_GenerateVID_to_revoke_Perpetual_sid:
       endPoint: /idrepository/v1/vid
       uniqueIdentifier: TC_IDA_CreateVID_01
-      description: generate Perpetual VID to revoke
+      description: Verify that a perpetual VID is successfully generated and can be revoked when SID is provided
       role: idrepo
       restMethod: post
       inputTemplate: ida/CreateVID/createVid
@@ -40,7 +40,7 @@ CreateVID:
   auth_GenerateVID_to_test_hotlist_Perpetual_sid:
       endPoint: /idrepository/v1/vid
       uniqueIdentifier: TC_IDA_CreateVID_03
-      description: generate Perpetual VID to test Hotlist api
+      description: Verify that a perpetual VID is successfully generated for testing block/hotlist functionality when SID is provided
       role: idrepo
       restMethod: post
       inputTemplate: ida/CreateVID/createVid
@@ -59,7 +59,7 @@ CreateVID:
   auth_GenerateVID_All_Valid_Smoke_Temp_VID_sid:
       endPoint: /idrepository/v1/vid
       uniqueIdentifier: TC_IDA_CreateVID_02
-      description: generate Temporary VID for authentication
+      description: Verify that a temporary VID is successfully generated with all valid inputs when SID is provided
       role: idrepo
       restMethod: post
       inputTemplate: ida/CreateVID/createVid
@@ -77,7 +77,7 @@ CreateVID:
   auth_GenerateVID_auditLog_Valid_Smoke_Temp_VID_sid:
       endPoint: /idrepository/v1/vid
       uniqueIdentifier: TC_IDA_CreateVid_DependentTc_AuthTransaction_03
-      description: generate Vid to check audit logs
+      description: Verify that generating a temporary VID successfully creates the corresponding audit log when all inputs are valid and SID is provided
       role: idrepo
       restMethod: post
       inputTemplate: ida/CreateVID/createVid

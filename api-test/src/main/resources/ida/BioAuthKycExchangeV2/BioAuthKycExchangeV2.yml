@@ -2,7 +2,7 @@ BioAuthKycExchangeV2:
   auth_BioAuthKycExchangeV2_Biometric_Face_With_Valid_uin_Smoke_Pos:
       endPoint: /idauthentication/v1/kyc-exchange/v2/delegated/$partialPartnerKeyUrl$/$ID:CreateOIDCClient_Misp_Valid_Smoke_sid_clientId$
       uniqueIdentifier: TC_IDA_BioAuthKycExchangeV2_01
-      description: Biometric face auth KYC Exchange V2 with valid UIN
+      description: Validate the BioAuth KYC Exchange V2 biometric face authentication for a valid UIN in a smoke positive scenario
       role: resident
       restMethod: post
       checkErrorsOnlyInResponse: true

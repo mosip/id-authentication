@@ -1,7 +1,7 @@
 OtpAuth:
   auth_OTP_Auth_With_Valid_UIN_Smoke_Pos:
       endPoint: /idauthentication/v1/auth/$partnerKeyURL$
-      description: Otp auth with valid UIN
+      description: Verify that OTP authentication succeeds with a valid UIN
       role: resident
       restMethod: post
       inputTemplate: ida/OtpAuth/otpAuth
@@ -35,7 +35,7 @@ OtpAuth:
 }'
   auth_OTP_Auth_With_Valid_VID_Smoke_Pos:
       endPoint: /idauthentication/v1/auth/$partnerKeyURL$
-      description: Otp auth with valid VID
+      description: Verify that OTP authentication succeeds with a valid VID in a smoke test scenario
       role: resident
       restMethod: post
       inputTemplate: ida/OtpAuth/otpAuth
@@ -69,7 +69,7 @@ OtpAuth:
 }'
   auth_OTP_Auth_With_revoke_VID_Smoke_Pos:
       endPoint: /idauthentication/v1/auth/$partnerKeyURL$
-      description: Otp auth with revoke VID
+      description: Verify that OTP authentication succeeds with a revoked VID in a smoke test scenario
       role: resident
       restMethod: post
       inputTemplate: ida/OtpAuth/otpAuth
@@ -110,7 +110,7 @@ OtpAuth:
 }'
   auth_OTP_Auth_With_Invalid_individualId_UIN_neg:
       endPoint: /idauthentication/v1/auth/$partnerKeyURL$
-      description: Otp auth with invalid individualId using UIN
+      description: Verify that OTP authentication fails when an invalid individual ID is used with a UIN
       role: resident
       restMethod: post
       inputTemplate: ida/OtpAuth/otpAuth
@@ -151,7 +151,7 @@ OtpAuth:
 }'
   auth_OTP_Auth_With_Invalid_individualId_VID_neg:
       endPoint: /idauthentication/v1/auth/$partnerKeyURL$
-      description: Otp auth with invalid individualId using VID
+      description: Verify that OTP authentication fails when an invalid individual ID is used with a VID
       role: resident
       restMethod: post
       inputTemplate: ida/OtpAuth/otpAuth
@@ -192,7 +192,7 @@ OtpAuth:
 }'
   auth_OTP_Auth_With_Blank_individualId_neg:
       endPoint: /idauthentication/v1/auth/$partnerKeyURL$
-      description: Otp auth with blank individualId using UIN
+      description: Verify that OTP authentication fails when a blank individual ID is used
       role: resident
       restMethod: post
       inputTemplate: ida/OtpAuth/otpAuth
@@ -232,7 +232,7 @@ OtpAuth:
 }'
   auth_OTP_Auth_With_Blank_individualId_VID_neg:
       endPoint: /idauthentication/v1/auth/$partnerKeyURL$
-      description: Otp auth with blank individualId using VID
+      description: Verify that OTP authentication fails when a blank individual ID is used with a VID
       role: resident
       restMethod: post
       inputTemplate: ida/OtpAuth/otpAuth
@@ -272,7 +272,7 @@ OtpAuth:
 }'
   auth_OTP_Auth_With_Missing_individualId_neg:
       endPoint: /idauthentication/v1/auth/$partnerKeyURL$
-      description: Otp auth with missing individualId using UIN
+      description: Verify that OTP authentication fails when the individual ID is missing
       role: resident
       restMethod: post
       inputTemplate: ida/OtpAuth/otpAuth
@@ -312,7 +312,7 @@ OtpAuth:
 }'
   auth_OTP_Auth_With_Missing_individualId_VID_neg:
       endPoint: /idauthentication/v1/auth/$partnerKeyURL$
-      description: Otp auth with missing individualId using VID
+      description: Verify that OTP authentication fails when the individual ID is missing for a VID
       role: resident
       restMethod: post
       inputTemplate: ida/OtpAuth/otpAuth
@@ -352,7 +352,7 @@ OtpAuth:
 }'
   auth_OTP_Auth_With_Invalid_transactionId_neg:
       endPoint: /idauthentication/v1/auth/$partnerKeyURL$
-      description: Otp auth with invalid transactionId using UIN
+      description: Verify that OTP authentication fails when an invalid transaction ID is used
       role: resident
       restMethod: post
       inputTemplate: ida/OtpAuth/otpAuth
@@ -392,7 +392,7 @@ OtpAuth:
 }'
   auth_OTP_Auth_With_Invalid_transactionId_VID_neg:
       endPoint: /idauthentication/v1/auth/$partnerKeyURL$
-      description: Otp auth with invalid transactionId using VID
+      description: Verify that OTP authentication fails when an invalid transaction ID is used with a VID
       role: resident
       restMethod: post
       inputTemplate: ida/OtpAuth/otpAuth
@@ -432,7 +432,7 @@ OtpAuth:
 }'
   auth_OTP_Auth_With_Blank_transactionId_neg:
       endPoint: /idauthentication/v1/auth/$partnerKeyURL$
-      description: Otp auth with blank transactionId using UIN
+      description: Verify that OTP authentication fails when a blank transaction ID is used
       role: resident
       restMethod: post
       inputTemplate: ida/OtpAuth/otpAuth
@@ -472,7 +472,7 @@ OtpAuth:
 }'
   auth_OTP_Auth_With_Blank_transactionId_VID_neg:
       endPoint: /idauthentication/v1/auth/$partnerKeyURL$
-      description: Otp auth with blank transactionId using VID
+      description: Verify that OTP authentication fails when a blank transaction ID is used with a VID
       role: resident
       restMethod: post
       inputTemplate: ida/OtpAuth/otpAuth
@@ -512,7 +512,7 @@ OtpAuth:
 }'
   auth_OTP_Auth_With_different_transactionId_neg:
       endPoint: /idauthentication/v1/auth/$partnerKeyURL$
-      description: Otp auth with different transactionId using UIN
+      description: Verify that OTP authentication fails when a different transaction ID is used
       role: resident
       restMethod: post
       inputTemplate: ida/OtpAuth/otpAuth
@@ -552,7 +552,7 @@ OtpAuth:
 }'
   auth_OTP_Auth_With_Invalid_individualIdType_neg:
       endPoint: /idauthentication/v1/auth/$partnerKeyURL$
-      description: Otp auth with invalid individualIdType using UIN
+      description: Verify that OTP authentication fails when an invalid individual ID type is used
       role: resident
       restMethod: post
       inputTemplate: ida/OtpAuth/otpAuth
@@ -592,7 +592,7 @@ OtpAuth:
 }'
   auth_OTP_Auth_With_Invalid_individualIdType_VID_neg:
       endPoint: /idauthentication/v1/auth/$partnerKeyURL$
-      description: Otp auth with invalid individualIdType using VID
+      description: Verify that OTP authentication fails when an invalid individual ID type is used with a VID
       role: resident
       restMethod: post
       inputTemplate: ida/OtpAuth/otpAuth
@@ -632,7 +632,7 @@ OtpAuth:
 }'
   auth_OTP_Auth_With_Blank_individualIdType_neg:
       endPoint: /idauthentication/v1/auth/$partnerKeyURL$
-      description: Otp auth with blank individualIdType using UIN
+      description: Verify that OTP authentication fails when the individual ID type is blank
       role: resident
       restMethod: post
       inputTemplate: ida/OtpAuth/otpAuth
@@ -672,7 +672,7 @@ OtpAuth:
 }'
   auth_OTP_Auth_With_Blank_individualIdType_VID_neg:
       endPoint: /idauthentication/v1/auth/$partnerKeyURL$
-      description: Otp auth with blank individualIdType using VID
+      description: Verify that OTP authentication fails when the individual ID type is blank for a VID
       role: resident
       restMethod: post
       inputTemplate: ida/OtpAuth/otpAuth
@@ -712,7 +712,7 @@ OtpAuth:
 }'
   auth_OTP_Auth_With_Missing_Optional_Field_individualIdType:
       endPoint: /idauthentication/v1/auth/$partnerKeyURL$
-      description: Otp auth with missing optional field individualIdType using UIN
+      description: Verify that OTP authentication succeeds when the optional field individual ID type is missing
       role: resident
       restMethod: post
       inputTemplate: ida/OtpAuth/otpAuth
@@ -746,7 +746,7 @@ OtpAuth:
 }'
   auth_OTP_Auth_With_Missing_Optional_Field_individualIdType_VID:
       endPoint: /idauthentication/v1/auth/$partnerKeyURL$
-      description: Otp auth with missing optional field individualIdType using VID
+      description: Verify that OTP authentication succeeds when the optional field individual ID type is missing for a VID
       role: resident
       restMethod: post
       inputTemplate: ida/OtpAuth/otpAuth
@@ -780,7 +780,7 @@ OtpAuth:
 }'
   auth_OTP_Auth_With_Invalid_partner:
       endPoint: /idauthentication/v1/auth/zY22wDwZxwMdlxTZRWrM50m4zBoOiMyUGY/45362768/27822828287
-      description: Otp auth with invalid partner
+      description: Verify that OTP authentication fails when an invalid partner is used
       role: resident
       restMethod: post
       inputTemplate: ida/OtpAuth/otpAuth

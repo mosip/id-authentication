@@ -2,7 +2,7 @@ GenerateVID:
    auth_GenerateVID_All_Valid_Smoke_Perpetual_sid:
       endPoint: /resident/v1/vid
       uniqueIdentifier: TC_IDA_GenerateVID_01
-      description: generate Perpetual VID for Authentication
+      description: Verify that VID generation succeeds for a perpetual SID when all required fields are valid
       role: resident
       checkErrorsOnlyInResponse: true
       restMethod: post
@@ -36,7 +36,7 @@ GenerateVID:
    auth_GenerateVID_for deactivate_vid_testing_sid:
       endPoint: /resident/v1/vid
       uniqueIdentifier: TC_IDA_GenerateVID_02
-      description: generate Perpetual VID to deactivate and to perform Authentication
+      description: Verify that VID generation succeeds for testing deactivation when using a valid SID
       role: resident
       checkErrorsOnlyInResponse: true
       restMethod: post
@@ -70,7 +70,7 @@ GenerateVID:
    auth_GenerateVID_to_revoke_smoke_Perpetual_sid:
       endPoint: /resident/v1/vid
       uniqueIdentifier: TC_IDA_GenerateVID_03
-      description: generate Perpetual VID to Revoke
+      description: Verify that VID generation succeeds for a perpetual SID and can be used for revoke testing
       role: resident
       checkErrorsOnlyInResponse: true
       restMethod: post
@@ -104,7 +104,7 @@ GenerateVID:
    auth_GenerateVID_to_test_hotlist_Perpetual_sid:
       endPoint: /resident/v1/vid
       uniqueIdentifier: TC_IDA_GenerateVID_04
-      description: generate Perpetual VID to test Hotlist api
+      description: Verify that VID generation succeeds for a perpetual SID and can be used for hotlist testing
       role: resident
       checkErrorsOnlyInResponse: true
       restMethod: post
@@ -138,7 +138,7 @@ GenerateVID:
    auth_GenerateVID_All_Valid_Smoke_Temp_VID_sid:
       endPoint: /resident/v1/vid
       uniqueIdentifier: TC_IDA_GenerateVID_05
-      description: generate Temporary VID for Authentication
+      description: Verify that VID generation succeeds for a temporary VID with a valid SID
       role: resident
       checkErrorsOnlyInResponse: true
       restMethod: post
@@ -172,7 +172,7 @@ GenerateVID:
    auth_GenerateVID_All_Valid_Smoke_deactivate_Perpetual_sid:
       endPoint: /resident/v1/vid
       uniqueIdentifier: TC_IDA_GenerateVID_06
-      description: generate Perpetual VID to Deactivate
+      description: Verify that VID generation succeeds for a perpetual SID and can be used for deactivation testing
       role: resident
       checkErrorsOnlyInResponse: true
       restMethod: post
@@ -206,7 +206,7 @@ GenerateVID:
    auth_GenerateVID_auditLog_Valid_Smoke_Perpetual_sid:
       endPoint: /resident/v1/vid
       uniqueIdentifier: TC_IDA_DependentTc_AuthTransaction_GenerateVID_07
-      description: generate Perpetual VID to check audit
+      description: Verify that VID generation succeeds for a perpetual SID and the action is correctly logged in the audit log
       role: resident
       checkErrorsOnlyInResponse: true
       restMethod: post
@@ -240,7 +240,7 @@ GenerateVID:
    auth_GenerateVID_toDeactiavteAndReactivate_auditLog_Valid_Smoke_Perpetual_sid:
       endPoint: /resident/v1/vid
       uniqueIdentifier: TC_IDA_DependentTc_AuthTransaction_GenerateVID_08
-      description: generate Perpetual VID to deactivate and reactivate to check audit log
+      description: Verify that VID generation succeeds for a perpetual SID supports deactivation and reactivation flow and the actions are correctly recorded in the audit log
       role: resident
       checkErrorsOnlyInResponse: true
       restMethod: post
@@ -274,7 +274,7 @@ GenerateVID:
    auth_GenerateVID_toRegenerateVid_auditLog_Valid_Smoke_VID_sid:
       endPoint: /resident/v1/vid
       uniqueIdentifier: TC_IDA_DependentTc_AuthTransaction_GenerateVID_09
-      description: generate Vid to check audit logs
+      description: Verify that VID regeneration succeeds using an existing VID and SID and that the regenerate action is correctly recorded in the audit log
       role: resident
       checkErrorsOnlyInResponse: true
       restMethod: post
@@ -308,7 +308,7 @@ GenerateVID:
    auth_GenerateVID_toCreateVid_auditLog_Valid_Smoke_VID_sid:
       endPoint: /resident/v1/vid
       uniqueIdentifier: TC_IDA_DependentTc_AuthTransaction_GenerateVID_10
-      description: generate Vid to check audit logs
+      description: Verify that VID creation succeeds using a valid VID and SID and that the create VID action is correctly recorded in the audit log
       role: resident
       checkErrorsOnlyInResponse: true
       restMethod: post
@@ -342,7 +342,7 @@ GenerateVID:
    auth_GenerateVID_toBlock_sendOTP_Smoke_sid:
       endPoint: /resident/v1/vid
       uniqueIdentifier: TC_IDA_GenerateVID_11
-      description: generate Vid to block and to send otp
+      description: Verify that VID blocking succeeds and an OTP is successfully sent when using a valid SID
       role: resident
       checkErrorsOnlyInResponse: true
       restMethod: post
@@ -376,7 +376,7 @@ GenerateVID:
    auth_GenerateVID_torevoke_audit_Smoke_sid:
       endPoint: /resident/v1/vid
       uniqueIdentifier: TC_IDA_GenerateVID_12
-      description: generate Vid to revoke for audit log
+      description: Verify that VID revocation succeeds for a valid SID and the revoke action is correctly recorded in the audit log
       role: resident
       checkErrorsOnlyInResponse: true
       restMethod: post
@@ -410,7 +410,7 @@ GenerateVID:
    auth_GenerateVID_for_EkycDemo_Dob_sid:
       endPoint: /resident/v1/vid
       uniqueIdentifier: TC_IDA_GenerateVID_13
-      description: generate Vid ekyc demo for dob
+      description: Verify that VID generation succeeds for a valid SID and can be used for eKYC demo authentication using DOB
       role: resident
       checkErrorsOnlyInResponse: true
       restMethod: post
@@ -444,7 +444,7 @@ GenerateVID:
    auth_GenerateVID_for_kycDelegated_bio_sid:
       endPoint: /resident/v1/vid
       uniqueIdentifier: TC_IDA_GenerateVID_14
-      description: generate Vid for kyc delegated bio for dob
+      description: Verify that VID generation succeeds for a valid SID and can be used for delegated KYC biometric authentication
       role: resident
       checkErrorsOnlyInResponse: true
       restMethod: post
@@ -478,7 +478,7 @@ GenerateVID:
    auth_GenerateVID_for_kycDelegated_bio_rightIris_sid:
       endPoint: /resident/v1/vid
       uniqueIdentifier: TC_IDA_GenerateVID_16
-      description: generate Vid for kyc delegated for right iris
+      description: Verify that VID generation succeeds for a valid SID and can be used for delegated KYC authentication using right iris biometric data
       role: resident
       checkErrorsOnlyInResponse: true
       restMethod: post
@@ -512,7 +512,7 @@ GenerateVID:
    auth_GenerateVID_for_kycDelegated_differentIdType_sid:
       endPoint: /resident/v1/vid
       uniqueIdentifier: TC_IDA_GenerateVID_17
-      description: generate Vid for kyc delegated for differentIdType
+      description: Verify that VID generation succeeds for a valid SID and can be used for delegated KYC authentication with a different individual ID type
       role: resident
       checkErrorsOnlyInResponse: true
       restMethod: post

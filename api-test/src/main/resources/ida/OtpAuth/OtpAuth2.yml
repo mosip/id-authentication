@@ -2,7 +2,7 @@ OtpAuth:
   auth_OTP_Auth_With_Valid_UIN_Smoke_Pos:
       endPoint: /idauthentication/v1/auth/$partnerKeyURL$
       uniqueIdentifier: TC_IDA_OtpAuth_01
-      description: Otp auth with valid using UIN
+      description: Verify that OTP authentication succeeds with a valid UIN
       role: resident
       restMethod: post
       checkErrorsOnlyInResponse: true
@@ -38,7 +38,7 @@ OtpAuth:
   auth_OTP_Auth_With_Valid_UIN_with_edited_updated_policy_Pos:
       endPoint: /idauthentication/v1/auth/$partnerKeyURL$
       uniqueIdentifier: TC_IDA_OtpAuth_02
-      description: Otp auth with valid using UIN with edited updated policy
+      description: Verify that OTP authentication succeeds with a valid UIN using an edited and updated policy
       role: resident
       checkErrorsOnlyInResponse: true
       restMethod: post
@@ -72,7 +72,7 @@ OtpAuth:
   auth_OTP_Auth_With_Infant_UIN_Pos:
       endPoint: /idauthentication/v1/auth/$partnerKeyURL$
       uniqueIdentifier: TC_IDA_OtpAuth_03
-      description: Otp auth with Infant using UIN 
+      description: Verify that OTP authentication succeeds with an infant UIN
       role: resident
       checkErrorsOnlyInResponse: true
       restMethod: post
@@ -106,7 +106,7 @@ OtpAuth:
   auth_OTP_Auth_With_Infant_locked_UIN_Pos:
       endPoint: /idauthentication/v1/auth/$partnerKeyURL$
       uniqueIdentifier: TC_IDA_OtpAuth_04
-      description: Otp auth with Infant locked UIN
+      description: Verify that OTP authentication succeeds with a locked infant UIN
       role: resident
       checkErrorsOnlyInResponse: true
       restMethod: post
@@ -141,7 +141,7 @@ OtpAuth:
   auth_OTP_Auth_With_Valid_VID_Smoke_Pos:
       endPoint: /idauthentication/v1/auth/$partnerKeyURL$
       uniqueIdentifier: TC_IDA_OtpAuth_05
-      description: Otp auth with valid using VID
+      description: Verify that OTP authentication succeeds with a valid VID in a smoke test scenario
       role: resident
       checkErrorsOnlyInResponse: true
       restMethod: post
@@ -176,7 +176,7 @@ OtpAuth:
   auth_OTP_Auth_With_Invalid_Past_Timestamp_UIN_Neg:
       endPoint: /idauthentication/v1/auth/$partnerKeyURL$
       uniqueIdentifier: TC_IDA_OtpAuth_06
-      description: Otp auth with invalid Past Timestamp using UIN
+      description: Verify that OTP authentication fails with a UIN when an invalid past timestamp is used
       role: resident
       checkErrorsOnlyInResponse: true
       restMethod: post
@@ -210,7 +210,7 @@ OtpAuth:
   auth_OTP_Auth_With_Invalid_Past_Timestamp_VID_Neg:
       endPoint: /idauthentication/v1/auth/$partnerKeyURL$
       uniqueIdentifier: TC_IDA_OtpAuth_07
-      description: Otp auth with invalid Past Timestamp using VID
+      description: Verify that OTP authentication fails with a VID when an invalid past timestamp is used
       role: resident
       checkErrorsOnlyInResponse: true
       restMethod: post
@@ -245,7 +245,7 @@ OtpAuth:
   auth_OTP_Auth_With_Invalid_Future_Timestamp_UIN_Neg:
       endPoint: /idauthentication/v1/auth/$partnerKeyURL$
       uniqueIdentifier: TC_IDA_OtpAuth_08
-      description: Otp auth with invalid future timestamp using UIN
+      description: Verify that OTP authentication fails with a UIN when an invalid future timestamp is used
       role: resident
       checkErrorsOnlyInResponse: true
       restMethod: post
@@ -279,7 +279,7 @@ OtpAuth:
   auth_OTP_Auth_With_Invalid_Future_Timestamp_VID_Neg:
       endPoint: /idauthentication/v1/auth/$partnerKeyURL$
       uniqueIdentifier: TC_IDA_OtpAuth_09
-      description: Otp auth with invalid future timestamp using VID
+      description: Verify that OTP authentication fails with a VID when an invalid future timestamp is used
       role: resident
       checkErrorsOnlyInResponse: true
       restMethod: post
@@ -314,7 +314,7 @@ OtpAuth:
   auth_OTP_Auth_With_Invalid_Empty_Timestamp_UIN_Neg:
       endPoint: /idauthentication/v1/auth/$partnerKeyURL$
       uniqueIdentifier: TC_IDA_OtpAuth_10
-      description: Otp auth with invalid empty timestamp using UIN
+      description: Verify that OTP authentication fails with a UIN when an empty timestamp is used
       role: resident
       checkErrorsOnlyInResponse: true
       restMethod: post
@@ -348,7 +348,7 @@ OtpAuth:
   auth_OTP_Auth_With_Invalid_Empty_Timestamp_VID_Neg:
       endPoint: /idauthentication/v1/auth/$partnerKeyURL$
       uniqueIdentifier: TC_IDA_OtpAuth_11
-      description: Otp auth with invalid empty timestamp using VID
+      description: Verify that OTP authentication fails with a VID when an empty timestamp is used
       role: resident
       checkErrorsOnlyInResponse: true
       restMethod: post
@@ -383,7 +383,7 @@ OtpAuth:
   auth_OTP_Auth_With_revoke_VID_Pos:
       endPoint: /idauthentication/v1/auth/$partnerKeyURL$
       uniqueIdentifier: TC_IDA_OtpAuth_12
-      description: Otp auth with revoked VID
+      description: Verify that OTP authentication succeeds with a revoked VID
       role: resident
       checkErrorsOnlyInResponse: true
       restMethod: post
@@ -418,7 +418,7 @@ OtpAuth:
   auth_OTP_Auth_With_Invalid_individualId_UIN_neg:
       endPoint: /idauthentication/v1/auth/$partnerKeyURL$
       uniqueIdentifier: TC_IDA_OtpAuth_13
-      description: Otp auth with invalid individualId using UIN
+      description: Verify that OTP authentication fails with an invalid individual ID using a UIN
       role: resident
       restMethod: post
       inputTemplate: ida/OtpAuth/OtpAuth
@@ -461,7 +461,7 @@ OtpAuth:
   auth_OTP_Auth_With_Invalid_individualId_UIN_neg:
       endPoint: /idauthentication/v1/auth/$partnerKeyURL$
       uniqueIdentifier: TC_IDA_OtpAuth_13
-      description: Otp auth with invalid individualId using UIN
+      description: Verify that OTP authentication fails when an invalid individual ID is used with a UIN
       role: resident
       restMethod: post
       inputTemplate: ida/OtpAuth/OtpAuth
@@ -504,7 +504,7 @@ OtpAuth:
   auth_OTP_Auth_With_Blank_individualId_uin_neg:
       endPoint: /idauthentication/v1/auth/$partnerKeyURL$
       uniqueIdentifier: TC_IDA_OtpAuth_14
-      description: Otp auth with blank individualId using uin
+      description: Verify that OTP authentication fails when a blank individual ID is used with a UIN
       role: resident
       restMethod: post
       inputTemplate: ida/OtpAuth/OtpAuth
@@ -545,7 +545,7 @@ OtpAuth:
   auth_OTP_Auth_With_Blank_individualId_VID_neg:
       endPoint: /idauthentication/v1/auth/$partnerKeyURL$
       uniqueIdentifier: TC_IDA_OtpAuth_15
-      description: Otp auth with blank individualId using VID
+      description: Verify that OTP authentication fails when a blank individual ID is used with a VID
       role: resident
       restMethod: post
       inputTemplate: ida/OtpAuth/OtpAuth
@@ -586,7 +586,7 @@ OtpAuth:
   auth_OTP_Auth_With_Missing_individualId_uin_neg:
       endPoint: /idauthentication/v1/auth/$partnerKeyURL$
       uniqueIdentifier: TC_IDA_OtpAuth_16
-      description: Otp auth with missing individualId using UIN
+      description: Verify that OTP authentication fails when the individual ID is missing for a UIN
       role: resident
       checkErrorsOnlyInResponse: true
       restMethod: post
@@ -620,7 +620,7 @@ OtpAuth:
   auth_OTP_Auth_With_Missing_individualId_VID_neg:
       endPoint: /idauthentication/v1/auth/$partnerKeyURL$
       uniqueIdentifier: TC_IDA_OtpAuth_17
-      description: OTP auth with missing individualId using VID
+      description: Verify that OTP authentication fails when the individual ID is missing for a VID
       role: resident
       checkErrorsOnlyInResponse: true
       restMethod: post
@@ -654,7 +654,7 @@ OtpAuth:
   auth_OTP_Auth_With_Invalid_transactionId_uin_Neg:
       endPoint: /idauthentication/v1/auth/$partnerKeyURL$
       uniqueIdentifier: TC_IDA_OtpAuth_18
-      description: OTP auth with invalid transactionId using uin
+      description: Verify that OTP authentication fails when an invalid transaction ID is used with a UIN
       role: resident
       checkErrorsOnlyInResponse: true
       restMethod: post
@@ -688,7 +688,7 @@ OtpAuth:
   auth_OTP_Auth_With_Invalid_transactionId_VID_Neg:
       endPoint: /idauthentication/v1/auth/$partnerKeyURL$
       uniqueIdentifier: TC_IDA_OtpAuth_19
-      description: OTP auth with invalid transactionId using VID
+      description: Verify that OTP authentication fails when an invalid transaction ID is used with a VID
       role: resident
       checkErrorsOnlyInResponse: true
       restMethod: post
@@ -723,7 +723,7 @@ OtpAuth:
   auth_OTP_Auth_With_Blank_transactionId_uin_Neg:
       endPoint: /idauthentication/v1/auth/$partnerKeyURL$
       uniqueIdentifier: TC_IDA_OtpAuth_20
-      description: OTP auth with blank transactionId using uin
+      description: Verify that OTP authentication fails when a blank transaction ID is used with a UIN
       role: resident
       checkErrorsOnlyInResponse: true
       restMethod: post
@@ -757,7 +757,7 @@ OtpAuth:
   auth_OTP_Auth_With_Blank_transactionId_VID_Neg:
       endPoint: /idauthentication/v1/auth/$partnerKeyURL$
       uniqueIdentifier: TC_IDA_OtpAuth_21
-      description: OTP auth with blank transactionId using VID
+      description: Verify that OTP authentication fails when a blank transaction ID is used with a VID
       role: resident
       checkErrorsOnlyInResponse: true
       restMethod: post
@@ -792,7 +792,7 @@ OtpAuth:
   auth_OTP_Auth_With_different_transactionId_uin_neg:
       endPoint: /idauthentication/v1/auth/$partnerKeyURL$
       uniqueIdentifier: TC_IDA_OtpAuth_22
-      description: OTP auth with different transactionId using uin
+      description: Verify that OTP authentication fails when a different transaction ID is used with a UIN
       role: resident
       checkErrorsOnlyInResponse: true
       restMethod: post
@@ -826,7 +826,7 @@ OtpAuth:
   auth_OTP_Auth_With_Optional_individualIdType_VID:
       endPoint: /idauthentication/v1/auth/$partnerKeyURL$
       uniqueIdentifier: TC_IDA_OtpAuth_23
-      description: OTP auth with optional individualIdType using VID
+      description: Verify that OTP authentication succeeds with a VID when the individual ID type is optional
       role: resident
       checkErrorsOnlyInResponse: true
       restMethod: post
@@ -861,7 +861,7 @@ OtpAuth:
   auth_OTP_Auth_With_Blank_individualIdType_VID_Pos:
       endPoint: /idauthentication/v1/auth/$partnerKeyURL$
       uniqueIdentifier: TC_IDA_OtpAuth_24
-      description: OTP auth with blank individualIdType using VID
+      description: Verify that OTP authentication succeeds with a VID when the individual ID type is blank
       role: resident
       checkErrorsOnlyInResponse: true
       restMethod: post
@@ -901,7 +901,7 @@ OtpAuth:
   auth_OTP_Auth_With_Missing_Optional_Field_individualIdType_VID:
       endPoint: /idauthentication/v1/auth/$partnerKeyURL$
       uniqueIdentifier: TC_IDA_OtpAuth_25
-      description: Otp auth with missing optional field individualIdType using VID
+      description: Verify that OTP authentication succeeds with a VID when the optional field individual ID type is missing
       role: resident
       checkErrorsOnlyInResponse: true
       restMethod: post
@@ -936,7 +936,7 @@ OtpAuth:
   auth_OTP_Auth_With_Invalid_uin_partner:
       endPoint: /idauthentication/v1/auth/zY22wDwZxwMdlxTZRWrM50m4zBoOiMyUGY/45362768/27822828287
       uniqueIdentifier: TC_IDA_OtpAuth_26
-      description: Otp auth with invalid partner
+      description: Verify that OTP authentication fails when an invalid UIN partner is used
       role: resident
       checkErrorsOnlyInResponse: true
       restMethod: post
@@ -978,7 +978,7 @@ OtpAuth:
   auth_OTP_Auth_With_InValid_OTP:
       endPoint: /idauthentication/v1/auth/$partnerKeyURL$
       uniqueIdentifier: TC_IDA_OtpAuth_27
-      description: Otp auth with invalid OTP
+      description: Verify that OTP authentication fails when an invalid OTP is used
       role: resident
       checkErrorsOnlyInResponse: true
       restMethod: post
@@ -1017,7 +1017,7 @@ OtpAuth:
   auth_OTP_Auth_With_WRONG_OTP:
       endPoint: /idauthentication/v1/auth/$partnerKeyURL$
       uniqueIdentifier: TC_IDA_OtpAuth_28
-      description: Otp auth with wrong OTP
+      description: Verify that OTP authentication fails when a wrong OTP is used
       role: resident
       checkErrorsOnlyInResponse: true
       restMethod: post
@@ -1057,7 +1057,7 @@ OtpAuth:
   auth_OTP_Auth_With_IRIS_as_true_anddo_auth_policy:
       endPoint: /idauthentication/v1/auth/$partnerKeyURL$
       uniqueIdentifier: TC_IDA_OtpAuth_29
-      description: Perform otp auth when iris is set as true in policy
+      description: Verify that OTP authentication succeeds when IRIS is set to true and the authentication policy is applied
       role: resident
       checkErrorsOnlyInResponse: true
       restMethod: post
@@ -1091,7 +1091,7 @@ OtpAuth:
   auth_OTP_Auth_With_locked_email_Pos:
       endPoint: /idauthentication/v1/auth/$partnerKeyURL$
       uniqueIdentifier: TC_IDA_OtpAuth_30
-      description: Otp auth with locked email using valid UIN
+      description: Verify that OTP authentication succeeds with a locked email
       role: resident
       checkErrorsOnlyInResponse: true
       restMethod: post
@@ -1126,7 +1126,7 @@ OtpAuth:
   auth_OTP_Auth_With_locked_phone_Pos:
       endPoint: /idauthentication/v1/auth/$partnerKeyURL$
       uniqueIdentifier: TC_IDA_OtpAuth_31
-      description: Otp auth with locked phone using valid UIN
+      description: Verify that OTP authentication succeeds with a locked phone number
       role: resident
       checkErrorsOnlyInResponse: true
       restMethod: post
