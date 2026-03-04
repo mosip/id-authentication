@@ -33,7 +33,7 @@ BioAuthDelegatedV2:
           "serialNo": "78467171",
           "type": "Face",
     "transactionId": "$TRANSACTIONID$",
-    "identityRequestTemplate": "ida/BioAuthDelegated/BioAuthIdentityEncrypt",
+    "identityRequestTemplate": "ida/BioAuthDelegatedV2/BioAuthIdentityEncrypt",
     "identityRequestEncUrl": "/idauthentication/v1/internal/encrypt"
     }
     }'

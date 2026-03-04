@@ -7,7 +7,7 @@ BioAuthKycExchangeV2:
       restMethod: post
       checkErrorsOnlyInResponse: true
       inputTemplate: ida/BioAuthKycExchangeV2/BioAuthKYCExchangeV2
-      outputTemplate: ida/BioAuthKycExchangeV2/BioKYCAuthDelegatedResult
+      outputTemplate: ida/BioAuthKycExchangeV2/BioAuthKYCExchangeResult
       input: '{
         "requestTime": "$TIMESTAMP$",
         "individualId": "$ID:AddIdentity_For_Kyc_Delegated_Bio_Auth_Smoke_Pos_UIN$",
