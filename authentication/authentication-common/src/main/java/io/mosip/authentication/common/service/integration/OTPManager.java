@@ -145,6 +145,8 @@ public class OTPManager {
                         .stream().map(NotificationType::getName).collect(Collectors.joining()))
                 .collect(Collectors.joining("|"));
 
+        logger.info(IdAuthCommonConstants.SESSION_ID, this.getClass().getSimpleName(), "sendOtp",
+                "ValueMap used to send OTP notification - remove log after debug {}", valueMap);
         notificationService.sendOTPNotification(idvid, idvidType, valueMap, templateLanguages, otp, notificationProperty, otpGenerationTime);
 
         return true;

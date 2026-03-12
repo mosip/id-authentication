@@ -57,6 +57,8 @@ public class NotificationManager {
             SmsRequestDto smsRequestDto = new SmsRequestDto();
             smsRequestDto.setMessage(message);
             smsRequestDto.setNumber(notificationMobileNo);
+            //TODO REMOVE THIS LOG AFTER DEBUGGING
+            logger.info(IdAuthCommonConstants.SESSION_ID, "Inside SMS Notification >>>>>", "MobileNo: {}", notificationMobileNo);
             RestRequestDTO restRequestDTO = null;
             restRequestDTO = restRequestFactory.buildRequest(RestServicesConstants.SMS_NOTIFICATION_SERVICE,
                     RestRequestFactory.createRequest(smsRequestDto), String.class);
