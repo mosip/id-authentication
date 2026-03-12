@@ -1,6 +1,6 @@
 BioAuthDelegatedNeg:
   auth_BioAuthDelegatedNeg_Biometric_Face_With_Infant_uin_Smoke_Pos:
-      endPoint: /idauthentication/v1/kyc-auth/delegated/$partialPartnerKeyUrl$/$ID:CreateOIDCClient_Misp_Valid_Smoke_sid_clientId$
+      endPoint: /idauthentication/v1/kyc-auth/delegated/$partialPartnerKeyUrl$/$ID:CreateOIDCClient_Delegated_Valid_Smoke_sid_clientId$
       uniqueIdentifier: TC_IDA_BioAuthDelegatedNeg_01
       description: Biometric kyc delegated face auth with infant UIN
       role: resident
@@ -44,7 +44,7 @@ BioAuthDelegatedNeg:
       ]
 }'
   auth_BioAuthDelegatedNeg_Biometric_Face_With_Revoked_VID_Valid_Smoke_Pos:
-      endPoint: /idauthentication/v1/kyc-auth/delegated/$partialPartnerKeyUrl$/$ID:CreateOIDCClient_Misp_Valid_Smoke_sid_clientId$
+      endPoint: /idauthentication/v1/kyc-auth/delegated/$partialPartnerKeyUrl$/$ID:CreateOIDCClient_Delegated_Valid_Smoke_sid_clientId$
       uniqueIdentifier: TC_IDA_BioAuthDelegatedNeg_02
       description: Bio kyc delegated auth with Face with revoked VID
       role: resident
@@ -89,7 +89,7 @@ BioAuthDelegatedNeg:
   ]
 }'
   auth_BioAuthDelegatedNeg_Biometric_invalid_uin_bioSubType:
-      endPoint: /idauthentication/v1/kyc-auth/delegated/$partialPartnerKeyUrl$/$ID:CreateOIDCClient_Misp_Valid_Smoke_sid_clientId$
+      endPoint: /idauthentication/v1/kyc-auth/delegated/$partialPartnerKeyUrl$/$ID:CreateOIDCClient_Delegated_Valid_Smoke_sid_clientId$
       uniqueIdentifier: TC_IDA_BioAuthDelegatedNeg_03
       description: Bio kyc delegated auth with invalid bioSubType using valid UIN
       role: resident
@@ -134,7 +134,7 @@ BioAuthDelegatedNeg:
   ]
 }'
   auth_BioAuthDelegatedNeg_Biometric_blank_uin_bioSubType:
-      endPoint: /idauthentication/v1/kyc-auth/delegated/$partialPartnerKeyUrl$/$ID:CreateOIDCClient_Misp_Valid_Smoke_sid_clientId$
+      endPoint: /idauthentication/v1/kyc-auth/delegated/$partialPartnerKeyUrl$/$ID:CreateOIDCClient_Delegated_Valid_Smoke_sid_clientId$
       uniqueIdentifier: TC_IDA_BioAuthDelegatedNeg_04
       description: Bio kyc delegated auth with blank bioSubType using valid UIN
       role: resident
@@ -179,7 +179,7 @@ BioAuthDelegatedNeg:
       ]
 }'
   auth_BioAuthDelegatedNeg_Biometric_Blank_uin_bioType:
-      endPoint: /idauthentication/v1/kyc-auth/delegated/$partialPartnerKeyUrl$/$ID:CreateOIDCClient_Misp_Valid_Smoke_sid_clientId$
+      endPoint: /idauthentication/v1/kyc-auth/delegated/$partialPartnerKeyUrl$/$ID:CreateOIDCClient_Delegated_Valid_Smoke_sid_clientId$
       uniqueIdentifier: TC_IDA_BioAuthDelegatedNeg_05
       description: Bio kyc delegated auth with blank bioType using valid UIN
       role: resident
@@ -224,7 +224,7 @@ BioAuthDelegatedNeg:
       ]
 }'
   auth_BioAuthDelegatedNeg_Biometric_valid_uin_bioType_and_invalid_digitalId_type:
-      endPoint: /idauthentication/v1/kyc-auth/delegated/$partialPartnerKeyUrl$/$ID:CreateOIDCClient_Misp_Valid_Smoke_sid_clientId$
+      endPoint: /idauthentication/v1/kyc-auth/delegated/$partialPartnerKeyUrl$/$ID:CreateOIDCClient_Delegated_Valid_Smoke_sid_clientId$
       uniqueIdentifier: TC_IDA_BioAuthDelegatedNeg_06
       description: Bio kyc delegated auth with valid bioType and invalid_digitalId_type using valid VID
       role: resident
@@ -271,7 +271,7 @@ BioAuthDelegatedNeg:
       ]
 }'
   auth_BioAuthDelegatedNeg_Biometric_invalid_uin_biovalue:
-      endPoint: /idauthentication/v1/kyc-auth/delegated/$partialPartnerKeyUrl$/$ID:CreateOIDCClient_Misp_Valid_Smoke_sid_clientId$
+      endPoint: /idauthentication/v1/kyc-auth/delegated/$partialPartnerKeyUrl$/$ID:CreateOIDCClient_Delegated_Valid_Smoke_sid_clientId$
       uniqueIdentifier: TC_IDA_BioAuthDelegatedNeg_07
       description: Bio kyc delegated auth with invalid biovalue using valid UIN
       role: resident
@@ -316,7 +316,7 @@ BioAuthDelegatedNeg:
       ]
 }'
   auth_BioAuthDelegatedNeg_Face_With_FingerBio_uin_Invalid:
-      endPoint: /idauthentication/v1/kyc-auth/delegated/$partialPartnerKeyUrl$/$ID:CreateOIDCClient_Misp_Valid_Smoke_sid_clientId$
+      endPoint: /idauthentication/v1/kyc-auth/delegated/$partialPartnerKeyUrl$/$ID:CreateOIDCClient_Delegated_Valid_Smoke_sid_clientId$
       uniqueIdentifier: TC_IDA_BioAuthDelegatedNeg_08
       description: Bio kyc delegated auth with finger bio value using valid UIN
       role: resident
@@ -361,7 +361,7 @@ BioAuthDelegatedNeg:
       ]
 }'
   auth_BioAuthDelegatedNeg_Iris_With_FaceBio_uin_Invalid:
-      endPoint: /idauthentication/v1/kyc-auth/delegated/$partialPartnerKeyUrl$/$ID:CreateOIDCClient_Misp_Valid_Smoke_sid_clientId$
+      endPoint: /idauthentication/v1/kyc-auth/delegated/$partialPartnerKeyUrl$/$ID:CreateOIDCClient_Delegated_Valid_Smoke_sid_clientId$
       uniqueIdentifier: TC_IDA_BioAuthDelegatedNeg_09
       description: Bio kyc delegated auth with Iris and face as bio value using valid UIN
       role: resident
@@ -406,7 +406,7 @@ BioAuthDelegatedNeg:
       ]
 }'
   auth_BioAuthDelegatedNeg_Finger_With_FaceBio_uin_Invalid:
-      endPoint: /idauthentication/v1/kyc-auth/delegated/$partialPartnerKeyUrl$/$ID:CreateOIDCClient_Misp_Valid_Smoke_sid_clientId$
+      endPoint: /idauthentication/v1/kyc-auth/delegated/$partialPartnerKeyUrl$/$ID:CreateOIDCClient_Delegated_Valid_Smoke_sid_clientId$
       uniqueIdentifier: TC_IDA_BioAuthDelegatedNeg_10
       description: Bio kyc delegated auth with finger and face as bio value using valid UIN
       role: resident
@@ -451,7 +451,7 @@ BioAuthDelegatedNeg:
       ]
 }'
   auth_BioAuthDelegatedNeg_invalid_Bio-Type_value_as_FIR_uin_instead_of_Face_uin:
-      endPoint: /idauthentication/v1/kyc-auth/delegated/$partialPartnerKeyUrl$/$ID:CreateOIDCClient_Misp_Valid_Smoke_sid_clientId$
+      endPoint: /idauthentication/v1/kyc-auth/delegated/$partialPartnerKeyUrl$/$ID:CreateOIDCClient_Delegated_Valid_Smoke_sid_clientId$
       uniqueIdentifier: TC_IDA_BioAuthDelegatedNeg_11
       description: Bio kyc delegated auth with invalid bioType and invalid bioValue using valid UIN
       role: resident
@@ -496,7 +496,7 @@ BioAuthDelegatedNeg:
       ]
 }'
   auth_BioAuthDelegatedNeg_invalid_Bio-Type_value_uin_as_IR_instead_of_IRIS_uin:
-      endPoint: /idauthentication/v1/kyc-auth/delegated/$partialPartnerKeyUrl$/$ID:CreateOIDCClient_Misp_Valid_Smoke_sid_clientId$
+      endPoint: /idauthentication/v1/kyc-auth/delegated/$partialPartnerKeyUrl$/$ID:CreateOIDCClient_Delegated_Valid_Smoke_sid_clientId$
       uniqueIdentifier: TC_IDA_BioAuthDelegatedNeg_12
       description: Bio kyc delegated auth with invalid bioType and invalid bioValue using valid UIN
       role: resident
@@ -541,7 +541,7 @@ BioAuthDelegatedNeg:
       ]
 }'
   auth_BioAuthDelegatedNeg_invalid_Bio-Type_value_as_FIR_instead_of_Finger_VID:
-      endPoint: /idauthentication/v1/kyc-auth/delegated/$partialPartnerKeyUrl$/$ID:CreateOIDCClient_Misp_Valid_Smoke_sid_clientId$
+      endPoint: /idauthentication/v1/kyc-auth/delegated/$partialPartnerKeyUrl$/$ID:CreateOIDCClient_Delegated_Valid_Smoke_sid_clientId$
       uniqueIdentifier: TC_IDA_BioAuthDelegatedNeg_13
       description: Bio kyc delegated auth with invalid bioType and invalid bioValue using valid VID
       role: resident
@@ -585,7 +585,7 @@ BioAuthDelegatedNeg:
   ]
 }'
   auth_BioAuthDelegatedNeg_invalid_Bio-Type_value_as_IR_instead_of_IRIS_VID:
-      endPoint: /idauthentication/v1/kyc-auth/delegated/$partialPartnerKeyUrl$/$ID:CreateOIDCClient_Misp_Valid_Smoke_sid_clientId$
+      endPoint: /idauthentication/v1/kyc-auth/delegated/$partialPartnerKeyUrl$/$ID:CreateOIDCClient_Delegated_Valid_Smoke_sid_clientId$
       uniqueIdentifier: TC_IDA_BioAuthDelegatedNeg_14
       description: Bio kyc delegated auth with invalid bioType and invalid bioValue using valid VID
       role: resident
@@ -629,7 +629,7 @@ BioAuthDelegatedNeg:
   ]
 }'
   auth_BioAuthDelegatedNeg_invalid_Bio-Type_value_as_FC_instead_of_FACE_VID:
-      endPoint: /idauthentication/v1/kyc-auth/delegated/$partialPartnerKeyUrl$/$ID:CreateOIDCClient_Misp_Valid_Smoke_sid_clientId$
+      endPoint: /idauthentication/v1/kyc-auth/delegated/$partialPartnerKeyUrl$/$ID:CreateOIDCClient_Delegated_Valid_Smoke_sid_clientId$
       uniqueIdentifier: TC_IDA_BioAuthDelegatedNeg_15
       description: Bio kyc delegated auth with invalid bioType and invalid bioValue using valid VID
       role: resident
@@ -673,7 +673,7 @@ BioAuthDelegatedNeg:
   ]
 }'
   auth_BioAuthDelegatedNeg_invalid_Bio-Type_value_as_FC_instead_of_FACE_UIN:
-      endPoint: /idauthentication/v1/kyc-auth/delegated/$partialPartnerKeyUrl$/$ID:CreateOIDCClient_Misp_Valid_Smoke_sid_clientId$
+      endPoint: /idauthentication/v1/kyc-auth/delegated/$partialPartnerKeyUrl$/$ID:CreateOIDCClient_Delegated_Valid_Smoke_sid_clientId$
       uniqueIdentifier: TC_IDA_BioAuthDelegatedNeg_16
       description: Bio kyc delegated auth with invalid bioType and invalid bioValue using valid UIN
       role: resident
@@ -717,7 +717,7 @@ BioAuthDelegatedNeg:
   ]
 }'
   auth_BioAuthDelegatedNeg_Biometric_Face_Lock_uin_Permanent_:
-      endPoint: /idauthentication/v1/kyc-auth/delegated/$partialPartnerKeyUrl$/$ID:CreateOIDCClient_Misp_Valid_Smoke_sid_clientId$
+      endPoint: /idauthentication/v1/kyc-auth/delegated/$partialPartnerKeyUrl$/$ID:CreateOIDCClient_Delegated_Valid_Smoke_sid_clientId$
       uniqueIdentifier: TC_IDA_BioAuthDelegatedNeg_17
       description: Bio kyc delegated auth using permanently locked UIN
       role: resident
@@ -762,7 +762,7 @@ BioAuthDelegatedNeg:
       ]
 }'
   auth_BioAuthDelegatedNeg_Biometric_time_difference_datetime_uin_Neg:
-      endPoint: /idauthentication/v1/kyc-auth/delegated/$partialPartnerKeyUrl$/$ID:CreateOIDCClient_Misp_Valid_Smoke_sid_clientId$
+      endPoint: /idauthentication/v1/kyc-auth/delegated/$partialPartnerKeyUrl$/$ID:CreateOIDCClient_Delegated_Valid_Smoke_sid_clientId$
       uniqueIdentifier: TC_IDA_BioAuthDelegatedNeg_18
       description: Bio kyc delegated auth with time difference between datetime and request time for UIN
       role: resident
@@ -807,7 +807,7 @@ BioAuthDelegatedNeg:
       ]
 }'
   auth_BioAuthDelegatedNeg_with_dummy_partnerkey_uin:
-      endPoint: /idauthentication/v1/kyc-auth/delegated/$a2673y3g3grURL$​/$ID:CreateOIDCClient_Misp_Valid_Smoke_sid_clientId$
+      endPoint: /idauthentication/v1/kyc-auth/delegated/$a2673y3g3grURL$​/$ID:CreateOIDCClient_Delegated_Valid_Smoke_sid_clientId$
       uniqueIdentifier: TC_IDA_BioAuthDelegatedNeg_19
       description: Bio kyc delegated auth with dummy partnerkey using UIN
       role: resident
@@ -855,7 +855,7 @@ BioAuthDelegatedNeg:
       ]
 }'
   auth_BioAuthDelegatedNeg_Biometric_Face_Lock_Permanent_uin_Valid_Smoke:
-      endPoint: /idauthentication/v1/kyc-auth/delegated/$partialPartnerKeyUrl$/$ID:CreateOIDCClient_Misp_Valid_Smoke_sid_clientId$
+      endPoint: /idauthentication/v1/kyc-auth/delegated/$partialPartnerKeyUrl$/$ID:CreateOIDCClient_Delegated_Valid_Smoke_sid_clientId$
       uniqueIdentifier: TC_IDA_BioAuthDelegatedNeg_20
       description: Bio kyc delegated auth with permanently locked UIN
       role: resident
@@ -900,7 +900,7 @@ BioAuthDelegatedNeg:
       ]
 }'
   auth_BioAuthDelegatedNeg_With_Deactivated_UIN:
-      endPoint: /idauthentication/v1/kyc-auth/delegated/$partialPartnerKeyUrl$/$ID:CreateOIDCClient_Misp_Valid_Smoke_sid_clientId$
+      endPoint: /idauthentication/v1/kyc-auth/delegated/$partialPartnerKeyUrl$/$ID:CreateOIDCClient_Delegated_Valid_Smoke_sid_clientId$
       uniqueIdentifier: TC_IDA_BioAuthDelegatedNeg_21
       description: Bio kyc delegated auth with deactivated UIN
       role: resident
@@ -945,7 +945,7 @@ BioAuthDelegatedNeg:
       ]
 }'
   auth_BioAuthDelegatedNeg_Biometric_Face_With_InValid_DATETIME:
-      endPoint: /idauthentication/v1/kyc-auth/delegated/$partialPartnerKeyUrl$/$ID:CreateOIDCClient_Misp_Valid_Smoke_sid_clientId$
+      endPoint: /idauthentication/v1/kyc-auth/delegated/$partialPartnerKeyUrl$/$ID:CreateOIDCClient_Delegated_Valid_Smoke_sid_clientId$
       uniqueIdentifier: TC_IDA_BioAuthDelegatedNeg_22
       description: Bio kyc delegated with auth face without date time
       role: resident
@@ -989,7 +989,7 @@ BioAuthDelegatedNeg:
       ]
 }'
   auth_BioAuthDelegatedNeg_Biometric_With_empty_DateTime:
-      endPoint: /idauthentication/v1/kyc-auth/delegated/$partialPartnerKeyUrl$/$ID:CreateOIDCClient_Misp_Valid_Smoke_sid_clientId$
+      endPoint: /idauthentication/v1/kyc-auth/delegated/$partialPartnerKeyUrl$/$ID:CreateOIDCClient_Delegated_Valid_Smoke_sid_clientId$
       uniqueIdentifier: TC_IDA_BioAuthDelegatedNeg_23
       description: Bio kyc delegated auth with empty date time
       role: resident
@@ -1034,7 +1034,7 @@ BioAuthDelegatedNeg:
       ]
 }'
   auth_BioAuthDelegatedNeg_Biometric_Without_DateTime:
-      endPoint: /idauthentication/v1/kyc-auth/delegated/$partialPartnerKeyUrl$/$ID:CreateOIDCClient_Misp_Valid_Smoke_sid_clientId$
+      endPoint: /idauthentication/v1/kyc-auth/delegated/$partialPartnerKeyUrl$/$ID:CreateOIDCClient_Delegated_Valid_Smoke_sid_clientId$
       uniqueIdentifier: TC_IDA_BioAuthDelegatedNeg_24
       description: Bio kyc delegated auth without date time
       role: resident
@@ -1079,7 +1079,7 @@ BioAuthDelegatedNeg:
       ]
 }'
   auth_BioAuthDelegatedNeg_Biometric_Face_With_Invalid_ENV:
-      endPoint: /idauthentication/v1/kyc-auth/delegated/$partialPartnerKeyUrl$/$ID:CreateOIDCClient_Misp_Valid_Smoke_sid_clientId$
+      endPoint: /idauthentication/v1/kyc-auth/delegated/$partialPartnerKeyUrl$/$ID:CreateOIDCClient_Delegated_Valid_Smoke_sid_clientId$
       uniqueIdentifier: TC_IDA_BioAuthDelegatedNeg_25
       description: Bio kyc delegated auth without ENV
       role: resident
@@ -1127,7 +1127,7 @@ BioAuthDelegatedNeg:
       ]
 }'
   auth_BioAuthDelegatedNeg_Biometric_Face_With_missing_ENV:
-      endPoint: /idauthentication/v1/kyc-auth/delegated/$partialPartnerKeyUrl$/$ID:CreateOIDCClient_Misp_Valid_Smoke_sid_clientId$
+      endPoint: /idauthentication/v1/kyc-auth/delegated/$partialPartnerKeyUrl$/$ID:CreateOIDCClient_Delegated_Valid_Smoke_sid_clientId$
       uniqueIdentifier: TC_IDA_BioAuthDelegatedNeg_26
       description: Bio kyc delegated auth without ENV
       role: resident
@@ -1175,7 +1175,7 @@ BioAuthDelegatedNeg:
       ]
 }'
   auth_BioAuthDelegatedNeg_Biometric_Face_With_Empty_ENV:
-      endPoint: /idauthentication/v1/kyc-auth/delegated/$partialPartnerKeyUrl$/$ID:CreateOIDCClient_Misp_Valid_Smoke_sid_clientId$
+      endPoint: /idauthentication/v1/kyc-auth/delegated/$partialPartnerKeyUrl$/$ID:CreateOIDCClient_Delegated_Valid_Smoke_sid_clientId$
       uniqueIdentifier: TC_IDA_BioAuthDelegatedNeg_27
       description: Bio kyc delegated auth without ENV
       role: resident
@@ -1223,7 +1223,7 @@ BioAuthDelegatedNeg:
       ]
 }'
   auth_BioAuthDelegatedNeg_Biometric_Face_With_Empty_space_ENV:
-      endPoint: /idauthentication/v1/kyc-auth/delegated/$partialPartnerKeyUrl$/$ID:CreateOIDCClient_Misp_Valid_Smoke_sid_clientId$
+      endPoint: /idauthentication/v1/kyc-auth/delegated/$partialPartnerKeyUrl$/$ID:CreateOIDCClient_Delegated_Valid_Smoke_sid_clientId$
       uniqueIdentifier: TC_IDA_BioAuthDelegatedNeg_28
       description: Bio kyc delegated auth without ENV
       role: resident
@@ -1271,7 +1271,7 @@ BioAuthDelegatedNeg:
       ]
 }'
   auth_BioAuthDelegatedNeg_Biometric_Face_Without_ENV:
-      endPoint: /idauthentication/v1/kyc-auth/delegated/$partialPartnerKeyUrl$/$ID:CreateOIDCClient_Misp_Valid_Smoke_sid_clientId$
+      endPoint: /idauthentication/v1/kyc-auth/delegated/$partialPartnerKeyUrl$/$ID:CreateOIDCClient_Delegated_Valid_Smoke_sid_clientId$
       uniqueIdentifier: TC_IDA_BioAuthDelegatedNeg_29
       description: Bio kyc delegated auth without ENV
       role: resident

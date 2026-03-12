@@ -1,6 +1,6 @@
 OtpAuthDelegated:
   auth_OtpAuthDelegated_OTP_Auth_With_Valid_UIN_Smoke_Pos_Sid:
-      endPoint: /idauthentication/v1/kyc-auth/delegated/$partialPartnerKeyUrl$/$ID:CreateOIDCClient_Misp_Valid_Smoke_sid_clientId$
+      endPoint: /idauthentication/v1/kyc-auth/delegated/$partialPartnerKeyUrl$/$ID:CreateOIDCClient_Delegated_Valid_Smoke_sid_clientId$
       uniqueIdentifier: TC_IDA_OtpAuthDelegated_01
       description: Otp delegated auth with valid UIN
       role: resident
@@ -34,7 +34,7 @@ OtpAuthDelegated:
     }
 }'
   auth_OtpAuthDelegated_OTP_Auth_With_Valid_VID_Smoke_Pos_Sid:
-      endPoint: /idauthentication/v1/kyc-auth/delegated/$partialPartnerKeyUrl$/$ID:CreateOIDCClient_Misp_Valid_Smoke_sid_clientId$
+      endPoint: /idauthentication/v1/kyc-auth/delegated/$partialPartnerKeyUrl$/$ID:CreateOIDCClient_Delegated_Valid_Smoke_sid_clientId$
       uniqueIdentifier: TC_IDA_OtpAuthDelegated_02
       description: Otp delegated auth with valid using VID
       role: resident
@@ -68,7 +68,7 @@ OtpAuthDelegated:
     }
 }'
   auth_OtpAuthDelegated_OTP_Auth_With_Optional_individualIdType_VID_Sid:
-      endPoint: /idauthentication/v1/kyc-auth/delegated/$partialPartnerKeyUrl$/$ID:CreateOIDCClient_Misp_Valid_Smoke_sid_clientId$
+      endPoint: /idauthentication/v1/kyc-auth/delegated/$partialPartnerKeyUrl$/$ID:CreateOIDCClient_Delegated_Valid_Smoke_sid_clientId$
       uniqueIdentifier: TC_IDA_OtpAuthDelegated_03
       description: OTP delegated auth with optional individualIdType using VID
       role: resident
@@ -102,7 +102,7 @@ OtpAuthDelegated:
     }
 }'
   auth_OtpAuthDelegated_OTP_Auth_With_Missing_Optional_Field_individualIdType_VID_Sid:
-      endPoint: /idauthentication/v1/kyc-auth/delegated/$partialPartnerKeyUrl$/$ID:CreateOIDCClient_Misp_Valid_Smoke_sid_clientId$
+      endPoint: /idauthentication/v1/kyc-auth/delegated/$partialPartnerKeyUrl$/$ID:CreateOIDCClient_Delegated_Valid_Smoke_sid_clientId$
       uniqueIdentifier: TC_IDA_OtpAuthDelegated_04
       description: Otp delegated auth with missing optional field individualIdType using VID
       role: resident
@@ -136,7 +136,7 @@ OtpAuthDelegated:
     }
 }'
   auth_OtpAuthDelegated_OTP_Auth_With_locked_email_Smoke_Pos_Sid:
-      endPoint: /idauthentication/v1/kyc-auth/delegated/$partialPartnerKeyUrl$/$ID:CreateOIDCClient_Misp_Valid_Smoke_sid_clientId$
+      endPoint: /idauthentication/v1/kyc-auth/delegated/$partialPartnerKeyUrl$/$ID:CreateOIDCClient_Delegated_Valid_Smoke_sid_clientId$
       uniqueIdentifier: TC_IDA_OtpAuthDelegated_05
       description: Otp delegated auth with locked email using valid UIN
       role: resident
@@ -170,7 +170,7 @@ OtpAuthDelegated:
     }
 }'
   auth_OtpAuthDelegated_OTP_Auth_With_locked_phone_Smoke_Pos_Sid:
-      endPoint: /idauthentication/v1/kyc-auth/delegated/$partialPartnerKeyUrl$/$ID:CreateOIDCClient_Misp_Valid_Smoke_sid_clientId$
+      endPoint: /idauthentication/v1/kyc-auth/delegated/$partialPartnerKeyUrl$/$ID:CreateOIDCClient_Delegated_Valid_Smoke_sid_clientId$
       uniqueIdentifier: TC_IDA_OtpAuthDelegated_06
       description: Otp delegated auth with locked phone using valid UIN
       role: resident
