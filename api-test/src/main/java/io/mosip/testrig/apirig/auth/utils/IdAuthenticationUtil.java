@@ -71,7 +71,7 @@ public class IdAuthenticationUtil extends AdminTestUtil {
 		if (testCaseName.startsWith("auth_")
 				&& (testCaseName.contains("_BioAuth_") || testCaseName.contains("_EkycBio_")
 						|| testCaseName.contains("_MultiFactorAuth_") || testCaseName.contains("_DemoAuth")
-						|| testCaseName.contains("_EkycDemo_"))
+						|| testCaseName.contains("_EkycDemo_") || testCaseName.contains("_DemoAuthDelegated"))
 				&& (!isElementPresent(globalRequiredFields, individualBiometrics))) {
 			throw new SkipException(GlobalConstants.FEATURE_NOT_SUPPORTED_MESSAGE);
 		} else if (testCaseName.startsWith("auth_")
