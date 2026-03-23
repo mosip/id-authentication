@@ -1,6 +1,5 @@
 package io.mosip.testrig.apirig.auth.testscripts;
 
-import java.lang.reflect.Field;
 import java.util.Arrays;
 import java.util.List;
 import java.util.Map;
