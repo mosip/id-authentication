@@ -2,7 +2,7 @@ package io.mosip.authentication.otp.service;
 
 import io.mosip.authentication.common.service.config.*;
 import io.mosip.kernel.keymanagerservice.validator.ECKeyPairGenRequestValidator;
-import io.mosip.kernel.pdfgenerator.itext.impl.PDFGeneratorImpl;
+import io.mosip.kernel.pdfgenerator.impl.PDFGeneratorImpl;
 import io.mosip.kernel.websub.api.client.PublisherClientImpl;
 import io.mosip.kernel.websub.api.client.SubscriberClientImpl;
 import io.mosip.kernel.websub.api.config.publisher.RestTemplateHelper;
