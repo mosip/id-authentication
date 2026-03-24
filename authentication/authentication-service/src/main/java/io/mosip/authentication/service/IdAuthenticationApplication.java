@@ -6,6 +6,7 @@ import io.mosip.authentication.common.service.util.*;
 import io.mosip.kernel.keymanagerservice.helper.SubjectAlternativeNamesHelper;
 import io.mosip.kernel.keymanagerservice.validator.ECKeyPairGenRequestValidator;
 import io.mosip.kernel.pdfgenerator.impl.PDFGeneratorImpl;
+import io.mosip.kernel.signature.util.SignatureUtil;
 import org.springframework.boot.SpringApplication;
 import org.springframework.boot.autoconfigure.SpringBootApplication;
 import org.springframework.boot.autoconfigure.security.servlet.SecurityAutoConfiguration;
@@ -119,7 +120,7 @@ import io.mosip.kernel.websub.api.config.publisher.RestTemplateHelper;
 		RestTemplateHelper.class, LanguageUtil.class, IdentityAttributesForMatchTypeHelper.class
 , TypeForIdNameHelper.class
 		, ValidateOtpHelper.class, RequireOtpNotFrozenHelper.class, MatchIdentityDataHelper.class, MatchTypeHelper.class
-		, SeparatorHelper.class, ECKeyPairGenRequestValidator.class, SubjectAlternativeNamesHelper.class, PDFGeneratorImpl.class})
+		, SeparatorHelper.class, ECKeyPairGenRequestValidator.class, SubjectAlternativeNamesHelper.class, PDFGeneratorImpl.class, SignatureUtil.class})
 @ComponentScan(basePackages = { "io.mosip.authentication.service.*", "io.mosip.kernel.core.logger.config",
 		"io.mosip.authentication.common.service.config","io.mosip.authentication.common.service.util",
 		"io.mosip.kernel.websub.api.config",
