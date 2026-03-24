@@ -9,6 +9,7 @@ This repository contains source code and design documents for MOSIP ID Authentic
 ## Databases
 Refer to [SQL scripts](db_scripts).
 
+
 ## Build & run (for developers)
 The project requires JDK 21.0.3
 and mvn version - 3.9.6
