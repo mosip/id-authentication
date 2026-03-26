@@ -245,8 +245,8 @@ public class VerifiedClaimsServiceImpl implements VerifiedClaimsService {
 	@SuppressWarnings("unchecked")
 	@Override
 	public String buildExchangeVerifiedClaimsData(String subject, Map<String, List<IdentityInfoDTO>> idInfo,
-			List<String> unverifiedConsentClaims, List<String> verifiedConsentClaims, 
-			List<String> consentedLocales, String idVid,
+			List<String> unverifiedConsentClaims, List<String> verifiedConsentClaims,
+			List<String> consentedLocales, String idVid, String oidcClientId,
 			KycExchangeRequestDTOV2 kycExchangeRequestDTOV2) throws IdAuthenticationBusinessException {
 			
 		mosipLogger.info(IdAuthCommonConstants.SESSION_ID, this.getClass().getSimpleName(), 
@@ -260,8 +260,7 @@ public class VerifiedClaimsServiceImpl implements VerifiedClaimsService {
 
 		Map<String, Object> respMap = new HashMap<>();
 		respMap.put(IdAuthCommonConstants.SUBJECT, subject);
-		String partnerId = (String) kycExchangeRequestDTOV2.getMetadata().get("partnerId");
-		addIssuerInResponse(respMap, partnerId);
+		addIssuerInResponse(respMap, oidcClientId);
 		addUnverifiedConsentedClaims(respMap, unverifiedConsentClaims, mappedConsentedShortLocales, idInfo, idVid);
 		
 		if (respMap.containsValue(null)) {
@@ -810,16 +809,16 @@ public class VerifiedClaimsServiceImpl implements VerifiedClaimsService {
 		}
 	}
 
-	private void addIssuerInResponse(Map<String, Object> respMap, String partnerId) {
+	private void addIssuerInResponse(Map<String, Object> respMap, String oidcClientId) {
 		if (addIssuerInResponse) {
 			if (Objects.nonNull(issuerUri) && !issuerUri.isEmpty()) {
 				respMap.put(ISSUER, issuerUri);
 			}
 			else {
 				mosipLogger.info(IdAuthCommonConstants.SESSION_ID, this.getClass().getSimpleName(), "addIssuerInResponse",
-					"Issuer URI is not set in the configuration. Partner ID: " + partnerId);
+					"Issuer URI is not set in the configuration. OIDC Client ID: " + oidcClientId);
 			}
-			respMap.put(AUDIENCE, partnerId);
+			respMap.put(AUDIENCE, oidcClientId);
 		}
 	}
 }
