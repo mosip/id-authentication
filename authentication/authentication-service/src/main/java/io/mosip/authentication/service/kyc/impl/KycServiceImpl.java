@@ -434,8 +434,8 @@ public class KycServiceImpl implements KycService {
 
 
 	@Override
-	public String buildKycExchangeResponse(String subject, Map<String, List<IdentityInfoDTO>> idInfo, 
-				List<String> consentedAttributes, List<String> consentedLocales, String idVid, KycExchangeRequestDTO kycExchangeRequestDTO) throws IdAuthenticationBusinessException {
+	public String buildKycExchangeResponse(String subject, Map<String, List<IdentityInfoDTO>> idInfo,
+				List<String> consentedAttributes, List<String> consentedLocales, String idVid, String oidcClientId, KycExchangeRequestDTO kycExchangeRequestDTO) throws IdAuthenticationBusinessException {
 		
 		mosipLogger.info(IdAuthCommonConstants.SESSION_ID, this.getClass().getSimpleName(), "buildKycExchangeResponse",
 					"Building claims response for PSU token: " + subject);
@@ -458,8 +458,7 @@ public class KycServiceImpl implements KycService {
 				kycExchangeResponseDataHelper.addEntityDataForLangCodes(mappedConsentedLocales, idInfo, respMap, attrib, idSchemaAttribute);
 			}
 		}
-		String partnerId = (String) kycExchangeRequestDTO.getMetadata().get("partnerId");
-		addIssuerInResponse(respMap, partnerId);
+		addIssuerInResponse(respMap, oidcClientId);
 		
 		try {
 			String signedData = securityManager.signWithPayload(mapper.writeValueAsString(respMap));
@@ -476,16 +475,16 @@ public class KycServiceImpl implements KycService {
 		}
 	}
 
-	private void addIssuerInResponse(Map<String, Object> respMap, String partnerId) {
+	private void addIssuerInResponse(Map<String, Object> respMap, String oidcClientId) {
 		if (addIssuerInResponse) {
 			if (Objects.nonNull(issuerUri) && !issuerUri.isEmpty()) {
 				respMap.put(ISSUER, issuerUri);
 			}
 			else {
 				mosipLogger.info(IdAuthCommonConstants.SESSION_ID, this.getClass().getSimpleName(), "addIssuerInResponse",
-					"Issuer URI is not set in the configuration. Partner ID: " + partnerId);
+					"Issuer URI is not set in the configuration. OIDC Client ID: " + oidcClientId);
 			}
-			respMap.put(AUDIENCE, partnerId);
+			respMap.put(AUDIENCE, oidcClientId);
 		}
 	}
 }

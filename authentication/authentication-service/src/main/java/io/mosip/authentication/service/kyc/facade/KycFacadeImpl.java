@@ -458,7 +458,7 @@ public class KycFacadeImpl implements KycFacade {
 				locales.add(EnvUtil.getKycExchangeDefaultLanguage());
 			}
 
-			String respJson = kycService.buildKycExchangeResponse(psuToken, idInfo, allowedConsentAttributes, locales, idVid, 
+			String respJson = kycService.buildKycExchangeResponse(psuToken, idInfo, allowedConsentAttributes, locales, idVid, oidcClientId,
 														kycExchangeRequestDTO);
 			// update kyc token status 
 			//KycTokenData kycTokenData = kycTokenDataOpt.get();
@@ -630,8 +630,8 @@ public class KycFacadeImpl implements KycFacade {
 			
 			String token = idService.getToken(idResDTO);
 			String subject = kycTokenData.getPsuToken();
-			String respJson = verifiedClaimsService.buildExchangeVerifiedClaimsData(subject, idInfo, unVerifiedConsentClaims, 
-						verifiedConsentClaims, locales, idVid, kycExchangeRequestDTOV2);
+			String respJson = verifiedClaimsService.buildExchangeVerifiedClaimsData(subject, idInfo, unVerifiedConsentClaims,
+						verifiedConsentClaims, locales, idVid, oidcClientId, kycExchangeRequestDTOV2);
 			// update kyc token status 
 			//KycTokenData kycTokenData = kycTokenDataOpt.get();
 			kycTokenData.setKycTokenStatus(KycTokenStatusType.PROCESSED.getStatus());

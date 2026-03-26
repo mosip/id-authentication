@@ -40,8 +40,8 @@ public interface VerifiedClaimsService {
 	 * @throws IdAuthenticationBusinessException the id authentication business
 	 *                                           exception
 	 */
-	String buildExchangeVerifiedClaimsData(String subject, Map<String, List<IdentityInfoDTO>> idInfo, 
-				List<String> unverifiedConsentClaims, List<String> verifiedConsentClaims, 
-				List<String> locales, String idVid, 
-				KycExchangeRequestDTOV2 kycExchangeRequestDTOV2 ) throws IdAuthenticationBusinessException;
+	String buildExchangeVerifiedClaimsData(String subject, Map<String, List<IdentityInfoDTO>> idInfo,
+				List<String> unverifiedConsentClaims, List<String> verifiedConsentClaims,
+				List<String> locales, String idVid, String oidcClientId,
+				KycExchangeRequestDTOV2 kycExchangeRequestDTOV2) throws IdAuthenticationBusinessException;
 }
