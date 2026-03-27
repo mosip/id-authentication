@@ -49,6 +49,11 @@ public class NotificationManager {
 	 */
 	public void sendSmsNotification(String notificationMobileNo, String message)
 			throws IdAuthenticationBusinessException {
+		if (message == null || message.trim().isEmpty()) {
+			logger.info(IdAuthCommonConstants.SESSION_ID, this.getClass().getSimpleName(), "sendSmsNotification",
+					"Skipping SMS notification as message content is null/empty.");
+			return;
+		}
 		try {
 			SmsRequestDto smsRequestDto = new SmsRequestDto();
 			smsRequestDto.setMessage(message);
@@ -74,6 +79,11 @@ public class NotificationManager {
 	 */
 	public void sendEmailNotification(String emailId, String mailSubject, String mailContent)
 			throws IdAuthenticationBusinessException {
+		if (mailContent == null || mailContent.trim().isEmpty()) {
+			logger.info(IdAuthCommonConstants.SESSION_ID, this.getClass().getSimpleName(), "sendEmailNotification",
+					"Skipping email notification as mail content is null/empty.");
+			return;
+		}
 		try {
 			RestRequestDTO restRequestDTO = null;
 			MultiValueMap<String, String> mailRequestDto = new LinkedMultiValueMap<>();

@@ -315,6 +315,14 @@ public class NotificationServiceImpl implements NotificationService {
 		}
 
 		String smsTemplate = applyTemplate(values, contentTemplate, templateLanguages);
+		if (smsTemplate == null || smsTemplate.trim().isEmpty()) {
+			if (sender == SenderType.OTP) {
+				throw new IdAuthenticationBusinessException(
+						IdAuthenticationErrorConstants.UNABLE_TO_PROCESS.getErrorCode(),
+						IdAuthenticationErrorConstants.UNABLE_TO_PROCESS.getErrorMessage()
+								+ " - SMS template is blank for the requested language codes: " + templateLanguages);
+			}
+		}
 		notificationManager.sendSmsNotification(notificationMobileNo, smsTemplate);
 	}
 
@@ -348,6 +356,14 @@ public class NotificationServiceImpl implements NotificationService {
 
 		String mailSubject = applyTemplate(values, subjectTemplate, templateLanguages);
 		String mailContent = applyTemplate(values, contentTemplate, templateLanguages);
+		if (mailContent == null || mailContent.trim().isEmpty()) {
+			if (sender == SenderType.OTP) {
+				throw new IdAuthenticationBusinessException(
+						IdAuthenticationErrorConstants.UNABLE_TO_PROCESS.getErrorCode(),
+						IdAuthenticationErrorConstants.UNABLE_TO_PROCESS.getErrorMessage()
+								+ " - Email template is blank for the requested language codes: " + templateLanguages);
+			}
+		}
 		notificationManager.sendEmailNotification(emailId, mailSubject, mailContent);
 	}
 	
