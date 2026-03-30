@@ -178,6 +178,11 @@ public class MasterDataManager {
 			}
 		}
 
+		if (template.length() == 0) {
+			logger.info(IdAuthCommonConstants.SESSION_ID, this.getClass().getSimpleName(), "fetchTemplate",
+					"No template found for requested language codes: " + templateLanguages
+							+ ". Available language codes in master data: " + masterDataTemplateKeys);
+		}
 		return template.toString();
 	}
 
