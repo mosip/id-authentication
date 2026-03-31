@@ -384,4 +384,75 @@ public class NotificationServiceImplTest {
 				notificationProperty, otpGenerationTime);
 	}
 
+	@Test
+	public void testInvokeSmsNotification_OTP_BlankTemplate_ThrowsException()
+			throws IdAuthenticationBusinessException, IOException {
+		Map<String, Object> values = new HashMap<>();
+		String notificationMobileNo = "1234567890";
+		Mockito.when(idTemplateManager.applyTemplate(Mockito.anyString(), Mockito.any(), Mockito.any()))
+				.thenReturn("");
+		MockEnvironment mockenv = new MockEnvironment();
+		mockenv.merge(((AbstractEnvironment) mockenv));
+		mockenv.setProperty("mosip.otp.sms.template", "test");
+		ReflectionTestUtils.setField(environment, "env", mockenv);
+		try {
+			ReflectionTestUtils.invokeMethod(notificationService, "invokeSmsNotification", values, SenderType.OTP,
+					notificationMobileNo, templateLanguages);
+		} catch (UndeclaredThrowableException ex) {
+			assertTrue(ex.getUndeclaredThrowable().getClass().equals(IdAuthenticationBusinessException.class));
+		}
+	}
+
+	@Test
+	public void testInvokeEmailNotification_OTP_BlankTemplate_ThrowsException()
+			throws IdAuthenticationBusinessException, IOException {
+		Map<String, Object> values = new HashMap<>();
+		Mockito.when(idTemplateManager.applyTemplate(Mockito.anyString(), Mockito.any(), Mockito.any()))
+				.thenReturn("");
+		MockEnvironment mockenv = new MockEnvironment();
+		mockenv.merge(((AbstractEnvironment) mockenv));
+		mockenv.setProperty("mosip.otp.mail.subject.template", "test");
+		mockenv.setProperty("mosip.otp.mail.content.template", "test");
+		ReflectionTestUtils.setField(environment, "env", mockenv);
+		try {
+			ReflectionTestUtils.invokeMethod(notificationService, "invokeEmailNotification", values, "abc@test.com",
+					SenderType.OTP, templateLanguages);
+		} catch (UndeclaredThrowableException ex) {
+			assertTrue(ex.getUndeclaredThrowable().getClass().equals(IdAuthenticationBusinessException.class));
+		}
+	}
+
+	@Test
+	public void testInvokeSmsNotification_AUTH_BlankTemplate_SoftExit()
+			throws IdAuthenticationBusinessException, IOException {
+		Map<String, Object> values = new HashMap<>();
+		String notificationMobileNo = "1234567890";
+		Mockito.when(idTemplateManager.applyTemplate(Mockito.anyString(), Mockito.any(), Mockito.any()))
+				.thenReturn("");
+		MockEnvironment mockenv = new MockEnvironment();
+		mockenv.merge(((AbstractEnvironment) mockenv));
+		mockenv.setProperty("mosip.auth.sms.template", "test");
+		ReflectionTestUtils.setField(environment, "env", mockenv);
+		ReflectionTestUtils.invokeMethod(notificationService, "invokeSmsNotification", values, SenderType.AUTH,
+				notificationMobileNo, templateLanguages);
+		Mockito.verify(notificationManager, Mockito.times(1)).sendSmsNotification(Mockito.any(), Mockito.any());
+	}
+
+	@Test
+	public void testInvokeEmailNotification_AUTH_BlankTemplate_SoftExit()
+			throws IdAuthenticationBusinessException, IOException {
+		Map<String, Object> values = new HashMap<>();
+		Mockito.when(idTemplateManager.applyTemplate(Mockito.anyString(), Mockito.any(), Mockito.any()))
+				.thenReturn("");
+		MockEnvironment mockenv = new MockEnvironment();
+		mockenv.merge(((AbstractEnvironment) mockenv));
+		mockenv.setProperty("mosip.auth.mail.subject.template", "test");
+		mockenv.setProperty("mosip.auth.mail.content.template", "test");
+		ReflectionTestUtils.setField(environment, "env", mockenv);
+		ReflectionTestUtils.invokeMethod(notificationService, "invokeEmailNotification", values, "abc@test.com",
+				SenderType.AUTH, templateLanguages);
+		Mockito.verify(notificationManager, Mockito.times(1)).sendEmailNotification(Mockito.any(), Mockito.any(),
+				Mockito.any());
+	}
+
 }
