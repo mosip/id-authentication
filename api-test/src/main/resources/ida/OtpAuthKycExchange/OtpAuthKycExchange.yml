@@ -2,7 +2,7 @@ OtpAuthKycExchange:
   auth_OtpAuthKycExchange_OtpAuth_With_Valid_UIN_Smoke_Pos:
       endPoint: /idauthentication/v1/kyc-exchange/delegated/$partialPartnerKeyUrl$/$ID:CreateOIDCClient_Delegated_Valid_Smoke_sid_clientId$
       uniqueIdentifier: TC_IDA_OtpAuthKycExchange_01
-      description: Otp auth kyc exchange with valid UIN
+      description: Otp auth kyc exchange with valid UIN and success response
       role: resident
       restMethod: post
       checkErrorsOnlyInResponse: true

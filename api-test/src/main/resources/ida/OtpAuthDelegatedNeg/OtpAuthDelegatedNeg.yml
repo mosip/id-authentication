@@ -2,7 +2,7 @@ OtpAuthDelegatedNeg:
   auth_OtpAuthDelegatedNeg_OTP_Auth_With_Infant_UIN_Smoke_Neg:
       endPoint: /idauthentication/v1/kyc-auth/delegated/$partialPartnerKeyUrl$/$ID:CreateOIDCClient_Delegated_Valid_Smoke_sid_clientId$
       uniqueIdentifier: TC_IDA_OtpAuthDelegatedNeg_01
-      description: Otp delegated auth with Infant using UIN 
+      description: Otp delegated auth with Infant using UIN and auth to get fail
       role: resident
       restMethod: post
       inputTemplate: ida/OtpAuthDelegatedNeg/OtpAuthDelegatedNeg
