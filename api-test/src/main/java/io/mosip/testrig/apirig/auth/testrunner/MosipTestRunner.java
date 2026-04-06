@@ -95,7 +95,7 @@ public class MosipTestRunner {
 			setLogLevels();
 
 			HealthChecker healthcheck = new HealthChecker();
-			healthcheck.setCurrentRunningModule(BaseTestCase.currentModule);
+			healthcheck.setCurrentRunningModule(GlobalConstants.AUTH);
 			Thread trigger = new Thread(healthcheck);
 			trigger.start();
 
