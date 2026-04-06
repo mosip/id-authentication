@@ -2,14 +2,14 @@ DemoAuthDelegatedNeg:
   auth_DemoAuthDelegatedNeg_DOB_InValid_UIN_Neg:
       endPoint: /idauthentication/v1/kyc-auth/delegated/$partialPartnerKeyUrl$/$ID:CreateOIDCClient_Delegated_Valid_Smoke_sid_clientId$
       uniqueIdentifier: TC_IDA_DemoAuthDelegatedNeg_01
-      description: Demo auth kyc delegated using valid dob and invalid UIN
+      description: Demo auth kyc delegated using valid dob and invalid UIN and auth to get fail
       role: resident
       restMethod: post
       inputTemplate: ida/DemoAuthDelegatedNeg/DemoAuthDelegated
       outputTemplate: ida/DelegateError
       input: '{
         "requestTime": "$TIMESTAMP$",
-        "individualId": "$IDlock_DemoAuth_withValidParameters_smoke_Pos_UIN$",
+        "individualId": "$ID:lock_DemoAuth_withValidParameters_smoke_Pos_UIN$",
         "transactionId": "1234567890",
         "individualIdType": "UIN",
         "bio": false,
@@ -1096,7 +1096,7 @@ DemoAuthDelegatedNeg:
       role: resident
       restMethod: post
       inputTemplate: ida/DemoAuthDelegatedNeg/DemoAuthDelegated
-      outputTemplate: ida/error
+      outputTemplate: ida/DelegateError
       input: '{
         "requestTime": "$TIMESTAMP$",
         "individualId": "$ID:AddIdentity_deactivate_UIN_smoke_sid_Pos_UIN$",

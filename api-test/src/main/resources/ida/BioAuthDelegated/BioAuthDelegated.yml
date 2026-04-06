@@ -2,7 +2,7 @@ BioAuthDelegated:
   auth_BioAuthDelegated_Biometric_Face_With_Valid_uin_Smoke_Pos_Sid:
       endPoint: /idauthentication/v1/kyc-auth/delegated/$partialPartnerKeyUrl$/$ID:CreateOIDCClient_Delegated_Valid_Smoke_sid_clientId$
       uniqueIdentifier: TC_IDA_BioAuthDelegated_01
-      description: Biometric face KYC delegated auth with valid UIN
+      description: Biometric face KYC delegated auth with valid UIN and auth to get success
       role: resident
       restMethod: post
       inputTemplate: ida/BioAuthDelegated/BioAuthDelegated

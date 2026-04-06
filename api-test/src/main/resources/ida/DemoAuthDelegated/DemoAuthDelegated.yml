@@ -218,7 +218,7 @@ DemoAuthDelegated:
   auth_DemoAuthDelegated_DemoAuth_same_Name1_Valid_uin_Smoke_Pos_Sid:
       endPoint: /idauthentication/v1/kyc-auth/delegated/$partialPartnerKeyUrl$/$ID:CreateOIDCClient_Delegated_Valid_Smoke_sid_clientId$
       uniqueIdentifier: TC_IDA_DemoAuthDelegated_10
-      description: Demo auth kyc delegated using valid name and valid UIN
+      description: Demo auth kyc delegated using valid name and valid UIN and auth has to get success
       role: resident
       restMethod: post
       checkErrorsOnlyInResponse: true

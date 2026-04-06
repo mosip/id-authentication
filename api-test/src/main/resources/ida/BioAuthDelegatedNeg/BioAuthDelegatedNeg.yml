@@ -1,5 +1,5 @@
 BioAuthDelegatedNeg:
-  auth_BioAuthDelegatedNeg_Biometric_Face_With_Infant_uin_Smoke_Pos:
+  auth_BioAuthDelegatedNeg_Biometric_Face_With_Infant_uin_Smoke_Neg:
       endPoint: /idauthentication/v1/kyc-auth/delegated/$partialPartnerKeyUrl$/$ID:CreateOIDCClient_Delegated_Valid_Smoke_sid_clientId$
       uniqueIdentifier: TC_IDA_BioAuthDelegatedNeg_01
       description: Biometric kyc delegated face auth with infant UIN
@@ -43,7 +43,7 @@ BioAuthDelegatedNeg:
         }
       ]
 }'
-  auth_BioAuthDelegatedNeg_Biometric_Face_With_Revoked_VID_Valid_Smoke_Pos:
+  auth_BioAuthDelegatedNeg_Biometric_Face_With_Revoked_VID_Valid_Smoke_neg:
       endPoint: /idauthentication/v1/kyc-auth/delegated/$partialPartnerKeyUrl$/$ID:CreateOIDCClient_Delegated_Valid_Smoke_sid_clientId$
       uniqueIdentifier: TC_IDA_BioAuthDelegatedNeg_02
       description: Bio kyc delegated auth with Face with revoked VID
@@ -136,7 +136,7 @@ BioAuthDelegatedNeg:
   auth_BioAuthDelegatedNeg_Biometric_blank_uin_bioSubType:
       endPoint: /idauthentication/v1/kyc-auth/delegated/$partialPartnerKeyUrl$/$ID:CreateOIDCClient_Delegated_Valid_Smoke_sid_clientId$
       uniqueIdentifier: TC_IDA_BioAuthDelegatedNeg_04
-      description: Bio kyc delegated auth with blank bioSubType using valid UIN
+      description: Bio kyc delegated auth with blank bioSubType using valid UIN and auth should fail
       role: resident
       restMethod: post
       inputTemplate: ida/BioAuthDelegatedNeg/BioAuthDelegated

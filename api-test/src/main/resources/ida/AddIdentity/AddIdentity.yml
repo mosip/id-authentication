@@ -2196,7 +2196,7 @@ AddIdentity:
    auth_AddIdentity_For_Kyc_Delegated_leftIris_Auth_UIN_smoke_Pos:
       endPoint: /idrepository/v1/identity/
       uniqueIdentifier: TC_DependentModule_IdRepo_Delegated_03
-      description: create UIN with valid parameters for delegated iris auth
+      description: Add identity with valid parameters for delegated left iris auth and UIN generation
       role: idrepo
       restMethod: post
       inputTemplate: ida/AddIdentity/addIdentity_$LANGNUMBER$
@@ -2226,7 +2226,7 @@ AddIdentity:
    auth_AddIdentity_For_Kyc_Delegated_leftIris_Auth_VID_smoke_Pos:
       endPoint: /idrepository/v1/identity/
       uniqueIdentifier: TC_DependentModule_IdRepo_Delegated_04
-      description: create UIN with valid parameters for delegated iris auth
+      description: create UIN with valid parameters for delegated left iris auth and use the same in VID generation
       role: idrepo
       restMethod: post
       inputTemplate: ida/AddIdentity/addIdentity_$LANGNUMBER$

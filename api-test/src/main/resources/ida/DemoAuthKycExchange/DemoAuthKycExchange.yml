@@ -2,7 +2,7 @@ DemoAuthKycExchange:
   auth_DemoAuthKycExchange_DemoAuth_DOB_Valid_Smoke_UIN:
       endPoint: /idauthentication/v1/kyc-exchange/delegated/$partialPartnerKeyUrl$/$ID:CreateOIDCClient_Delegated_Valid_Smoke_sid_clientId$
       uniqueIdentifier: TC_IDA_DemoAuthKycExchange_01
-      description: Demo auth kyc exchange using valid dob and valid UIN
+      description: Demo auth kyc exchange using valid dob and valid UIN and auth to get success response
       role: resident
       restMethod: post
       checkErrorsOnlyInResponse: true
@@ -36,7 +36,7 @@ DemoAuthKycExchange:
         "requestTime": "$TIMESTAMP$",
         "individualId": "$ID:GenerateVID_for_EkycDemo_Dob_sid_vid$",
         "transactionID": "$TRANSACTIONID$",
-        "individualIdType": "UIN",
+        "individualIdType": "VID",
         "id": "mosip.identity.kycexchange",
         "version": "1.0",
         "kycToken": "$ID:DemoAuthDelegated_DemoAuth_DOB_Valid_Smoke_VID_Pos_Sid_kycToken$",
@@ -84,7 +84,7 @@ DemoAuthKycExchange:
         "requestTime": "$TIMESTAMP$",
         "individualId": "$ID:GenerateVID_All_Valid_Smoke_Perpetual_sid_vid$",
         "transactionID": "$TRANSACTIONID$",
-        "individualIdType": "UIN",
+        "individualIdType": "VID",
         "id": "mosip.identity.kycexchange",
         "version": "1.0",
         "kycToken": "$ID:DemoAuthDelegated_DemoAuth_Email_Valid_Smoke_Pos_VID_Sid_kycToken$",
