@@ -14,6 +14,8 @@ import java.util.Map;
 import java.util.Map.Entry;
 import java.util.Optional;
 import java.util.OptionalInt;
+import java.util.concurrent.CompletableFuture;
+import java.util.concurrent.CompletionException;
 import java.util.stream.Collectors;
 
 import javax.transaction.Transactional;
@@ -142,15 +144,15 @@ public class CredentialStoreServiceImpl implements CredentialStoreService {
 	/** The max exponential retry interval limit millis. Default value is set to 1 hour*/
 	@Value("${" + CREDENTIAL_STORE_RETRY_BACKOFF_EXPONENTIAL_MAX_INTERVAL_MILLISECS + ":3600000}")
 	private long maxExponentialRetryIntervalLimitMillis;
-	
+
 	/** The credential store status event publisher. */
 	@Autowired
 	private CredentialStoreStatusEventPublisher credentialStoreStatusEventPublisher;
-	
+
 	/** The credential request manager. */
 	@Autowired
 	private CredentialRequestManager credentialRequestManager;
-	
+
 	/**
 	 * Process credential store event.
 	 *
@@ -168,7 +170,7 @@ public class CredentialStoreServiceImpl implements CredentialStoreService {
 		if (statusCode.equals(CredentialStoreStatus.FAILED.name())) {
 			skipIfWaitingForRetryInterval(credentialEventStore);
 		}
-		
+
 		try {
 			IdentityEntity entity = doProcessCredentialStoreEvent(credentialEventStore);
 			updateEventProcessingStatus(credentialEventStore, true, false, statusCode);
@@ -196,12 +198,12 @@ public class CredentialStoreServiceImpl implements CredentialStoreService {
 	 */
 	private void skipIfWaitingForRetryInterval(CredentialEventStore credentialEventStore) throws RetryingBeforeRetryIntervalException {
 		Assert.isTrue(intervalExponentialMultiplier >= 1, CREDENTIAL_STORE_RETRY_BACKOFF_EXPONENTIAL_MULTIPLIER + " property value should be greater than or equal to 1.");
-		
+
 		long backoffIntervalMillis = (long) (retryInterval * Math.pow(intervalExponentialMultiplier, credentialEventStore.getRetryCount()));
 		if(backoffIntervalMillis > maxExponentialRetryIntervalLimitMillis) {
 			backoffIntervalMillis = maxExponentialRetryIntervalLimitMillis;
 		}
-		
+
 		LocalDateTime updateDtimes = credentialEventStore.getUpdDTimes();
 		if (DateUtils2.getUTCCurrentDateTime().isBefore(updateDtimes.plus(backoffIntervalMillis, ChronoUnit.MILLIS))) {
 			throw new RetryingBeforeRetryIntervalException();
@@ -218,7 +220,7 @@ public class CredentialStoreServiceImpl implements CredentialStoreService {
 	 */
 	@Transactional
 	private void updateEventProcessingStatus(CredentialEventStore credentialEventStore, boolean isSuccess, boolean isRecoverableException,
-			String status) {
+	                                         String status) {
 		credentialEventStore.setUpdBy(IDA);
 		LocalDateTime updatedDTimes = DateUtils2.getUTCCurrentDateTime();
 		credentialEventStore.setUpdDTimes(updatedDTimes);
@@ -244,7 +246,7 @@ public class CredentialStoreServiceImpl implements CredentialStoreService {
 					} else {
 						retryCount = maxRetryCount;
 						updateStatusAndRetryCount(credentialEventStore, Optional.of(CredentialStoreStatus.FAILED_WITH_MAX_RETRIES.name()), OptionalInt.of(retryCount));
-						
+
 						// Send websub event failure message for the event id. For all failures we will send "FAILED" status only
 						credentialStoreStatusEventPublisher.publishEvent(CredentialStoreStatus.FAILED.name(), requestId, updatedDTimes);
 						audit(requestId, CredentialStoreStatus.FAILED.name());
@@ -253,7 +255,7 @@ public class CredentialStoreServiceImpl implements CredentialStoreService {
 			} else {
 				// Any Runtime exception is marked as non-recoverable and hence retry is skipped for that
 				updateStatusAndRetryCount(credentialEventStore, Optional.of(CredentialStoreStatus.FAILED_NON_RECOVERABLE.name()), OptionalInt.empty());
-				
+
 				// Send websub event failure message for the event id. For all failures we will send "FAILED" status only
 				credentialStoreStatusEventPublisher.publishEvent(CredentialStoreStatus.FAILED.name(), requestId, updatedDTimes);
 				audit(requestId, CredentialStoreStatus.FAILED.name());
@@ -264,10 +266,10 @@ public class CredentialStoreServiceImpl implements CredentialStoreService {
 	private void updateStatusAndRetryCount(CredentialEventStore credentialEventStore, Optional<String> status, OptionalInt retryCount) {
 		retryCount.ifPresent(credentialEventStore::setRetryCount);
 		status.ifPresent(credentialEventStore::setStatusCode);
-		
+
 		credentialEventStore.setUpdBy(IDA);
 		credentialEventStore.setUpdDTimes(DateUtils2.getUTCCurrentDateTime());
-		
+
 	}
 
 	/**
@@ -318,16 +320,18 @@ public class CredentialStoreServiceImpl implements CredentialStoreService {
 	 * @throws IdAuthenticationBusinessException the id authentication business
 	 *                                           exception
 	 */
-	@Transactional
+	// @Transactional intentionally removed: downloadObject() is a network call and
+	// must not hold a DB connection open. Only storeCredentialData() is transactional.
 	private IdentityEntity doProcessCredentialStoreEvent(CredentialEventStore credentialEventStore)
 			throws IdAuthenticationBusinessException {
-		
+
 		String eventObjectStr = credentialEventStore.getEventObject();
 		try {
 			mosipLogger.debug(IdAuthCommonConstants.SESSION_ID, this.getClass().getName(), "processCredentialStoreEvent",
 					"Processing credential store event: " + objectMapper.writeValueAsString(credentialEventStore));
-			
-			EventModel eventModel = objectMapper.readValue(eventObjectStr.getBytes(), EventModel.class);
+
+			// Fix: parse directly from String — avoids allocating a redundant byte array
+			EventModel eventModel = objectMapper.readValue(eventObjectStr, EventModel.class);
 			Event event = eventModel.getEvent();
 
 			String dataShareUri = event.getDataShareUri();
@@ -340,30 +344,25 @@ public class CredentialStoreServiceImpl implements CredentialStoreService {
 					String demoKey = (String) additionalData.get(DEMO_KEY);
 					String bioKeyIndex = (String) additionalData.get(BIO_KEY_INDEX);
 					String bioKey = (String) additionalData.get(BIO_KEY);
-
-					saveSalt(modulo, salt);
-
-					if (demoKeyIndex != null && demoKey != null) {
-						securityManager.reEncryptAndStoreRandomKey(demoKeyIndex, demoKey);
-					}
-
-					if (bioKeyIndex != null && bioKey != null) {
-						securityManager.reEncryptAndStoreRandomKey(bioKeyIndex, bioKey);
-					}
-
 					String idHash = (String) additionalData.get(ID_HASH);
 					Integer transactionLimit = (Integer) additionalData.get(TRANSACTION_LIMIT);
 					String expiryTime = (String) additionalData.get(EXPIRY_TIME);
 					String token = (String) additionalData.get(TOKEN);
+
+					// Network I/O is intentionally outside @Transactional — avoids holding a
+					// DB connection open during a potentially slow remote download.
 					Map<String, Object> credentialData = dataShareManager.downloadObject(dataShareUri, Map.class, true);
-					return createIdentityEntity(idHash, token, transactionLimit, expiryTime, credentialData);
+
+					// All DB writes are isolated in their own short-lived transaction.
+					return storeCredentialData(modulo, salt, demoKeyIndex, demoKey, bioKeyIndex, bioKey,
+							idHash, token, transactionLimit, expiryTime, credentialData);
 
 				} catch (RestServiceException | IDDataValidationException e) {
 					throw new IdAuthenticationBusinessException(IdAuthenticationErrorConstants.UNABLE_TO_PROCESS, e);
 				} catch (Throwable e) {
-                    throw new IdAuthenticationBusinessException(IdAuthenticationErrorConstants.UNABLE_TO_PROCESS, e);
-                }
-            } else {
+					throw new IdAuthenticationBusinessException(IdAuthenticationErrorConstants.UNABLE_TO_PROCESS, e);
+				}
+			} else {
 				throw new IdAuthenticationBusinessException(
 						IdAuthenticationErrorConstants.UNABLE_TO_PROCESS.getErrorCode(),
 						IdAuthenticationErrorConstants.UNABLE_TO_PROCESS.getErrorMessage()
@@ -376,6 +375,50 @@ public class CredentialStoreServiceImpl implements CredentialStoreService {
 					IdAuthenticationErrorConstants.UNABLE_TO_PROCESS.getErrorMessage()
 							+ ": Error parsing event model: ");
 		}
+	}
+
+	/**
+	 * Saves salt, re-encrypts demo and bio keys in parallel, then builds the
+	 * identity entity. This is the only method that holds a DB transaction —
+	 * kept intentionally short (no network I/O inside).
+	 */
+	@Transactional
+	private IdentityEntity storeCredentialData(String modulo, String salt, String demoKeyIndex, String demoKey,
+	                                           String bioKeyIndex, String bioKey, String idHash, String token, Integer transactionLimit,
+	                                           String expiryTime, Map<String, Object> credentialData) throws IdAuthenticationBusinessException {
+
+		saveSalt(modulo, salt);
+
+		// Fix: run demo-key and bio-key re-encryption in parallel instead of sequentially
+		CompletableFuture<Void> demoKeyFuture = (demoKeyIndex != null && demoKey != null)
+				? CompletableFuture.runAsync(() -> {
+			try {
+				securityManager.reEncryptAndStoreRandomKey(demoKeyIndex, demoKey);
+			} catch (Exception e) {
+				throw new CompletionException(e);
+			}
+		})
+				: CompletableFuture.completedFuture(null);
+
+		CompletableFuture<Void> bioKeyFuture = (bioKeyIndex != null && bioKey != null)
+				? CompletableFuture.runAsync(() -> {
+			try {
+				securityManager.reEncryptAndStoreRandomKey(bioKeyIndex, bioKey);
+			} catch (Exception e) {
+				throw new CompletionException(e);
+			}
+		})
+				: CompletableFuture.completedFuture(null);
+
+		try {
+			CompletableFuture.allOf(demoKeyFuture, bioKeyFuture).join();
+		} catch (CompletionException e) {
+			Throwable cause = e.getCause();
+			throw new IdAuthenticationBusinessException(IdAuthenticationErrorConstants.UNABLE_TO_PROCESS,
+					cause != null ? cause : e);
+		}
+
+		return createIdentityEntity(idHash, token, transactionLimit, expiryTime, credentialData);
 	}
 
 	/**
@@ -392,7 +435,7 @@ public class CredentialStoreServiceImpl implements CredentialStoreService {
 	 */
 	@SuppressWarnings("unchecked")
 	private IdentityEntity createIdentityEntity(String idHash, String token, Integer transactionLimit,
-			String expiryTime, Map<String, Object> credentialData) throws IdAuthenticationBusinessException {
+	                                            String expiryTime, Map<String, Object> credentialData) throws IdAuthenticationBusinessException {
 		Map<String, Object>[] demoBioData = splitDemoBioData(
 				(Map<String, Object>) credentialData.get(IdAuthCommonConstants.CREDENTIAL_SUBJECT));
 		try {
@@ -427,7 +470,7 @@ public class CredentialStoreServiceImpl implements CredentialStoreService {
 	/**
 	 * Store identity entity.
 	 *
-	  * @param identityEntity the id entity
+	 * @param identityEntity the id entity
 	 */
 	@Override
 	public void storeIdentityEntity(IdentityEntity identityEntity) {
@@ -445,7 +488,7 @@ public class CredentialStoreServiceImpl implements CredentialStoreService {
 				.collect(Collectors.partitioningBy(entry -> entry.getKey().toLowerCase().startsWith(BiometricType.FINGER.value().toLowerCase())
 						|| entry.getKey().toLowerCase().startsWith(BiometricType.IRIS.value().toLowerCase())
 						|| entry.getKey().toLowerCase().startsWith(BiometricType.FACE.value().toLowerCase())));
-		
+
 		Map<String, Object> demoData = bioOrDemoData.get(false).stream()
 				.collect(Collectors.toMap(Entry::getKey, Entry::getValue));
 		Map<String, Object> bioData = bioOrDemoData.get(true).stream()
@@ -471,7 +514,7 @@ public class CredentialStoreServiceImpl implements CredentialStoreService {
 			uinHashSaltRepo.save(saltEntity);
 		}
 	}
-	
+
 	/**
 	 * Process missing credential request id.
 	 *
@@ -480,7 +523,7 @@ public class CredentialStoreServiceImpl implements CredentialStoreService {
 	public void processMissingCredentialRequestId(Chunk<? extends CredentialRequestIdsDto> dtos) {
 		dtos.forEach(dto -> processMissingCredentialRequestId(dto));
 	}
-	
+
 	/**
 	 * Process missing credential request id.
 	 *
