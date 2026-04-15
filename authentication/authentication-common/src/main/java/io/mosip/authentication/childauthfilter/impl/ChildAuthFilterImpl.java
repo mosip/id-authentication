@@ -74,9 +74,30 @@ public class ChildAuthFilterImpl implements IMosipAuthFilter {
      */
     public void validate(AuthRequestDTO authRequest, Map<String, List<IdentityInfoDTO>> identityData,
                          Map<String, Object> properties) throws IdAuthenticationFilterException {
+        System.out.println("[ChildAuthFilter] ===== ChildAuthFilter validate() called =====");
+        System.out.println("[ChildAuthFilter] dateOfBirthAttributeName: " + dateOfBirthAttributeName);
+        System.out.println("[ChildAuthFilter] dateOfBirthPattern: " + dateOfBirthPattern);
+        System.out.println("[ChildAuthFilter] childMaxAge: " + childMaxAge);
+        System.out.println("[ChildAuthFilter] factorsDeniedForChild: " + java.util.Arrays.toString(factorsDeniedForChild));
+        System.out.println("[ChildAuthFilter] identityData keys: " + identityData.keySet());
+        System.out.println("[ChildAuthFilter] raw DOB data from identity: " + identityData.get(dateOfBirthAttributeName));
+        System.out.println("[ChildAuthFilter] isOtp: " + AuthTypeUtil.isOtp(authRequest));
+        System.out.println("[ChildAuthFilter] isDemo: " + AuthTypeUtil.isDemo(authRequest));
+        System.out.println("[ChildAuthFilter] isBio: " + AuthTypeUtil.isBio(authRequest));
+
         LocalDate dob = getDateOfBirth(identityData.get(dateOfBirthAttributeName));
-        if(dob.plusYears(childMaxAge).isAfter(LocalDate.now())) {
+        LocalDate today = LocalDate.now();
+        LocalDate childCutoff = dob.plusYears(childMaxAge);
+        System.out.println("[ChildAuthFilter] parsed DOB: " + dob);
+        System.out.println("[ChildAuthFilter] today: " + today);
+        System.out.println("[ChildAuthFilter] childCutoff (dob + childMaxAge): " + childCutoff);
+        System.out.println("[ChildAuthFilter] isChild (childCutoff.isAfter(today)): " + childCutoff.isAfter(today));
+
+        if(childCutoff.isAfter(today)) {
+            System.out.println("[ChildAuthFilter] Individual is identified as a CHILD — checking denied factors");
             checkDeniedFactorsForChild(authRequest);
+        } else {
+            System.out.println("[ChildAuthFilter] Individual is NOT a child — skipping denied factor check");
         }
     }
 
@@ -90,19 +111,24 @@ public class ChildAuthFilterImpl implements IMosipAuthFilter {
         List<Object> deniedFactors = Stream.of(factorsDeniedForChild)
                 .map(String::toLowerCase)
                 .collect(Collectors.toList());
+        System.out.println("[ChildAuthFilter] deniedFactors list: " + deniedFactors);
+
         if(deniedFactors.contains(OTP) && AuthTypeUtil.isOtp(authRequest)) {
+            System.out.println("[ChildAuthFilter] BLOCKING: OTP auth denied for child");
             throw new IdAuthenticationFilterException(
                     IdAuthenticationErrorConstants.AUTH_TYPE_NOT_SUPPORTED.getErrorCode(),
                     String.format(ERROR_MSG_UNSUPPORTED_AUTH_TYPE, OTP));
         }
 
         if(deniedFactors.contains(DEMO) && AuthTypeUtil.isDemo(authRequest)) {
+            System.out.println("[ChildAuthFilter] BLOCKING: DEMO auth denied for child");
             throw new IdAuthenticationFilterException(
                     IdAuthenticationErrorConstants.AUTH_TYPE_NOT_SUPPORTED.getErrorCode(),
                     String.format(ERROR_MSG_UNSUPPORTED_AUTH_TYPE, DEMO));
         }
 
         if(deniedFactors.contains(BIO) && AuthTypeUtil.isBio(authRequest)) {
+            System.out.println("[ChildAuthFilter] BLOCKING: BIO auth denied for child");
             throw new IdAuthenticationFilterException(
                     IdAuthenticationErrorConstants.AUTH_TYPE_NOT_SUPPORTED.getErrorCode(),
                     String.format(ERROR_MSG_UNSUPPORTED_AUTH_TYPE, BIO));
