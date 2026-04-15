@@ -1,0 +1,23 @@
+{
+  "id": "{{id}}",
+  "version": "{{version}}",
+  "individualId": "{{individualId}}",
+  "individualIdType": "{{individualIdType}}",
+  "transactionID": "{{transactionID}}",
+  "requestTime": "{{requestTime}}",
+  "kycToken": "{{kycToken}}",
+  "consentObtained": [
+      {{#each consentObtained}}
+            "{{consentObtainedValue}}"
+          {{#unless @last}},{{/unless}}
+      	{{/each}}
+      ],
+  "locales": [
+      {{#each locales}}
+            "{{localesValue}}"
+          {{#unless @last}},{{/unless}}
+      	{{/each}}
+      ],
+  "respType": "{{respType}}",
+  "metadata": {}
+}
