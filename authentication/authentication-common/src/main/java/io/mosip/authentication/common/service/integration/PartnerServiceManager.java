@@ -141,7 +141,7 @@ public class PartnerServiceManager {
 		if (Objects.nonNull(apiKeyData)) {
 			response.setApiKeyExpiresOn(apiKeyData.getApiKeyExpiresOn());
 		}
-		response.setMispExpiresOn(mispLicenseData.getMispExpiresOn());
+		//response.setMispExpiresOn(mispLicenseData.getMispExpiresOn());
 
 		String mispPolicyId = mispLicenseData.getPolicyId();
 		if (Objects.nonNull(mispPolicyId)) {
@@ -278,10 +278,10 @@ public class PartnerServiceManager {
 					throw new IdAuthenticationBusinessException(IdAuthenticationErrorConstants.INVALID_LICENSEKEY.getErrorCode(),
 							IdAuthenticationErrorConstants.INVALID_LICENSEKEY.getErrorMessage());
 				}
-				if (mispLicenseData.getMispExpiresOn().isBefore(DateUtils.getUTCCurrentDateTime())) {
+				/*if (mispLicenseData.getMispExpiresOn().isBefore(DateUtils.getUTCCurrentDateTime())) {
 					throw new IdAuthenticationBusinessException(IdAuthenticationErrorConstants.LICENSEKEY_EXPIRED.getErrorCode(),
 							IdAuthenticationErrorConstants.LICENSEKEY_EXPIRED.getErrorMessage());
-				}
+				}*/
 			} else {
 				throw new IdAuthenticationBusinessException(IdAuthenticationErrorConstants.INVALID_LICENSEKEY.getErrorCode(),
 						IdAuthenticationErrorConstants.INVALID_LICENSEKEY.getErrorMessage());
@@ -471,7 +471,7 @@ public class PartnerServiceManager {
 			mispLicenseData.setMispId(mispLicenseEventData.getMispId());
 			mispLicenseData.setLicenseKey(mispLicenseEventData.getLicenseKey());
 			mispLicenseData.setMispCommenceOn(mispLicenseEventData.getMispCommenceOn());
-			mispLicenseData.setMispExpiresOn(mispLicenseEventData.getMispExpiresOn());
+			//mispLicenseData.setMispExpiresOn(mispLicenseEventData.getMispExpiresOn());
 			mispLicenseData.setMispStatus(mispLicenseEventData.getMispStatus());
 			mispLicenseData.setPolicyId(mispLicenseEventData.getPolicyId());
 			mispLicDataRepo.save(mispLicenseData);

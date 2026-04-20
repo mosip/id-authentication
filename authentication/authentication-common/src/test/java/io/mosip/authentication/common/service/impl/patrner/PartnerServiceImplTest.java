@@ -52,7 +52,7 @@ public class PartnerServiceImplTest {
 		response.setPartnerId("12345678");
 		response.setPartnerName("Test");
 		response.setPolicyId("345678");
-		response.setMispExpiresOn(LocalDateTime.now().plus(Duration.ofMinutes(5)));
+		//response.setMispExpiresOn(LocalDateTime.now().plus(Duration.ofMinutes(5)));
 		response.setApiKeyExpiresOn(LocalDateTime.now().plus(Duration.ofMinutes(5)));
 		response.setPolicyExpiresOn(LocalDateTime.now().plus(Duration.ofMinutes(5)));
 		return response;
