@@ -1,4 +1,4 @@
-## MOSIP ID Authentication Database (mosip_ida) scripts inventory and deployment guidelines on postgresql database. 
+## MOSIP ID Authentication Database (:mosipdbname) scripts inventory and deployment guidelines on postgresql database. 
 
 #### The details disclosed below gives a clear information on complete database script structure with the instructions for database scripts deployments.
 
@@ -14,7 +14,7 @@
 
 * Database objects related to MOSIP modules are placed in "**mosip_base_directory**>>db_scripts>>mosip_<schema_name> folder on git/repository
 
-**Example:** the id-authentication module script folder is /**mosip_base_directory**>>db_scripts>>mosip_ida where all the database scripts related to id authentication are available.
+**Example:** the id-authentication module script folder is /**mosip_base_directory**>>db_scripts>>:mosipdbname where all the database scripts related to id authentication are available.
 
 * Create a log file directory on DB deployment server before updating the properties file. Please follow the steps to create the same:
  

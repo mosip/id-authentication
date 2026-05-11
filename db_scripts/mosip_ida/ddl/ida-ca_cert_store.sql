@@ -1,5 +1,5 @@
 -- -------------------------------------------------------------------------------------------------
--- Database Name: mosip_ida
+-- Database Name: :mosipdbname
 -- Table Name 	: ida.ca_cert_store
 -- Purpose    	: Certificate Authority Certificate Store: Store details of all the certificate provided by certificate authority which will be used by MOSIP
 --           

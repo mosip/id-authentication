@@ -1,5 +1,5 @@
 -- -------------------------------------------------------------------------------------------------
--- Database Name: mosip_ida
+-- Database Name: :mosipdbname
 -- Table Name 	: ida.anonymous_profile
 -- Purpose    	: anonymous_profile: Anonymous profiling information for reporting purpose.
 --           
