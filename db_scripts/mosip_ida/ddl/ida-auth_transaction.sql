@@ -1,5 +1,5 @@
 -- -------------------------------------------------------------------------------------------------
--- Database Name: mosip_ida
+-- Database Name: :mosipdbname
 -- Table Name 	: ida.auth_transaction
 -- Purpose    	: Authentication Transaction : To track all authentication transactions steps / stages in the process flow.
 --           

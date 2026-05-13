@@ -1,4 +1,4 @@
-\c mosip_ida 
+\c :mosipdbname
 
 TRUNCATE TABLE ida.key_policy_def cascade ;
 
