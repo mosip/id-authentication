@@ -113,15 +113,15 @@ resources:
   # resources, such as Minikube. If you do want to specify resources, uncomment the following
   # lines, adjust them as necessary, and remove the curly braces after 'resources:'.
   limits:
-    cpu: 1500m
-    memory: 4000Mi
+    cpu: 1000m
+    memory: 8000Mi
   requests:
-    cpu: 750m
-    memory: 2400Mi
+    cpu: 500m
+    memory: 4000Mi
 additionalResources:
   ## Specify any JAVA_OPTS string here. These typically will be specified in conjunction with above resources
   ## Example: java_opts: "-Xms500M -Xmx500M"
-  javaOpts: "-Xms1800M -Xmx3000M"
+  javaOpts: "-Xms1800M -Xmx6250M"
 ## ref: https://kubernetes.io/docs/tasks/configure-pod-container/security-context/#set-the-security-context-for-a-container
 ## Clamav container already runs as 'mosip' user, so we may not need to enable this
 containerSecurityContext:
