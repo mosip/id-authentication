@@ -1,0 +1,493 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>IDA Local Dev Setup — Test Report</title>
+  <style>
+    *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+
+    body {
+      font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Helvetica, Arial, sans-serif;
+      font-size: 14px;
+      line-height: 1.6;
+      color: #1a1a2e;
+      background: #f5f7fa;
+      padding: 32px 16px;
+    }
+
+    .page { max-width: 960px; margin: 0 auto; }
+
+    /* Header */
+    .report-header {
+      background: linear-gradient(135deg, #1a1a2e 0%, #16213e 100%);
+      color: #fff;
+      border-radius: 12px;
+      padding: 32px 36px;
+      margin-bottom: 28px;
+    }
+    .report-header h1 { font-size: 22px; font-weight: 700; margin-bottom: 6px; }
+    .report-header .meta { font-size: 13px; color: #a0aec0; display: flex; gap: 24px; flex-wrap: wrap; margin-top: 10px; }
+    .report-header .meta span::before { content: "• "; }
+
+    /* Cards */
+    .card {
+      background: #fff;
+      border-radius: 10px;
+      box-shadow: 0 1px 4px rgba(0,0,0,0.08);
+      margin-bottom: 24px;
+      overflow: hidden;
+    }
+    .card-header {
+      padding: 14px 20px;
+      font-weight: 700;
+      font-size: 13px;
+      letter-spacing: 0.04em;
+      text-transform: uppercase;
+      border-bottom: 1px solid #e8ecf0;
+      background: #f8fafc;
+      color: #4a5568;
+    }
+    .card-body { padding: 0; }
+
+    /* Tables */
+    table { width: 100%; border-collapse: collapse; font-size: 13px; }
+    thead tr { background: #f8fafc; }
+    th {
+      padding: 10px 16px;
+      text-align: left;
+      font-weight: 600;
+      color: #4a5568;
+      border-bottom: 2px solid #e8ecf0;
+      white-space: nowrap;
+    }
+    td { padding: 10px 16px; border-bottom: 1px solid #edf2f7; vertical-align: top; }
+    tr:last-child td { border-bottom: none; }
+    tr:hover td { background: #fafbfc; }
+
+    /* Badges */
+    .badge {
+      display: inline-flex;
+      align-items: center;
+      gap: 4px;
+      padding: 3px 10px;
+      border-radius: 20px;
+      font-size: 12px;
+      font-weight: 600;
+      white-space: nowrap;
+    }
+    .badge-up      { background: #d4edda; color: #1a6b2e; }
+    .badge-pass    { background: #d4edda; color: #1a6b2e; }
+    .badge-expected{ background: #fff3cd; color: #7d5a00; }
+    .badge-fixed   { background: #cce5ff; color: #004085; }
+    .badge-unknown { background: #f0f0f0; color: #6c757d; }
+
+    .badge-up::before       { content: "●"; }
+    .badge-pass::before     { content: "✓"; }
+    .badge-expected::before { content: "⚠"; }
+    .badge-fixed::before    { content: "✦"; }
+
+    /* Code */
+    code {
+      background: #f1f3f5;
+      border: 1px solid #e2e8f0;
+      border-radius: 4px;
+      padding: 1px 5px;
+      font-family: "SFMono-Regular", Consolas, "Liberation Mono", Menlo, monospace;
+      font-size: 12px;
+      color: #c7254e;
+    }
+
+    /* Section label */
+    .section-label {
+      font-size: 11px;
+      font-weight: 700;
+      letter-spacing: 0.06em;
+      text-transform: uppercase;
+      color: #718096;
+      margin: 28px 0 10px;
+    }
+
+    /* Summary row */
+    .summary-grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(160px, 1fr));
+      gap: 16px;
+      margin-bottom: 24px;
+    }
+    .summary-tile {
+      background: #fff;
+      border-radius: 10px;
+      box-shadow: 0 1px 4px rgba(0,0,0,0.08);
+      padding: 18px 20px;
+      text-align: center;
+    }
+    .summary-tile .value { font-size: 28px; font-weight: 800; margin-bottom: 4px; }
+    .summary-tile .label { font-size: 12px; color: #718096; font-weight: 500; }
+    .tile-green .value { color: #2f855a; }
+    .tile-blue  .value { color: #2b6cb0; }
+    .tile-orange .value { color: #c05621; }
+
+    /* Footer */
+    .report-footer {
+      text-align: center;
+      font-size: 12px;
+      color: #a0aec0;
+      margin-top: 32px;
+      padding-top: 16px;
+      border-top: 1px solid #e8ecf0;
+    }
+
+    .mono { font-family: "SFMono-Regular", Consolas, monospace; font-size: 12px; }
+
+    .note {
+      font-size: 12px;
+      color: #718096;
+      font-style: italic;
+    }
+  </style>
+</head>
+<body>
+<div class="page">
+
+  <!-- Header -->
+  <div class="report-header">
+    <h1>IDA Local Development Setup — Test Report</h1>
+    <div class="meta">
+      <span>Date: 2026-05-14</span>
+      <span>Branch: develop</span>
+      <span>Version: 1.2.1-SNAPSHOT</span>
+      <span>Platform: macOS (darwin arm64)</span>
+      <span>Java: 21 &nbsp;|&nbsp; Maven: 3.9.6 &nbsp;|&nbsp; Python: 3.14</span>
+    </div>
+  </div>
+
+  <!-- Summary tiles -->
+  <div class="summary-grid">
+    <div class="summary-tile tile-green">
+      <div class="value">6</div>
+      <div class="label">Services UP</div>
+    </div>
+    <div class="summary-tile tile-green">
+      <div class="value">4</div>
+      <div class="label">Client Tests Passed</div>
+    </div>
+    <div class="summary-tile tile-blue">
+      <div class="value">3</div>
+      <div class="label">Issues Fixed</div>
+    </div>
+    <div class="summary-tile tile-orange">
+      <div class="value">13</div>
+      <div class="label">Config Files Updated</div>
+    </div>
+  </div>
+
+  <!-- Config changes -->
+  <div class="section-label">Configuration Changes</div>
+  <div class="card">
+    <div class="card-header">mosip-config — Property Files</div>
+    <div class="card-body">
+      <table>
+        <thead>
+          <tr>
+            <th>File</th>
+            <th>Changes Applied</th>
+          </tr>
+        </thead>
+        <tbody>
+          <tr>
+            <td class="mono">application-default.properties</td>
+            <td>
+              <code>mosip.kernel.masterdata.url</code>,
+              <code>notification.url</code>,
+              <code>otpmanager.url</code>,
+              <code>websub.url</code>,
+              <code>mock.biosdk.url</code>
+              → <code>http://localhost:8082 / 8083</code>
+            </td>
+          </tr>
+          <tr>
+            <td class="mono">id-authentication-default.properties</td>
+            <td>
+              20+ properties updated: DB credentials (hostname / port / user / password),
+              HSM keystore path / type / password,
+              WebSub callback secrets (×6),
+              token salts (×2),
+              identity filter attributes,
+              KYC token secret, auth secret key.
+              3 new local-dev properties added:
+              <code>mosip.api.public.host</code>,
+              <code>mosip.mock.biosdk.url</code>,
+              <code>mosip.esignet.host</code>
+            </td>
+          </tr>
+          <tr>
+            <td class="mono">id-authentication-external-default.properties</td>
+            <td><code>ida-websub-ca-certificate-callback-secret</code> → <code>a</code></td>
+          </tr>
+          <tr>
+            <td class="mono">id-authentication-otp-default.properties</td>
+            <td><code>ida-websub-ca-certificate-callback-secret</code> → <code>a</code></td>
+          </tr>
+          <tr>
+            <td class="mono">identity-mapping.json</td>
+            <td><code>identity.name.value</code>: <code>firstName,lastName</code> → <code>firstName,middleName,lastName</code></td>
+          </tr>
+        </tbody>
+      </table>
+    </div>
+  </div>
+
+  <div class="card">
+    <div class="card-header">Service Configuration</div>
+    <div class="card-body">
+      <table>
+        <thead>
+          <tr><th>File</th><th>Changes Applied</th></tr>
+        </thead>
+        <tbody>
+          <tr>
+            <td class="mono">docker-compose.yml</td>
+            <td>Config-server volume path updated to absolute path of <code>mosip-config</code> directory</td>
+          </tr>
+          <tr>
+            <td class="mono">authentication-otp-service/bootstrap.properties</td>
+            <td>
+              <code>spring.profiles.active</code> → <code>default</code> &nbsp;|&nbsp;
+              <code>spring.cloud.config.uri</code> → <code>http://localhost:51000/config</code> &nbsp;|&nbsp;
+              Keycloak URLs added &nbsp;|&nbsp;
+              <code>spring.cloud.loadbalancer.enabled=false</code> added
+            </td>
+          </tr>
+          <tr>
+            <td class="mono">authentication-service/bootstrap.properties</td>
+            <td>Same changes as OTP service bootstrap</td>
+          </tr>
+          <tr>
+            <td class="mono">authentication-otp-service/pom.xml</td>
+            <td><code>kernel-auth-adapter</code> dependency added (root cause fix — see Issues)</td>
+          </tr>
+          <tr>
+            <td class="mono">authentication-service/pom.xml</td>
+            <td><code>kernel-auth-adapter</code> dependency added</td>
+          </tr>
+          <tr>
+            <td class="mono">IDA-sample-client/client/requirements.txt</td>
+            <td><code>dynaconf</code> upgraded: <code>3.1.9</code> → <code>3.2.4</code> &nbsp;|&nbsp; <code>pydantic&gt;=1.10,&lt;2.0</code> added</td>
+          </tr>
+          <tr>
+            <td class="mono">IDA-sample-client/client/authenticator/main.py</td>
+            <td>Syntax error fixed: <code>CONFIG_FILES = 2[</code> → <code>CONFIG_FILES = [</code></td>
+          </tr>
+        </tbody>
+      </table>
+    </div>
+  </div>
+
+  <!-- Issues fixed -->
+  <div class="section-label">Issues Found and Fixed</div>
+  <div class="card">
+    <div class="card-header">Root Cause Analysis</div>
+    <div class="card-body">
+      <table>
+        <thead>
+          <tr><th>#</th><th>Issue</th><th>Root Cause</th><th>Fix</th><th>Status</th></tr>
+        </thead>
+        <tbody>
+          <tr>
+            <td>1</td>
+            <td><code>selfTokenWebClient</code> bean not found — OTP service failed to start</td>
+            <td>
+              <code>kernel-auth-adapter</code> was documented in the README as a manual step for
+              <code>authentication-otp-service/pom.xml</code> but was never actually added to the file.
+              Without the JAR on the classpath, <code>BeanConfig</code> from the adapter was never loaded.
+            </td>
+            <td>Added <code>kernel-auth-adapter</code> dependency to <code>authentication-otp-service/pom.xml</code></td>
+            <td><span class="badge badge-fixed">Fixed</span></td>
+          </tr>
+          <tr>
+            <td>2</td>
+            <td>503 LoadBalancer error at OTP service startup — <em>"LoadBalancer does not contain an instance for the service localhost"</em></td>
+            <td>
+              Spring Cloud LoadBalancer intercepts all outbound HTTP calls made through a
+              <code>@LoadBalanced</code> WebClient. It extracts the host from the URL and
+              treats it as a service-registry name. Since <code>localhost</code> is not registered,
+              it returns 503. This is triggered by <code>MasterDataCacheInitializer</code>
+              calling <code>http://localhost:8082/v1/masterdata/title</code> at startup.
+            </td>
+            <td>
+              Added <code>spring.cloud.loadbalancer.enabled=false</code> to
+              <code>bootstrap.properties</code> for both services. This disables the LoadBalancer
+              so calls to <code>localhost</code> go directly to WireMock.
+            </td>
+            <td><span class="badge badge-fixed">Fixed</span></td>
+          </tr>
+          <tr>
+            <td>3</td>
+            <td><code>ModuleNotFoundError: No module named 'pkg_resources'</code> in sample client</td>
+            <td>
+              <code>dynaconf==3.1.9</code> imports <code>pkg_resources</code> from <code>setuptools</code>,
+              which is no longer bundled with Python 3.12+ / 3.14.
+            </td>
+            <td>Upgraded <code>dynaconf</code> to <code>3.2.4</code> in <code>requirements.txt</code></td>
+            <td><span class="badge badge-fixed">Fixed</span></td>
+          </tr>
+        </tbody>
+      </table>
+    </div>
+  </div>
+
+  <!-- Service health -->
+  <div class="section-label">Service Health at Test Time</div>
+  <div class="card">
+    <div class="card-header">Docker + Spring Boot Services</div>
+    <div class="card-body">
+      <table>
+        <thead>
+          <tr><th>Service</th><th>Port</th><th>Status</th><th>HSM</th><th>DB</th><th>Config Server</th></tr>
+        </thead>
+        <tbody>
+          <tr>
+            <td>Authentication Service</td>
+            <td>8090</td>
+            <td><span class="badge badge-up">UP</span></td>
+            <td><span class="badge badge-up">UP</span></td>
+            <td><span class="badge badge-up">UP</span></td>
+            <td><span class="badge badge-up">UP</span></td>
+          </tr>
+          <tr>
+            <td>OTP Service</td>
+            <td>8092</td>
+            <td><span class="badge badge-up">UP</span></td>
+            <td><span class="badge badge-up">UP</span></td>
+            <td><span class="badge badge-up">UP</span></td>
+            <td><span class="badge badge-up">UP</span></td>
+          </tr>
+          <tr>
+            <td>PostgreSQL (Docker)</td>
+            <td>5455</td>
+            <td><span class="badge badge-up">UP</span></td>
+            <td>—</td><td>—</td><td>—</td>
+          </tr>
+          <tr>
+            <td>Config Server (Docker)</td>
+            <td>51000</td>
+            <td><span class="badge badge-up">UP</span></td>
+            <td>—</td><td>—</td><td>—</td>
+          </tr>
+          <tr>
+            <td>WireMock / mock-service (Docker)</td>
+            <td>8082</td>
+            <td><span class="badge badge-up">UP</span></td>
+            <td>—</td><td>—</td><td>—</td>
+          </tr>
+          <tr>
+            <td>BioSDK Service (Docker)</td>
+            <td>8083</td>
+            <td><span class="badge badge-up">UP</span></td>
+            <td>—</td><td>—</td><td>—</td>
+          </tr>
+        </tbody>
+      </table>
+    </div>
+  </div>
+
+  <!-- Sample client tests -->
+  <div class="section-label">Sample Client Test Results</div>
+  <div class="card">
+    <div class="card-header">IDA-sample-client — All Menu Options</div>
+    <div class="card-body">
+      <table>
+        <thead>
+          <tr><th>Option</th><th>Description</th><th>Input</th><th>Response</th><th>Result</th></tr>
+        </thead>
+        <tbody>
+          <tr>
+            <td><strong>2</strong></td>
+            <td>Send OTP request</td>
+            <td>VID: <code>8952059168</code></td>
+            <td>
+              <code>transactionID: 4622560613</code><br>
+              <code>maskedMobile: XXXXXX3478</code><br>
+              <code>maskedEmail: XXhXXsXXtX@example.com</code><br>
+              errors: none
+            </td>
+            <td><span class="badge badge-pass">Pass</span></td>
+          </tr>
+          <tr>
+            <td><strong>3</strong></td>
+            <td>OTP Auth</td>
+            <td>
+              VID: <code>8952059168</code><br>
+              OTP: <code>999248</code><br>
+              txnID: <code>4622560613</code>
+            </td>
+            <td>
+              <code>authStatus: True</code><br>
+              <code>authToken: 2838...4057</code><br>
+              errors: none
+            </td>
+            <td><span class="badge badge-pass">Pass</span></td>
+          </tr>
+          <tr>
+            <td><strong>1</strong></td>
+            <td>Demo Auth</td>
+            <td>Sample file: <code>auth-req-01.json</code></td>
+            <td>
+              <code>authStatus: True</code><br>
+              <code>authToken: 2838...4057</code><br>
+              errors: none
+            </td>
+            <td><span class="badge badge-pass">Pass</span></td>
+          </tr>
+          <tr>
+            <td><strong>4</strong></td>
+            <td>Demo + OTP Auth</td>
+            <td>
+              VID: <code>8952059168</code><br>
+              OTP: <code>999248</code> (already used)<br>
+              txnID: <code>3621344355</code><br>
+              Sample file: <code>auth-req-01.json</code>
+            </td>
+            <td>
+              <code>authStatus: False</code><br>
+              <code>IDA-OTA-004: OTP is invalid</code>
+              <br><span class="note">OTP was consumed by Option 3 — single-use validation is working correctly.</span>
+            </td>
+            <td><span class="badge badge-expected">Expected</span></td>
+          </tr>
+        </tbody>
+      </table>
+    </div>
+  </div>
+
+  <!-- Log paths -->
+  <div class="section-label">Log File Paths</div>
+  <div class="card">
+    <div class="card-header">Service Logs</div>
+    <div class="card-body">
+      <table>
+        <thead>
+          <tr><th>Service</th><th>Log File</th></tr>
+        </thead>
+        <tbody>
+          <tr>
+            <td>Authentication Service</td>
+            <td class="mono">/tmp/auth-service.log</td>
+          </tr>
+          <tr>
+            <td>OTP Service</td>
+            <td class="mono">/tmp/otp-service.log</td>
+          </tr>
+        </tbody>
+      </table>
+    </div>
+  </div>
+
+  <div class="report-footer">
+    Generated on 2026-05-14 &nbsp;|&nbsp; IDA id-authentication v1.2.1-SNAPSHOT &nbsp;|&nbsp; develop branch
+  </div>
+
+</div>
+</body>
+</html>

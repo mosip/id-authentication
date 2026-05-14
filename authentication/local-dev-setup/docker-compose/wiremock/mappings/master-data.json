@@ -1,0 +1,225 @@
+
+{
+  "mappings": [
+    {
+      "name": "To get the titles",
+      "request": {
+        "method": "GET",
+        "url": "/v1/masterdata/title"
+      },
+      "response": {
+        "status": 200,
+        "headers": {
+          "Content-Type": "application/json"
+        },
+        "body": "{\n\"id\": null,\n\"version\": null,\n\"responsetime\": \"2026-04-27T13:39:51.251Z\",\n\"metadata\": null,\n\"response\": {\n\"titleList\": [\n{\n\"code\": \"MIR\",\n\"titleName\": \"Mr\",\n\"titleDescription\": \"Male Title\",\n\"isActive\": true,\n\"langCode\": \"eng\"\n},\n{\n\"code\": \"MRS\",\n\"titleName\": \"Mrs\",\n\"titleDescription\": \"Female Title\",\n\"isActive\": true,\n\"langCode\": \"eng\"\n},\n{\n\"code\": \"MIS\",\n\"titleName\": \"Miss\",\n\"titleDescription\": \"Unmarried Female Title\",\n\"isActive\": true,\n\"langCode\": \"eng\"\n},\n{\n\"code\": \"MIR\",\n\"titleName\": \"Monsieur\",\n\"titleDescription\": \"Titre masculin\",\n\"isActive\": true,\n\"langCode\": \"fra\"\n},\n{\n\"code\": \"MRS\",\n\"titleName\": \"Madame\",\n\"titleDescription\": \"Titre féminin\",\n\"isActive\": true,\n\"langCode\": \"fra\"\n},\n{\n\"code\": \"MIS\",\n\"titleName\": \"Mademoiselle\",\n\"titleDescription\": \"Titre de femme célibataire\",\n\"isActive\": true,\n\"langCode\": \"fra\"\n}\n]\n},\n\"errors\": null\n}"
+      }
+    },
+    {
+      "name": "To get the Auth Email content.",
+      "request": {
+        "method": "GET",
+        "url": "/v1/masterdata/templates/templatetypecodes/auth-email-content"
+      },
+      "response": {
+        "status": 200,
+        "headers": {
+          "Content-Type": "application/json"
+        },
+        "body": "{\n\"id\": null,\n\"version\": null,\n\"responsetime\": \"2026-04-27T13:01:43.320Z\",\n\"metadata\": null,\n\"response\": {\n\"templates\": [\n{\n\"id\": \"1101\",\n\"name\": \"Template for authorization content\",\n\"description\": \"Template for authorization content\",\n\"fileFormatCode\": \"txt\",\n\"model\": \"velocity\",\n\"fileText\": \"Dear $name Your Authentication of $idvidType $idvid using $authType on $date at $time Hrs $status at a device deployed by MOSIP Services\",\n\"moduleId\": \"10004\",\n\"moduleName\": \"ID Authentication\",\n\"templateTypeCode\": \"auth-email-content\",\n\"langCode\": \"eng\",\n\"isActive\": true\n},\n{\n\"id\": \"1101\",\n\"name\": \"Modèle de contenu dautorisation\",\n\"description\": \"Modèle de contenu dautorisation\",\n\"fileFormatCode\": \"txt\",\n\"model\": \"velocity\",\n\"fileText\": \"Cher $name, Votre authentification $idvidType $idvid utilisant $authType le $date à $time Hrs $status sur un périphérique déployé par \\\"MOSIP Services\\\"\",\n\"moduleId\": \"10004\",\n\"moduleName\": \"Authentification ID\",\n\"templateTypeCode\": \"auth-email-content\",\n\"langCode\": \"fra\",\n\"isActive\": true\n}\n]\n},\n\"errors\": null\n}"
+      }
+    },
+    {
+      "name": "To get the Auth Email subject.",
+      "request": {
+        "method": "GET",
+        "url": "/v1/masterdata/templates/templatetypecodes/auth-email-subject"
+      },
+      "response": {
+        "status": 200,
+        "headers": {
+          "Content-Type": "application/json"
+        },
+        "body": "{\n\"id\": null,\n\"version\": null,\n\"responsetime\": \"2026-04-27T13:47:45.235Z\",\n\"metadata\": null,\n\"response\": {\n\"templates\": [\n{\n\"id\": \"1102\",\n\"name\": \"Template for authorization subject\",\n\"description\": \"Template for authorization subject\",\n\"fileFormatCode\": \"txt\",\n\"model\": \"velocity\",\n\"fileText\": \"$idvidType $idvid Authentication $status\",\n\"moduleId\": \"10004\",\n\"moduleName\": \"ID Authentication\",\n\"templateTypeCode\": \"auth-email-subject\",\n\"langCode\": \"eng\",\n\"isActive\": true\n},\n{\n\"id\": \"1102\",\n\"name\": \"Modèle pour sujet dautorisation\",\n\"description\": \"Modèle pour sujet dautorisation\",\n\"fileFormatCode\": \"txt\",\n\"model\": \"velocity\",\n\"fileText\": \"$idvidType $idvid: $status dauthentification\",\n\"moduleId\": \"10004\",\n\"moduleName\": \"Authentification ID\",\n\"templateTypeCode\": \"auth-email-subject\",\n\"langCode\": \"fra\",\n\"isActive\": true\n}\n]\n},\n\"errors\": null\n}"
+      }
+    },
+    {
+      "name": "To get the OTP Email content.",
+      "request": {
+        "method": "GET",
+        "url": "/v1/masterdata/templates/templatetypecodes/ida-auth-otp-email-content-template"
+      },
+      "response": {
+        "status": 200,
+        "headers": {
+          "Content-Type": "application/json"
+        },
+        "body": "{\n\"id\": null,\n\"version\": null,\n\"responsetime\": \"2026-04-27T14:45:38.686Z\",\n\"metadata\": null,\n\"response\": {\n\"templates\": [\n{\n\"id\": \"1151\",\n\"name\": \"Template for Email Content\",\n\"description\": \"Template for Email Content\",\n\"fileFormatCode\": \"txt\",\n\"model\": \"velocity\",\n\"fileText\": \"Dear $name OTP for $idvidType $idvid is $otp and is valid for $validTime minutes. (Generated on $date at $time Hrs)\",\n\"moduleId\": \"10004\",\n\"moduleName\": \"ID Authentication\",\n\"templateTypeCode\": \"ida-auth-otp-email-content-template\",\n\"langCode\": \"eng\",\n\"isActive\": true\n},\n{\n\"id\": \"1151\",\n\"name\": \"Modèle de contenu de courrier électronique\",\n\"description\": \"Modèle de contenu de courrier électronique\",\n\"fileFormatCode\": \"txt\",\n\"model\": \"velocity\",\n\"fileText\": \"Cher $name, OTP pour $idvidType $idvid est $otp et est valide pour $validTime minutes. (Généré le $date à $time Hrs)\",\n\"moduleId\": \"10004\",\n\"moduleName\": \"Authentification ID\",\n\"templateTypeCode\": \"ida-auth-otp-email-content-template\",\n\"langCode\": \"fra\",\n\"isActive\": true\n}\n]\n},\n\"errors\": null\n}"
+      }
+    },
+    {
+      "name": "To get the OTP Email subject.",
+      "request": {
+        "method": "GET",
+        "url": "/v1/masterdata/templates/templatetypecodes/ida-auth-otp-email-subject-template"
+      },
+      "response": {
+        "status": 200,
+        "headers": {
+          "Content-Type": "application/json"
+        },
+        "body": "{\n\"id\": null,\n\"version\": null,\n\"responsetime\": \"2026-04-27T14:49:29.721Z\",\n\"metadata\": null,\n\"response\": {\n\"templates\": [\n{\n\"id\": \"1152\",\n\"name\": \"Template for Email Subject\",\n\"description\": \"Template for Email Subject\",\n\"fileFormatCode\": \"txt\",\n\"model\": \"velocity\",\n\"fileText\": \"$idvidType $idvid: OTP Request\",\n\"moduleId\": \"10004\",\n\"moduleName\": \"ID Authentication\",\n\"templateTypeCode\": \"ida-auth-otp-email-subject-template\",\n\"langCode\": \"eng\",\n\"isActive\": true\n},\n{\n\"id\": \"1152\",\n\"name\": \"Modèle pour sujet demail\",\n\"description\": \"Modèle pour sujet demail\",\n\"fileFormatCode\": \"txt\",\n\"model\": \"velocity\",\n\"fileText\": \"$idvidType $idvid: Requête OTP\",\n\"moduleId\": \"10004\",\n\"moduleName\": \"Authentification ID\",\n\"templateTypeCode\": \"ida-auth-otp-email-subject-template\",\n\"langCode\": \"fra\",\n\"isActive\": true\n}\n]\n},\n\"errors\": null\n}"
+      }
+    },
+    {
+      "name": "To get the Auth SMS template.",
+      "request": {
+        "method": "GET",
+        "url": "/v1/masterdata/templates/templatetypecodes/auth-sms"
+      },
+      "response": {
+        "status": 200,
+        "headers": {
+          "Content-Type": "application/json"
+        },
+        "body": "{\n\"id\": null,\n\"version\": null,\n\"responsetime\": \"2026-04-27T15:05:29.857Z\",\n\"metadata\": null,\n\"response\": {\n\"templates\": [\n{\n\"id\": \"1103\",\n\"name\": \"Template for authorization SMS\",\n\"description\": \"Template for authorization SMS\",\n\"fileFormatCode\": \"txt\",\n\"model\": \"velocity\",\n\"fileText\": \"Your Authentication of $idvidType $idvid using $authType on $date at $time Hrs $status at a device deployed by MOSIP Services.\",\n\"moduleId\": \"10004\",\n\"moduleName\": \"ID Authentication\",\n\"templateTypeCode\": \"auth-sms\",\n\"langCode\": \"eng\",\n\"isActive\": true\n},\n{\n\"id\": \"1103\",\n\"name\": \"Modèle de SMS dautorisation\",\n\"description\": \"Modèle de SMS dautorisation\",\n\"fileFormatCode\": \"txt\",\n\"model\": \"velocity\",\n\"fileText\": \"Votre authentification $idvidType $idvid utilisant $authType le $date à $time Hrs $status sur un périphérique déployé par \\\"MOSIP Services\\\".\",\n\"moduleId\": \"10004\",\n\"moduleName\": \"Authentification ID\",\n\"templateTypeCode\": \"auth-sms\",\n\"langCode\": \"fra\",\n\"isActive\": true\n}\n]\n},\n\"errors\": null\n}"
+      }
+    },
+    {
+      "name": "To get the OTP SMS template.",
+      "request": {
+        "method": "GET",
+        "url": "/v1/masterdata/templates/templatetypecodes/ida-auth-otp-sms-template"
+      },
+      "response": {
+        "status": 200,
+        "headers": {
+          "Content-Type": "application/json"
+        },
+        "body": "{\n\"id\": null,\n\"version\": null,\n\"responsetime\": \"2026-04-27T15:08:59.938Z\",\n\"metadata\": null,\n\"response\": {\n\"templates\": [\n{\n\"id\": \"1153\",\n\"name\": \"Template for OTP in SMS\",\n\"description\": \"Template for OTP in SMS\",\n\"fileFormatCode\": \"txt\",\n\"model\": \"velocity\",\n\"fileText\": \"OTP for $idvidType $idvid is $otp and is valid for $validTime minutes. (Generated on $date at $time Hrs)\",\n\"moduleId\": \"10004\",\n\"moduleName\": \"ID Authentication\",\n\"templateTypeCode\": \"ida-auth-otp-sms-template\",\n\"langCode\": \"eng\",\n\"isActive\": true\n},\n{\n\"id\": \"1153\",\n\"name\": \"Modèle pour OTP dans SMS\",\n\"description\": \"Modèle pour OTP dans SMS\",\n\"fileFormatCode\": \"txt\",\n\"model\": \"velocity\",\n\"fileText\": \"OTP pour $idvidType $idvid est $otp et est valide pour $validTime minutes. (Généré le $date à $time Hrs)\",\n\"moduleId\": \"10004\",\n\"moduleName\": \"Authentification ID\",\n\"templateTypeCode\": \"ida-auth-otp-sms-template\",\n\"langCode\": \"fra\",\n\"isActive\": true\n}\n]\n},\n\"errors\": null\n}"
+      }
+    },
+    {
+      "name": "Download mock-sdk.zip",
+      "request": {
+        "method": "GET",
+        "url": "/downloads/mock-sdk.zip"
+      },
+      "response": {
+        "status": 200,
+        "headers": {
+          "Content-Type": "application/zip",
+          "Content-Disposition": "attachment; filename=\"mock-sdk.zip\""
+        },
+        "bodyFileName": "mock-sdk.zip",
+        "transformers": []
+      }
+    },
+    {
+      "name": "To get the Dummy Auth Token.",
+      "request": {
+        "method": "POST",
+        "url": "/auth/realms/mosip/protocol/openid-connect/token"
+      },
+      "response": {
+        "status": 200,
+        "headers": {
+          "Content-Type": "application/json"
+        },
+        "jsonBody": {
+          "access_token": "DUMMY.AUTH.TOKEN",
+          "token_type": "Bearer",
+          "expires_in": 300
+        }
+      }
+    },
+    {
+      "name": "To get Dummy response from websub publish/subscribe.",
+      "request": {
+        "method": "POST",
+        "urlPath": "/hub/",
+        "queryParameters": {
+          "hub.mode": {
+            "matches": ".*"
+          },
+          "hub.topic": {
+            "matches": ".*"
+          }
+        }
+      },
+      "response": {
+        "status": 200,
+        "headers": {
+          "Content-Type": "application/x-www-form-urlencoded"
+        },
+        "body": "hub.mode=accepted"
+      }
+    },
+    {
+      "name": "To get Dummy response from websub publish/subscribe. (fallback)",
+      "request": {
+        "method": "POST",
+        "urlPath": "/hub/"
+      },
+      "response": {
+        "status": 200,
+        "headers": {
+          "Content-Type": "application/x-www-form-urlencoded"
+        },
+        "body": "hub.mode=accepted"
+      }
+    },
+    {
+      "name": "Generate OTP",
+      "request": {
+        "method": "POST",
+        "urlPath": "/v1/otpmanager/otp/generate"
+      },
+      "response": {
+        "status": 200,
+        "headers": {
+          "Content-Type": "application/json"
+        },
+        "transformers": [
+          "response-template"
+        ],
+        "body": "{\"id\":null,\"version\":null,\"responsetime\":\"{{now timezone='UTC' format='yyyy-MM-dd\\'T\\'HH:mm:ss.SSS\\'Z\\''}}\",\"metadata\":null,\"response\":{\"otp\":\"{{randomInt lower=100000 upper=999999}}\",\"status\":\"GENERATION_SUCCESSFUL\"},\"errors\":null}"
+      }
+    },
+    {
+      "name": "Send SMS OTP",
+      "request": {
+        "method": "POST",
+        "urlPath": "/v1/notifier/sms/send"
+      },
+      "response": {
+        "status": 200,
+        "headers": {
+          "Content-Type": "application/json"
+        },
+        "transformers": [
+          "response-template"
+        ],
+        "body": "{\"id\":null,\"version\":null,\"responsetime\":\"{{now timezone='UTC' format='yyyy-MM-dd\\'T\\'HH:mm:ss.SSS\\'Z\\''}}\",\"metadata\":null,\"response\":{\"status\":\"success\",\"message\":\"SMS Request submitted\"},\"errors\":null}"
+      }
+    },
+    {
+      "name": "Send Email OTP",
+      "request": {
+        "method": "POST",
+        "urlPath": "/v1/notifier/email/send"
+      },
+      "response": {
+        "status": 200,
+        "headers": {
+          "Content-Type": "application/json"
+        },
+        "transformers": [
+          "response-template"
+        ],
+        "body": "{\"id\":null,\"version\":null,\"responsetime\":\"{{now timezone='UTC' format='yyyy-MM-dd\\'T\\'HH:mm:ss.SSS\\'Z\\''}}\",\"metadata\":null,\"response\":{\"status\":\"success\",\"message\":\"Email Request submitted\"},\"errors\":null}"
+      }
+    }
+  ]
+}
+

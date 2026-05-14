@@ -1,0 +1,8 @@
+{
+  "vid": "8952059168",
+  "name": [{"language":"eng", "value": "John David Smith"}],
+  "gender": [{"language":"eng", "value": "Male"}],
+  "phoneNumber": "9912993478",
+  "emailId": "john.smith@example.com",
+  "fullAddress": [{"language":"eng", "value": "#991 Lisa Simpson Evergreen Terrace Apt 3B Kingston New York 12401 NYC Downstate"}]
+}
