@@ -7,7 +7,7 @@ from cli_options import run_cli
 
 CONFIG_FILES = [
     str(Path(__file__).resolve().parent / "authenticator-config-local.toml"),
-    "/app/token_seeder.conf",
+    "/app/auth_config.conf",
 ]
 config = Dynaconf(settings_files=CONFIG_FILES, envvar_prefix="MOSIP", environments=False)
 

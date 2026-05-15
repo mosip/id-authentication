@@ -16,7 +16,7 @@ services:
     ports:
       - "51000:51000"
     volumes:
-      - /Users/taheer-mos/mosip/mosip-config/mosip-config:/mosip-config   # host path : container path, provide absolute path of host, no change of container path
+      - <ABSOLUTE_PATH_TO_MOSIP_CONFIG>:/mosip-config   # host path : container path, provide absolute path of host, no change of container path
     environment:
        # Spring profile & config location
       - SPRING_PROFILES_ACTIVE=native
