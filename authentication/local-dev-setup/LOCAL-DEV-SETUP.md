@@ -276,7 +276,7 @@ The authentication service requires `kernel-auth-adapter` as a runtime dependenc
 
 > The version property `${kernel-auth-adapter.version}` is already defined in the parent `pom.xml`. Do **not** hard-code the version.
 
-### 6.3 Update `bootstrap.properties`
+### 6.2 Update `bootstrap.properties`
 
 Open `authentication-service/src/main/resources/bootstrap.properties` and apply the same changes as the OTP service:
 
@@ -297,7 +297,7 @@ spring.cloud.loadbalancer.enabled=false
 
 > Same reason as the OTP service — disables the LoadBalancer so that `localhost` URLs are called directly.
 
-### 6.4 Run the Authentication Service
+### 6.3 Run the Authentication Service
 
 #### Option A — Maven
 

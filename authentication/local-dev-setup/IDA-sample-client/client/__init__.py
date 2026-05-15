@@ -47,9 +47,9 @@ def init_config():
             os.path.join(os.path.dirname(__file__),'authenticator','authenticator-config.toml'),
             os.path.join(os.path.dirname(__file__),'config.toml'),
             "config.toml",
-            "/app/token_seeder.conf",
+            "/app/auth_config.conf",
         ],
-        envvar_prefix="TOKENSEEDER",
+        envvar_prefix="MOSIP",
         environments=False
     )
     get_current_worker_id(config)
