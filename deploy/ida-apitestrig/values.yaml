@@ -2,8 +2,8 @@ modules:
   auth:
     enabled: true
     image:
-      repository: mosipid/apitest-auth
-      tag: 1.3.0
+      repository: mosipqa/apitest-auth
+      tag: 1.3.x
       pullPolicy: Always
 
   prereg:
