@@ -1,0 +1,32 @@
+[mosip_auth]
+timestamp_format = "%Y-%m-%dT%H:%M:%S"
+ida_auth_version = '1.0'
+ida_auth_request_id = 'mosip.identity.auth'
+ida_otp_request_id = 'mosip.identity.otp'
+ida_auth_env = 'Staging'
+authorization_header_constant = 'Authorization'
+partner_apikey = '198833'
+partner_misp_lk = 'vM1BA8RosNt3kemNGpsneYgcelZwNmsOoKJQgMm92DltqtJh4p'
+partner_id = 'auth_v1z0816154432'
+
+
+[mosip_auth_server]
+ida_auth_domain_uri = 'localhost'
+ida_auth_url = 'http://localhost:8090/idauthentication/v1/auth'
+ida_otp_url = 'http://localhost:8092/idauthentication/v1/otp'
+
+[crypto_encrypt]
+algorithm = '@none'
+symmetric_key_size = 256
+symmetric_nonce_size = 128
+symmetric_gcm_tag_size = 128
+# certificate from the below path is used to encrypt the Auth Request.
+encrypt_cert_path = 'new-keys/ida-partner-local.cer'
+
+[crypto_signature]
+algorithm = 'RS256'
+sign_p12_file_path = 'new-keys/partner-mosip-signed.p12'
+sign_p12_file_password = '1234'
+
+[logging]
+log_file_path = 'authenticator.log'
