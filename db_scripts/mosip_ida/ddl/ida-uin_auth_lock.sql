@@ -13,21 +13,21 @@
 -- object: ida.uin_auth_lock | type: TABLE --
 -- DROP TABLE IF EXISTS ida.uin_auth_lock CASCADE;
 CREATE TABLE ida.uin_auth_lock(
-	token_id character varying(128) NOT NULL,
-	auth_type_code character varying(36) NOT NULL,
-	lock_request_datetime timestamp NOT NULL,
-	lock_start_datetime timestamp NOT NULL,
-	lock_end_datetime timestamp,
-	status_code character varying(36) NOT NULL,
-	lang_code character varying(3) NOT NULL,
-	cr_by character varying(256) NOT NULL,
-	cr_dtimes timestamp NOT NULL,
-	upd_by character varying(256),
-	upd_dtimes timestamp,
-	is_deleted boolean DEFAULT FALSE,
-	del_dtimes timestamp,
-	unlock_expiry_datetime timestamp,
-	CONSTRAINT pk_uinal PRIMARY KEY (token_id,auth_type_code,lock_request_datetime)
+                                  token_id character varying(128) NOT NULL,
+                                  auth_type_code character varying(36) NOT NULL,
+                                  lock_request_datetime timestamp NOT NULL,
+                                  lock_start_datetime timestamp NOT NULL,
+                                  lock_end_datetime timestamp,
+                                  status_code character varying(36) NOT NULL,
+                                  lang_code character varying(3) NOT NULL,
+                                  cr_by character varying(256) NOT NULL,
+                                  cr_dtimes timestamp NOT NULL,
+                                  upd_by character varying(256),
+                                  upd_dtimes timestamp,
+                                  is_deleted boolean DEFAULT FALSE,
+                                  del_dtimes timestamp,
+                                  unlock_expiry_datetime timestamp,
+                                  CONSTRAINT pk_uinal PRIMARY KEY (token_id,auth_type_code,lock_request_datetime)
 
 );
 -- ddl-end --
