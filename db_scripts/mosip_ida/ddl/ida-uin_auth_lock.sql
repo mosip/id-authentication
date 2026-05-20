@@ -1,11 +1,11 @@
 -- -------------------------------------------------------------------------------------------------
--- Database Name: mosip_ida
+-- Database Name: :mosipdbname
 -- Table Name : ida.uin_auth_lock
 -- Purpose    : UIN Authentication Lock: An individual is provided an option to lock or unlock any of the authentication types that are provided by the system. When an individual locks a particular type of authentication, any requests received by the system will be rejected. The details of the locked authentication types are stored in this table.
---           
+--
 -- Create By   : Nasir Khan / Sadanandegowda
 -- Created Date: 15-Jul-2019
--- 
+--
 -- Modified Date        Modified By         Comments / Remarks
 -- ------------------------------------------------------------------------------------------
 
@@ -13,21 +13,21 @@
 -- object: ida.uin_auth_lock | type: TABLE --
 -- DROP TABLE IF EXISTS ida.uin_auth_lock CASCADE;
 CREATE TABLE ida.uin_auth_lock(
-	token_id character varying(128) NOT NULL,
-	auth_type_code character varying(36) NOT NULL,
-	lock_request_datetime timestamp NOT NULL,
-	lock_start_datetime timestamp NOT NULL,
-	lock_end_datetime timestamp,
-	status_code character varying(36) NOT NULL,
-	lang_code character varying(3) NOT NULL,
-	cr_by character varying(256) NOT NULL,
-	cr_dtimes timestamp NOT NULL,
-	upd_by character varying(256),
-	upd_dtimes timestamp,
-	is_deleted boolean DEFAULT FALSE,
-	del_dtimes timestamp,
-	unlock_expiry_datetime timestamp,
-	CONSTRAINT pk_uinal PRIMARY KEY (token_id,auth_type_code,lock_request_datetime)
+                                  token_id character varying(128) NOT NULL,
+                                  auth_type_code character varying(36) NOT NULL,
+                                  lock_request_datetime timestamp NOT NULL,
+                                  lock_start_datetime timestamp NOT NULL,
+                                  lock_end_datetime timestamp,
+                                  status_code character varying(36) NOT NULL,
+                                  lang_code character varying(3) NOT NULL,
+                                  cr_by character varying(256) NOT NULL,
+                                  cr_dtimes timestamp NOT NULL,
+                                  upd_by character varying(256),
+                                  upd_dtimes timestamp,
+                                  is_deleted boolean DEFAULT FALSE,
+                                  del_dtimes timestamp,
+                                  unlock_expiry_datetime timestamp,
+                                  CONSTRAINT pk_uinal PRIMARY KEY (token_id,auth_type_code,lock_request_datetime)
 
 );
 -- ddl-end --
