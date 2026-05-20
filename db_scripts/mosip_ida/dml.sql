@@ -1,4 +1,4 @@
-\c mosip_ida 
+\c :mosipdbname
 
 TRUNCATE TABLE ida.key_policy_def cascade ;
 
@@ -7,20 +7,3 @@ TRUNCATE TABLE ida.key_policy_def cascade ;
 TRUNCATE TABLE ida.key_policy_def_h cascade ;
 
 \COPY ida.key_policy_def_h (app_id,key_validity_duration,is_active,cr_by,cr_dtimes,eff_dtimes) FROM './dml/ida-key_policy_def_h.csv' delimiter ',' HEADER  csv;
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-

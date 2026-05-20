@@ -1,11 +1,11 @@
 -- -------------------------------------------------------------------------------------------------
--- Database Name: mosip_ida
+-- Database Name: :mosipdbname
 -- Table Name 	: ida.auth_transaction
 -- Purpose    	: Authentication Transaction : To track all authentication transactions steps / stages in the process flow.
---           
+--
 -- Create By   	: Nasir Khan / Sadanandegowda
 -- Created Date	: 15-Jul-2019
--- 
+--
 -- Modified Date        Modified By         Comments / Remarks
 -- ------------------------------------------------------------------------------------------
 -- Sep-2020             Sadanandegowda DM   Removed uin and uin_hash attribute and added token_id
@@ -17,30 +17,30 @@
 -- object: ida.auth_transaction | type: TABLE --
 -- DROP TABLE IF EXISTS ida.auth_transaction CASCADE;
 CREATE TABLE ida.auth_transaction(
-	id character varying(36) NOT NULL,
-	request_dtimes timestamp NOT NULL,
-	response_dtimes timestamp NOT NULL,
-	request_trn_id character varying(64),
-	auth_type_code character varying(128) NOT NULL,
-	status_code character varying(36) NOT NULL,
-	status_comment character varying(1024),
-	lang_code character varying(3) NOT NULL,
-	ref_id_type character varying(36),
-	ref_id character varying(64),
-	token_id character varying(128) NOT NULL,
-	requested_entity_type character varying(64),
-	requested_entity_id character varying(36),
-	requested_entity_name character varying(128),
-	static_tkn_id character varying(64),
-	request_signature character varying,
-	response_signature character varying,
-	cr_by character varying(256) NOT NULL,
-	cr_dtimes timestamp NOT NULL,
-	upd_by character varying(256),
-	upd_dtimes timestamp,
-	is_deleted boolean NOT NULL DEFAULT FALSE,
-	del_dtimes timestamp,
-	CONSTRAINT pk_authtrn_id PRIMARY KEY (id)
+                                     id character varying(36) NOT NULL,
+                                     request_dtimes timestamp NOT NULL,
+                                     response_dtimes timestamp NOT NULL,
+                                     request_trn_id character varying(64),
+                                     auth_type_code character varying(128) NOT NULL,
+                                     status_code character varying(36) NOT NULL,
+                                     status_comment character varying(1024),
+                                     lang_code character varying(3) NOT NULL,
+                                     ref_id_type character varying(36),
+                                     ref_id character varying(64),
+                                     token_id character varying(128) NOT NULL,
+                                     requested_entity_type character varying(64),
+                                     requested_entity_id character varying(36),
+                                     requested_entity_name character varying(128),
+                                     static_tkn_id character varying(64),
+                                     request_signature character varying,
+                                     response_signature character varying,
+                                     cr_by character varying(256) NOT NULL,
+                                     cr_dtimes timestamp NOT NULL,
+                                     upd_by character varying(256),
+                                     upd_dtimes timestamp,
+                                     is_deleted boolean NOT NULL DEFAULT FALSE,
+                                     del_dtimes timestamp,
+                                     CONSTRAINT pk_authtrn_id PRIMARY KEY (id)
 
 );
 -- ddl-end --

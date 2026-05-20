@@ -1,28 +1,28 @@
 -- -------------------------------------------------------------------------------------------------
--- Database Name: mosip_ida
+-- Database Name: :mosipdbname
 -- Table Name 	: ida.anonymous_profile
 -- Purpose    	: anonymous_profile: Anonymous profiling information for reporting purpose.
---           
+--
 -- Create By   	: Loganathan Sekar
 -- Created Date	: 10-Sep-2021
--- 
+--
 -- Modified Date        Modified By         Comments / Remarks
 -- ------------------------------------------------------------------------------------------
--- Sep-2021				Loganathan Sekar	    Created anonymous_profile table 
+-- Sep-2021				Loganathan Sekar	    Created anonymous_profile table
 -- ------------------------------------------------------------------------------------------
 
 -- object: ida.anonymous_profile | type: TABLE --
 -- DROP TABLE IF EXISTS ida.anonymous_profile CASCADE;
 CREATE TABLE ida.anonymous_profile(
-	id character varying(36) NOT NULL,
-	profile character varying NOT NULL,
-	cr_by character varying(256) NOT NULL,
-	cr_dtimes timestamp NOT NULL,
-	upd_by character varying(256),
-	upd_dtimes timestamp,
-	is_deleted boolean DEFAULT FALSE,
-	del_dtimes timestamp,
-	CONSTRAINT pk_profile PRIMARY KEY (id)
+                                      id character varying(36) NOT NULL,
+                                      profile character varying NOT NULL,
+                                      cr_by character varying(256) NOT NULL,
+                                      cr_dtimes timestamp NOT NULL,
+                                      upd_by character varying(256),
+                                      upd_dtimes timestamp,
+                                      is_deleted boolean DEFAULT FALSE,
+                                      del_dtimes timestamp,
+                                      CONSTRAINT pk_profile PRIMARY KEY (id)
 );
 -- ddl-end --
 COMMENT ON TABLE ida.anonymous_profile IS 'anonymous_profile: Anonymous profiling information for reporting purpose.';

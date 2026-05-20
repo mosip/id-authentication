@@ -1,11 +1,11 @@
 -- -------------------------------------------------------------------------------------------------
--- Database Name: mosip_ida
+-- Database Name: :mosipdbname
 -- Table Name 	: ida.identity_cache
 -- Purpose    	: Identity Cache: Details of UIN stored along with uin data and biometric details, This data is synched from ID Repo whenever it is needed and used for authentication request during validation and response to authentication
---           
+--
 -- Create By   	: Sadanandegowda DM
 -- Created Date	: 19-May-2020
--- 
+--
 -- Modified Date        Modified By         Comments / Remarks
 -- ------------------------------------------------------------------------------------------
 
@@ -13,20 +13,20 @@
 -- object: ida.identity_cache | type: TABLE --
 -- DROP TABLE IF EXISTS ida.identity_cache CASCADE;
 CREATE TABLE ida.identity_cache(
-	id character varying(256) NOT NULL,
-	token_id character varying(128) NOT NULL,
-	demo_data bytea NOT NULL,
-	bio_data bytea NOT NULL,
-	expiry_timestamp timestamp,
-	transaction_limit smallint,
-	cr_by character varying(256) NOT NULL,
-	cr_dtimes timestamp NOT NULL,
-	upd_by character varying(256),
-	upd_dtimes timestamp,
-	is_deleted boolean DEFAULT FALSE,
-	del_dtimes timestamp,
-	identity_expiry timestamp,
-	CONSTRAINT pk_idcache_id PRIMARY KEY (id)
+                                   id character varying(256) NOT NULL,
+                                   token_id character varying(128) NOT NULL,
+                                   demo_data bytea NOT NULL,
+                                   bio_data bytea NOT NULL,
+                                   expiry_timestamp timestamp,
+                                   transaction_limit smallint,
+                                   cr_by character varying(256) NOT NULL,
+                                   cr_dtimes timestamp NOT NULL,
+                                   upd_by character varying(256),
+                                   upd_dtimes timestamp,
+                                   is_deleted boolean DEFAULT FALSE,
+                                   del_dtimes timestamp,
+                                   identity_expiry timestamp,
+                                   CONSTRAINT pk_idcache_id PRIMARY KEY (id)
 
 );
 -- ddl-end --
