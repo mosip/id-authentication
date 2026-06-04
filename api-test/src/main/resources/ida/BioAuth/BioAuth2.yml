@@ -38,7 +38,6 @@ BioAuth:
     }'
       output: '{
   "authStatus": "true"
-  "authStatus": "true"
 }'
   auth_BioAuth_Biometric_Face_With_updated_edited_policy_Pos:
       endPoint: /idauthentication/v1/auth/$partnerKeyURL$
@@ -79,7 +78,6 @@ BioAuth:
     }
     }'
       output: '{
-  "authStatus": "true"
   "authStatus": "true"
 }'
   auth_BioAuth_Biometric_Face_With_Infant_uin_Pos:
@@ -214,7 +212,6 @@ BioAuth:
     }'
       output: '{
   "authStatus": "true"
-  "authStatus": "true"
 }'
   auth_BioAuth_Biometric_Face_With_IRIS_as_true_anddo_bio_auth:
       endPoint: /idauthentication/v1/auth/$partnerKeyURL$
@@ -295,7 +292,6 @@ BioAuth:
     }'
       output: '{
   "authStatus": "true"
-  "authStatus": "true"
 }'
   auth_BioAuth_Biometric_LeftIndexFingerr_With_uin_Valid_Pos:
       endPoint: /idauthentication/v1/auth/$partnerKeyURL$
@@ -335,7 +331,6 @@ BioAuth:
     }
     }'
       output: '{
-  "authStatus": "true"
   "authStatus": "true"
 }'
   auth_BioAuth_Biometric_LeftLittleFinger_With_uin_Valid_Pos:
@@ -377,7 +372,6 @@ BioAuth:
     }'
       output: '{
   "authStatus": "true"
-  "authStatus": "true"
 }'
   auth_BioAuth_Biometric_RightIndexFinger_With_uin_Valid_Pos:
       endPoint: /idauthentication/v1/auth/$partnerKeyURL$
@@ -417,7 +411,6 @@ BioAuth:
     }
     }'
       output: '{
-  "authStatus": "true"
   "authStatus": "true"
 }'
   auth_BioAuth_Biometric_RightRingFinger_With_uin_Valid_Pos:
@@ -459,7 +452,6 @@ BioAuth:
     }'
       output: '{
   "authStatus": "true"
-  "authStatus": "true"
 }'
   auth_BioAuth_Biometric_RightMiddleFinger_With_uin_Valid_Pos:
       endPoint: /idauthentication/v1/auth/$partnerKeyURL$
@@ -499,7 +491,6 @@ BioAuth:
     }
     }'
       output: '{
-  "authStatus": "true"
   "authStatus": "true"
 }'
   auth_BioAuth_Biometric_RightLittleFinger_With_uin_Valid_Pos:
@@ -541,7 +532,6 @@ BioAuth:
     }'
       output: '{
   "authStatus": "true"
-  "authStatus": "true"
 }'
   auth_BioAuth_Biometric_LeftThumb_With_uin_Valid_Pos:
       endPoint: /idauthentication/v1/auth/$partnerKeyURL$
@@ -581,7 +571,6 @@ BioAuth:
     }
     }'
       output: '{
-  "authStatus": "true"
   "authStatus": "true"
 }'
   auth_BioAuth_Biometric_RightThumb_With_uin_Valid_Pos:
@@ -623,7 +612,6 @@ BioAuth:
     }'
       output: '{
   "authStatus": "true"
-  "authStatus": "true"
 }'
   auth_BioAuth_Biometric_RightIris_With_uin_Valid_Smoke_Pos:
       endPoint: /idauthentication/v1/auth/$partnerKeyURL$
@@ -663,7 +651,6 @@ BioAuth:
     }
     }'
       output: '{
-  "authStatus": "true"
   "authStatus": "true"
 }'
   auth_BioAuth_Biometric_LeftIris_With_uin_Valid_Pos:
@@ -706,7 +693,6 @@ BioAuth:
     }'
       output: '{
   "authStatus": "true"
-  "authStatus": "true"
 }'
   auth_BioAuth_Biometric_Face_With_VID_Valid_Smoke_Pos:
       endPoint: /idauthentication/v1/auth/$partnerKeyURL$
@@ -748,7 +734,6 @@ BioAuth:
     }
     }'
       output: '{
-  "authStatus": "true"
   "authStatus": "true"
 }'
   auth_BioAuth_Biometric_Face_With_Revoked_VID_Valid_Pos:
