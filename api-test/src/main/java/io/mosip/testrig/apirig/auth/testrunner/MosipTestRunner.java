@@ -13,7 +13,6 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.Properties;
 
-import io.mosip.testrig.apirig.utils.*;
 import org.apache.log4j.Level;
 import org.apache.log4j.Logger;
 import org.bouncycastle.openssl.jcajce.JcaPEMWriter;
@@ -30,6 +29,22 @@ import io.mosip.testrig.apirig.testrunner.BaseTestCase;
 import io.mosip.testrig.apirig.testrunner.ExtractResource;
 import io.mosip.testrig.apirig.testrunner.HealthChecker;
 import io.mosip.testrig.apirig.testrunner.OTPListener;
+import io.mosip.testrig.apirig.utils.AdminTestUtil;
+import io.mosip.testrig.apirig.utils.AuthTestsUtil;
+import io.mosip.testrig.apirig.utils.CertificateGenerationUtil;
+import io.mosip.testrig.apirig.utils.CertsUtil;
+import io.mosip.testrig.apirig.utils.DependencyResolver;
+import io.mosip.testrig.apirig.utils.GlobalConstants;
+import io.mosip.testrig.apirig.utils.GlobalMethods;
+import io.mosip.testrig.apirig.utils.JWKKeyUtil;
+import io.mosip.testrig.apirig.utils.KernelAuthentication;
+import io.mosip.testrig.apirig.utils.KeyCloakUserAndAPIKeyGeneration;
+import io.mosip.testrig.apirig.utils.KeycloakUserManager;
+import io.mosip.testrig.apirig.utils.MispPartnerAndLicenseKeyGeneration;
+import io.mosip.testrig.apirig.utils.OutputValidationUtil;
+import io.mosip.testrig.apirig.utils.PartnerRegistration;
+import io.mosip.testrig.apirig.utils.SkipTestCaseHandler;
+import io.mosip.testrig.apirig.utils.Watchdog;
 
 /**
  * Class to initiate mosip api test execution
@@ -121,7 +136,7 @@ public class MosipTestRunner {
 			else
 				startTestRunner();
 		} catch (Exception e) {
-			LOGGER.error("Exception occurred while running API Test Rig", e);
+			LOGGER.error("Exception " + e.getMessage());
 		}
 		
 		IdAuthenticationUtil.dbCleanUp();
@@ -136,11 +151,6 @@ public class MosipTestRunner {
 		
 		// Used for generating the test case interdependency JSON file
 		//AdminTestUtil.generateTestCaseInterDependencies(getGlobalResourcePath() + "/config/testCaseInterDependency.json");
-
-		// Stop watchdog since task completed successfully
-		if (watchdog != null) {
-			watchdog.stop();
-		}
 
 		// Stop watchdog since task completed successfully
 		if (watchdog != null) {
@@ -162,20 +172,11 @@ public class MosipTestRunner {
 		if (!runType.equalsIgnoreCase("JAR")) {
 			AuthTestsUtil.removeOldMosipTempTestResource();
 		}
-		BaseTestCase.currentModule = "auth";
-		BaseTestCase.certsForModule = "IDA";
-		BaseTestCase.genMispPartnerName = BaseTestCase.currentModule + "_misp_" + IdAuthenticationUtil.randomString;
-		
-		DBManager.executeDBQueries(ConfigManager.getKMDbUrl(), ConfigManager.getKMDbUser(), ConfigManager.getKMDbPass(),
-				ConfigManager.getKMDbSchema(),
-				getGlobalResourcePath() + "/" + "config/keyManagerCertDataDeleteQueries.txt");
-		DBManager.executeDBQueries(ConfigManager.getIdaDbUrl(), ConfigManager.getIdaDbUser(),
-				ConfigManager.getPMSDbPass(), ConfigManager.getIdaDbSchema(),
-				getGlobalResourcePath() + "/" + "config/idaCertDataDeleteQueries.txt");
+		BaseTestCase.currentModule = BaseTestCase.runContext + "auth";
+		BaseTestCase.certsForModule = BaseTestCase.runContext + "IDA";
 
-		DBManager.executeDBQueries(ConfigManager.getMASTERDbUrl(), ConfigManager.getMasterDbUser(),
-				ConfigManager.getMasterDbPass(), ConfigManager.getMasterDbSchema(),
-				getGlobalResourcePath() + "/" + "config/masterDataCertDataDeleteQueries.txt");
+		IdAuthenticationUtil.dbCleanUp();
+
 		AuthTestsUtil.initiateAuthTest();
 		BaseTestCase.otpListener = new OTPListener();
 		BaseTestCase.otpListener.run();

@@ -457,7 +457,7 @@ EkycDemo:
         "demo": true,
         "otp": false,
         "identityRequest":{
-    "value": "$ID:AddIdentity_ValidParameters_VID_revoke_auditLog_smoke_Pos_EMAIL$",
+    "value": "$ID:AddIdentity_create_vid_using_uin_for_revoke_smoke_Pos_EMAIL$",
 "key": "emailId",
     "identityRequestTemplate": "ida/DemoAuth/DemoIdentityEncrypt"
     }

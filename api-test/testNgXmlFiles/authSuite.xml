@@ -2,11 +2,9 @@
 <!DOCTYPE suite SYSTEM "http://testng.org/testng-1.0.dtd">
 
 <suite name="Authentication API Test">
-<suite name="Authentication API Test">
 	<!-- Passing Group as parmeter unsing "testType" Possible Groups are: smoke 
 		regression smokeAndRegression -->
 	<listeners>
-		<listener class-name="io.mosip.testrig.apirig.report.EmailableReport" />
 		<listener class-name="io.mosip.testrig.apirig.report.EmailableReport" />
 	</listeners>
 
@@ -66,7 +64,6 @@
 		</classes>
 	</test>
 
-
 	<test name="EkycOtp">
 		<parameter name="ymlFile" value="ida/EkycOtp/EkycOtp2.yml" />
 		<parameter name="isInternal" value="false" />
@@ -74,7 +71,6 @@
 			<class name="io.mosip.testrig.apirig.auth.testscripts.OtpAuthNew" />
 		</classes>
 	</test>
-
 	<test name="MultiFactorAuth">
 		<parameter name="ymlFile"
 			value="ida/MultiFactorAuth/MultiFactorAuth2.yml" />
@@ -129,8 +125,6 @@
 		<classes>
 			<class
 				name="io.mosip.testrig.apirig.auth.testscripts.UpdateIdentity" />
-			<class
-				name="io.mosip.testrig.apirig.auth.testscripts.UpdateIdentity" />
 		</classes>
 	</test>
 
@@ -138,8 +132,6 @@
 		<parameter name="ymlFile"
 			value="ida/BlockHotlistAPI/BlockHotlistAPI.yml" />
 		<classes>
-			<class
-				name="io.mosip.testrig.apirig.auth.testscripts.SimplePostForAutoGenId" />
 			<class
 				name="io.mosip.testrig.apirig.auth.testscripts.SimplePostForAutoGenId" />
 		</classes>
@@ -162,7 +154,6 @@
 		</classes>
 	</test>
 
-
 	<test name="LockUINVIDTestcasesAUTHEKYCBIO">
 		<parameter name="ymlFile"
 			value="ida/BioAuthHotListLock/BioAuth.yml" />
@@ -178,8 +169,6 @@
 		<classes>
 			<class
 				name="io.mosip.testrig.apirig.auth.testscripts.PostWithBodyWithOtpGenerate" />
-			<class
-				name="io.mosip.testrig.apirig.auth.testscripts.PostWithBodyWithOtpGenerate" />
 		</classes>
 	</test>
 
@@ -189,11 +178,8 @@
 		<classes>
 			<class
 				name="io.mosip.testrig.apirig.auth.testscripts.SimplePostForAutoGenId" />
-			<class
-				name="io.mosip.testrig.apirig.auth.testscripts.SimplePostForAutoGenId" />
 		</classes>
 	</test>
-
 
 	<test name="DemoAuth">
 		<parameter name="ymlFile" value="ida/DemoAuth/DemoAuth2.yml" />
@@ -243,8 +229,6 @@
 		<classes>
 			<class
 				name="io.mosip.testrig.apirig.auth.testscripts.SimplePostForAutoGenId" />
-			<class
-				name="io.mosip.testrig.apirig.auth.testscripts.SimplePostForAutoGenId" />
 		</classes>
 	</test>
 
@@ -255,7 +239,6 @@
 			<class name="io.mosip.testrig.apirig.auth.testscripts.DemoAuth" />
 		</classes>
 	</test>
-
 
 	<test name="BioAuthHotListPartner">
 		<parameter name="ymlFile"
@@ -279,15 +262,10 @@
 		<classes>
 			<class
 				name="io.mosip.testrig.apirig.auth.testscripts.SimplePostForAutoGenId" />
-			<class
-				name="io.mosip.testrig.apirig.auth.testscripts.SimplePostForAutoGenId" />
 		</classes>
 	</test>
 
-
 	<test name="HotlistTestcasesOtpAuthWithUnblockedPartner">
-		<parameter name="ymlFile"
-			value="ida/OtpAuth/OtpAuthHotlistedUnblocked.yml" />
 		<parameter name="ymlFile"
 			value="ida/OtpAuth/OtpAuthHotlistedUnblocked.yml" />
 		<parameter name="isInternal" value="false" />

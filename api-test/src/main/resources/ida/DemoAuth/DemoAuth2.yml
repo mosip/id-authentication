@@ -85,7 +85,7 @@ DemoAuthNew:
       outputTemplate: ida/DemoAuth/DemoAuthResult
       input: '{
         "requestTime": "$TIMESTAMP$",
-        "individualId": "$ID:GenerateVID_for_EkycDemo_Dob_sid_vid$",
+        "individualId": "$ID:GenerateVID_All_Valid_Smoke_Perpetual_sid_vid$",
         "transactionId": "1234567890",
         "individualIdType": "VID",
         "bio": false,
@@ -1638,7 +1638,7 @@ DemoAuthNew:
       restMethod: post
       additionalDependencies: TC_DependentModule_IdRepo_24,TC_IDA_RevokeVID_01
       inputTemplate: ida/DemoAuth/DemoAuth
-      outputTemplate: ida/DemoAuth/DemoAuthResult
+      outputTemplate: ida/DemoAuth/error
       input: '{
         "requestTime": "$TIMESTAMP$",
         "individualId": "$ID:GenerateVID_to_revoke_smoke_Perpetual_sid_vid$",
