@@ -1,0 +1,36 @@
+uploadPartnerCert:
+   auth_UploadPartnerCert_All_Valid_Smoke:
+      endPoint: /v1/partnermanager/partners/certificate/upload
+      uniqueIdentifier: Dependent_Idrepo_uploadPartnerCert_01
+      description: Upload partner certificate with all valid details
+      role: partner
+      checkErrorsOnlyInResponse: true
+      restMethod: post
+      inputTemplate: ida/PmsIntegration/UploadCert/uploadCert
+      outputTemplate: ida/PmsIntegration/UploadCert/uploadCertResult
+      input: '{
+  "certificateData": "$PARTNERCERT$",
+  "partnerId": "$ID:PartnerSelfRegistration_All_Valid_Smoke_sid_partnerId$",
+  "requesttime": "$TIMESTAMP$"
+}'
+      output: ' {
+  "errors": "$IGNORE$"
+}'
+
+   auth_UploadPartnerCert_Misp_Valid_Smoke_sid:
+      endPoint: /v1/partnermanager/partners/certificate/upload
+      uniqueIdentifier: Dependent_Idrepo_uploadPartnerCert_02
+      description: Upload partner certificate Misp valid details
+      role: partner
+      checkErrorsOnlyInResponse: true
+      restMethod: post
+      inputTemplate: ida/PmsIntegration/UploadCert/uploadCert
+      outputTemplate: ida/PmsIntegration/UploadCert/uploadCertResult
+      input: '{
+  "certificateData": "$MISPPARTNERCERT$",
+  "partnerId": "$ID:PartnerSelfRegistration_Misp_Valid_Smoke_sid_partnerId$",
+  "requesttime": "$TIMESTAMP$"
+}'
+      output: ' {
+  "errors": "$IGNORE$"
+}'

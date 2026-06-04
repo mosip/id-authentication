@@ -33,7 +33,7 @@ import io.mosip.authentication.core.spi.indauth.service.IdentityKeyBindingServic
 import io.mosip.authentication.core.util.CryptoUtil;
 import io.mosip.kernel.core.keymanager.model.CertificateParameters;
 import io.mosip.kernel.core.logger.spi.Logger;
-import io.mosip.kernel.core.util.DateUtils;
+import io.mosip.kernel.core.util.DateUtils2;
 import io.mosip.authentication.common.service.util.EnvUtil;
 
 /**
@@ -92,7 +92,7 @@ public class IdentityKeyBindingServiceImpl implements IdentityKeyBindingService 
                     IdAuthenticationErrorConstants.IDENTITY_NAME_NOT_FOUND.getErrorCode(),
                     IdAuthenticationErrorConstants.IDENTITY_NAME_NOT_FOUND.getErrorMessage());
         }
-        LocalDateTime notBeforeDate = DateUtils.getUTCCurrentDateTime(); 
+        LocalDateTime notBeforeDate = DateUtils2.getUTCCurrentDateTime(); 
         LocalDateTime notAfterDate = notBeforeDate.plus(certificateValidityDays, ChronoUnit.DAYS);
         CertificateParameters certParams = getCertificateParameters(identityName, notBeforeDate, notAfterDate);
 
@@ -126,7 +126,7 @@ public class IdentityKeyBindingServiceImpl implements IdentityKeyBindingService 
         bindingCertStore.setCertExpireDateTime(notAfterDate);
         bindingCertStore.setAuthFactor(identityKeyBindingRequestDTO.getIdentityKeyBinding().getAuthFactorType());
         bindingCertStore.setCreatedBy(EnvUtil.getAppId());
-		bindingCertStore.setCrDTimes(DateUtils.getUTCCurrentDateTime());
+		bindingCertStore.setCrDTimes(DateUtils2.getUTCCurrentDateTime());
         updateCertDataForSameTokenId(token, partnerId, certificateData, certThumbprint, notAfterDate);
 		bindingCertificateRepo.saveAndFlush(bindingCertStore);
         return certificateData;

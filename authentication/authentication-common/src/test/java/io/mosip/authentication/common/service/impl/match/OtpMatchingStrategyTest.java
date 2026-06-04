@@ -77,7 +77,7 @@ public class OtpMatchingStrategyTest {
 		ValidateOtpFunction func = idInfoFetcherImpl.getValidateOTPFunction();
 		Map<String, Object> otpResponseDTO = new HashMap<String, Object>();
 		otpResponseDTO.put("status", "success");
-		Mockito.when(restHelper.requestSync(Mockito.any())).thenReturn(otpResponseDTO);
+		Mockito.when(restHelper.requestSync(Mockito.any(), Mockito.any())).thenReturn(otpResponseDTO);
 		matchProperties.put(ValidateOtpFunction.class.getSimpleName(), func);
 		int value = matchFunction.match("123456", "IDA_asdEEFAER", matchProperties);
 		assertEquals(0, value);
@@ -93,7 +93,7 @@ public class OtpMatchingStrategyTest {
 		Map<String, String> valueMap = new HashMap<String, String>();
 		valueMap.put("status", "success");
 		otpResponseDTO.put("response", (Object) valueMap);
-		Mockito.when(restHelper.requestSync(Mockito.any())).thenReturn(otpResponseDTO);
+		Mockito.when(restHelper.requestSync(Mockito.any(), Mockito.any())).thenReturn(otpResponseDTO);
 		matchFunction.match("123456", "IDA_asdEEFAER", matchProperties);
 	}
 

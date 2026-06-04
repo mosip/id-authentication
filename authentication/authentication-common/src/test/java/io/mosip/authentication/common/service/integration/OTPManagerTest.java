@@ -57,7 +57,7 @@ import io.mosip.idrepository.core.exception.RestServiceException;
 import io.mosip.authentication.common.service.helper.RestHelper;
 import io.mosip.kernel.core.exception.ServiceError;
 import io.mosip.kernel.core.http.ResponseWrapper;
-import io.mosip.kernel.core.util.DateUtils;
+import io.mosip.kernel.core.util.DateUtils2;
 import io.mosip.kernel.core.util.exception.JsonProcessingException;
 
 @Ignore
@@ -138,7 +138,7 @@ public class OTPManagerTest {
 		RestRequestDTO restRequestDTO = getRestRequestDTO();
 		Mockito.when(restRequestFactory.buildRequest(RestServicesConstants.OTP_GENERATE_SERVICE, otpGeneratorRequestDto,
 				OtpGeneratorResponseDto.class)).thenReturn(restRequestDTO);
-		Mockito.when(restHelper.requestSync(Mockito.any())).thenReturn(otpGeneratorResponsetDto);
+		Mockito.when(restHelper.requestSync(Mockito.any(), Mockito.any())).thenReturn(otpGeneratorResponsetDto);
 		OtpRequestDTO otpRequestDTO = getOtpRequestDto();
 		Map<String, String> valueMap = new HashMap<>();
 		valueMap.put("namePri", "Name in PrimaryLang");
@@ -166,7 +166,7 @@ public class OTPManagerTest {
 		RestRequestDTO restRequestDTO = getRestRequestDTO();
 		Mockito.when(restRequestFactory.buildRequest(RestServicesConstants.OTP_GENERATE_SERVICE, otpGeneratorRequestDto,
 				OtpGeneratorResponseDto.class)).thenReturn(restRequestDTO);
-		Mockito.when(restHelper.requestSync(Mockito.any())).thenReturn(otpGeneratorResponsetDto);
+		Mockito.when(restHelper.requestSync(Mockito.any(), Mockito.any())).thenReturn(otpGeneratorResponsetDto);
 		OtpRequestDTO otpRequestDTO = getOtpRequestDto();
 		Map<String, String> valueMap = new HashMap<>();
 		valueMap.put("namePri", "Name in PrimaryLang");
@@ -174,7 +174,7 @@ public class OTPManagerTest {
 		when(securityManager.hash(Mockito.anyString())).thenReturn("refidHash");
 		OtpTransaction entity = new OtpTransaction();
 		entity.setStatusCode(IdAuthCommonConstants.FROZEN);
-		entity.setUpdDTimes(DateUtils.getUTCCurrentDateTime().minus(30, ChronoUnit.MINUTES));
+		entity.setUpdDTimes(DateUtils2.getUTCCurrentDateTime().minus(30, ChronoUnit.MINUTES));
 		when(otpRepo.findFirstByRefIdAndStatusCodeInAndGeneratedDtimesNotNullOrderByGeneratedDtimesDesc(Mockito.anyString(), Mockito.anyList())).thenReturn(Optional.of(entity));
 		try {
 			otpManager.sendOtp(otpRequestDTO, "426789089018", "UIN", valueMap, templateLanguages);
@@ -194,7 +194,7 @@ public class OTPManagerTest {
 		RestRequestDTO restRequestDTO = getRestRequestDTO();
 		Mockito.when(restRequestFactory.buildRequest(RestServicesConstants.OTP_GENERATE_SERVICE, otpGeneratorRequestDto,
 				OtpGeneratorResponseDto.class)).thenReturn(restRequestDTO);
-		Mockito.when(restHelper.requestSync(Mockito.any())).thenReturn(otpGeneratorResponsetDto);
+		Mockito.when(restHelper.requestSync(Mockito.any(), Mockito.any())).thenReturn(otpGeneratorResponsetDto);
 		OtpRequestDTO otpRequestDTO = getOtpRequestDto();
 		Map<String, String> valueMap = new HashMap<>();
 		valueMap.put("namePri", "Name in PrimaryLang");
@@ -202,7 +202,7 @@ public class OTPManagerTest {
 		when(securityManager.hash(Mockito.anyString())).thenReturn("refidHash");
 		OtpTransaction entity = new OtpTransaction();
 		entity.setStatusCode(IdAuthCommonConstants.FROZEN);
-		entity.setUpdDTimes(DateUtils.getUTCCurrentDateTime().minus(31, ChronoUnit.MINUTES));
+		entity.setUpdDTimes(DateUtils2.getUTCCurrentDateTime().minus(31, ChronoUnit.MINUTES));
 		when(otpRepo.findFirstByRefIdAndStatusCodeInAndGeneratedDtimesNotNullOrderByGeneratedDtimesDesc(Mockito.anyString(), Mockito.anyList())).thenReturn(Optional.of(entity));
 		try {
 			when(otpRepo.save(Mockito.any())).thenAnswer(invocation -> {
@@ -226,7 +226,7 @@ public class OTPManagerTest {
 		RestRequestDTO restRequestDTO = getRestRequestDTO();
 		Mockito.when(restRequestFactory.buildRequest(RestServicesConstants.OTP_GENERATE_SERVICE, otpGeneratorRequestDto,
 				OtpGeneratorResponseDto.class)).thenReturn(restRequestDTO);
-		Mockito.when(restHelper.requestSync(Mockito.any())).thenReturn(otpGeneratorResponsetDto);
+		Mockito.when(restHelper.requestSync(Mockito.any(), Mockito.any())).thenReturn(otpGeneratorResponsetDto);
 		OtpRequestDTO otpRequestDTO = getOtpRequestDto();
 		Map<String, String> valueMap = new HashMap<>();
 		valueMap.put("namePri", "Name in PrimaryLang");
@@ -234,7 +234,7 @@ public class OTPManagerTest {
 		when(securityManager.hash(Mockito.anyString())).thenReturn("refidHash");
 		OtpTransaction entity = new OtpTransaction();
 		entity.setStatusCode(IdAuthCommonConstants.USED_STATUS);
-		entity.setUpdDTimes(DateUtils.getUTCCurrentDateTime().minus(31, ChronoUnit.MINUTES));
+		entity.setUpdDTimes(DateUtils2.getUTCCurrentDateTime().minus(31, ChronoUnit.MINUTES));
 		when(otpRepo.findFirstByRefIdAndStatusCodeInAndGeneratedDtimesNotNullOrderByGeneratedDtimesDesc(Mockito.anyString(), Mockito.anyList())).thenReturn(Optional.of(entity));
 		try {
 			when(otpRepo.save(Mockito.any())).thenAnswer(invocation -> {
@@ -258,7 +258,7 @@ public class OTPManagerTest {
 		RestRequestDTO restRequestDTO = getRestRequestDTO();
 		Mockito.when(restRequestFactory.buildRequest(RestServicesConstants.OTP_GENERATE_SERVICE, otpGeneratorRequestDto,
 				OtpGeneratorResponseDto.class)).thenReturn(restRequestDTO);
-		Mockito.when(restHelper.requestSync(Mockito.any())).thenReturn(otpGeneratorResponsetDto);
+		Mockito.when(restHelper.requestSync(Mockito.any(), Mockito.any())).thenReturn(otpGeneratorResponsetDto);
 		OtpRequestDTO otpRequestDTO = getOtpRequestDto();
 		Map<String, String> valueMap = new HashMap<>();
 		valueMap.put("namePri", "Name in PrimaryLang");
@@ -266,7 +266,7 @@ public class OTPManagerTest {
 		when(securityManager.hash(Mockito.anyString())).thenReturn("refidHash");
 		OtpTransaction entity = new OtpTransaction();
 		entity.setStatusCode(IdAuthCommonConstants.FROZEN);
-		entity.setUpdDTimes(DateUtils.getUTCCurrentDateTime().minus(25, ChronoUnit.MINUTES));
+		entity.setUpdDTimes(DateUtils2.getUTCCurrentDateTime().minus(25, ChronoUnit.MINUTES));
 		when(otpRepo.findFirstByRefIdAndStatusCodeInAndGeneratedDtimesNotNullOrderByGeneratedDtimesDesc(Mockito.anyString(), Mockito.anyList())).thenReturn(Optional.of(entity));
 		try {
 			otpManager.sendOtp(otpRequestDTO, "426789089018", "UIN", valueMap, templateLanguages);
@@ -286,7 +286,7 @@ public class OTPManagerTest {
 		RestRequestDTO restRequestDTO = getRestRequestDTO();
 		Mockito.when(restRequestFactory.buildRequest(RestServicesConstants.OTP_GENERATE_SERVICE, otpGeneratorRequestDto,
 				OtpGeneratorResponseDto.class)).thenReturn(restRequestDTO);
-		Mockito.when(restHelper.requestSync(Mockito.any())).thenReturn(null);
+		Mockito.when(restHelper.requestSync(Mockito.any(), Mockito.any())).thenReturn(null);
 		OtpRequestDTO otpRequestDTO = getOtpRequestDto();
 		Map<String, String> valueMap = new HashMap<>();
 		valueMap.put("namePri", "Name in PrimaryLang");
@@ -306,7 +306,7 @@ public class OTPManagerTest {
 		RestRequestDTO restRequestDTO = getRestRequestDTO();
 		Mockito.when(restRequestFactory.buildRequest(RestServicesConstants.OTP_GENERATE_SERVICE, otpGeneratorRequestDto,
 				OtpGeneratorResponseDto.class)).thenReturn(restRequestDTO);
-		Mockito.when(restHelper.requestSync(Mockito.any())).thenReturn(otpGeneratorResponsetDto);
+		Mockito.when(restHelper.requestSync(Mockito.any(), Mockito.any())).thenReturn(otpGeneratorResponsetDto);
 		OtpRequestDTO otpRequestDTO = getOtpRequestDto();
 		Map<String, String> valueMap = new HashMap<>();
 		valueMap.put("namePri", "Name in PrimaryLang");
@@ -325,7 +325,7 @@ public class OTPManagerTest {
 		RestRequestDTO restRequestDTO = getRestRequestDTO();
 		Mockito.when(restRequestFactory.buildRequest(RestServicesConstants.OTP_GENERATE_SERVICE, otpGeneratorRequestDto,
 				OtpGeneratorResponseDto.class)).thenReturn(restRequestDTO);
-		Mockito.when(restHelper.requestSync(Mockito.any())).thenReturn(otpGeneratorResponsetDto);
+		Mockito.when(restHelper.requestSync(Mockito.any(), Mockito.any())).thenReturn(otpGeneratorResponsetDto);
 		OtpRequestDTO otpRequestDTO = getOtpRequestDto();
 		Map<String, String> valueMap = new HashMap<>();
 		valueMap.put("namePri", "Name in PrimaryLang");
@@ -354,7 +354,7 @@ public class OTPManagerTest {
 		RestRequestDTO restRequestDTO = getRestRequestDTO();
 		Mockito.when(restRequestFactory.buildRequest(RestServicesConstants.OTP_GENERATE_SERVICE, otpGeneratorRequestDto,
 				OtpGeneratorResponseDto.class)).thenReturn(restRequestDTO);
-		Mockito.when(restHelper.requestSync(Mockito.any()))
+		Mockito.when(restHelper.requestSync(Mockito.any(), Mockito.any()))
 				.thenThrow(new RestServiceException(IdRepoErrorConstants.CLIENT_ERROR, response.toString(), response));
 		OtpRequestDTO otpRequestDTO = getOtpRequestDto();
 		Map<String, String> valueMap = new HashMap<>();
@@ -385,7 +385,7 @@ public class OTPManagerTest {
 		RestRequestDTO restRequestDTO = getRestRequestDTO();
 		Mockito.when(restRequestFactory.buildRequest(Mockito.any(), Mockito.any(), Mockito.any()))
 				.thenReturn(restRequestDTO);
-		Mockito.when(restHelper.requestSync(Mockito.any()))
+		Mockito.when(restHelper.requestSync(Mockito.any(), Mockito.any()))
 				.thenThrow(new RestServiceException(IdRepoErrorConstants.CLIENT_ERROR, response.toString(), response));
 		OtpRequestDTO otpRequestDTO = getOtpRequestDto();
 		Map<String, String> valueMap = new HashMap<>();
@@ -416,7 +416,7 @@ public class OTPManagerTest {
 		RestRequestDTO restRequestDTO = getRestRequestDTO();
 		Mockito.when(restRequestFactory.buildRequest(RestServicesConstants.OTP_GENERATE_SERVICE, otpGeneratorRequestDto,
 				OtpGeneratorResponseDto.class)).thenReturn(restRequestDTO);
-		Mockito.when(restHelper.requestSync(Mockito.any()))
+		Mockito.when(restHelper.requestSync(Mockito.any(), Mockito.any()))
 				.thenThrow(new RestServiceException(IdRepoErrorConstants.CLIENT_ERROR, response.toString(), response));
 		OtpRequestDTO otpRequestDTO = getOtpRequestDto();
 		Map<String, String> valueMap = new HashMap<>();
@@ -479,7 +479,7 @@ public class OTPManagerTest {
 		Mockito.when(restRequestFactory.buildRequest(RestServicesConstants.OTP_GENERATE_SERVICE, null,
 				ResponseWrapper.class)).thenReturn(restRequestDTO);
 
-		Mockito.when(restHelper.requestSync(Mockito.any())).thenReturn(otpGeneratorResponsetDto);
+		Mockito.when(restHelper.requestSync(Mockito.any(), Mockito.any())).thenReturn(otpGeneratorResponsetDto);
 		OtpRequestDTO otpRequestDTO = getOtpRequestDto();
 		Map<String, String> valuesMap = new HashMap<>();
 		valuesMap.put("namePri", "Name in PrimaryLang");
@@ -512,7 +512,7 @@ public class OTPManagerTest {
 
 		Map<String, Object> responseMap = new HashMap<>();
 		responseMap.put("response", valuemap);
-		Mockito.when(restHelper.requestSync(Mockito.any()))
+		Mockito.when(restHelper.requestSync(Mockito.any(), Mockito.any()))
 				.thenThrow(new RestServiceException(IdRepoErrorConstants.CLIENT_ERROR, output, valuemap));
 		validateOtpHelper.validateOtp("Test123", "123456", "426789089018");
 	}
@@ -529,7 +529,7 @@ public class OTPManagerTest {
 		RestRequestDTO restRequestDTO = getRestRequestvalidDTO();
 		Mockito.when(restRequestFactory.buildRequest(RestServicesConstants.OTP_VALIDATE_SERVICE, null, Map.class))
 				.thenReturn(restRequestDTO);
-		Mockito.when(restHelper.requestSync(Mockito.any())).thenReturn(response1);
+		Mockito.when(restHelper.requestSync(Mockito.any(), Mockito.any())).thenReturn(response1);
 		boolean expactedOTP = validateOtpHelper.validateOtp("Test123", "123456", "426789089018");
 		assertTrue(expactedOTP);
 	}
@@ -544,7 +544,7 @@ public class OTPManagerTest {
 		Map<String, Object> valueMap = new HashMap<>();
 		valueMap.put("status", "failure");
 		valueMap.put("message", "Validation_Unsuccessful");
-		Mockito.when(restHelper.requestSync(Mockito.any())).thenReturn(valueMap);
+		Mockito.when(restHelper.requestSync(Mockito.any(), Mockito.any())).thenReturn(valueMap);
 		Mockito.when(securityManager.hash(Mockito.anyString())).thenReturn("hash");
 		OtpTransaction otpEntity = new OtpTransaction();
 		otpEntity.setStatusCode(IdAuthCommonConstants.ACTIVE_STATUS);
@@ -571,7 +571,7 @@ public class OTPManagerTest {
 		RestRequestDTO restRequestDTO = getRestRequestvalidDTO();
 		Mockito.when(restRequestFactory.buildRequest(RestServicesConstants.OTP_VALIDATE_SERVICE, null, Map.class))
 				.thenReturn(restRequestDTO);
-		Mockito.when(restHelper.requestSync(Mockito.any()))
+		Mockito.when(restHelper.requestSync(Mockito.any(), Mockito.any()))
 				.thenThrow(new RestServiceException(IdRepoErrorConstants.CLIENT_ERROR, output, response));
 		validateOtpHelper.validateOtp("Test123", "123456", "426789089018");
 	}
@@ -592,7 +592,7 @@ public class OTPManagerTest {
 		RestRequestDTO restRequestDTO = getRestRequestvalidDTO();
 		Mockito.when(restRequestFactory.buildRequest(RestServicesConstants.OTP_VALIDATE_SERVICE, null, Map.class))
 				.thenReturn(restRequestDTO);
-		Mockito.when(restHelper.requestSync(Mockito.any()))
+		Mockito.when(restHelper.requestSync(Mockito.any(), Mockito.any()))
 				.thenThrow(new RestServiceException(IdRepoErrorConstants.CLIENT_ERROR, output, response));
 		validateOtpHelper.validateOtp("Test123", "123456", "426789089018");
 	}
@@ -613,7 +613,7 @@ public class OTPManagerTest {
 		RestRequestDTO restRequestDTO = getRestRequestvalidDTO();
 		Mockito.when(restRequestFactory.buildRequest(RestServicesConstants.OTP_VALIDATE_SERVICE, null, Map.class))
 				.thenReturn(restRequestDTO);
-		Mockito.when(restHelper.requestSync(Mockito.any()))
+		Mockito.when(restHelper.requestSync(Mockito.any(), Mockito.any()))
 				.thenThrow(new RestServiceException(IdRepoErrorConstants.CLIENT_ERROR, output, responseMap));
 		validateOtpHelper.validateOtp("Test123", "123456", "426789089018");
 	}
@@ -634,7 +634,7 @@ public class OTPManagerTest {
 				.thenReturn(restRequestDTO);
 		RestServiceException restServiceException = new RestServiceException(IdRepoErrorConstants.CLIENT_ERROR, output,
 				responseMap);
-		Mockito.when(restHelper.requestSync(Mockito.any())).thenThrow(restServiceException);
+		Mockito.when(restHelper.requestSync(Mockito.any(), Mockito.any())).thenThrow(restServiceException);
 		validateOtpHelper.validateOtp("Test123", "123456", "426789089018");
 	}
 
@@ -654,7 +654,7 @@ public class OTPManagerTest {
 				.thenReturn(restRequestDTO);
 		RestServiceException restServiceException = new RestServiceException(IdRepoErrorConstants.CLIENT_ERROR, output,
 				responseMap);
-		Mockito.when(restHelper.requestSync(Mockito.any())).thenThrow(restServiceException);
+		Mockito.when(restHelper.requestSync(Mockito.any(), Mockito.any())).thenThrow(restServiceException);
 		validateOtpHelper.validateOtp("Test123", "123456", "426789089018");
 	}
 
@@ -698,7 +698,7 @@ public class OTPManagerTest {
 		otpGeneratorResponsedto.setResponse(response);
 		RestServiceException restServiceException = new RestServiceException(IdRepoErrorConstants.CLIENT_ERROR,
 				otpGeneratorResponsedto.toString(), otpGeneratorResponsedto);
-		Mockito.when(restHelper.requestSync(Mockito.any())).thenThrow(restServiceException);
+		Mockito.when(restHelper.requestSync(Mockito.any(), Mockito.any())).thenThrow(restServiceException);
 		OtpRequestDTO otpRequestDTO = getOtpRequestDto();
 		Map<String, String> valueMap = new HashMap<>();
 		valueMap.put("namePri", "Name in PrimaryLang");
@@ -724,7 +724,7 @@ public class OTPManagerTest {
 		Mockito.when(restRequestFactory.buildRequest(RestServicesConstants.OTP_VALIDATE_SERVICE, null, Map.class))
 				.thenReturn(restRequestDTO);
 
-		Mockito.when(restHelper.requestSync(Mockito.any()))
+		Mockito.when(restHelper.requestSync(Mockito.any(), Mockito.any()))
 				.thenThrow(new RestServiceException(IdRepoErrorConstants.CLIENT_ERROR, output, valueMap));
 		validateOtpHelper.validateOtp("Test123", "123456", "426789089018");
 	}
@@ -735,7 +735,7 @@ public class OTPManagerTest {
 		RestRequestDTO restRequestDTO = getRestRequestvalidDTO();
 		Mockito.when(restRequestFactory.buildRequest(RestServicesConstants.OTP_VALIDATE_SERVICE, null, Map.class))
 				.thenReturn(restRequestDTO);
-		Mockito.when(restHelper.requestSync(Mockito.any()))
+		Mockito.when(restHelper.requestSync(Mockito.any(), Mockito.any()))
 				.thenThrow(new RestServiceException(IdRepoErrorConstants.CLIENT_ERROR));
 		OtpRequestDTO otpRequestDTO = getOtpRequestDto();
 		Map<String, String> valueMap = new HashMap<>();
@@ -868,7 +868,7 @@ public class OTPManagerTest {
 		Mockito.when(securityManager.hash(Mockito.anyString())).thenReturn("hash");
 		OtpTransaction otpEntity = new OtpTransaction();
 		otpEntity.setStatusCode(IdAuthCommonConstants.FROZEN);
-		otpEntity.setUpdDTimes(DateUtils.getUTCCurrentDateTime().minus(25, ChronoUnit.MINUTES));
+		otpEntity.setUpdDTimes(DateUtils2.getUTCCurrentDateTime().minus(25, ChronoUnit.MINUTES));
 		otpEntity.setValidationRetryCount(5);
 		otpEntity.setOtpHash("otphash");
 
@@ -897,7 +897,7 @@ public class OTPManagerTest {
 		OtpTransaction otpEntity = new OtpTransaction();
 		otpEntity.setStatusCode(IdAuthCommonConstants.FROZEN);
 		otpEntity.setValidationRetryCount(5);
-		otpEntity.setUpdDTimes(DateUtils.getUTCCurrentDateTime().minus(25, ChronoUnit.MINUTES));
+		otpEntity.setUpdDTimes(DateUtils2.getUTCCurrentDateTime().minus(25, ChronoUnit.MINUTES));
 		otpEntity.setOtpHash("otphash");
 
 		Mockito.when(otpRepo.findFirstByRefIdAndStatusCodeInAndGeneratedDtimesNotNullOrderByGeneratedDtimesDesc(Mockito.anyString(), Mockito.anyList())).thenReturn(Optional.of(otpEntity ));
@@ -925,7 +925,7 @@ public class OTPManagerTest {
 		OtpTransaction otpEntity = new OtpTransaction();
 		otpEntity.setStatusCode(IdAuthCommonConstants.FROZEN);
 		otpEntity.setValidationRetryCount(5);
-		otpEntity.setUpdDTimes(DateUtils.getUTCCurrentDateTime().minus(29, ChronoUnit.MINUTES));
+		otpEntity.setUpdDTimes(DateUtils2.getUTCCurrentDateTime().minus(29, ChronoUnit.MINUTES));
 		otpEntity.setOtpHash("otphash");
 
 		Mockito.when(otpRepo.findFirstByRefIdAndStatusCodeInAndGeneratedDtimesNotNullOrderByGeneratedDtimesDesc(Mockito.anyString(), Mockito.anyList())).thenReturn(Optional.of(otpEntity ));
@@ -953,7 +953,7 @@ public class OTPManagerTest {
 		OtpTransaction otpEntity = new OtpTransaction();
 		otpEntity.setStatusCode(IdAuthCommonConstants.FROZEN);
 		otpEntity.setValidationRetryCount(5);
-		otpEntity.setUpdDTimes(DateUtils.getUTCCurrentDateTime().minus(31, ChronoUnit.MINUTES));
+		otpEntity.setUpdDTimes(DateUtils2.getUTCCurrentDateTime().minus(31, ChronoUnit.MINUTES));
 		otpEntity.setOtpHash("otphash");
 
 		Mockito.when(otpRepo.findFirstByRefIdAndStatusCodeInAndGeneratedDtimesNotNullOrderByGeneratedDtimesDesc(Mockito.anyString(), Mockito.anyList())).thenReturn(Optional.of(otpEntity ));
@@ -980,7 +980,7 @@ public class OTPManagerTest {
 		OtpTransaction otpEntity = new OtpTransaction();
 		otpEntity.setStatusCode(IdAuthCommonConstants.ACTIVE_STATUS);
 		otpEntity.setOtpHash("313233343536234B45595F53504C49545445522354657374313233");
-		otpEntity.setExpiryDtimes(DateUtils.getUTCCurrentDateTime().plus(1, ChronoUnit.MINUTES));
+		otpEntity.setExpiryDtimes(DateUtils2.getUTCCurrentDateTime().plus(1, ChronoUnit.MINUTES));
 
 		Mockito.when(otpRepo.findFirstByRefIdAndStatusCodeInAndGeneratedDtimesNotNullOrderByGeneratedDtimesDesc(Mockito.anyString(), Mockito.anyList())).thenReturn(Optional.of(otpEntity ));
 
@@ -1006,7 +1006,7 @@ public class OTPManagerTest {
 		otpEntity.setStatusCode(IdAuthCommonConstants.ACTIVE_STATUS);
 		otpEntity.setValidationRetryCount(1);
 		otpEntity.setOtpHash("313233343536234B45595F53504C49545445522354657374313233");
-		otpEntity.setExpiryDtimes(DateUtils.getUTCCurrentDateTime().plus(1, ChronoUnit.MINUTES));
+		otpEntity.setExpiryDtimes(DateUtils2.getUTCCurrentDateTime().plus(1, ChronoUnit.MINUTES));
 
 		Mockito.when(otpRepo.findFirstByRefIdAndStatusCodeInAndGeneratedDtimesNotNullOrderByGeneratedDtimesDesc(Mockito.anyString(), Mockito.anyList())).thenReturn(Optional.of(otpEntity ));
 
@@ -1032,7 +1032,7 @@ public class OTPManagerTest {
 		otpEntity.setStatusCode(IdAuthCommonConstants.ACTIVE_STATUS);
 		otpEntity.setValidationRetryCount(4);
 		otpEntity.setOtpHash("313233343536234B45595F53504C49545445522354657374313233");
-		otpEntity.setExpiryDtimes(DateUtils.getUTCCurrentDateTime().plus(1, ChronoUnit.MINUTES));
+		otpEntity.setExpiryDtimes(DateUtils2.getUTCCurrentDateTime().plus(1, ChronoUnit.MINUTES));
 
 		Mockito.when(otpRepo.findFirstByRefIdAndStatusCodeInAndGeneratedDtimesNotNullOrderByGeneratedDtimesDesc(Mockito.anyString(), Mockito.anyList())).thenReturn(Optional.of(otpEntity ));
 
@@ -1056,10 +1056,10 @@ public class OTPManagerTest {
 		Mockito.when(securityManager.hash(Mockito.anyString())).thenReturn("hash");
 		OtpTransaction otpEntity = new OtpTransaction();
 		otpEntity.setStatusCode(IdAuthCommonConstants.FROZEN);
-		otpEntity.setUpdDTimes(DateUtils.getUTCCurrentDateTime().minus(25, ChronoUnit.MINUTES));
+		otpEntity.setUpdDTimes(DateUtils2.getUTCCurrentDateTime().minus(25, ChronoUnit.MINUTES));
 		otpEntity.setValidationRetryCount(5);
 		otpEntity.setOtpHash("313233343536234B45595F53504C49545445522354657374313233");
-		otpEntity.setExpiryDtimes(DateUtils.getUTCCurrentDateTime().plus(1, ChronoUnit.MINUTES));
+		otpEntity.setExpiryDtimes(DateUtils2.getUTCCurrentDateTime().plus(1, ChronoUnit.MINUTES));
 
 		Mockito.when(otpRepo.findFirstByRefIdAndStatusCodeInAndGeneratedDtimesNotNullOrderByGeneratedDtimesDesc(Mockito.anyString(), Mockito.anyList())).thenReturn(Optional.of(otpEntity ));
 
@@ -1086,9 +1086,9 @@ public class OTPManagerTest {
 		OtpTransaction otpEntity = new OtpTransaction();
 		otpEntity.setStatusCode(IdAuthCommonConstants.FROZEN);
 		otpEntity.setValidationRetryCount(5);
-		otpEntity.setUpdDTimes(DateUtils.getUTCCurrentDateTime().minus(25, ChronoUnit.MINUTES));
+		otpEntity.setUpdDTimes(DateUtils2.getUTCCurrentDateTime().minus(25, ChronoUnit.MINUTES));
 		otpEntity.setOtpHash("313233343536234B45595F53504C49545445522354657374313233");
-		otpEntity.setExpiryDtimes(DateUtils.getUTCCurrentDateTime().plus(1, ChronoUnit.MINUTES));
+		otpEntity.setExpiryDtimes(DateUtils2.getUTCCurrentDateTime().plus(1, ChronoUnit.MINUTES));
 
 		Mockito.when(otpRepo.findFirstByRefIdAndStatusCodeInAndGeneratedDtimesNotNullOrderByGeneratedDtimesDesc(Mockito.anyString(), Mockito.anyList())).thenReturn(Optional.of(otpEntity ));
 
@@ -1115,9 +1115,9 @@ public class OTPManagerTest {
 		OtpTransaction otpEntity = new OtpTransaction();
 		otpEntity.setStatusCode(IdAuthCommonConstants.FROZEN);
 		otpEntity.setValidationRetryCount(5);
-		otpEntity.setUpdDTimes(DateUtils.getUTCCurrentDateTime().minus(29, ChronoUnit.MINUTES));
+		otpEntity.setUpdDTimes(DateUtils2.getUTCCurrentDateTime().minus(29, ChronoUnit.MINUTES));
 		otpEntity.setOtpHash("313233343536234B45595F53504C49545445522354657374313233");
-		otpEntity.setExpiryDtimes(DateUtils.getUTCCurrentDateTime().plus(1, ChronoUnit.MINUTES));
+		otpEntity.setExpiryDtimes(DateUtils2.getUTCCurrentDateTime().plus(1, ChronoUnit.MINUTES));
 
 		Mockito.when(otpRepo.findFirstByRefIdAndStatusCodeInAndGeneratedDtimesNotNullOrderByGeneratedDtimesDesc(Mockito.anyString(), Mockito.anyList())).thenReturn(Optional.of(otpEntity ));
 
@@ -1144,9 +1144,9 @@ public class OTPManagerTest {
 		OtpTransaction otpEntity = new OtpTransaction();
 		otpEntity.setStatusCode(IdAuthCommonConstants.FROZEN);
 		otpEntity.setValidationRetryCount(5);
-		otpEntity.setUpdDTimes(DateUtils.getUTCCurrentDateTime().minus(31, ChronoUnit.MINUTES));
+		otpEntity.setUpdDTimes(DateUtils2.getUTCCurrentDateTime().minus(31, ChronoUnit.MINUTES));
 		otpEntity.setOtpHash("313233343536234B45595F53504C49545445522354657374313233");
-		otpEntity.setExpiryDtimes(DateUtils.getUTCCurrentDateTime().plus(1, ChronoUnit.MINUTES));
+		otpEntity.setExpiryDtimes(DateUtils2.getUTCCurrentDateTime().plus(1, ChronoUnit.MINUTES));
 
 		Mockito.when(otpRepo.findFirstByRefIdAndStatusCodeInAndGeneratedDtimesNotNullOrderByGeneratedDtimesDesc(Mockito.anyString(), Mockito.anyList())).thenReturn(Optional.of(otpEntity ));
 
@@ -1171,9 +1171,9 @@ public class OTPManagerTest {
 		OtpTransaction otpEntity = new OtpTransaction();
 		otpEntity.setStatusCode(IdAuthCommonConstants.FROZEN);
 		otpEntity.setValidationRetryCount(5);
-		otpEntity.setUpdDTimes(DateUtils.getUTCCurrentDateTime().minus(31, ChronoUnit.MINUTES));
+		otpEntity.setUpdDTimes(DateUtils2.getUTCCurrentDateTime().minus(31, ChronoUnit.MINUTES));
 		otpEntity.setOtpHash("313233343536234B45595F53504C49545445522354657374313233");
-		otpEntity.setExpiryDtimes(DateUtils.getUTCCurrentDateTime().minus(1, ChronoUnit.MINUTES));
+		otpEntity.setExpiryDtimes(DateUtils2.getUTCCurrentDateTime().minus(1, ChronoUnit.MINUTES));
 
 		Mockito.when(otpRepo.findFirstByRefIdAndStatusCodeInAndGeneratedDtimesNotNullOrderByGeneratedDtimesDesc(Mockito.anyString(), Mockito.anyList())).thenReturn(Optional.of(otpEntity ));
 
@@ -1200,7 +1200,7 @@ public class OTPManagerTest {
 		valueMap.put("message", USER_BLOCKED);
 		responseMap.put("response", valueMap);
 
-		Mockito.when(restHelper.requestSync(Mockito.any())).thenThrow(new RestServiceException(
+		Mockito.when(restHelper.requestSync(Mockito.any(), Mockito.any())).thenThrow(new RestServiceException(
 				IdRepoErrorConstants.CLIENT_ERROR, responseMap.toString(), (Object) responseMap));
 
 		Mockito.when(securityManager.hash(Mockito.anyString())).thenReturn("hash");
@@ -1228,7 +1228,7 @@ public class OTPManagerTest {
 		valueMap.put("message", OTP_EXPIRED);
 		Map<String, Object> responseMap = new HashMap<>();
 		responseMap.put("response", valueMap);
-		Mockito.when(restHelper.requestSync(Mockito.any())).thenThrow(new RestServiceException(
+		Mockito.when(restHelper.requestSync(Mockito.any(), Mockito.any())).thenThrow(new RestServiceException(
 				IdRepoErrorConstants.CLIENT_ERROR, responseMap.toString(), (Object) responseMap));
 
 		Mockito.when(securityManager.hash(Mockito.anyString())).thenReturn("hash");
@@ -1257,7 +1257,7 @@ public class OTPManagerTest {
 		valueMap.put("message", VALIDATION_UNSUCCESSFUL);
 		Map<String, Object> responseMap = new HashMap<>();
 		responseMap.put("response", valueMap);
-		Mockito.when(restHelper.requestSync(Mockito.any())).thenThrow(new RestServiceException(
+		Mockito.when(restHelper.requestSync(Mockito.any(), Mockito.any())).thenThrow(new RestServiceException(
 				IdRepoErrorConstants.CLIENT_ERROR, responseMap.toString(), (Object) responseMap));
 		Mockito.when(securityManager.hash(Mockito.anyString())).thenReturn("hash");
 		OtpTransaction otpEntity = new OtpTransaction();
@@ -1284,10 +1284,10 @@ public class OTPManagerTest {
 		valueMap.put("message", VALIDATION_UNSUCCESSFUL);
 		Map<String, Object> responseMap = new HashMap<>();
 		responseMap.put("response", valueMap);
-		Mockito.when(restHelper.requestSync(Mockito.any())).thenThrow(new RestServiceException(
+		Mockito.when(restHelper.requestSync(Mockito.any(), Mockito.any())).thenThrow(new RestServiceException(
 				IdRepoErrorConstants.CLIENT_ERROR, responseMap.toString(), (Object) responseMap));
 		OtpTransaction otpEntry = new OtpTransaction();
-		otpEntry.setExpiryDtimes(DateUtils.getUTCCurrentDateTime().minus(1, ChronoUnit.HOURS));
+		otpEntry.setExpiryDtimes(DateUtils2.getUTCCurrentDateTime().minus(1, ChronoUnit.HOURS));
 		Mockito.when(securityManager.hash(Mockito.anyString())).thenReturn("hash");
 		otpEntry.setStatusCode(IdAuthCommonConstants.ACTIVE_STATUS);
 		otpEntry.setOtpHash("otphash");
@@ -1311,10 +1311,10 @@ public class OTPManagerTest {
 		valueMap.put("message", VALIDATION_UNSUCCESSFUL);
 		Map<String, Object> responseMap = new HashMap<>();
 		responseMap.put("response", valueMap);
-		Mockito.when(restHelper.requestSync(Mockito.any())).thenThrow(new RestServiceException(
+		Mockito.when(restHelper.requestSync(Mockito.any(), Mockito.any())).thenThrow(new RestServiceException(
 				IdRepoErrorConstants.CLIENT_ERROR, responseMap.toString(), (Object) responseMap));
 		OtpTransaction otpEntry = new OtpTransaction();
-		otpEntry.setExpiryDtimes(DateUtils.getUTCCurrentDateTime().plus(1, ChronoUnit.HOURS));
+		otpEntry.setExpiryDtimes(DateUtils2.getUTCCurrentDateTime().plus(1, ChronoUnit.HOURS));
 		Mockito.when(securityManager.hash(Mockito.anyString())).thenReturn("hash");
 		otpEntry.setStatusCode(IdAuthCommonConstants.ACTIVE_STATUS);
 		otpEntry.setOtpHash("otphash");
@@ -1339,7 +1339,7 @@ public class OTPManagerTest {
 		valueMap.put("status", "failure");
 		valueMap.put("message", "invalid");
 		responseMap.put("response", valueMap);
-		Mockito.when(restHelper.requestSync(Mockito.any())).thenThrow(new RestServiceException(
+		Mockito.when(restHelper.requestSync(Mockito.any(), Mockito.any())).thenThrow(new RestServiceException(
 				IdRepoErrorConstants.CLIENT_ERROR, responseMap.toString(), (Object) responseMap));
 		validateOtpHelper.validateOtp("Test123", "123456", "426789089018");
 	}
@@ -1366,7 +1366,7 @@ public class OTPManagerTest {
 		valueMap.put("status", "12343");
 		valueMap.put("message", "12343");
 		responseMap.put("response", valueMap);
-		Mockito.when(restHelper.requestSync(Mockito.any())).thenThrow(new RestServiceException(
+		Mockito.when(restHelper.requestSync(Mockito.any(), Mockito.any())).thenThrow(new RestServiceException(
 				IdRepoErrorConstants.CLIENT_ERROR, responseMap.toString(), (Object) responseMap));
 		validateOtpHelper.validateOtp("Test123", "123456", "426789089018");
 	}
@@ -1382,7 +1382,7 @@ public class OTPManagerTest {
 		valueMap.put("message", OTP_EXPIRED);
 		Map<String, Object> responseMap = new HashMap<>();
 		responseMap.put("response", valueMap);
-		Mockito.when(restHelper.requestSync(Mockito.any())).thenThrow(new RestServiceException(
+		Mockito.when(restHelper.requestSync(Mockito.any(), Mockito.any())).thenThrow(new RestServiceException(
 				IdRepoErrorConstants.CLIENT_ERROR, responseMap.toString(), (Object) responseMap));
 		validateOtpHelper.validateOtp("Test123", "123456", "426789089018");
 	}
@@ -1397,7 +1397,7 @@ public class OTPManagerTest {
 		valueMap.put("message", OTP_EXPIRED);
 		Map<String, Object> responseMap = new HashMap<>();
 		responseMap.put("response", valueMap);
-		Mockito.when(restHelper.requestSync(Mockito.any())).thenThrow(new RestServiceException(
+		Mockito.when(restHelper.requestSync(Mockito.any(), Mockito.any())).thenThrow(new RestServiceException(
 				IdRepoErrorConstants.CLIENT_ERROR, responseMap.toString(), (Object) responseMap));
 		validateOtpHelper.validateOtp("Test123", "123456", "426789089018");
 
@@ -1414,7 +1414,7 @@ public class OTPManagerTest {
 		response.put("status", "failure");
 		response.put("message", USER_BLOCKED);
 		otpGeneratorResponsetDto.setResponse(response);
-		Mockito.when(restHelper.requestSync(Mockito.any())).thenReturn(otpGeneratorResponsetDto);
+		Mockito.when(restHelper.requestSync(Mockito.any(), Mockito.any())).thenReturn(otpGeneratorResponsetDto);
 		OtpRequestDTO otpRequestDTO = getOtpRequestDto();
 		Map<String, String> valueMap = new HashMap<>();
 		valueMap.put("primaryLang", "fra");
@@ -1429,7 +1429,7 @@ public class OTPManagerTest {
 		RestRequestDTO restRequestDTO = getRestRequestvalidDTO();
 		Mockito.when(restRequestFactory.buildRequest(Mockito.any(), Mockito.any(), Mockito.any()))
 				.thenReturn(restRequestDTO);
-		Mockito.when(restHelper.requestSync(Mockito.any()))
+		Mockito.when(restHelper.requestSync(Mockito.any(), Mockito.any()))
 				.thenThrow(new RestServiceException(IdRepoErrorConstants.CLIENT_ERROR, null, null));
 		OtpRequestDTO otpRequestDTO = getOtpRequestDto();
 		Map<String, String> valueMap = new HashMap<>();
@@ -1451,7 +1451,7 @@ public class OTPManagerTest {
 		errorMap.put("errorCode", "KER-OTV-005");
 		errorList.add(errorMap);
 		valueMap.put("errors", (Object) errorList);
-		Mockito.when(restHelper.requestSync(Mockito.any())).thenThrow(new RestServiceException(
+		Mockito.when(restHelper.requestSync(Mockito.any(), Mockito.any())).thenThrow(new RestServiceException(
 				IdRepoErrorConstants.CLIENT_ERROR, new ObjectMapper().writeValueAsString(valueMap), valueMap));
 		validateOtpHelper.validateOtp("Test123", "123456", "426789089018");
 

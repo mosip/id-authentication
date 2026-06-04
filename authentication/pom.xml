@@ -5,7 +5,7 @@
 
 	<groupId>io.mosip.authentication</groupId>
 	<artifactId>authentication-parent</artifactId>
-	<version>1.2.1-SNAPSHOT</version>
+	<version>1.3.1-rc.1</version>
 	<packaging>pom</packaging>
 
 	<name>id-authentication</name>
@@ -70,7 +70,6 @@
 			<url>https://central.sonatype.com/api/v1/publisher</url>
 		</repository>
 	</distributionManagement>
-
 	<modules>
 		<module>authentication-core</module>
 		<module>authentication-filter-api</module>
@@ -144,15 +143,23 @@
 		<hibernate.validator.version>6.0.12.Final</hibernate.validator.version>
 		<postgresql.version>42.2.2</postgresql.version>
 		<spring-boot-maven-plugin.version>3.2.3</spring-boot-maven-plugin.version>
-
+		<central.publishing.maven.plugin.version>0.7.0</central.publishing.maven.plugin.version>
 		<!-- Commons -->
 		<commons.lang.version>3.7</commons.lang.version>
 		<commons.codec.version>1.11</commons.codec.version>
 
 		<sourceafis.version>3.4.0</sourceafis.version>
 
+		<sonar.sources>src/main/java</sonar.sources>
+		<sonar.tests>src/test/java</sonar.tests>
+		<sonar.inclusions>src/main/java/**/*.java</sonar.inclusions>
+		<sonar.test.inclusions>src/test/java/**/*Test.java</sonar.test.inclusions>
+		<sonar.exclusions>**/ai/**/*.*,**/jdbc/**/*.*,**/mpt/**/*.*,**/jcr/**/*.*,**/JDBC*,**/constant/**,**/config/**,**/dto/**,**io/mosip/authentication/common/service/filter/**,**io/mosip/authentication/service/filter/**,**io/mosip/authentication/otp/service/filter/**,**io/mosip/authentication/common/policy/**,**io/mosip/authentication/internal/service/filter/**,**io/mosip/authentication/kyc/service/filter/**,**io/mosip/authentication/staticpin/service/filter/**,**io/mosip/authentication/common/service/entity/**,**/service/IdAuthenticationApplication.java,**/service/**/*Entity.java,**internal/service/InternalAuthenticationApplication.java,**kyc/service/KycAuthenticationApplication.java,**spin/service/StaticPinAuthenticationApplication.java,**io/mosip/authentication/common/service/repository/**,**authentication/otp/service/OtpApplication.java,**authentication/staticpin/service/StaticPinApplication.java,**/authentication/vid/service/VidApplication.java,**/authentication/core/spi/indauth/match/**</sonar.exclusions>
+		<sonar.test.exclusions>src/test/resources/**,**/*.gitignore,**/git.properties</sonar.test.exclusions>
+		<sonar.coverage.exclusions>**/constant/**,**/config/**,**/httpfilter/**,**/cache/**,**/entity/**,**/model/**,**/exception/**,**/repository/**,**/verticle/**,**/spi/**,**/proxy/**,**/entities/**,**/filter/**,**/util/**,**/verifier/**</sonar.coverage.exclusions>
 		<sonar.cpd.exclusions>**/dto/**,**/entity/**,**/config/**</sonar.cpd.exclusions>
 		<sonar.coverage.jacoco.xmlReportPaths>${project.basedir}/../</sonar.coverage.jacoco.xmlReportPaths>
+
 		<maven.jar.plugin.version>3.0.2</maven.jar.plugin.version>
 		<maven.war.plugin.version>3.1.0</maven.war.plugin.version>
 		<objenesis.version>3.1</objenesis.version>
@@ -347,26 +354,26 @@
 				</executions>
 			</plugin>
 			<plugin>
-				<groupId>org.jacoco</groupId>
-				<artifactId>jacoco-maven-plugin</artifactId>
-				<version>${jacoco.maven.plugin.version}</version>
-				<configuration>
-					<excludes>
-						<exclude>**/constant/**</exclude>
-						<exclude>**/config/**</exclude>
-						<exclude>**/dto/**</exclude>
-						<exclude>io/mosip/authentication/service/*.class</exclude>
-						<exclude>io/mosip/authentication/service/filter/**</exclude>
-					</excludes>
-				</configuration>
-				<executions>
-					<execution>
-						<goals>
-							<goal>prepare-agent</goal>
-						</goals>
-					</execution>
-				</executions>
+			    <groupId>org.jacoco</groupId>
+			    <artifactId>jacoco-maven-plugin</artifactId>
+			    <version>${jacoco.maven.plugin.version}</version> <!-- Supports Java 21 -->
+			    <executions>
+			        <execution>
+			            <id>default-prepare-agent</id>
+			            <goals>
+			                <goal>prepare-agent</goal>
+			            </goals>
+			        </execution>
+			        <execution>
+			            <id>default-report</id>
+			            <phase>test</phase>
+			            <goals>
+			                <goal>report</goal>
+			            </goals>
+			        </execution>
+			    </executions>
 			</plugin>
+
 			<plugin>
 				<groupId>org.apache.maven.plugins</groupId>
 				<artifactId>maven-surefire-plugin</artifactId>
@@ -456,26 +463,26 @@
 	</build>
 		
 		<profiles>
-			<profile>
-				<id>sonar</id>
-				<build>
-					<plugins>
-						<plugin>
-						<groupId>org.sonarsource.scanner.maven</groupId>
-						<artifactId>sonar-maven-plugin</artifactId>
-						<version>${maven.sonar.version}</version>
-						<executions>
-							<execution>
-								<phase>verify</phase>
-								<goals>
-									<goal>sonar</goal>
-								</goals>
-							</execution>
-						</executions>
-					</plugin>
-					</plugins>
-				</build>
-			</profile>
+		    <profile>
+		        <id>sonar</id>
+		        <build>
+		            <plugins>
+		                <plugin>
+		                    <groupId>org.sonarsource.scanner.maven</groupId>
+		                    <artifactId>sonar-maven-plugin</artifactId>
+		                    <version>${maven.sonar.version}</version>
+		                    <executions>
+		                        <execution>
+		                            <phase>verify</phase>
+		                            <goals>
+		                                <goal>sonar</goal>
+		                            </goals>
+		                        </execution>
+		                    </executions>
+		                </plugin>
+		            </plugins>
+		        </build>
+		    </profile>
 		</profiles>
 
 </project>

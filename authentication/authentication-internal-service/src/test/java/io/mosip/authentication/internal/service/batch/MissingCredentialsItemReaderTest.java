@@ -7,7 +7,7 @@ import io.mosip.authentication.core.exception.IDDataValidationException;
 import io.mosip.authentication.core.exception.IdAuthRetryException;
 import io.mosip.idrepository.core.dto.CredentialRequestIdsDto;
 import io.mosip.idrepository.core.exception.RestServiceException;
-import io.mosip.kernel.core.util.DateUtils;
+import io.mosip.kernel.core.util.DateUtils2;
 import org.junit.Before;
 import org.junit.Test;
 import org.junit.runner.RunWith;
@@ -74,7 +74,7 @@ public class MissingCredentialsItemReaderTest {
         credRequests.add(credentialRequestIdsDto3);
         LocalDateTime t=LocalDateTime.now().plusYears(1);
         Mockito.when(credentialEventRepo.findMaxCrDTimesByStatusCode(CredentialStoreStatus.STORED.name())).thenReturn(java.util.Optional.of(t));
-        Mockito.when(credentialRequestManager.getMissingCredentialsPageItems(0, DateUtils.formatToISOString(t))).thenReturn(credRequests);
+        Mockito.when(credentialRequestManager.getMissingCredentialsPageItems(0, DateUtils2.formatToISOString(t))).thenReturn(credRequests);
         ReflectionTestUtils.invokeMethod(missingCredentialsItemReader, "read");
     }
 
@@ -87,7 +87,7 @@ public class MissingCredentialsItemReaderTest {
     public void readIdAuthRetryExceptionTest() throws Exception {
         LocalDateTime t=LocalDateTime.now().plusYears(1);
         Mockito.when(credentialEventRepo.findMaxCrDTimesByStatusCode(CredentialStoreStatus.STORED.name())).thenReturn(java.util.Optional.of(t));
-        Mockito.doThrow(IDDataValidationException.class).when(credentialRequestManager).getMissingCredentialsPageItems(0, DateUtils.formatToISOString(t));
+        Mockito.doThrow(IDDataValidationException.class).when(credentialRequestManager).getMissingCredentialsPageItems(0, DateUtils2.formatToISOString(t));
         ReflectionTestUtils.invokeMethod(missingCredentialsItemReader, "read");
     }
 
@@ -109,7 +109,7 @@ public class MissingCredentialsItemReaderTest {
         List<String> requestIds=new ArrayList<>();
         requestIds.add(null);requestIds.add(null);requestIds.add(null);
         Mockito.when(credentialEventRepo.findMaxCrDTimesByStatusCode(CredentialStoreStatus.STORED.name())).thenReturn(java.util.Optional.of(t));
-        Mockito.when(credentialRequestManager.getMissingCredentialsPageItems(0, DateUtils.formatToISOString(t))).thenReturn(credRequests);
+        Mockito.when(credentialRequestManager.getMissingCredentialsPageItems(0, DateUtils2.formatToISOString(t))).thenReturn(credRequests);
         Mockito.when(credentialEventRepo.findDistictCredentialTransactionIdsInList(requestIds)).thenReturn(null);
         ReflectionTestUtils.invokeMethod(missingCredentialsItemReader, "read");
     }

@@ -24,6 +24,14 @@ CREATE TABLE ida.data_encrypt_keystore(
                                           CONSTRAINT pk_dekstr_id PRIMARY KEY (id)
 
 );
+
+-- Optimize autovacuum for data_encrypt_keystore to clean dead tuples
+ALTER TABLE data_encrypt_keystore SET (
+    autovacuum_vacuum_scale_factor = 0.1,
+    autovacuum_vacuum_threshold = 50,
+    autovacuum_analyze_scale_factor = 0.1,
+    autovacuum_analyze_threshold = 50
+);
 -- ddl-end --
 COMMENT ON TABLE ida.data_encrypt_keystore IS 'Data Encrypt Keystore: Table is used to store the encryption key aliases which is used encrypt the data stored in identity cache table store.';
 -- ddl-end --
@@ -41,3 +49,6 @@ COMMENT ON COLUMN ida.data_encrypt_keystore.upd_by IS 'Updated By : ID or name o
 -- ddl-end --
 COMMENT ON COLUMN ida.data_encrypt_keystore.upd_dtimes IS 'Updated DateTimestamp : Date and Timestamp when any of the fields in the record is updated with new values.';
 -- ddl-end --
+
+--PERFORMANCE INDEXES
+CREATE INDEX IF NOT EXISTS encrypt_id ON ida.data_encrypt_keystore USING btree (id);

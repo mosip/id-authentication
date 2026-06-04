@@ -36,7 +36,7 @@ import io.mosip.authentication.core.logger.IdaLogger;
 import io.mosip.kernel.core.exception.ParseException;
 import io.mosip.kernel.core.function.FunctionWithThrowable;
 import io.mosip.kernel.core.logger.spi.Logger;
-import io.mosip.kernel.core.util.DateUtils;
+import io.mosip.kernel.core.util.DateUtils2;
 import io.mosip.kernel.core.util.StringUtils;
 
 /**
@@ -200,9 +200,9 @@ public class AuthRequestValidator extends BaseAuthRequestValidator {
 	private void validateSuccessiveBioSegmentTimestamp(List<BioIdentityInfoDTO> biometrics, Errors errors, int index,
 			BioIdentityInfoDTO bioIdentityInfoDTO) {
 		if (!errors.hasErrors() && index != 0) {
-			LocalDateTime currentIndexDateTime = DateUtils.parseDateToLocalDateTime(
+			LocalDateTime currentIndexDateTime = DateUtils2.parseDateToLocalDateTime(
 					this.biometricTimestampParser(bioIdentityInfoDTO.getData().getTimestamp()));
-			LocalDateTime previousIndexDateTime = DateUtils.parseDateToLocalDateTime(
+			LocalDateTime previousIndexDateTime = DateUtils2.parseDateToLocalDateTime(
 					this.biometricTimestampParser((biometrics.get(index - 1).getData().getTimestamp())));
 			long bioTimestampDiffInSeconds = Duration.between(previousIndexDateTime, currentIndexDateTime).toSeconds();
 			
@@ -220,9 +220,9 @@ public class AuthRequestValidator extends BaseAuthRequestValidator {
 
 	protected void validateSuccessiveDigitalIdTimestamp(List<BioIdentityInfoDTO> biometrics, Errors errors, int index,
 			BioIdentityInfoDTO bioIdentityInfoDTO, Long allowedTimeDiffInSeconds) {
-		LocalDateTime currentIndexDateTime = DateUtils.parseDateToLocalDateTime(
+		LocalDateTime currentIndexDateTime = DateUtils2.parseDateToLocalDateTime(
 				this.biometricTimestampParser(bioIdentityInfoDTO.getData().getDigitalId().getDateTime()));
-		LocalDateTime previousIndexDateTime = DateUtils.parseDateToLocalDateTime(
+		LocalDateTime previousIndexDateTime = DateUtils2.parseDateToLocalDateTime(
 				this.biometricTimestampParser(biometrics.get(index - 1).getData().getDigitalId().getDateTime()));
 		long digitalIdTimestampDiffInSeconds = Duration.between(previousIndexDateTime, currentIndexDateTime).toSeconds();
 		if (digitalIdTimestampDiffInSeconds < 0 || digitalIdTimestampDiffInSeconds > allowedTimeDiffInSeconds) {
@@ -650,7 +650,7 @@ public class AuthRequestValidator extends BaseAuthRequestValidator {
 	private Date biometricTimestampParser(String timestamp) throws ParseException {
 		try {
 			// First try parsing with biometric timestamp format
-			return DateUtils.parseToDate(timestamp, EnvUtil.getBiometricDateTimePattern());
+			return DateUtils2.parseToDate(timestamp, EnvUtil.getBiometricDateTimePattern());
 		} catch (ParseException e) {
 			mosipLogger.debug(
 					"error parsing timestamp  with biomerics date time pattern: {}, so paring with request time pattern",

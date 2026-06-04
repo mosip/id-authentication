@@ -45,7 +45,7 @@ import io.mosip.authentication.core.exception.IdAuthenticationBaseException;
 import io.mosip.authentication.core.exception.IdAuthenticationBusinessException;
 import io.mosip.authentication.core.partner.dto.PartnerPolicyResponseDTO;
 import io.mosip.authentication.core.partner.dto.PolicyDTO;
-import io.mosip.kernel.core.util.DateUtils;
+import io.mosip.kernel.core.util.DateUtils2;
 import io.mosip.kernel.core.websub.model.Event;
 import io.mosip.kernel.core.websub.model.EventModel;
 import io.mosip.kernel.core.websub.model.Type;
@@ -736,8 +736,8 @@ public class PartnerServiceManagerTest {
 			PolicyData policyData1 = new PolicyData();
 			policyData1.setPolicyStatus("ACTIVE");
 			
-			policyData1.setPolicyCommenceOn(DateUtils.getUTCCurrentDateTime().plus(5, ChronoUnit.MINUTES));
-			policyData1.setPolicyExpiresOn(DateUtils.getUTCCurrentDateTime().plus(5, ChronoUnit.MINUTES));
+			policyData1.setPolicyCommenceOn(DateUtils2.getUTCCurrentDateTime().plus(5, ChronoUnit.MINUTES));
+			policyData1.setPolicyExpiresOn(DateUtils2.getUTCCurrentDateTime().plus(5, ChronoUnit.MINUTES));
 			
 			partnerMappingData.setPolicyData(policyData1);
 			ReflectionTestUtils.invokeMethod(partnerServiceManager, "validatePartnerMappingDetails", Optional.of(partnerMappingData),
@@ -762,8 +762,8 @@ public class PartnerServiceManagerTest {
 			PolicyData policyData1 = new PolicyData();
 			policyData1.setPolicyStatus("ACTIVE");
 			
-			policyData1.setPolicyCommenceOn(DateUtils.getUTCCurrentDateTime().minus(5, ChronoUnit.MINUTES));
-			policyData1.setPolicyExpiresOn(DateUtils.getUTCCurrentDateTime().minus(5, ChronoUnit.MINUTES));
+			policyData1.setPolicyCommenceOn(DateUtils2.getUTCCurrentDateTime().minus(5, ChronoUnit.MINUTES));
+			policyData1.setPolicyExpiresOn(DateUtils2.getUTCCurrentDateTime().minus(5, ChronoUnit.MINUTES));
 			
 			partnerMappingData.setPolicyData(policyData1);
 			ReflectionTestUtils.invokeMethod(partnerServiceManager, "validatePartnerMappingDetails", Optional.of(partnerMappingData),
@@ -788,8 +788,8 @@ public class PartnerServiceManagerTest {
 			PolicyData policyData1 = new PolicyData();
 			policyData1.setPolicyStatus("ACTIVE");
 			
-			policyData1.setPolicyCommenceOn(DateUtils.getUTCCurrentDateTime().minus(5, ChronoUnit.MINUTES));
-			policyData1.setPolicyExpiresOn(DateUtils.getUTCCurrentDateTime().plus(5, ChronoUnit.MINUTES));
+			policyData1.setPolicyCommenceOn(DateUtils2.getUTCCurrentDateTime().minus(5, ChronoUnit.MINUTES));
+			policyData1.setPolicyExpiresOn(DateUtils2.getUTCCurrentDateTime().plus(5, ChronoUnit.MINUTES));
 			
 			partnerMappingData.setPolicyData(policyData1);
 			
@@ -818,8 +818,8 @@ public class PartnerServiceManagerTest {
 			PolicyData policyData1 = new PolicyData();
 			policyData1.setPolicyStatus("ACTIVE");
 			
-			policyData1.setPolicyCommenceOn(DateUtils.getUTCCurrentDateTime().minus(5, ChronoUnit.MINUTES));
-			policyData1.setPolicyExpiresOn(DateUtils.getUTCCurrentDateTime().plus(5, ChronoUnit.MINUTES));
+			policyData1.setPolicyCommenceOn(DateUtils2.getUTCCurrentDateTime().minus(5, ChronoUnit.MINUTES));
+			policyData1.setPolicyExpiresOn(DateUtils2.getUTCCurrentDateTime().plus(5, ChronoUnit.MINUTES));
 			
 			partnerMappingData.setPolicyData(policyData1);
 			
@@ -848,15 +848,15 @@ public class PartnerServiceManagerTest {
 			PolicyData policyData1 = new PolicyData();
 			policyData1.setPolicyStatus("ACTIVE");
 			
-			policyData1.setPolicyCommenceOn(DateUtils.getUTCCurrentDateTime().minus(5, ChronoUnit.MINUTES));
-			policyData1.setPolicyExpiresOn(DateUtils.getUTCCurrentDateTime().plus(5, ChronoUnit.MINUTES));
+			policyData1.setPolicyCommenceOn(DateUtils2.getUTCCurrentDateTime().minus(5, ChronoUnit.MINUTES));
+			policyData1.setPolicyExpiresOn(DateUtils2.getUTCCurrentDateTime().plus(5, ChronoUnit.MINUTES));
 			
 			partnerMappingData.setPolicyData(policyData1);
 			
 			ApiKeyData apiKeyData1 = new ApiKeyData();
 			apiKeyData1.setApiKeyStatus("ACTIVE");
-			apiKeyData1.setApiKeyCommenceOn(DateUtils.getUTCCurrentDateTime().plus(5, ChronoUnit.MINUTES));
-			apiKeyData1.setApiKeyExpiresOn(DateUtils.getUTCCurrentDateTime().plus(5, ChronoUnit.MINUTES));
+			apiKeyData1.setApiKeyCommenceOn(DateUtils2.getUTCCurrentDateTime().plus(5, ChronoUnit.MINUTES));
+			apiKeyData1.setApiKeyExpiresOn(DateUtils2.getUTCCurrentDateTime().plus(5, ChronoUnit.MINUTES));
 			
 			partnerMappingData.setApiKeyData(apiKeyData1 );
 			ReflectionTestUtils.invokeMethod(partnerServiceManager, "validatePartnerMappingDetails", Optional.of(partnerMappingData),
@@ -881,15 +881,15 @@ public class PartnerServiceManagerTest {
 			PolicyData policyData1 = new PolicyData();
 			policyData1.setPolicyStatus("ACTIVE");
 			
-			policyData1.setPolicyCommenceOn(DateUtils.getUTCCurrentDateTime().minus(5, ChronoUnit.MINUTES));
-			policyData1.setPolicyExpiresOn(DateUtils.getUTCCurrentDateTime().plus(5, ChronoUnit.MINUTES));
+			policyData1.setPolicyCommenceOn(DateUtils2.getUTCCurrentDateTime().minus(5, ChronoUnit.MINUTES));
+			policyData1.setPolicyExpiresOn(DateUtils2.getUTCCurrentDateTime().plus(5, ChronoUnit.MINUTES));
 			
 			partnerMappingData.setPolicyData(policyData1);
 			
 			ApiKeyData apiKeyData1 = new ApiKeyData();
 			apiKeyData1.setApiKeyStatus("ACTIVE");
-			apiKeyData1.setApiKeyCommenceOn(DateUtils.getUTCCurrentDateTime().minus(5, ChronoUnit.MINUTES));
-			apiKeyData1.setApiKeyExpiresOn(DateUtils.getUTCCurrentDateTime().minus(5, ChronoUnit.MINUTES));
+			apiKeyData1.setApiKeyCommenceOn(DateUtils2.getUTCCurrentDateTime().minus(5, ChronoUnit.MINUTES));
+			apiKeyData1.setApiKeyExpiresOn(DateUtils2.getUTCCurrentDateTime().minus(5, ChronoUnit.MINUTES));
 			
 			partnerMappingData.setApiKeyData(apiKeyData1 );
 			ReflectionTestUtils.invokeMethod(partnerServiceManager, "validatePartnerMappingDetails", Optional.of(partnerMappingData),
@@ -920,15 +920,15 @@ public class PartnerServiceManagerTest {
 			Optional<PartnerData> partnerDataOptional = Optional.of(partnerData1);
 			Mockito.when(partnerDataRepo.findByPartnerId("123")).thenReturn(partnerDataOptional);
 
-			policyData1.setPolicyCommenceOn(DateUtils.getUTCCurrentDateTime().minus(5, ChronoUnit.MINUTES));
-			policyData1.setPolicyExpiresOn(DateUtils.getUTCCurrentDateTime().plus(5, ChronoUnit.MINUTES));
+			policyData1.setPolicyCommenceOn(DateUtils2.getUTCCurrentDateTime().minus(5, ChronoUnit.MINUTES));
+			policyData1.setPolicyExpiresOn(DateUtils2.getUTCCurrentDateTime().plus(5, ChronoUnit.MINUTES));
 			
 			partnerMappingData.setPolicyData(policyData1);
 			
 			ApiKeyData apiKeyData1 = new ApiKeyData();
 			apiKeyData1.setApiKeyStatus("ACTIVE");
-			apiKeyData1.setApiKeyCommenceOn(DateUtils.getUTCCurrentDateTime().minus(5, ChronoUnit.MINUTES));
-			apiKeyData1.setApiKeyExpiresOn(DateUtils.getUTCCurrentDateTime().plus(5, ChronoUnit.MINUTES));
+			apiKeyData1.setApiKeyCommenceOn(DateUtils2.getUTCCurrentDateTime().minus(5, ChronoUnit.MINUTES));
+			apiKeyData1.setApiKeyExpiresOn(DateUtils2.getUTCCurrentDateTime().plus(5, ChronoUnit.MINUTES));
 			
 			partnerMappingData.setApiKeyData(apiKeyData1 );
 			ReflectionTestUtils.invokeMethod(partnerServiceManager, "validatePartnerMappingDetails", Optional.of(partnerMappingData),
@@ -960,15 +960,15 @@ public class PartnerServiceManagerTest {
 			Optional<PartnerData> partnerDataOptional = Optional.of(partnerData1);
 			Mockito.when(partnerDataRepo.findByPartnerId("123")).thenReturn(partnerDataOptional);
 
-			policyData1.setPolicyCommenceOn(DateUtils.getUTCCurrentDateTime().minus(5, ChronoUnit.MINUTES));
-			policyData1.setPolicyExpiresOn(DateUtils.getUTCCurrentDateTime().plus(5, ChronoUnit.MINUTES));
+			policyData1.setPolicyCommenceOn(DateUtils2.getUTCCurrentDateTime().minus(5, ChronoUnit.MINUTES));
+			policyData1.setPolicyExpiresOn(DateUtils2.getUTCCurrentDateTime().plus(5, ChronoUnit.MINUTES));
 			
 			partnerMappingData.setPolicyData(policyData1);
 			
 			ApiKeyData apiKeyData1 = new ApiKeyData();
 			apiKeyData1.setApiKeyStatus("ACTIVE");
-			apiKeyData1.setApiKeyCommenceOn(DateUtils.getUTCCurrentDateTime().minus(5, ChronoUnit.MINUTES));
-			apiKeyData1.setApiKeyExpiresOn(DateUtils.getUTCCurrentDateTime().plus(5, ChronoUnit.MINUTES));
+			apiKeyData1.setApiKeyCommenceOn(DateUtils2.getUTCCurrentDateTime().minus(5, ChronoUnit.MINUTES));
+			apiKeyData1.setApiKeyExpiresOn(DateUtils2.getUTCCurrentDateTime().plus(5, ChronoUnit.MINUTES));
 			
 			partnerMappingData.setApiKeyData(apiKeyData1 );
 			MispLicenseData mispLicenseData = new MispLicenseData();
@@ -1002,15 +1002,15 @@ public class PartnerServiceManagerTest {
 			Optional<PartnerData> partnerDataOptional = Optional.of(partnerData1);
 			Mockito.when(partnerDataRepo.findByPartnerId("123")).thenReturn(partnerDataOptional);
 			
-			policyData1.setPolicyCommenceOn(DateUtils.getUTCCurrentDateTime().minus(5, ChronoUnit.MINUTES));
-			policyData1.setPolicyExpiresOn(DateUtils.getUTCCurrentDateTime().plus(5, ChronoUnit.MINUTES));
+			policyData1.setPolicyCommenceOn(DateUtils2.getUTCCurrentDateTime().minus(5, ChronoUnit.MINUTES));
+			policyData1.setPolicyExpiresOn(DateUtils2.getUTCCurrentDateTime().plus(5, ChronoUnit.MINUTES));
 			
 			partnerMappingData.setPolicyData(policyData1);
 			
 			ApiKeyData apiKeyData1 = new ApiKeyData();
 			apiKeyData1.setApiKeyStatus("ACTIVE");
-			apiKeyData1.setApiKeyCommenceOn(DateUtils.getUTCCurrentDateTime().minus(5, ChronoUnit.MINUTES));
-			apiKeyData1.setApiKeyExpiresOn(DateUtils.getUTCCurrentDateTime().plus(5, ChronoUnit.MINUTES));
+			apiKeyData1.setApiKeyCommenceOn(DateUtils2.getUTCCurrentDateTime().minus(5, ChronoUnit.MINUTES));
+			apiKeyData1.setApiKeyExpiresOn(DateUtils2.getUTCCurrentDateTime().plus(5, ChronoUnit.MINUTES));
 			
 			partnerMappingData.setApiKeyData(apiKeyData1 );
 			MispLicenseData mispLicenseData = new MispLicenseData();
@@ -1044,21 +1044,21 @@ public class PartnerServiceManagerTest {
 			Optional<PartnerData> partnerDataOptional = Optional.of(partnerData1);
 			Mockito.when(partnerDataRepo.findByPartnerId("123")).thenReturn(partnerDataOptional);
 			
-			policyData1.setPolicyCommenceOn(DateUtils.getUTCCurrentDateTime().minus(5, ChronoUnit.MINUTES));
-			policyData1.setPolicyExpiresOn(DateUtils.getUTCCurrentDateTime().plus(5, ChronoUnit.MINUTES));
+			policyData1.setPolicyCommenceOn(DateUtils2.getUTCCurrentDateTime().minus(5, ChronoUnit.MINUTES));
+			policyData1.setPolicyExpiresOn(DateUtils2.getUTCCurrentDateTime().plus(5, ChronoUnit.MINUTES));
 			
 			partnerMappingData.setPolicyData(policyData1);
 			
 			ApiKeyData apiKeyData1 = new ApiKeyData();
 			apiKeyData1.setApiKeyStatus("ACTIVE");
-			apiKeyData1.setApiKeyCommenceOn(DateUtils.getUTCCurrentDateTime().minus(5, ChronoUnit.MINUTES));
-			apiKeyData1.setApiKeyExpiresOn(DateUtils.getUTCCurrentDateTime().plus(5, ChronoUnit.MINUTES));
+			apiKeyData1.setApiKeyCommenceOn(DateUtils2.getUTCCurrentDateTime().minus(5, ChronoUnit.MINUTES));
+			apiKeyData1.setApiKeyExpiresOn(DateUtils2.getUTCCurrentDateTime().plus(5, ChronoUnit.MINUTES));
 			
 			partnerMappingData.setApiKeyData(apiKeyData1 );
 			MispLicenseData mispLicenseData = new MispLicenseData();
 			mispLicenseData.setMispStatus("ACTIVE");
-			mispLicenseData.setMispCommenceOn(DateUtils.getUTCCurrentDateTime().plus(5, ChronoUnit.MINUTES));
-			mispLicenseData.setMispExpiresOn(DateUtils.getUTCCurrentDateTime().plus(5, ChronoUnit.MINUTES));
+			mispLicenseData.setMispCommenceOn(DateUtils2.getUTCCurrentDateTime().plus(5, ChronoUnit.MINUTES));
+			mispLicenseData.setMispExpiresOn(DateUtils2.getUTCCurrentDateTime().plus(5, ChronoUnit.MINUTES));
 			
 			ReflectionTestUtils.invokeMethod(partnerServiceManager, "validatePartnerMappingDetails", Optional.of(partnerMappingData),
 					Optional.of(mispLicenseData), "384D542C7BAB99A545D89A6F9A49184A694BBB00C74606E3624E7D3D01D4B316", true, Optional.empty());
@@ -1089,21 +1089,21 @@ public class PartnerServiceManagerTest {
 			Optional<PartnerData> partnerDataOptional = Optional.of(partnerData1);
 			Mockito.when(partnerDataRepo.findByPartnerId("123")).thenReturn(partnerDataOptional);
 
-			policyData1.setPolicyCommenceOn(DateUtils.getUTCCurrentDateTime().minus(5, ChronoUnit.MINUTES));
-			policyData1.setPolicyExpiresOn(DateUtils.getUTCCurrentDateTime().plus(5, ChronoUnit.MINUTES));
+			policyData1.setPolicyCommenceOn(DateUtils2.getUTCCurrentDateTime().minus(5, ChronoUnit.MINUTES));
+			policyData1.setPolicyExpiresOn(DateUtils2.getUTCCurrentDateTime().plus(5, ChronoUnit.MINUTES));
 			
 			partnerMappingData.setPolicyData(policyData1);
 			
 			ApiKeyData apiKeyData1 = new ApiKeyData();
 			apiKeyData1.setApiKeyStatus("ACTIVE");
-			apiKeyData1.setApiKeyCommenceOn(DateUtils.getUTCCurrentDateTime().minus(5, ChronoUnit.MINUTES));
-			apiKeyData1.setApiKeyExpiresOn(DateUtils.getUTCCurrentDateTime().plus(5, ChronoUnit.MINUTES));
+			apiKeyData1.setApiKeyCommenceOn(DateUtils2.getUTCCurrentDateTime().minus(5, ChronoUnit.MINUTES));
+			apiKeyData1.setApiKeyExpiresOn(DateUtils2.getUTCCurrentDateTime().plus(5, ChronoUnit.MINUTES));
 			
 			partnerMappingData.setApiKeyData(apiKeyData1 );
 			MispLicenseData mispLicenseData = new MispLicenseData();
 			mispLicenseData.setMispStatus("ACTIVE");
-			mispLicenseData.setMispCommenceOn(DateUtils.getUTCCurrentDateTime().minus(5, ChronoUnit.MINUTES));
-			mispLicenseData.setMispExpiresOn(DateUtils.getUTCCurrentDateTime().minus(5, ChronoUnit.MINUTES));
+			mispLicenseData.setMispCommenceOn(DateUtils2.getUTCCurrentDateTime().minus(5, ChronoUnit.MINUTES));
+			mispLicenseData.setMispExpiresOn(DateUtils2.getUTCCurrentDateTime().minus(5, ChronoUnit.MINUTES));
 			
 			ReflectionTestUtils.invokeMethod(partnerServiceManager, "validatePartnerMappingDetails", Optional.of(partnerMappingData),
 					Optional.of(mispLicenseData), "384D542C7BAB99A545D89A6F9A49184A694BBB00C74606E3624E7D3D01D4B316", true, Optional.empty());

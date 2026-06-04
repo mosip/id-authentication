@@ -55,7 +55,7 @@ import io.mosip.biometrics.util.face.FaceDecoder;
 import io.mosip.kernel.biometrics.entities.BIR;
 import io.mosip.kernel.biometrics.spi.CbeffUtil;
 import io.mosip.kernel.core.logger.spi.Logger;
-import io.mosip.kernel.core.util.DateUtils;
+import io.mosip.kernel.core.util.DateUtils2;
 
 /**
  * The implementation of Kyc Authentication service which retrieves the identity
@@ -417,7 +417,7 @@ public class KycServiceImpl implements KycService {
 		kycTokenData.setAuthReqDateTime(requestLocalDateTime);
 		kycTokenData.setKycTokenStatus(KycTokenStatusType.ACTIVE.getStatus());
 		kycTokenData.setCreatedBy(EnvUtil.getAppId());
-		kycTokenData.setCrDTimes(DateUtils.getUTCCurrentDateTime());
+		kycTokenData.setCrDTimes(DateUtils2.getUTCCurrentDateTime());
 		kycTokenDataRepo.saveAndFlush(kycTokenData);
 		mosipLogger.info(IdAuthCommonConstants.SESSION_ID, this.getClass().getSimpleName(), "generateAndSaveKycToken",
 					"KYC Token Generated & Saved.");

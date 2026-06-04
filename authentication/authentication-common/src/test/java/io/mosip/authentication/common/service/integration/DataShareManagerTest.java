@@ -80,7 +80,7 @@ public class DataShareManagerTest {
 		// default test
 		testSubject = getTestSubject();
 		String response = "{}";
-		when(restHelper.requestSync(any())).thenReturn(response);
+		when(restHelper.requestSync(any(), Mockito.any())).thenReturn(response);
 		result = testSubject.downloadObject(dataShareUrl, clazz, decryptionRequred);
 		assertEquals(response, result);
 	}
@@ -96,7 +96,7 @@ public class DataShareManagerTest {
 		// default test
 		testSubject = getTestSubject();
 		String response = "{ \"errors\":[]}";
-		when(restHelper.requestSync(any())).thenReturn(response);
+		when(restHelper.requestSync(any(), Mockito.any())).thenReturn(response);
 		result = testSubject.downloadObject(dataShareUrl, clazz, decryptionRequred);
 		assertEquals(response, result);
 	}
@@ -112,7 +112,7 @@ public class DataShareManagerTest {
 		// default test
 		testSubject = getTestSubject();
 		String response = "{ \"errors\":[{\"errorCode\":\"code\",\"errorMessage\":\"message\"}]}";
-		when(restHelper.requestSync(any())).thenReturn(response);
+		when(restHelper.requestSync(any(), Mockito.any())).thenReturn(response);
 		result = testSubject.downloadObject(dataShareUrl, clazz, decryptionRequred);
 		assertEquals(response, result);
 	}
@@ -129,7 +129,7 @@ public class DataShareManagerTest {
 		testSubject = getTestSubject();
 		Map<String, String> response = Map.of("aaa", "bbb");
 		String responseStr = mapper.writeValueAsString(response);
-		when(restHelper.requestSync(any())).thenReturn(responseStr);
+		when(restHelper.requestSync(any(), Mockito.any())).thenReturn(responseStr);
 		result = testSubject.downloadObject(dataShareUrl, clazz, decryptionRequred);
 		assertEquals(response, result);
 	}
@@ -145,7 +145,7 @@ public class DataShareManagerTest {
 		// default test
 		testSubject = getTestSubject();
 		String response = "abc";
-		when(restHelper.requestSync(any())).thenReturn(response);
+		when(restHelper.requestSync(any(), Mockito.any())).thenReturn(response);
 		result = testSubject.downloadObject(dataShareUrl, clazz, decryptionRequred);
 		assertEquals(response, result);
 	}
@@ -163,7 +163,7 @@ public class DataShareManagerTest {
 		String encryptedResp = "Encrypted_abc";
 		String response = "{ \"data\": \"abc\"}";
 		ReflectionTestUtils.setField(testSubject, "dataShareGetDecryptRefId", "ds_ref_id_sample");
-		when(restHelper.requestSync(any())).thenReturn(encryptedResp);
+		when(restHelper.requestSync(any(), Mockito.any())).thenReturn(encryptedResp);
 		when(securityManager.decrypt(Mockito.anyString(), Mockito.anyString(), isNull(), isNull(), Mockito.anyBoolean())).thenReturn(response.getBytes());
 		result = testSubject.downloadObject(dataShareUrl, clazz, decryptionRequred);
 		assertEquals(response, result);
@@ -183,7 +183,7 @@ public class DataShareManagerTest {
 		String responseStr = mapper.writeValueAsString(response);
 		String encryptedResp = "Encrypted_abc";
 		ReflectionTestUtils.setField(testSubject, "dataShareGetDecryptRefId", "ds_ref_id_sample");
-		when(restHelper.requestSync(any())).thenReturn(encryptedResp);
+		when(restHelper.requestSync(any(), Mockito.any())).thenReturn(encryptedResp);
 		when(securityManager.decrypt(Mockito.anyString(), Mockito.anyString(), isNull(), isNull(), Mockito.anyBoolean())).thenReturn(responseStr.getBytes());
 		result = testSubject.downloadObject(dataShareUrl, clazz, decryptionRequred);
 		assertEquals(response, result);
@@ -203,7 +203,7 @@ public class DataShareManagerTest {
 		String responseStr ="-/\":invalid json" +  mapper.writeValueAsString(response) + "-/\":invalid json";
 		String encryptedResp = "Encrypted_abc";
 		ReflectionTestUtils.setField(testSubject, "dataShareGetDecryptRefId", "ds_ref_id_sample");
-		when(restHelper.requestSync(any())).thenReturn(encryptedResp);
+		when(restHelper.requestSync(any(), Mockito.any())).thenReturn(encryptedResp);
 		when(securityManager.decrypt(Mockito.anyString(), Mockito.anyString(), isNull(), isNull(), Mockito.anyBoolean())).thenReturn(responseStr.getBytes());
 		testSubject.downloadObject(dataShareUrl, clazz, decryptionRequred);
 	}

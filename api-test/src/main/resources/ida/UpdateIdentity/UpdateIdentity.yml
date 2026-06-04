@@ -83,6 +83,7 @@ UpdateIdentity:
       "registrationId":"$RID$",
       "UIN":"$ID:AddIdentity_ValidParam_smoke_Pos_UIN$",
       "email": "$ID:AddIdentity_ValidParam_smoke_Pos_EMAIL$",
+      "email": "$ID:AddIdentity_ValidParam_smoke_Pos_EMAIL$",
       "status": "ACTIVATED",
       "dateOfBirth": "1980/08/10",
       "requesttime": "$TIMESTAMP$",

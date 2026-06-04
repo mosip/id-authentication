@@ -14,7 +14,7 @@ import io.mosip.authentication.common.service.impl.idevent.RemoveIdStatusEvent;
 import io.mosip.authentication.core.constant.IdAuthCommonConstants;
 import io.mosip.authentication.core.logger.IdaLogger;
 import io.mosip.kernel.core.logger.spi.Logger;
-import io.mosip.kernel.core.util.DateUtils;
+import io.mosip.kernel.core.util.DateUtils2;
 
 /**
  * The Class RemoveIdStatusEventPublisher.
@@ -85,7 +85,7 @@ public class RemoveIdStatusEventPublisher extends BaseWebSubEventsInitializer {
 		Map<String, Object> dataMap = new HashMap<String, Object>();
 		dataMap.put(ID_HASH, idHash);
 		removeIdStatusEvent.setData(dataMap);
-		removeIdStatusEvent.setTimestamp(DateUtils.formatToISOString(DateUtils.getUTCCurrentDateTime()));
+		removeIdStatusEvent.setTimestamp(DateUtils2.formatToISOString(DateUtils2.getUTCCurrentDateTime()));
 		return removeIdStatusEvent;
 	}
 

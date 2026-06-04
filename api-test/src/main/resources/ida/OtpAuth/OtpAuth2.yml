@@ -391,7 +391,7 @@ OtpAuth:
       inputTemplate: ida/OtpAuth/OtpAuth
       outputTemplate: ida/OtpAuth/error
       input: '{
-        "otpChannel": "$ID:AddIdentity_create_vid_using_uin_for_revoke_smoke_Pos_EMAIL$",
+        "otpChannel": "$ID:AddIdentity_ValidParameters_VID_revoke_auditLog_smoke_Pos_EMAIL$",
         "requestTime": "$TIMESTAMP$",
         "individualId": "$ID:GenerateVID_to_revoke_smoke_Perpetual_sid_vid$",
         "transactionId": "$TRANSACTIONID$",
@@ -402,6 +402,7 @@ OtpAuth:
         "sendOtp":{
     "transactionID": "$TRANSACTIONID$",
     "requestTime": "$TIMESTAMP$",
+    "individualId": "$ID:GenerateVID_to_revoke_smoke_Perpetual_sid_vid$",
     "individualId": "$ID:GenerateVID_to_revoke_smoke_Perpetual_sid_vid$",
     "individualIdType": "VID",
     "sendOtpReqTemplate": "ida/OtpAuth/sendOtp",
@@ -1007,6 +1008,7 @@ OtpAuth:
       "errors": [
         {
           "errorCode": "IDA-OTA-004"
+          "errorCode": "IDA-OTA-004"
         }
       ],
         "authStatus": false,
@@ -1045,6 +1047,7 @@ OtpAuth:
       output: '{
       "errors": [
         {
+          "errorCode": "IDA-OTA-004"
           "errorCode": "IDA-OTA-004"
         }
       ],

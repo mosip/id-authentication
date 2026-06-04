@@ -92,7 +92,7 @@ public class MasterDataManagerTest {
 		RestRequestDTO buildRequest = new RestRequestDTO();
 		buildRequest.setUri("{code}");
 		Mockito.when(restFactory.buildRequest(Mockito.any(), Mockito.any(), Mockito.any())).thenReturn(buildRequest);
-		Mockito.when(restHelper.requestSync(buildRequest)).thenReturn(new HashMap<>());
+		Mockito.when(restHelper.requestSync(buildRequest, Mockito.any())).thenReturn(new HashMap<>());
 
 		Map<String, String> params = new HashMap<>();
 		params.put("templateTypeCode", "auth-sms");
@@ -132,7 +132,7 @@ public class MasterDataManagerTest {
 		RestRequestDTO buildRequest = new RestRequestDTO();
 		Mockito.when(restFactory.buildRequest(RestServicesConstants.TITLE_SERVICE, null, Map.class))
 				.thenReturn(buildRequest);
-		Mockito.when(restHelper.requestSync(buildRequest)).thenReturn(getTitles());
+		Mockito.when(restHelper.requestSync(buildRequest, Mockito.any())).thenReturn(getTitles());
 		Map<String, List<String>> fetchTitles = masterDataManager.fetchTitles();
 		assertNotNull(fetchTitles);
 	}

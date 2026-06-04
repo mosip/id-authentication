@@ -31,7 +31,7 @@ import io.mosip.authentication.core.constant.IdAuthenticationErrorConstants;
 import io.mosip.authentication.core.exception.IdAuthenticationBusinessException;
 import io.mosip.authentication.core.logger.IdaLogger;
 import io.mosip.kernel.core.logger.spi.Logger;
-import io.mosip.kernel.core.util.DateUtils;
+import io.mosip.kernel.core.util.DateUtils2;
 import io.mosip.kernel.keymanagerservice.util.KeymanagerUtil;
 
 import org.apache.commons.codec.binary.Hex;
@@ -167,7 +167,7 @@ public class KeyBindedTokenMatcherUtil {
     private boolean isIatWithinAllowedTime(Date issuedDateTime) {
         LocalDateTime currentTime = LocalDateTime.now();
         
-        LocalDateTime issuedLDT = DateUtils.parseDateToLocalDateTime(issuedDateTime);
+        LocalDateTime issuedLDT = DateUtils2.parseDateToLocalDateTime(issuedDateTime);
 		long diffSeconds = ChronoUnit.SECONDS.between(issuedLDT, currentTime);
         
 		if (issuedDateTime != null && diffSeconds >= 0 && diffSeconds <= iatAdjSeconds) {

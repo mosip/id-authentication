@@ -151,7 +151,7 @@ public class AuthTxnServiceImpl implements AuthTxnService {
 	public static AutnTxnDto fetchAuthResponseDTO(AutnTxn autnTxn) {
 		AutnTxnDto autnTxnDto = new AutnTxnDto();
 		autnTxnDto.setTransactionID(autnTxn.getRequestTrnId());
-		autnTxnDto.setRequestdatetime(autnTxn.getRequestDTtimes());
+		autnTxnDto.setRequestdatetime(autnTxn.getRequestDTimes());
 		autnTxnDto.setAuthtypeCode(autnTxn.getAuthTypeCode());
 		autnTxnDto.setStatusCode(autnTxn.getStatusCode());
 		autnTxnDto.setStatusComment(autnTxn.getStatusComment());

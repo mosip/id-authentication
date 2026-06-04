@@ -15,28 +15,37 @@
 -- object: ida.ca_cert_store | type: TABLE --
 -- DROP TABLE IF EXISTS ida.ca_cert_store CASCADE;
 CREATE TABLE ida.ca_cert_store(
-                                  cert_id character varying(36) NOT NULL,
-                                  cert_subject character varying(500) NOT NULL,
-                                  cert_issuer character varying(500) NOT NULL,
-                                  issuer_id character varying(36) NOT NULL,
-                                  cert_not_before timestamp,
-                                  cert_not_after timestamp,
-                                  crl_uri character varying(120),
-                                  cert_data character varying,
-                                  cert_thumbprint character varying(100),
-                                  cert_serial_no character varying(50),
-                                  partner_domain character varying(36),
-                                  cr_by character varying(256) NOT NULL,
-                                  cr_dtimes timestamp NOT NULL,
-                                  upd_by character varying(256),
-                                  upd_dtimes timestamp,
-                                  is_deleted boolean DEFAULT FALSE,
-                                  del_dtimes timestamp,
-                                  ca_cert_type character varying(25),
-                                  CONSTRAINT pk_cacs_id PRIMARY KEY (cert_id),
-                                  CONSTRAINT cert_thumbprint_unique UNIQUE (cert_thumbprint,partner_domain)
+	cert_id character varying(36) NOT NULL,
+	cert_subject character varying(500) NOT NULL,
+	cert_issuer character varying(500) NOT NULL,
+	issuer_id character varying(36) NOT NULL,
+	cert_not_before timestamp,
+	cert_not_after timestamp,
+	crl_uri character varying(120),
+	cert_data character varying,
+	cert_thumbprint character varying(100),
+	cert_serial_no character varying(50),
+	partner_domain character varying(36),
+	cr_by character varying(256) NOT NULL,
+	cr_dtimes timestamp NOT NULL,
+	upd_by character varying(256),
+	upd_dtimes timestamp,
+	is_deleted boolean DEFAULT FALSE,
+	del_dtimes timestamp,
+	ca_cert_type character varying(25),
+	CONSTRAINT pk_cacs_id PRIMARY KEY (cert_id),
+	CONSTRAINT cert_thumbprint_unique UNIQUE (cert_thumbprint,partner_domain)
 
 );
+
+-- Optimize autovacuum for ca_cert_store to clean dead tuples
+ALTER TABLE ca_cert_store SET (
+    autovacuum_vacuum_scale_factor = 0.1,
+    autovacuum_vacuum_threshold = 50,
+    autovacuum_analyze_scale_factor = 0.1,
+    autovacuum_analyze_threshold = 50
+);
+
 -- ddl-end --
 COMMENT ON TABLE ida.ca_cert_store IS 'Certificate Authority Certificate Store: Store details of all the certificate provided by certificate authority which will be used by MOSIP';
 -- ddl-end --

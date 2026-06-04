@@ -68,6 +68,7 @@ GenerateVID:
     }
 }'
    auth_GenerateVID_to_revoke_smoke_Perpetual_sid:
+   auth_GenerateVID_to_revoke_smoke_Perpetual_sid:
       endPoint: /resident/v1/vid
       uniqueIdentifier: TC_IDA_GenerateVID_03
       description: Verify that VID generation succeeds for a perpetual SID and can be used for revoke testing
