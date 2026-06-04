@@ -90,7 +90,6 @@ EkycDemo:
       input: '{
         "requestTime": "$TIMESTAMP$",
         "individualId": "$ID:GenerateVID_for_EkycDemo_Dob_sid_vid$",
-        "individualId": "$ID:GenerateVID_for_EkycDemo_Dob_sid_vid$",
         "transactionId": "1234567890",
         "individualIdType": "VID",
         "bio": false,
@@ -371,7 +370,6 @@ EkycDemo:
         "demo": true,
         "otp": false,
         "identityRequest":{
-    "value": "$ID:AddIdentity_ValidParam_smoke_Pos_EMAIL$",
     "value": "$ID:AddIdentity_ValidParam_smoke_Pos_EMAIL$",
 "key": "emailId",
     "identityRequestTemplate": "ida/DemoAuth/DemoIdentityEncrypt"
@@ -1303,7 +1301,6 @@ EkycDemo:
       outputTemplate: ida/EkycDemo/EkycDemoResult
       input: '{
         "requestTime": "$TIMESTAMP$",
-        "individualId": "$ID:GenerateVID_for_EkycDemo_Dob_sid_vid$",
         "individualId": "$ID:GenerateVID_for_EkycDemo_Dob_sid_vid$",
         "transactionId": "1234567890",
         "individualIdType": "$REMOVE$",

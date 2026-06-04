@@ -2137,7 +2137,6 @@ EkycBio:
     }'
       output: '{
         "kycStatus": "true"
-        "kycStatus": "true"
 }'
   auth_EkycBio_LeftIris_With_InValid_timestamp:
       endPoint: /idauthentication/v1/kyc/$ekycPartnerKeyURL$
@@ -2257,7 +2256,6 @@ EkycBio:
           "deviceProviderID": "SYNCBYTE.MC01A",
           "deviceServiceID": "",
           "env": "",
-          "env": "",
           "deviceServiceVersion": "SB.WIN.001",
           "deviceProvider": "SYNCBYTE",
           "deviceProviderId": "SYNCBYTE.LTC165",
@@ -2299,7 +2297,6 @@ EkycBio:
           "dateTime": "$DATETIME$",
           "deviceProviderID": "SYNCBYTE.MC01A",
           "deviceServiceID": "",
-          "env": "  ",
           "env": "  ",
           "deviceServiceVersion": "SB.WIN.001",
           "deviceProvider": "SYNCBYTE",
@@ -2343,7 +2340,6 @@ EkycBio:
           "deviceProviderID": "SYNCBYTE.MC01A",
           "deviceServiceID": "",
           "env": "@#87635sdf",
-          "env": "@#87635sdf",
           "deviceServiceVersion": "SB.WIN.001",
           "deviceProvider": "SYNCBYTE",
           "deviceProviderId": "SYNCBYTE.LTC165",
@@ -2385,7 +2381,6 @@ EkycBio:
           "dateTime": "$DATETIME$",
           "deviceProviderID": "SYNCBYTE.MC01A",
           "deviceServiceID": "",
-          "env": "$REMOVE$",
           "env": "$REMOVE$",
           "deviceServiceVersion": "SB.WIN.001",
           "deviceProvider": "SYNCBYTE",
