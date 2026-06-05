@@ -33,7 +33,7 @@ import io.mosip.testrig.apirig.utils.AdminTestUtil;
 import io.mosip.testrig.apirig.utils.AuthTestsUtil;
 import io.mosip.testrig.apirig.utils.CertificateGenerationUtil;
 import io.mosip.testrig.apirig.utils.CertsUtil;
-import io.mosip.testrig.apirig.utils.ConfigManager;
+import io.mosip.testrig.apirig.utils.DependencyResolver;
 import io.mosip.testrig.apirig.utils.GlobalConstants;
 import io.mosip.testrig.apirig.utils.GlobalMethods;
 import io.mosip.testrig.apirig.utils.JWKKeyUtil;
@@ -95,7 +95,7 @@ public class MosipTestRunner {
 			setLogLevels();
 
 			HealthChecker healthcheck = new HealthChecker();
-			healthcheck.setCurrentRunningModule(BaseTestCase.currentModule);
+			healthcheck.setCurrentRunningModule(GlobalConstants.AUTH);
 			Thread trigger = new Thread(healthcheck);
 			trigger.start();
 
@@ -122,21 +122,35 @@ public class MosipTestRunner {
 			ekycPartnerKeyURL = PartnerRegistration.generateAndGetEkycPartnerKeyUrl();
 
 			BiometricDataProvider.generateBiometricTestData("Registration");
+			
+			String testCasesToExecuteString = IdAuthConfigManager.getproperty("testCasesToExecute");
+
+			DependencyResolver.loadDependencies(
+					getGlobalResourcePath() + "/" + "config/testCaseInterDependency.json");
+			if (!testCasesToExecuteString.isBlank()) {
+				IdAuthenticationUtil.testCasesInRunScope = DependencyResolver.getDependencies(testCasesToExecuteString);
+			}
 
 			if (partnerKeyURL.isEmpty() || ekycPartnerKeyURL.isEmpty())
 				LOGGER.error("partnerKeyURL is null");
 			else
 				startTestRunner();
 		} catch (Exception e) {
-			LOGGER.error("Exception occurred while running API Test Rig", e);
+			LOGGER.error("Exception " + e.getMessage());
 		}
-
+		
+		IdAuthenticationUtil.dbCleanUp();
 		KeycloakUserManager.removeUser();
+		KeycloakUserManager.removeKeyCloakUser(PartnerRegistration.partnerId);
+		KeycloakUserManager.removeKeyCloakUser(PartnerRegistration.ekycPartnerId);
 		KeycloakUserManager.closeKeycloakInstance();
 
 		OTPListener.bTerminate = true;
-
+		
 		HealthChecker.bTerminate = true;
+		
+		// Used for generating the test case interdependency JSON file
+		//AdminTestUtil.generateTestCaseInterDependencies(getGlobalResourcePath() + "/config/testCaseInterDependency.json");
 
 		// Stop watchdog since task completed successfully
 		if (watchdog != null) {
@@ -158,20 +172,11 @@ public class MosipTestRunner {
 		if (!runType.equalsIgnoreCase("JAR")) {
 			AuthTestsUtil.removeOldMosipTempTestResource();
 		}
-		BaseTestCase.currentModule = "auth";
-		BaseTestCase.certsForModule = "IDA";
-		BaseTestCase.genMispPartnerName = BaseTestCase.currentModule + "_misp_" + IdAuthenticationUtil.randomString;
+		BaseTestCase.currentModule = BaseTestCase.runContext + "auth";
+		BaseTestCase.certsForModule = BaseTestCase.runContext + "IDA";
 
-		DBManager.executeDBQueries(ConfigManager.getKMDbUrl(), ConfigManager.getKMDbUser(), ConfigManager.getKMDbPass(),
-				ConfigManager.getKMDbSchema(),
-				getGlobalResourcePath() + "/" + "config/keyManagerCertDataDeleteQueries.txt");
-		DBManager.executeDBQueries(ConfigManager.getIdaDbUrl(), ConfigManager.getIdaDbUser(),
-				ConfigManager.getPMSDbPass(), ConfigManager.getIdaDbSchema(),
-				getGlobalResourcePath() + "/" + "config/idaCertDataDeleteQueries.txt");
+		IdAuthenticationUtil.dbCleanUp();
 
-		DBManager.executeDBQueries(ConfigManager.getMASTERDbUrl(), ConfigManager.getMasterDbUser(),
-				ConfigManager.getMasterDbPass(), ConfigManager.getMasterDbSchema(),
-				getGlobalResourcePath() + "/" + "config/masterDataCertDataDeleteQueries.txt");
 		AuthTestsUtil.initiateAuthTest();
 		BaseTestCase.otpListener = new OTPListener();
 		BaseTestCase.otpListener.run();

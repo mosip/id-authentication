@@ -198,4 +198,6 @@
 				name="io.mosip.testrig.apirig.auth.testscripts.GetWithParamForAutoGenId" />
 		</classes>
 	</test>
+
+
 </suite>
