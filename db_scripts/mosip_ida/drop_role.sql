@@ -1,1 +1,1 @@
-drop role if exists :dbuname;
+drop role if exists idauser;

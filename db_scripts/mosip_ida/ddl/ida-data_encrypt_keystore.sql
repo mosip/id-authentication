@@ -1,5 +1,5 @@
 -- -------------------------------------------------------------------------------------------------
--- Database Name: :mosipdbname
+-- Database Name: mosip_ida
 -- Table Name 	: ida.data_encrypt_keystore
 -- Purpose    	: Data Encrypt Keystore: Table is used to store the encryption key aliases which is used encrypt the data stored in identity cache table store.
 --
@@ -14,14 +14,14 @@
 -- object: ida.data_encrypt_keystore | type: TABLE --
 -- DROP TABLE IF EXISTS ida.data_encrypt_keystore CASCADE;
 CREATE TABLE ida.data_encrypt_keystore(
-                                          id bigint NOT NULL,
-                                          key character varying(64) NOT NULL,
-                                          key_status character varying(16),
-                                          cr_by character varying(256) NOT NULL,
-                                          cr_dtimes timestamp NOT NULL,
-                                          upd_by character varying(256),
-                                          upd_dtimes timestamp,
-                                          CONSTRAINT pk_dekstr_id PRIMARY KEY (id)
+	id bigint NOT NULL,
+	key character varying(64) NOT NULL,
+	key_status character varying(16),
+	cr_by character varying(256) NOT NULL,
+	cr_dtimes timestamp NOT NULL,
+	upd_by character varying(256),
+	upd_dtimes timestamp,
+	CONSTRAINT pk_dekstr_id PRIMARY KEY (id)
 
 );
 

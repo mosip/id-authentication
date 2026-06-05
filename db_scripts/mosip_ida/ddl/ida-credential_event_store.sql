@@ -1,5 +1,5 @@
 -- -------------------------------------------------------------------------------------------------
--- Database Name: :mosipdbname
+-- Database Name: mosip_ida
 -- Table Name 	: ida.credential_event_store
 -- Purpose    	:
 --
@@ -16,21 +16,21 @@
 -- object: ida.credential_event_store | type: TABLE --
 -- DROP TABLE IF EXISTS ida.credential_event_store CASCADE;
 CREATE TABLE ida.credential_event_store(
-                                           event_id character varying(36) NOT NULL,
-                                           event_topic character varying(256) NOT NULL,
-                                           credential_transaction_id character varying(64) NOT NULL,
-                                           publisher character varying(128),
-                                           published_on_dtimes timestamp,
-                                           event_object character varying,
-                                           status_code character varying(36),
-                                           retry_count smallint,
-                                           cr_by character varying(256) NOT NULL,
-                                           cr_dtimes timestamp NOT NULL,
-                                           upd_by character varying(256),
-                                           upd_dtimes timestamp,
-                                           is_deleted boolean DEFAULT FALSE,
-                                           del_dtimes timestamp,
-                                           CONSTRAINT pk_ces_id PRIMARY KEY (event_id)
+	event_id character varying(36) NOT NULL,
+	event_topic character varying(256) NOT NULL,
+	credential_transaction_id character varying(64) NOT NULL,
+	publisher character varying(128),
+	published_on_dtimes timestamp,
+	event_object character varying,
+	status_code character varying(36),
+	retry_count smallint,
+	cr_by character varying(256) NOT NULL,
+	cr_dtimes timestamp NOT NULL,
+	upd_by character varying(256),
+	upd_dtimes timestamp,
+	is_deleted boolean DEFAULT FALSE,
+	del_dtimes timestamp,
+	CONSTRAINT pk_ces_id PRIMARY KEY (event_id)
 
 );
 -- ddl-end --

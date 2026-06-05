@@ -110,6 +110,7 @@
 		<kernel-auth-adapter.version>1.4.0-SNAPSHOT</kernel-auth-adapter.version>
 		<kernel-biometrics-api.version>1.4.0-SNAPSHOT</kernel-biometrics-api.version>
 		<kernel-biosdk-provider.version>1.4.0-SNAPSHOT</kernel-biosdk-provider.version>
+		<kernel-demographics-api.version>1.4.0-SNAPSHOT</kernel-demographics-api.version>
 		<kernel-websubclient-api.version>1.4.0-SNAPSHOT</kernel-websubclient-api.version>
 		<id-repository-core.version>1.4.0-SNAPSHOT</id-repository-core.version>
 		<json.utility.version>20180130</json.utility.version>

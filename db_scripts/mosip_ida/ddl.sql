@@ -1,4 +1,4 @@
-\c :mosipdbname
+\c mosip_ida
 
 \ir ddl/ida-auth_transaction.sql
 \ir ddl/ida-uin_auth_lock.sql

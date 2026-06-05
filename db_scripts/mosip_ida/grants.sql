@@ -1,16 +1,17 @@
-\c :mosipdbname
+\c mosip_ida
 
 GRANT CONNECT
-   ON DATABASE :mosipdbname
-   TO :dbuname;
+   ON DATABASE mosip_ida
+   TO idauser;
 
 GRANT USAGE
    ON SCHEMA ida
-   TO :dbuname;
+   TO idauser;
 
 GRANT SELECT,INSERT,UPDATE,DELETE,TRUNCATE,REFERENCES
-      ON ALL TABLES IN SCHEMA ida
-          TO :dbuname;
+   ON ALL TABLES IN SCHEMA ida
+   TO idauser;
 
 ALTER DEFAULT PRIVILEGES IN SCHEMA ida
-	GRANT SELECT,INSERT,UPDATE,DELETE,REFERENCES ON TABLES TO :dbuname;
+	GRANT SELECT,INSERT,UPDATE,DELETE,REFERENCES ON TABLES TO idauser;
+

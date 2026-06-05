@@ -1,5 +1,5 @@
 -- -------------------------------------------------------------------------------------------------
--- Database Name: :mosipdbname
+-- Database Name: mosip_ida
 -- Table Name 	: ida.otp_transaction
 -- Purpose    	: OTP Transaction: All OTP related data and validation details are maintained here for ID Authentication.
 --
@@ -13,21 +13,21 @@
 -- object: ida.otp_transaction | type: TABLE --
 -- DROP TABLE IF EXISTS ida.otp_transaction CASCADE;
 CREATE TABLE ida.otp_transaction(
-                                    id character varying(36) NOT NULL,
-                                    ref_id character varying(64) NOT NULL,
-                                    otp_hash character varying(512) NOT NULL,
-                                    generated_dtimes timestamp,
-                                    expiry_dtimes timestamp,
-                                    validation_retry_count smallint,
-                                    status_code character varying(36),
-                                    lang_code character varying(3),
-                                    cr_by character varying(256) NOT NULL,
-                                    cr_dtimes timestamp NOT NULL,
-                                    upd_by character varying(256),
-                                    upd_dtimes timestamp,
-                                    is_deleted boolean DEFAULT FALSE,
-                                    del_dtimes timestamp,
-                                    CONSTRAINT pk_otpt_id PRIMARY KEY (id)
+	id character varying(36) NOT NULL,
+	ref_id character varying(64) NOT NULL,
+	otp_hash character varying(512) NOT NULL,
+	generated_dtimes timestamp,
+	expiry_dtimes timestamp,
+	validation_retry_count smallint,
+	status_code character varying(36),
+	lang_code character varying(3),
+	cr_by character varying(256) NOT NULL,
+	cr_dtimes timestamp NOT NULL,
+	upd_by character varying(256),
+	upd_dtimes timestamp,
+	is_deleted boolean DEFAULT FALSE,
+	del_dtimes timestamp,
+	CONSTRAINT pk_otpt_id PRIMARY KEY (id)
 
 );
 -- ddl-end --

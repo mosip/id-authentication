@@ -1,5 +1,5 @@
 -- -------------------------------------------------------------------------------------------------
--- Database Name: :mosipdbname
+-- Database Name: mosip_ida
 -- Table Name 	: ida.uin_hash_salt
 -- Purpose    	: UIN Hash Salt: Stores the salt used to hash uin of an individual in the hashing algorithm.
 --
@@ -15,13 +15,13 @@
 -- object: ida.uin_hash_salt | type: TABLE --
 -- DROP TABLE IF EXISTS ida.uin_hash_salt CASCADE;
 CREATE TABLE ida.uin_hash_salt(
-                                  id bigint NOT NULL,
-                                  salt character varying(36) NOT NULL,
-                                  cr_by character varying(256) NOT NULL,
-                                  cr_dtimes timestamp NOT NULL,
-                                  upd_by character varying(256),
-                                  upd_dtimes timestamp,
-                                  CONSTRAINT pk_uinhs PRIMARY KEY (id)
+	id bigint NOT NULL,
+	salt character varying(36) NOT NULL,
+	cr_by character varying(256) NOT NULL,
+	cr_dtimes timestamp NOT NULL,
+	upd_by character varying(256),
+	upd_dtimes timestamp,
+	CONSTRAINT pk_uinhs PRIMARY KEY (id)
 
 );
 -- ddl-end --
