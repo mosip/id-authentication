@@ -1,5 +1,5 @@
 -- -------------------------------------------------------------------------------------------------
--- Database Name: mosip_ida
+-- Database Name: :mosipdbname
 -- Table Name 	: ida.ident_binding_cert_store
 -- Purpose    	: ident_binding_cert_store : To store Identity binding certificates.
 --

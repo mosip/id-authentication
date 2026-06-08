@@ -1,5 +1,5 @@
 -- -------------------------------------------------------------------------------------------------
--- Database Name: mosip_ida
+-- Database Name: :mosipdbname
 -- Table Name 	: ida.uin_hash_salt
 -- Purpose    	: UIN Hash Salt: Stores the salt used to hash uin of an individual in the hashing algorithm.
 --

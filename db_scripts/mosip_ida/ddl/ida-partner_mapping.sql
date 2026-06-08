@@ -1,5 +1,5 @@
 -- -------------------------------------------------------------------------------------------------
--- Database Name: mosip_ida
+-- Database Name: :mosipdbname
 -- Table Name 	: ida.partner_mapping
 
 -- Purpose    	:
@@ -9,7 +9,7 @@
 --
 -- Modified Date        Modified By         Comments / Remarks
 -- ------------------------------------------------------------------------------------------
-
+-- Jan-2025             Balaji              added a unique constraint on apikey
 -- ------------------------------------------------------------------------------------------
 -- object: ida.partner_mapping | type: TABLE --
 -- DROP TABLE IF EXISTS ida.partner_mapping CASCADE;

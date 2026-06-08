@@ -1,5 +1,5 @@
 -- -------------------------------------------------------------------------------------------------
--- Database Name: mosip_ida
+-- Database Name: :mosipdbname
 -- Table Name 	: ida.data_encrypt_keystore
 -- Purpose    	: Data Encrypt Keystore: Table is used to store the encryption key aliases which is used encrypt the data stored in identity cache table store.
 --

@@ -1,5 +1,5 @@
 -- -------------------------------------------------------------------------------------------------
--- Database Name: mosip_ida
+-- Database Name: :mosipdbname
 -- Table Name 	: ida.oidc_client_data
 -- Purpose    	: oidc_client_data : To store OIDC client details.
 --

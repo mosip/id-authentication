@@ -1,5 +1,5 @@
 -- -------------------------------------------------------------------------------------------------
--- Database Name: mosip_ida
+-- Database Name: :mosipdbname
 -- Table Name 	: ida.anonymous_profile
 -- Purpose    	: anonymous_profile: Anonymous profiling information for reporting purpose.
 --
@@ -14,15 +14,15 @@
 -- object: ida.anonymous_profile | type: TABLE --
 -- DROP TABLE IF EXISTS ida.anonymous_profile CASCADE;
 CREATE TABLE ida.anonymous_profile(
-	id character varying(36) NOT NULL,
-	profile character varying NOT NULL,
-	cr_by character varying(256) NOT NULL,
-	cr_dtimes timestamp NOT NULL,
-	upd_by character varying(256),
-	upd_dtimes timestamp,
-	is_deleted boolean DEFAULT FALSE,
-	del_dtimes timestamp,
-	CONSTRAINT pk_profile PRIMARY KEY (id)
+                                      id character varying(36) NOT NULL,
+                                      profile character varying NOT NULL,
+                                      cr_by character varying(256) NOT NULL,
+                                      cr_dtimes timestamp NOT NULL,
+                                      upd_by character varying(256),
+                                      upd_dtimes timestamp,
+                                      is_deleted boolean DEFAULT FALSE,
+                                      del_dtimes timestamp,
+                                      CONSTRAINT pk_profile PRIMARY KEY (id)
 );
 
 -- Optimize autovacuum for anonymous_profile to handle moderate updates

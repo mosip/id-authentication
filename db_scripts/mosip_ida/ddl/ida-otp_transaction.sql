@@ -1,5 +1,5 @@
 -- -------------------------------------------------------------------------------------------------
--- Database Name: mosip_ida
+-- Database Name: :mosipdbname
 -- Table Name 	: ida.otp_transaction
 -- Purpose    	: OTP Transaction: All OTP related data and validation details are maintained here for ID Authentication.
 --

@@ -1,2 +1,1 @@
-DROP DATABASE IF EXISTS mosip_ida;
-
+DROP DATABASE IF EXISTS :mosipdbname;
