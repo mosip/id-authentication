@@ -54,7 +54,7 @@ public class CredentialIssueEventValidatorTest {
 //	public void testValidateMissingRequest() throws Exception {
 //		CredentialIssueEventValidator testSubject;
 //		RequestWrapper<EventsDTO> requestWrapper = new RequestWrapper<EventsDTO>();
-//		requestWrapper.setRequesttime(DateUtils.getUTCCurrentDateTime());
+//		requestWrapper.setRequesttime(DateUtils2.getUTCCurrentDateTime());
 //		Errors errors =  new BeanPropertyBindingResult(requestWrapper, "RequestWrapper");
 //
 //		// default test
@@ -68,7 +68,7 @@ public class CredentialIssueEventValidatorTest {
 //	public void testValidateNullEventsList() throws Exception {
 //		CredentialIssueEventValidator testSubject;
 //		RequestWrapper<EventsDTO> requestWrapper = new RequestWrapper<EventsDTO>();
-//		requestWrapper.setRequesttime(DateUtils.getUTCCurrentDateTime());
+//		requestWrapper.setRequesttime(DateUtils2.getUTCCurrentDateTime());
 //		EventsDTO eventsDto = new EventsDTO();
 //		requestWrapper.setRequest(eventsDto);
 //
@@ -85,7 +85,7 @@ public class CredentialIssueEventValidatorTest {
 //	public void testValidateEmptyEventsList() throws Exception {
 //		CredentialIssueEventValidator testSubject;
 //		RequestWrapper<EventsDTO> requestWrapper = new RequestWrapper<EventsDTO>();
-//		requestWrapper.setRequesttime(DateUtils.getUTCCurrentDateTime());
+//		requestWrapper.setRequesttime(DateUtils2.getUTCCurrentDateTime());
 //		EventsDTO eventsDto = new EventsDTO();
 //		List<EventDTO> events = new ArrayList<>();
 //		
@@ -119,7 +119,7 @@ public class CredentialIssueEventValidatorTest {
 //		RequestWrapper<EventsDTO> requestWrapper = new RequestWrapper<EventsDTO>();
 //		requestWrapper.setId("mosip.identity.notify");
 //		requestWrapper.setRequest(eventsDto);
-//		requestWrapper.setRequesttime(DateUtils.getUTCCurrentDateTime());
+//		requestWrapper.setRequesttime(DateUtils2.getUTCCurrentDateTime());
 //		Errors errors =  new BeanPropertyBindingResult(requestWrapper, "RequestWrapper");
 //
 //		// default test

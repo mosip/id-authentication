@@ -116,7 +116,7 @@ public class BioAuthServiceTest {
 		ReflectionTestUtils.setField(idInfoFetcherImpl, "environment", environment);
 		ReflectionTestUtils.setField(idInfoFetcherImpl, "bioMatcherUtil", bioMatcherUtil);
 		when(restBuilder.buildRequest(Mockito.any(), Mockito.any(), Mockito.any())).thenReturn(new RestRequestDTO());
-		when(restHelper.requestSync(Mockito.any())).thenReturn(null);
+		when(restHelper.requestSync(Mockito.any(), Mockito.any())).thenReturn(null);
 		List<MatchOutput> matchOutputList = new ArrayList<>();
 		MatchOutput matchOutput = new MatchOutput(100, true, "P", BioMatchType.FGRIMG_LEFT_INDEX
 				, "eng", "Left IndexFinger");

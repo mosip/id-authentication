@@ -52,7 +52,7 @@ import io.mosip.authentication.core.util.LanguageComparator;
 import io.mosip.authentication.core.util.MaskUtil;
 import io.mosip.kernel.core.exception.ParseException;
 import io.mosip.kernel.core.logger.spi.Logger;
-import io.mosip.kernel.core.util.DateUtils;
+import io.mosip.kernel.core.util.DateUtils2;
 import io.mosip.kernel.core.util.StringUtils;
 
 /**
@@ -335,8 +335,8 @@ public class OTPServiceImpl implements OTPService {
  		boolean isOtpFlooded = false;
 		LocalDateTime reqTime;
 		try {
-			String strUTCDate = DateUtils.getUTCTimeFromDate(
-					DateUtils.parseToDate(requestTime, EnvUtil.getDateTimePattern()));
+			String strUTCDate = DateUtils2.getUTCTimeFromDate(
+					DateUtils2.parseToDate(requestTime, EnvUtil.getDateTimePattern()));
 			reqTime = LocalDateTime.parse(strUTCDate,
 					DateTimeFormatter.ofPattern(EnvUtil.getDateTimePattern()));
 

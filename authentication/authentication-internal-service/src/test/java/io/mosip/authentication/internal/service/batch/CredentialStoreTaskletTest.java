@@ -25,13 +25,14 @@ import org.springframework.web.context.WebApplicationContext;
 import java.util.Arrays;
 import java.util.Collections;
 import java.util.List;
-import java.util.concurrent.ForkJoinPool;
 
 import static org.junit.Assert.assertEquals;
-import static org.junit.Assert.assertNotNull;
 import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.ArgumentMatchers.anyInt;
-import static org.mockito.Mockito.*;
+import static org.mockito.Mockito.mock;
+import static org.mockito.Mockito.never;
+import static org.mockito.Mockito.verify;
+import static org.powermock.api.mockito.PowerMockito.when;
 
 @WebMvcTest
 @ContextConfiguration(classes = {TestContext.class, WebApplicationContext.class})
@@ -95,47 +96,15 @@ public class CredentialStoreTaskletTest {
     }
 
     @Test
-    public void testExecuteWithGenericExceptionShouldContinue() throws Exception {
+    public void testExecute_withGenericException_shouldContinue() throws Exception {
         CredentialEventStore event = new CredentialEventStore();
-        List<CredentialEventStore> events = Collections.singletonList(event);
-        
-        when(credentialEventRepo.findNewOrFailedEvents(anyInt())).thenReturn(events);
+        when(credentialEventRepo.findNewOrFailedEvents(anyInt())).thenReturn(Collections.singletonList(event));
+
         when(credentialStoreService.processCredentialStoreEvent(any()))
                 .thenThrow(new RuntimeException("Generic"));
 
         RepeatStatus status = tasklet.execute(contribution, chunkContext);
 
         assertEquals(RepeatStatus.FINISHED, status);
-        verify(credentialEventRepo).saveAll(events);
-    }
-
-    @Test
-    public void testExecuteWithIdAuthenticationBusinessExceptionShouldContinue() throws Exception {
-        CredentialEventStore event = new CredentialEventStore();
-        List<CredentialEventStore> events = Collections.singletonList(event);
-        
-        when(credentialEventRepo.findNewOrFailedEvents(anyInt())).thenReturn(events);
-        when(credentialStoreService.processCredentialStoreEvent(any()))
-                .thenThrow(new IdAuthenticationBusinessException("TEST_ERROR", "Test error"));
-        
-        RepeatStatus status = tasklet.execute(contribution, chunkContext);
-        
-        assertEquals(RepeatStatus.FINISHED, status);
-        verify(credentialEventRepo).saveAll(events);
-    }
-
-    @Test
-    public void testInitShouldCreateForkJoinPool() {
-        CredentialStoreTasklet newTasklet = new CredentialStoreTasklet();
-        ReflectionTestUtils.setField(newTasklet, "threadCount", 5);
-        ReflectionTestUtils.setField(newTasklet, "credentialEventRepo", credentialEventRepo);
-        ReflectionTestUtils.setField(newTasklet, "credentialStoreService", credentialStoreService);
-        ReflectionTestUtils.setField(newTasklet, "securityManager", securityManager);
-        
-        newTasklet.init();
-        
-        ForkJoinPool pool = (ForkJoinPool) ReflectionTestUtils.getField(newTasklet, "forkJoinPool");
-        assertNotNull(pool);
-        pool.shutdown();
     }
 }

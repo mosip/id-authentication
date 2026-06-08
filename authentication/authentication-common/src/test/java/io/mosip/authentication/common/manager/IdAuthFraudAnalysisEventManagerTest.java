@@ -11,18 +11,14 @@ import java.util.List;
 import java.util.Map;
 
 import org.junit.Before;
-import org.junit.Ignore;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.mockito.InjectMocks;
 import org.mockito.Mock;
-import org.mockito.Mockito;
 import org.mockito.junit.MockitoJUnitRunner;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.autoconfigure.web.servlet.WebMvcTest;
 import org.springframework.test.context.ContextConfiguration;
 import org.springframework.test.context.TestContext;
-import org.springframework.test.context.junit4.SpringRunner;
 import org.springframework.test.util.ReflectionTestUtils;
 import org.springframework.web.context.WebApplicationContext;
 
@@ -79,10 +75,10 @@ public class IdAuthFraudAnalysisEventManagerTest {
         lenient().when(eventData.getRequestTime()).thenReturn(t);
         //Based on IdvId
         lenient().when(eventData.getIndividualIdHash()).thenReturn("IndividualIdHash");
-        lenient().when(authTxnRepo.countByRefIdAndRequestDTtimesAfter("IndividualIdHash", t.minusSeconds(1))).thenReturn(1l);
+        lenient().when(authTxnRepo.countByRefIdAndRequestDTimesAfter("IndividualIdHash", t.minusSeconds(1))).thenReturn(1l);
         //Based on Partner Id
         lenient().when(eventData.getPartnerId()).thenReturn("PartnerId");
-        lenient().when(authTxnRepo.countByRefIdAndRequestDTtimesAfter("PartnerId", t.minusSeconds(1))).thenReturn(1l);
+        lenient().when(authTxnRepo.countByRefIdAndRequestDTimesAfter("PartnerId", t.minusSeconds(1))).thenReturn(1l);
         ReflectionTestUtils.invokeMethod(idAuthFraudAnalysisEventManager, "analyseEvent", autnTxn);
     }
 
@@ -126,7 +122,7 @@ public class IdAuthFraudAnalysisEventManagerTest {
     private AutnTxn getAutnTxn(){
         AutnTxn autnTxn = new AutnTxn();
         autnTxn.setId("dc1551db-614b-53ff-b189-65bfb8125399");
-        autnTxn.setRequestDTtimes(
+        autnTxn.setRequestDTimes(
                 LocalDateTime.of(2021, 11, 2, 12,24, 37, 3));
         autnTxn.setResponseDTimes(
                 LocalDateTime.of(2021, 11, 2, 12, 24, 38, 756169));

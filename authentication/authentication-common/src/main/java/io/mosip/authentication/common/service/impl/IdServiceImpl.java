@@ -16,6 +16,7 @@ import java.util.Set;
 import java.util.stream.Collectors;
 import java.util.stream.Stream;
 
+import io.mosip.authentication.common.service.entity.IdentityEntity;
 import org.hibernate.exception.JDBCConnectionException;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
@@ -26,7 +27,6 @@ import org.springframework.transaction.TransactionException;
 import com.fasterxml.jackson.databind.ObjectMapper;
 
 import io.mosip.authentication.common.service.entity.AutnTxn;
-import io.mosip.authentication.common.service.entity.IdentityEntity;
 import io.mosip.authentication.common.service.repository.AutnTxnRepository;
 import io.mosip.authentication.common.service.repository.IdentityCacheRepository;
 import io.mosip.authentication.common.service.transaction.manager.IdAuthSecurityManager;
@@ -38,7 +38,7 @@ import io.mosip.authentication.core.logger.IdaLogger;
 import io.mosip.authentication.core.spi.id.service.IdService;
 import io.mosip.kernel.core.exception.ExceptionUtils;
 import io.mosip.kernel.core.logger.spi.Logger;
-import io.mosip.kernel.core.util.DateUtils;
+import io.mosip.kernel.core.util.DateUtils2;
 
 /**
  * The class validates the UIN and VID.
@@ -221,7 +221,7 @@ public class IdServiceImpl implements IdService<AutnTxn> {
 			}
 
 			if (Objects.nonNull(entity.getExpiryTimestamp())
-					&& DateUtils.before(entity.getExpiryTimestamp(), DateUtils.getUTCCurrentDateTime())) {
+					&& DateUtils2.before(entity.getExpiryTimestamp(), DateUtils2.getUTCCurrentDateTime())) {
 				logger.error(IdAuthCommonConstants.SESSION_ID, this.getClass().getSimpleName(), "getIdentity",
 						idType.getType() + " expired/deactivated/revoked/blocked");
 				IdAuthenticationErrorConstants errorConstant;
@@ -394,7 +394,7 @@ public class IdServiceImpl implements IdService<AutnTxn> {
 			LocalDateTime expiryTimestamp = Objects.nonNull(entityObjs[1]) ? LocalDateTime.parse(String.valueOf(entityObjs[1])) : null;
 
 			if (Objects.nonNull(expiryTimestamp)
-					&& DateUtils.before(expiryTimestamp, DateUtils.getUTCCurrentDateTime())) {
+					&& DateUtils2.before(expiryTimestamp, DateUtils2.getUTCCurrentDateTime())) {
 				logger.error(IdAuthCommonConstants.SESSION_ID, this.getClass().getSimpleName(), "checkIdKeyBindingPermitted",
 					idvIdType + " expired/deactivated/revoked/blocked");
 				IdAuthenticationErrorConstants errorConstant;

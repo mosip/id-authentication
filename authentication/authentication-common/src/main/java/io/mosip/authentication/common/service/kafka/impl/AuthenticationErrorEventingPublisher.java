@@ -23,7 +23,7 @@ import io.mosip.authentication.core.logger.IdaLogger;
 import io.mosip.authentication.core.partner.dto.PartnerDTO;
 import io.mosip.idrepository.core.security.IdRepoSecurityManager;
 import io.mosip.kernel.core.logger.spi.Logger;
-import io.mosip.kernel.core.util.DateUtils;
+import io.mosip.kernel.core.util.DateUtils2;
 import io.mosip.kernel.core.websub.model.Event;
 import io.mosip.kernel.core.websub.model.EventModel;
 
@@ -99,7 +99,7 @@ public class AuthenticationErrorEventingPublisher {
 			Map<String, Object> eventData = new HashMap<>();
 			eventData.put(ERROR_CODE, e.getErrorCode());
 			eventData.put(ERROR_MESSAGE, e.getErrorText());
-			eventData.put(REQUESTDATETIME, DateUtils.formatToISOString(DateUtils.getUTCCurrentDateTime()));
+			eventData.put(REQUESTDATETIME, DateUtils2.formatToISOString(DateUtils2.getUTCCurrentDateTime()));
 			eventData.put(INDIVIDUAL_ID,
 					encryptIndividualId(baserequestdto.getIndividualId(), partnerDataCert.get().getCertificateData()));
 			eventData.put(AUTH_PARTNER_ID, partner.map(PartnerDTO::getPartnerId).orElse(null));
@@ -114,7 +114,7 @@ public class AuthenticationErrorEventingPublisher {
 	private EventModel createEventModel(String topic, Map<String, Object> eventData) {
 		EventModel model = new EventModel();
 		model.setPublisher(PUBLISHER_IDA);
-		String dateTime = DateUtils.formatToISOString(DateUtils.getUTCCurrentDateTime());
+		String dateTime = DateUtils2.formatToISOString(DateUtils2.getUTCCurrentDateTime());
 		model.setPublishedOn(dateTime);
 		Event event = new Event();
 		event.setTimestamp(dateTime);

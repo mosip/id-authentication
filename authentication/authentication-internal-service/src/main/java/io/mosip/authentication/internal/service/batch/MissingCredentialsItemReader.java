@@ -31,7 +31,7 @@ import io.mosip.authentication.core.logger.IdaLogger;
 import io.mosip.idrepository.core.dto.CredentialRequestIdsDto;
 import io.mosip.idrepository.core.exception.RestServiceException;
 import io.mosip.kernel.core.logger.spi.Logger;
-import io.mosip.kernel.core.util.DateUtils;
+import io.mosip.kernel.core.util.DateUtils2;
 
 /**
  * The Class MissingCredentialsItemReader.
@@ -172,7 +172,7 @@ public class MissingCredentialsItemReader implements ItemReader<CredentialReques
 			effectiveDTimes = maxCredentialPullWindowTime;
 		}
 		
-		return DateUtils.formatToISOString(effectiveDTimes);
+		return DateUtils2.formatToISOString(effectiveDTimes);
 		
 	}
 

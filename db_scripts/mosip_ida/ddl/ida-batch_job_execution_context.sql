@@ -13,3 +13,11 @@ CREATE TABLE ida.batch_job_execution_context
 WITH (
     OIDS = FALSE
 );
+
+-- Optimize autovacuum for batch_job_execution_context to clean dead tuples
+ALTER TABLE batch_job_execution_context SET (
+    autovacuum_vacuum_scale_factor = 0.05,
+    autovacuum_vacuum_threshold = 1000,
+    autovacuum_analyze_scale_factor = 0.05,
+    autovacuum_analyze_threshold = 1000
+);

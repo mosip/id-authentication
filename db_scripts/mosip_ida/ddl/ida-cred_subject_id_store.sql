@@ -14,6 +14,15 @@ CREATE TABLE ida.cred_subject_id_store(
     del_dtimes timestamp,
     CONSTRAINT key_hash_unique UNIQUE (id_vid_hash, csid_key_hash)
 );
+
+-- Optimize autovacuum for cred_subject_id_store to clean dead tuples
+ALTER TABLE cred_subject_id_store SET (
+    autovacuum_vacuum_scale_factor = 0.1,
+    autovacuum_vacuum_threshold = 50,
+    autovacuum_analyze_scale_factor = 0.1,
+    autovacuum_analyze_threshold = 50
+);
+
 COMMENT ON TABLE ida.cred_subject_id_store IS 'Credential Subject Id Store: To store and maintain the input credential subject ids to identify the individual.';
 COMMENT ON COLUMN ida.cred_subject_id_store.id IS 'ID: Id is a unique identifier (UUID) used to map uniqueness to the credential subject id.';
 COMMENT ON COLUMN ida.cred_subject_id_store.id_vid_hash IS 'IdVidHash: SHA 256 Hash value of the Id/VID.';

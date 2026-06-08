@@ -27,7 +27,7 @@ import io.mosip.authentication.core.logger.IdaLogger;
 import io.mosip.idrepository.core.dto.RestRequestDTO;
 import io.mosip.kernel.core.http.RequestWrapper;
 import io.mosip.kernel.core.logger.spi.Logger;
-import io.mosip.kernel.core.util.DateUtils;
+import io.mosip.kernel.core.util.DateUtils2;
 import lombok.NoArgsConstructor;
 
 /**
@@ -254,7 +254,7 @@ public class RestRequestFactory {
     	RequestWrapper<T> request = new RequestWrapper<>();
     	request.setRequest(t);
     	request.setId("ida");
-    	request.setRequesttime(DateUtils.getUTCCurrentDateTime());
+    	request.setRequesttime(DateUtils2.getUTCCurrentDateTime());
     	return request;
     }
 }

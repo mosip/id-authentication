@@ -14,20 +14,28 @@
 -- object: ida.partner_data | type: TABLE --
 -- DROP TABLE IF EXISTS ida.partner_data CASCADE;
 CREATE TABLE ida.partner_data (
-                                  partner_id character varying(36) NOT NULL,
-                                  partner_name character varying(128) NOT NULL,
-                                  certificate_data bytea ,
-                                  partner_status character varying(36) NOT NULL,
-                                  cr_by character varying(256) NOT NULL,
-                                  cr_dtimes timestamp NOT NULL,
-                                  upd_by character varying(256),
-                                  upd_dtimes timestamp,
-                                  is_deleted boolean DEFAULT false,
-                                  del_dtimes timestamp,
-                                  CONSTRAINT partner_data_pk PRIMARY KEY (partner_id)
+	partner_id character varying(36) NOT NULL,
+	partner_name character varying(128) NOT NULL,
+	certificate_data bytea ,
+	partner_status character varying(36) NOT NULL,
+	cr_by character varying(256) NOT NULL,
+	cr_dtimes timestamp NOT NULL,
+	upd_by character varying(256),
+	upd_dtimes timestamp,
+	is_deleted boolean DEFAULT false,
+	del_dtimes timestamp,
+	CONSTRAINT partner_data_pk PRIMARY KEY (partner_id)
 
 );
 -- ddl-end --
 --index section starts----
 CREATE INDEX ind_pd_pid ON ida.partner_data (partner_id);
 --index section ends------
+
+-- Optimize autovacuum for partner_data to clean dead tuples
+ALTER TABLE partner_data SET (
+    autovacuum_vacuum_scale_factor = 0.1,
+    autovacuum_vacuum_threshold = 50,
+    autovacuum_analyze_scale_factor = 0.1,
+    autovacuum_analyze_threshold = 50
+);

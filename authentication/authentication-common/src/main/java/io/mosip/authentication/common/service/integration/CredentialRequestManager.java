@@ -10,6 +10,7 @@ import io.mosip.authentication.common.service.helper.RestHelper;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.beans.factory.annotation.Value;
+import org.springframework.http.MediaType;
 import org.springframework.stereotype.Component;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
@@ -74,7 +75,7 @@ public class CredentialRequestManager {
 			request.setPathVariables(pathVariables);
 			
 			try {
-				Map<String, Object> response = restHelper.<ResponseWrapper<Map<String, Object>>>requestSync(request).getResponse();
+				Map<String, Object> response = restHelper.<ResponseWrapper<Map<String, Object>>>requestSync(request, MediaType.APPLICATION_JSON).getResponse();
 				List<Map<String, Object>> data = (List<Map<String, Object>>) response.get("data");
 				if (data == null) {
 					return List.of();
@@ -118,7 +119,7 @@ public class CredentialRequestManager {
 			request.setPathVariables(pathVariables);
 
 			try {
-				restHelper.<ResponseWrapper<Map<String, Object>>>requestSync(request).getResponse();
+				restHelper.<ResponseWrapper<Map<String, Object>>>requestSync(request, MediaType.APPLICATION_JSON).getResponse();
 			} catch (RestServiceException e) {
 				mosipLogger.error(ExceptionUtils.getStackTrace(e));
 				//RestServiceException are already retried in RestHelper, so just throwing

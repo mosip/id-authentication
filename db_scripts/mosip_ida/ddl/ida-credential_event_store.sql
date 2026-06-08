@@ -16,26 +16,39 @@
 -- object: ida.credential_event_store | type: TABLE --
 -- DROP TABLE IF EXISTS ida.credential_event_store CASCADE;
 CREATE TABLE ida.credential_event_store(
-                                           event_id character varying(36) NOT NULL,
-                                           event_topic character varying(256) NOT NULL,
-                                           credential_transaction_id character varying(64) NOT NULL,
-                                           publisher character varying(128),
-                                           published_on_dtimes timestamp,
-                                           event_object character varying,
-                                           status_code character varying(36),
-                                           retry_count smallint,
-                                           cr_by character varying(256) NOT NULL,
-                                           cr_dtimes timestamp NOT NULL,
-                                           upd_by character varying(256),
-                                           upd_dtimes timestamp,
-                                           is_deleted boolean DEFAULT FALSE,
-                                           del_dtimes timestamp,
-                                           CONSTRAINT pk_ces_id PRIMARY KEY (event_id)
+	event_id character varying(36) NOT NULL,
+	event_topic character varying(256) NOT NULL,
+	credential_transaction_id character varying(64) NOT NULL,
+	publisher character varying(128),
+	published_on_dtimes timestamp,
+	event_object character varying,
+	status_code character varying(36),
+	retry_count smallint,
+	cr_by character varying(256) NOT NULL,
+	cr_dtimes timestamp NOT NULL,
+	upd_by character varying(256),
+	upd_dtimes timestamp,
+	is_deleted boolean DEFAULT FALSE,
+	del_dtimes timestamp,
+	CONSTRAINT pk_ces_id PRIMARY KEY (event_id)
 
 );
 -- ddl-end --
 --index section starts----
 CREATE INDEX ind_ces_id ON ida.credential_event_store (cr_dtimes);
+
+CREATE INDEX idx_cred_evt_pending
+ON credential_event_store (retry_count, cr_dtimes)
+WHERE status_code IN ('NEW', 'FAILED');
+
+-- Optimize autovacuum for credential_event_store to clean dead tuples
+ALTER TABLE credential_event_store SET (
+    autovacuum_vacuum_scale_factor = 0.05,
+    autovacuum_vacuum_threshold = 1000,
+    autovacuum_analyze_scale_factor = 0.05,
+    autovacuum_analyze_threshold = 1000
+);
+
 --index section ends------
 COMMENT ON TABLE ida.credential_event_store IS 'Credential Event Store: Store all credential request in IDA and their status, Retry request incase of failure';
 -- ddl-end --
@@ -67,3 +80,6 @@ COMMENT ON COLUMN ida.credential_event_store.is_deleted IS 'IS_Deleted : Flag to
 -- ddl-end --
 COMMENT ON COLUMN ida.credential_event_store.del_dtimes IS 'Deleted DateTimestamp : Date and Timestamp when the record is soft deleted with is_deleted=TRUE';
 -- ddl-end --
+
+CREATE INDEX IF NOT EXISTS cred_event_store_status_cr_dtimes ON ida.credential_event_store USING btree (status_code desc, retry_count, cr_dtimes) WHERE status_code in ('NEW','FAILED');
+
