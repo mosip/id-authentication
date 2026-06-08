@@ -14,17 +14,17 @@
 -- object: ida.key_store | type: TABLE --
 -- DROP TABLE IF EXISTS ida.key_store CASCADE;
 CREATE TABLE ida.key_store(
-                              id character varying(36) NOT NULL,
-                              master_key character varying(36) NOT NULL,
-                              private_key character varying(2500) NOT NULL,
-                              certificate_data character varying(2500) NOT NULL,
-                              cr_by character varying(256) NOT NULL,
-                              cr_dtimes timestamp NOT NULL,
-                              upd_by character varying(256),
-                              upd_dtimes timestamp,
-                              is_deleted boolean DEFAULT FALSE,
-                              del_dtimes timestamp,
-                              CONSTRAINT pk_keystr_id PRIMARY KEY (id)
+	id character varying(36) NOT NULL,
+	master_key character varying(36) NOT NULL,
+	private_key character varying(2500) NOT NULL,
+	certificate_data character varying(2500) NOT NULL,
+	cr_by character varying(256) NOT NULL,
+	cr_dtimes timestamp NOT NULL,
+	upd_by character varying(256),
+	upd_dtimes timestamp,
+	is_deleted boolean DEFAULT FALSE,
+	del_dtimes timestamp,
+	CONSTRAINT pk_keystr_id PRIMARY KEY (id)
 
 );
 
