@@ -619,8 +619,6 @@ public class AuthRequestValidator extends BaseAuthRequestValidator {
 		});
 	}
 	
-	
-	
 	public void validateAge(AuthRequestDTO authRequest, Errors errors) {
 		if(authRequest.getRequest()!=null && authRequest.getRequest().getDemographics()!=null && authRequest.getRequest().getDemographics().getAge()!=null) {
 			String age = authRequest.getRequest().getDemographics().getAge();
@@ -636,9 +634,6 @@ public class AuthRequestValidator extends BaseAuthRequestValidator {
 		return;
 		
 	}
-	
-	
-	
 
 	/**
 	 * Biometric timestamp parser.
