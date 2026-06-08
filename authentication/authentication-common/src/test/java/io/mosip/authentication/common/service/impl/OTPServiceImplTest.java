@@ -208,7 +208,7 @@ public class OTPServiceImplTest {
         map.put("status", "success");
         map.put("messaage", "otp_generated");
         response.setResponse(map);
-        Mockito.when(restHelper.requestSync(Mockito.any())).thenReturn(response);
+        Mockito.when(restHelper.requestSync(Mockito.any(), Mockito.any())).thenReturn(response);
         Mockito.when(otpManager.sendOtp(Mockito.any(), Mockito.any(), Mockito.any(), Mockito.any(), Mockito.any())).thenReturn(true);
         Map<String, List<IdentityInfoDTO>> idInfo1 = getIdInfo();
         List<IdentityInfoDTO> mailList1 = new ArrayList<>();
@@ -252,7 +252,7 @@ public class OTPServiceImplTest {
         Map<String, Object> map = new HashMap<>();
         map.put("otp", "123456");
         response.setResponse(map);
-        Mockito.when(restHelper.requestSync(Mockito.any())).thenReturn(response);
+        Mockito.when(restHelper.requestSync(Mockito.any(), Mockito.any())).thenReturn(response);
         Mockito.when(otpManager.sendOtp(Mockito.any(), Mockito.any(), Mockito.any(), Mockito.any(),
         		Mockito.any())).thenReturn(true);
         try {
@@ -293,7 +293,7 @@ public class OTPServiceImplTest {
         Map<String, Object> map = new HashMap<>();
         map.put("otp", "123456");
         response.setResponse(map);
-        Mockito.when(restHelper.requestSync(Mockito.any())).thenReturn(response);
+        Mockito.when(restHelper.requestSync(Mockito.any(), Mockito.any())).thenReturn(response);
         Mockito.when(otpManager.sendOtp(Mockito.any(), Mockito.any(), Mockito.any(), Mockito.any(),
         		Mockito.any())).thenReturn(true);
         Mockito.when(entityInfoUtilMock.getEntityInfoAsString(Mockito.any(), Mockito.anyMap())).thenReturn("9384848384");
@@ -328,7 +328,7 @@ public class OTPServiceImplTest {
         Map<String, Object> map = new HashMap<>();
         map.put("otp", "123456");
         response.setResponse(map);
-        Mockito.when(restHelper.requestSync(Mockito.any())).thenReturn(response);
+        Mockito.when(restHelper.requestSync(Mockito.any(), Mockito.any())).thenReturn(response);
         Mockito.when(otpManager.sendOtp(Mockito.any(), Mockito.any(), Mockito.any(), Mockito.any(),
         		Mockito.any())).thenReturn(true);
         try {
@@ -369,7 +369,7 @@ public class OTPServiceImplTest {
         Map<String, Object> map = new HashMap<>();
         map.put("otp", "123456");
         response.setResponse(map);
-        Mockito.when(restHelper.requestSync(Mockito.any())).thenReturn(response);
+        Mockito.when(restHelper.requestSync(Mockito.any(), Mockito.any())).thenReturn(response);
         Mockito.when(otpManager.sendOtp(Mockito.any(), Mockito.any(), Mockito.any(), Mockito.any(),
         		Mockito.any())).thenReturn(true);
         Mockito.when(entityInfoUtilMock.getEntityInfoAsString(Mockito.any(), Mockito.anyMap())).thenReturn("9384848384");
@@ -410,7 +410,7 @@ public class OTPServiceImplTest {
         Mockito.when(uinHashSaltRepo.retrieveSaltById(Mockito.anyInt())).thenReturn("2344");
         Mockito.when(idAuthSecurityManager.getUser()).thenReturn("ida_app_user");
 
-        Mockito.when(restHelper.requestSync(Mockito.any())).thenThrow(new RestServiceException(
+        Mockito.when(restHelper.requestSync(Mockito.any(), Mockito.any())).thenThrow(new RestServiceException(
                 IdRepoErrorConstants.CLIENT_ERROR, response.toString(), response));
         try {
 			otpServiceImpl.generateOtp(otpRequestDto, "1234567890", new TestObjectWithMetadata());
@@ -450,7 +450,7 @@ public class OTPServiceImplTest {
         Map<String, Object> map = new HashMap<>();
         map.put("otp", "123456");
         response.setResponse(map);
-        Mockito.when(restHelper.requestSync(Mockito.any())).thenReturn(response);
+        Mockito.when(restHelper.requestSync(Mockito.any(), Mockito.any())).thenReturn(response);
         Mockito.when(otpManager.sendOtp(Mockito.any(), Mockito.any(), Mockito.any(), Mockito.any(),
         		Mockito.any())).thenReturn(true);
         try {
@@ -491,7 +491,7 @@ public class OTPServiceImplTest {
         Map<String, Object> map = new HashMap<>();
         map.put("otp", "123456");
         response.setResponse(map);
-        Mockito.when(restHelper.requestSync(Mockito.any())).thenReturn(response);
+        Mockito.when(restHelper.requestSync(Mockito.any(), Mockito.any())).thenReturn(response);
         Mockito.when(otpManager.sendOtp(Mockito.any(), Mockito.any(), Mockito.any(), Mockito.any(),
         		Mockito.any())).thenReturn(true);
         Mockito.when(entityInfoUtilMock.getEntityInfoAsString(Mockito.any(), Mockito.anyMap())).thenReturn("9384848384");
@@ -526,7 +526,7 @@ public class OTPServiceImplTest {
         Map<String, Object> map = new HashMap<>();
         map.put("otp", "123456");
         response.setResponse(map);
-        Mockito.when(restHelper.requestSync(Mockito.any())).thenReturn(response);
+        Mockito.when(restHelper.requestSync(Mockito.any(), Mockito.any())).thenReturn(response);
         Mockito.when(otpManager.sendOtp(Mockito.any(), Mockito.any(), Mockito.any(), Mockito.any(),
         		Mockito.any())).thenReturn(true);
         try {
@@ -567,7 +567,7 @@ public class OTPServiceImplTest {
         Map<String, Object> map = new HashMap<>();
         map.put("otp", "123456");
         response.setResponse(map);
-        Mockito.when(restHelper.requestSync(Mockito.any())).thenReturn(response);
+        Mockito.when(restHelper.requestSync(Mockito.any(), Mockito.any())).thenReturn(response);
         Mockito.when(otpManager.sendOtp(Mockito.any(), Mockito.any(), Mockito.any(), Mockito.any(),
         		Mockito.any())).thenReturn(true);
         Mockito.when(entityInfoUtilMock.getEntityInfoAsString(Mockito.any(), Mockito.anyMap())).thenReturn("9384848384");
@@ -608,7 +608,7 @@ public class OTPServiceImplTest {
         Mockito.when(uinHashSaltRepo.retrieveSaltById(Mockito.anyInt())).thenReturn("2344");
         Mockito.when(idAuthSecurityManager.getUser()).thenReturn("ida_app_user");
 
-        Mockito.when(restHelper.requestSync(Mockito.any())).thenThrow(new RestServiceException(
+        Mockito.when(restHelper.requestSync(Mockito.any(), Mockito.any())).thenThrow(new RestServiceException(
                 IdRepoErrorConstants.CLIENT_ERROR, response.toString(), response));
         try {
 			otpServiceImpl.generateOtp(otpRequestDto, "1234567890", new TestObjectWithMetadata());

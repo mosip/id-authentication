@@ -93,7 +93,7 @@ public class ValidateOtpRequestTest {
 		Map<String,Object> valuemap=new HashMap<>();
 		valuemap.put("status", "failure");
 		RestHelper helper = Mockito.mock(RestHelper.class);
-		Mockito.when(helper.requestSync(Mockito.any(RestRequestDTO.class))).thenReturn(valuemap);
+		Mockito.when(helper.requestSync(Mockito.any(RestRequestDTO.class), Mockito.any())).thenReturn(valuemap);
 		RestRequestDTO requestDTO = new RestRequestDTO();
 		RestRequestFactory restreqfactory = Mockito.mock(RestRequestFactory.class);
 		Mockito.when(
@@ -112,7 +112,7 @@ public class ValidateOtpRequestTest {
 		RestHelper helper = Mockito.mock(RestHelper.class);
 		Map<String,Object> valuemap=new HashMap<>();
 		valuemap.put("status", "failure");
-		Mockito.when(helper.requestSync(Mockito.any(RestRequestDTO.class))).thenReturn(valuemap);
+		Mockito.when(helper.requestSync(Mockito.any(RestRequestDTO.class), Mockito.any())).thenReturn(valuemap);
 		ReflectionTestUtils.setField(otpManager, "restHelper", helper);
 
 		assertFalse(validateOtpHelper.validateOtp("2323", "2323", "426789089018"));

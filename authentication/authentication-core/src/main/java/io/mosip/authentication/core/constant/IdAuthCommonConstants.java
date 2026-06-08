@@ -468,6 +468,10 @@ public final class IdAuthCommonConstants {
 	public static final String POLICY_DATA = "policy_data";
 
 	public static final String MISP_LIC_DATA = "misp_lic_data";
+    
+	public static final String MAIL_CONTENT = "mailContent";
+	public static final String MAIL_SUBJECT= "mailSubject";
+	public static final String MAIL_TO= "mailTo";
 
 	private IdAuthCommonConstants() {
 	}

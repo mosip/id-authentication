@@ -118,7 +118,7 @@ import org.springframework.web.client.RestTemplate;
 		HSMHealthCheck.class, PrivateKeyDecryptorHelper.class,
 		PasswordAuthServiceImpl.class, PasswordComparator.class, AuthenticationErrorEventingPublisher.class, KafkaProducerConfig.class,
 		PDFGeneratorImpl.class, PublisherClientImpl.class, RestTemplateHelper.class,
-		SubscriberClientImpl.class, RestTemplate.class, ECKeyPairGenRequestValidator.class, TrailingSlashRedirectFilter.class, SubjectAlternativeNamesHelper.class, SignatureUtil.class})
+		SubscriberClientImpl.class, RestTemplate.class, ECKeyPairGenRequestValidator.class, TrailingSlashRedirectFilter.class, SubjectAlternativeNamesHelper.class, SignatureServiceImpl.class, SignatureUtil.class})
 @ComponentScan(basePackages = { "io.mosip.authentication.otp.service.*",
 		"io.mosip.kernel.core.logger.config", "${mosip.auth.adapter.impl.basepackage}" }, excludeFilters = @ComponentScan.Filter(type = FilterType.REGEX, pattern = {
 				"io.mosip.idrepository.core.config.IdRepoDataSourceConfig.*" }))

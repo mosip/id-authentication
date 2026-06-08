@@ -2,6 +2,7 @@ package io.mosip.authentication.common.service.util;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Objects;
 import java.util.stream.Stream;
 
 import io.mosip.authentication.common.service.helper.AuthTransactionHelper;
@@ -43,41 +44,52 @@ public final class AuthTypeUtil {
 		return isAuthTypeInfoAvailable(authReqDto, new AuthType[] {PasswordAuthType.PASSWORD});
 	}
 
-	private static boolean isAuthTypeInfoAvailable(AuthRequestDTO authReqDto, AuthType[] values) {
-		return Stream.of(values).anyMatch(authType -> authType.isAuthTypeInfoAvailable(authReqDto));
-	}
-	
-	public static List<RequestType> findAutRequestTypes(AuthRequestDTO authRequestDTO, EnvUtil env) {
-		List<RequestType> requestTypes = new ArrayList<>();
-		if(AuthTypeUtil.isOtp(authRequestDTO)) {
-			requestTypes.add(RequestType.OTP_AUTH);
-		}
-		if(AuthTypeUtil.isDemo(authRequestDTO)) {
-			requestTypes.add(RequestType.DEMO_AUTH);
-		}
-		if(AuthTypeUtil.isBio(authRequestDTO)) {
-			if (AuthTransactionHelper.isFingerAuth(authRequestDTO, env)) {
-				requestTypes.add(RequestType.FINGER_AUTH);
-			}
-			if (AuthTransactionHelper.isIrisAuth(authRequestDTO, env)) {
-				requestTypes.add(RequestType.IRIS_AUTH);
-			}
-			if (AuthTransactionHelper.isFaceAuth(authRequestDTO, env)) {
-				requestTypes.add(RequestType.FACE_AUTH);
-			}
-		}
-		if(AuthTypeUtil.isKeyBindedToken(authRequestDTO)) {
-			requestTypes.add(RequestType.TOKEN_AUTH);
-		}
-		if(authRequestDTO instanceof EkycAuthRequestDTO) {
-			requestTypes.add(RequestType.EKYC_AUTH_REQUEST);
-		}
+    private static boolean isAuthTypeInfoAvailable(AuthRequestDTO authReqDto, AuthType[] values) {
+        for (AuthType authType : values) {
+            if (authType.isAuthTypeInfoAvailable(authReqDto)) {
+                return true;
+            }
+        }
+        return false;
+    }
 
-		if (AuthTypeUtil.isPassword(authRequestDTO)) {
-			requestTypes.add(RequestType.PASSWORD_AUTH);
-		}
-		
-		return requestTypes;
-	}
+    public static List<RequestType> findAutRequestTypes(AuthRequestDTO authRequestDTO, EnvUtil env) {
+        Objects.requireNonNull(authRequestDTO, "AuthRequestDTO cannot be null");
+
+        List<RequestType> requestTypes = new ArrayList<>(6);
+        boolean hasBio = AuthTypeUtil.isBio(authRequestDTO);
+
+        if(AuthTypeUtil.isOtp(authRequestDTO)) {
+            requestTypes.add(RequestType.OTP_AUTH);
+        }
+
+        if(AuthTypeUtil.isDemo(authRequestDTO)) {
+            requestTypes.add(RequestType.DEMO_AUTH);
+        }
+
+        if(hasBio) {
+            boolean finger = AuthTransactionHelper.isFingerAuth(authRequestDTO, env);
+            boolean iris   = AuthTransactionHelper.isIrisAuth(authRequestDTO, env);
+            boolean face   = AuthTransactionHelper.isFaceAuth(authRequestDTO, env);
+
+            if (finger) requestTypes.add(RequestType.FINGER_AUTH);
+            if (iris)   requestTypes.add(RequestType.IRIS_AUTH);
+            if (face)   requestTypes.add(RequestType.FACE_AUTH);
+        }
+
+        if(AuthTypeUtil.isKeyBindedToken(authRequestDTO)) {
+            requestTypes.add(RequestType.TOKEN_AUTH);
+        }
+
+        if(authRequestDTO instanceof EkycAuthRequestDTO) {
+            requestTypes.add(RequestType.EKYC_AUTH_REQUEST);
+        }
+
+        if (AuthTypeUtil.isPassword(authRequestDTO)) {
+            requestTypes.add(RequestType.PASSWORD_AUTH);
+        }
+
+        return requestTypes;
+    }
 
 }

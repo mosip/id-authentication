@@ -11,7 +11,7 @@ import io.mosip.authentication.core.indauth.dto.AuthError;
 import io.mosip.authentication.core.indauth.dto.AuthResponseDTO;
 import io.mosip.authentication.core.indauth.dto.AuthStatusInfo;
 import io.mosip.authentication.core.indauth.dto.ResponseDTO;
-import io.mosip.kernel.core.util.DateUtils;
+import io.mosip.kernel.core.util.DateUtils2;
 
 /**
  * The builder class of AuthResponseDTO.
@@ -123,7 +123,7 @@ public class AuthResponseBuilder {
 			res.setAuthToken(tokenID);
 		}
 		responseDTO.setResponse(res);
-		responseDTO.setResponseTime(DateUtils.getUTCCurrentDateTimeString(IdAuthCommonConstants.UTC_DATETIME_PATTERN));
+		responseDTO.setResponseTime(DateUtils2.getUTCCurrentDateTimeString(IdAuthCommonConstants.UTC_DATETIME_PATTERN));
 		AuthError[] authErrors = authStatusInfos.stream().flatMap(statusInfo -> Optional.ofNullable(statusInfo.getErr())
 				.map(List<AuthError>::stream).orElseGet(Stream::empty)).toArray(size -> new AuthError[size]);
 		if(authErrors.length > 0) {

@@ -31,7 +31,7 @@ public class AutnTxn {
 
 	@NotNull
 	@Column(name = "request_dtimes")
-	private LocalDateTime requestDTtimes;
+	private LocalDateTime requestDTimes;
 
 	@NotNull
 	@Column(name = "response_dtimes")
@@ -113,18 +113,18 @@ public class AutnTxn {
 	/**
 	 * The constructor used in retrieval of the specific fields.
 	 * @param requestTrnId
-	 * @param requestDTtimes
+	 * @param requestDTimes
 	 * @param authTypeCode
 	 * @param statusCode
 	 * @param statusComment
 	 * @param refId
 	 * @param entityName
 	 */
-	public AutnTxn(String requestTrnId, LocalDateTime requestDTtimes, String authTypeCode, String statusCode,
-			String statusComment, String refId, String refIdType, String entityName, String requestSignature,
-			String responseSignature) {
+	public AutnTxn(String requestTrnId, LocalDateTime requestDTimes, String authTypeCode, String statusCode,
+                   String statusComment, String refId, String refIdType, String entityName, String requestSignature,
+                   String responseSignature) {
 		this.requestTrnId = requestTrnId;
-		this.requestDTtimes = requestDTtimes; 
+		this.requestDTimes = requestDTimes; 
 		this.authTypeCode = authTypeCode; 
 		this.statusCode = statusCode; 
 		this.statusComment = statusComment; 

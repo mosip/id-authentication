@@ -204,7 +204,7 @@ public class InternalAuthTransactionTest {
 		List<AutnTxn> valueList = new ArrayList<>();
 		AutnTxn autnTxn = new AutnTxn();
 		autnTxn.setRequestTrnId("1234567890");
-		autnTxn.setRequestDTtimes(null);
+		autnTxn.setRequestDTimes(null);
 		autnTxn.setAuthTypeCode("UIN");
 		autnTxn.setStatusCode("Y");
 		autnTxn.setStatusComment("success");

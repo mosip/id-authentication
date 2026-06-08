@@ -13,26 +13,34 @@
 -- object: ida.identity_cache | type: TABLE --
 -- DROP TABLE IF EXISTS ida.identity_cache CASCADE;
 CREATE TABLE ida.identity_cache(
-                                   id character varying(256) NOT NULL,
-                                   token_id character varying(128) NOT NULL,
-                                   demo_data bytea NOT NULL,
-                                   bio_data bytea NOT NULL,
-                                   expiry_timestamp timestamp,
-                                   transaction_limit smallint,
-                                   cr_by character varying(256) NOT NULL,
-                                   cr_dtimes timestamp NOT NULL,
-                                   upd_by character varying(256),
-                                   upd_dtimes timestamp,
-                                   is_deleted boolean DEFAULT FALSE,
-                                   del_dtimes timestamp,
-                                   identity_expiry timestamp,
-                                   CONSTRAINT pk_idcache_id PRIMARY KEY (id)
+	id character varying(256) NOT NULL,
+	token_id character varying(128) NOT NULL,
+	demo_data bytea NOT NULL,
+	bio_data bytea NOT NULL,
+	expiry_timestamp timestamp,
+	transaction_limit smallint,
+	cr_by character varying(256) NOT NULL,
+	cr_dtimes timestamp NOT NULL,
+	upd_by character varying(256),
+	upd_dtimes timestamp,
+	is_deleted boolean DEFAULT FALSE,
+	del_dtimes timestamp,
+	identity_expiry timestamp,
+	CONSTRAINT pk_idcache_id PRIMARY KEY (id)
 
 );
 -- ddl-end --
 --index section starts----
 CREATE INDEX ind_id ON ida.identity_cache (id);
+CREATE INDEX IF NOT EXISTS idx_identity_cache_cr_dtimes ON ida.identity_cache USING btree (cr_dtimes);
 --index section ends------
+
+ALTER TABLE identity_cache SET (
+    autovacuum_vacuum_scale_factor = 0.05,
+    autovacuum_vacuum_threshold = 500,
+    autovacuum_analyze_scale_factor = 0.05,
+    autovacuum_analyze_threshold = 500
+);
 
 COMMENT ON TABLE ida.identity_cache IS 'Identity Cache: Details of UIN stored along with uin data and biometric details, This data is synched from ID Repo whenever it is needed and used for authentication request during validation and response to authentication.';
 -- ddl-end --
