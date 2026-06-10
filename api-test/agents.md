@@ -5,7 +5,7 @@ This file provides guidance to Claude Code (claude.ai/code) when working with co
 ## Module Identity
 
 - **ArtifactId:** `apitest-auth`
-- **Version:** `1.2.1-SNAPSHOT`
+- **Version:** `1.4.0-SNAPSHOT`
 - **Main class:** `io.mosip.testrig.apirig.auth.testrunner.MosipTestRunner`
 - **Covers:** ID Authentication APIs — biometric auth, OTP auth, demographic auth, eKYC, hotlist, VID/UIN lifecycle
 
@@ -18,7 +18,7 @@ mvn clean install -Dgpg.skip=true -Dmaven.gitcommitid.skip=true
 
 ### Run via JAR
 ```powershell
-java -Dmodules=auth -Denv.user=api-internal.<env_name> -Denv.endpoint=<base_url> -Denv.testLevel=smokeAndRegression -jar target/apitest-auth-1.2.1-jar-with-dependencies.jar
+java -Dmodules=auth -Denv.user=api-internal.<env_name> -Denv.endpoint=<base_url> -Denv.testLevel=smokeAndRegression -jar target/apitest-auth-1.4.0-SNAPSHOT-jar-with-dependencies.jar
 ```
 `testLevel` values: `smoke` (positive only), `regression`, `smokeAndRegression`
 
