@@ -110,6 +110,13 @@ public class MosipTestRunner {
 			String partnerKeyURL = "";
 			String updatedPartnerKeyURL = "";
 			String ekycPartnerKeyURL = "";
+			String policyTokenPartnerKeyURL = "";
+			String policyToken2PartnerKeyURL = "";
+			String policyToken3PartnerKeyURL = "";
+			String partnerToken2KeyURL = "";
+			String randomTokenPartnerKeyURL = "";
+			String randomToken2PartnerKeyURL = "";
+			String randomToken3PartnerKeyURL = "";
 
 			PartnerRegistration.deleteCertificates();
 			CertificateGenerationUtil.getThumbprints();
@@ -117,6 +124,31 @@ public class MosipTestRunner {
 			AdminTestUtil.createEditAndPublishPolicy();
 			partnerKeyURL = PartnerRegistration.generateAndGetPartnerKeyUrl();
 			updatedPartnerKeyURL = PartnerRegistration.generateAndGetUpdatedPartnerKeyUrl();
+
+			IdAuthenticationUtil.createAndPublishPolicyWithPolicyTokenType();
+			policyTokenPartnerKeyURL = IdAuthenticationUtil.generateAndGetPolicyTokenPartnerKeyUrl();
+			LOGGER.info("policyTokenPartnerKeyURL = " + policyTokenPartnerKeyURL);
+
+			IdAuthenticationUtil.registerSecondPolicyTokenPartner();
+			policyToken2PartnerKeyURL = IdAuthenticationUtil.generateAndGetSecondPolicyTokenPartnerKeyUrl();
+			LOGGER.info("policyToken2PartnerKeyURL = " + policyToken2PartnerKeyURL);
+
+			partnerToken2KeyURL = IdAuthenticationUtil.generateAndGetPartnerToken2KeyUrl();
+			LOGGER.info("partnerToken2KeyURL = " + partnerToken2KeyURL);
+
+			IdAuthenticationUtil.registerThirdPolicyTokenPartner();
+			policyToken3PartnerKeyURL = IdAuthenticationUtil.generateAndGetThirdPolicyTokenPartnerKeyUrl();
+			LOGGER.info("policyToken3PartnerKeyURL = " + policyToken3PartnerKeyURL);
+
+			IdAuthenticationUtil.createAndPublishPolicyWithRandomTokenType();
+			randomTokenPartnerKeyURL = IdAuthenticationUtil.generateAndGetRandomTokenPartnerKeyUrl();
+			LOGGER.info("randomTokenPartnerKeyURL = " + randomTokenPartnerKeyURL);
+
+			randomToken2PartnerKeyURL = IdAuthenticationUtil.generateAndGetRandomToken2PartnerKeyUrl();
+			LOGGER.info("randomToken2PartnerKeyURL = " + randomToken2PartnerKeyURL);
+
+			randomToken3PartnerKeyURL = IdAuthenticationUtil.generateAndGetRandomToken3PartnerKeyUrl();
+			LOGGER.info("randomToken3PartnerKeyURL = " + randomToken3PartnerKeyURL);
 
 			AdminTestUtil.createAndPublishPolicyForKyc();
 			ekycPartnerKeyURL = PartnerRegistration.generateAndGetEkycPartnerKeyUrl();
