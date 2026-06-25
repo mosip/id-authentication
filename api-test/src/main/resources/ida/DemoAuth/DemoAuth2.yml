@@ -235,7 +235,7 @@ DemoAuthNew:
     }'
       output: '{
   "authStatus": "true",
-  "authToken": "$REGEXP:(?!$ID:DemoAuth_authToken_PartnerToken_First_Call_sid_Pos_authToken$).+$"
+  "authToken": "$REGEXP:^((?!$ID:DemoAuth_authToken_PartnerToken_First_Call_sid_Pos_authToken$).+)$"
 }'
   auth_DemoAuth_authToken_RandomToken_First_Call_sid_Pos:
       endPoint: /idauthentication/v1/auth/$RandomTokenPartnerKeyURL$
@@ -288,7 +288,7 @@ DemoAuthNew:
     }'
       output: '{
   "authStatus": "true",
-  "authToken": "$REGEXP:(?!$ID:DemoAuth_authToken_RandomToken_First_Call_sid_Pos_authToken$).+$"
+  "authToken": "$REGEXP:^((?!$ID:DemoAuth_authToken_RandomToken_First_Call_sid_Pos_authToken$).+)$"
 }'
   auth_DemoAuth_authToken_RandomToken_Differs_Across_Partners_Pos:
       endPoint: /idauthentication/v1/auth/$RandomToken2PartnerKeyURL$
@@ -315,7 +315,7 @@ DemoAuthNew:
     }'
       output: '{
   "authStatus": "true",
-  "authToken": "$REGEXP:(?!$ID:DemoAuth_authToken_RandomToken_First_Call_sid_Pos_authToken$).+$"
+  "authToken": "$REGEXP:^((?!$ID:DemoAuth_authToken_RandomToken_First_Call_sid_Pos_authToken$).+)$"
 }'
   auth_DemoAuth_authToken_RandomToken_Differs_Across_Multiple_Partners_Pos:
       endPoint: /idauthentication/v1/auth/$RandomToken3PartnerKeyURL$
@@ -342,7 +342,7 @@ DemoAuthNew:
     }'
       output: '{
   "authStatus": "true",
-  "authToken": "$REGEXP:(?!$ID:DemoAuth_authToken_RandomToken_First_Call_sid_Pos_authToken$).+$"
+  "authToken": "$REGEXP:^((?!$ID:DemoAuth_authToken_RandomToken_First_Call_sid_Pos_authToken$).+)$"
 }'
   auth_DemoAuth_DOB_Invalid_Thumbprint_UIN_Neg:
       endPoint: /idauthentication/v1/auth/$partnerKeyURL$

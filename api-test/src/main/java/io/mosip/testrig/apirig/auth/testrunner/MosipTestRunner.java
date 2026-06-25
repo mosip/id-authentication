@@ -127,28 +127,28 @@ public class MosipTestRunner {
 
 			IdAuthenticationUtil.createAndPublishPolicyWithPolicyTokenType();
 			policyTokenPartnerKeyURL = IdAuthenticationUtil.generateAndGetPolicyTokenPartnerKeyUrl();
-			LOGGER.info("policyTokenPartnerKeyURL = " + policyTokenPartnerKeyURL);
+			LOGGER.info("policyTokenPartnerKeyURL generated");
 
 			IdAuthenticationUtil.registerSecondPolicyTokenPartner();
 			policyToken2PartnerKeyURL = IdAuthenticationUtil.generateAndGetSecondPolicyTokenPartnerKeyUrl();
-			LOGGER.info("policyToken2PartnerKeyURL = " + policyToken2PartnerKeyURL);
+			LOGGER.info("policyToken2PartnerKeyURL generated");
 
 			partnerToken2KeyURL = IdAuthenticationUtil.generateAndGetPartnerToken2KeyUrl();
-			LOGGER.info("partnerToken2KeyURL = " + partnerToken2KeyURL);
+			LOGGER.info("partnerToken2KeyURL generated");
 
 			IdAuthenticationUtil.registerThirdPolicyTokenPartner();
 			policyToken3PartnerKeyURL = IdAuthenticationUtil.generateAndGetThirdPolicyTokenPartnerKeyUrl();
-			LOGGER.info("policyToken3PartnerKeyURL = " + policyToken3PartnerKeyURL);
+			LOGGER.info("policyToken3PartnerKeyURL generated");
 
 			IdAuthenticationUtil.createAndPublishPolicyWithRandomTokenType();
 			randomTokenPartnerKeyURL = IdAuthenticationUtil.generateAndGetRandomTokenPartnerKeyUrl();
-			LOGGER.info("randomTokenPartnerKeyURL = " + randomTokenPartnerKeyURL);
+			LOGGER.info("randomTokenPartnerKeyURL generated");
 
 			randomToken2PartnerKeyURL = IdAuthenticationUtil.generateAndGetRandomToken2PartnerKeyUrl();
-			LOGGER.info("randomToken2PartnerKeyURL = " + randomToken2PartnerKeyURL);
+			LOGGER.info("randomToken2PartnerKeyURL generated");
 
 			randomToken3PartnerKeyURL = IdAuthenticationUtil.generateAndGetRandomToken3PartnerKeyUrl();
-			LOGGER.info("randomToken3PartnerKeyURL = " + randomToken3PartnerKeyURL);
+			LOGGER.info("randomToken3PartnerKeyURL generated");
 
 			AdminTestUtil.createAndPublishPolicyForKyc();
 			ekycPartnerKeyURL = PartnerRegistration.generateAndGetEkycPartnerKeyUrl();

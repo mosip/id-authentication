@@ -200,6 +200,21 @@ public class IdAuthenticationUtil extends AdminTestUtil {
 	}
 
 	/**
+	 * Fails fast with a SkipException when a setup REST call did not succeed,
+	 * instead of letting the caller hit an opaque JSONException while parsing
+	 * an error response, or silently continuing with an invalid/empty token.
+	 */
+	private static void assertSuccessStatusCode(Response response, String failureMessage) {
+		if (response == null) {
+			throw new SkipException(failureMessage + ": null response");
+		}
+		int statusCode = response.getStatusCode();
+		if (statusCode < 200 || statusCode >= 300) {
+			throw new SkipException(failureMessage + ": HTTP " + statusCode + " - " + response.asString());
+		}
+	}
+
+	/**
 	 * Creates and publishes an additional auth policy (under the same policy
 	 * group as the main auth partner) using the given allowed-auth-types
 	 * attributes file (which determines, among other things, the authTokenType
@@ -222,6 +237,7 @@ public class IdAuthenticationUtil extends AdminTestUtil {
 
 		Response response = RestClient.postRequestWithCookie(url, actualrequestBody, MediaType.APPLICATION_JSON,
 				MediaType.APPLICATION_JSON, GlobalConstants.AUTHORIZATION, token);
+		assertSuccessStatusCode(response, "Failed to create auth policy");
 		String responseBody = response.getBody().asString();
 		String createdPolicyId = new JSONObject(responseBody).getJSONObject(GlobalConstants.RESPONSE)
 				.getString("id");
@@ -232,8 +248,9 @@ public class IdAuthenticationUtil extends AdminTestUtil {
 			publishPolicyURL = publishPolicyURL.replace("POLICYGROUPID", policygroupId);
 		}
 
-		RestClient.postRequestWithCookie(publishPolicyURL, MediaType.APPLICATION_JSON, MediaType.APPLICATION_JSON,
-				GlobalConstants.AUTHORIZATION, token);
+		Response publishResponse = RestClient.postRequestWithCookie(publishPolicyURL, MediaType.APPLICATION_JSON,
+				MediaType.APPLICATION_JSON, GlobalConstants.AUTHORIZATION, token);
+		assertSuccessStatusCode(publishResponse, "Failed to publish auth policy");
 
 		return createdPolicyId;
 	}
@@ -260,6 +277,7 @@ public class IdAuthenticationUtil extends AdminTestUtil {
 		actualrequest.put(GlobalConstants.REQUEST, request);
 
 		Response response = AdminTestUtil.postWithJson(authenticationInternalEndpoint, actualrequest);
+		assertSuccessStatusCode(response, "Failed to fetch admin token for partner " + partnerId);
 		return new JSONObject(response.getBody().asString()).getJSONObject(GlobalConstants.RESPONSE)
 				.getString(GlobalConstants.TOKEN);
 	}
@@ -294,6 +312,7 @@ public class IdAuthenticationUtil extends AdminTestUtil {
 
 		Response response = RestClient.patchRequestWithCookie(url, body, MediaType.APPLICATION_JSON,
 				MediaType.APPLICATION_JSON, GlobalConstants.AUTHORIZATION, token);
+		assertSuccessStatusCode(response, "Failed to generate API key for partner " + partnerId);
 		JSONObject responseValue = new JSONObject(response.asString()).getJSONObject(GlobalConstants.RESPONSE);
 
 		return responseValue.getString(GlobalConstants.APIKEY);
@@ -388,8 +407,9 @@ public class IdAuthenticationUtil extends AdminTestUtil {
 		body.put(GlobalConstants.REQUESTTIME, generateCurrentUTCTimeStamp());
 		body.put(GlobalConstants.VERSION, "LTS");
 
-		RestClient.postRequestWithCookie(url, body, MediaType.APPLICATION_JSON, MediaType.APPLICATION_JSON,
-				GlobalConstants.AUTHORIZATION, token);
+		Response response = RestClient.postRequestWithCookie(url, body, MediaType.APPLICATION_JSON,
+				MediaType.APPLICATION_JSON, GlobalConstants.AUTHORIZATION, token);
+		assertSuccessStatusCode(response, "Failed to register partner " + partnerId);
 
 		JSONObject certificateValue = PartnerRegistration.getCertificates(partnerId, "RELYING_PARTY");
 		String caCertValue = certificateValue.getString("caCertificate");
