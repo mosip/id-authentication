@@ -141,7 +141,7 @@ public class UpdateIdentity extends IdAuthenticationUtil implements ITest {
 		generatedRid = genRid;
 
 		testCaseDTO.setInputTemplate(AdminTestUtil.updateIdentityHbs(testCaseDTO.isRegenerateHbs()));
-		String inputJson = getJsonFromTemplate(testCaseDTO.getInput(), testCaseDTO.getInputTemplate());
+		String inputJson = getJsonFromTemplate(testCaseDTO.getInput(), testCaseDTO.getInputTemplate(), false);
 
 		JSONObject reqJsonObject = new JSONObject(inputJson);
 

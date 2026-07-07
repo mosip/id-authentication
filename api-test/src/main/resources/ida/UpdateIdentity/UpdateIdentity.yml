@@ -9,9 +9,12 @@ UpdateIdentity:
       inputTemplate: ida/UpdateIdentity/updateIdentity
       outputTemplate: ida/UpdateIdentity/updateIdentityResult
       input: '{
+      "id": "mosip.id.update",
       "registrationId":"$RID$",
       "UIN":"$ID:AddIdentity_withValidParameters_smoke_Pos_UIN$",
       "email": "$ID:AddIdentity_withValidParameters_smoke_Pos_EMAIL$",
+      "phone": "$ID:AddIdentity_withValidParameters_smoke_Pos_PHONE$",
+      "postalCode": "14022",
       "status": "ACTIVATED",
       "dateOfBirth": "1970/07/08",
       "requesttime": "$TIMESTAMP$",
@@ -40,9 +43,12 @@ UpdateIdentity:
       inputTemplate: ida/UpdateIdentity/updateIdentity
       outputTemplate: ida/UpdateIdentity/updateIdentityResult
       input: '{
+      "id": "mosip.id.update",
       "registrationId":"$RID$",
       "UIN":"$ID:AddIdentity_Positive_EKYC_smoke_UIN$",
       "email": "$ID:AddIdentity_withValidParameters_smoke_Pos_EMAIL$",
+      "phone": "$ID:AddIdentity_withValidParameters_smoke_Pos_PHONE$",
+      "postalCode": "14022",
       "status": "ACTIVATED",
       "dateOfBirth": "1970/07/08",
       "requesttime": "$TIMESTAMP$",
@@ -60,9 +66,12 @@ UpdateIdentity:
       inputTemplate: ida/UpdateIdentity/updateIdentity
       outputTemplate: ida/UpdateIdentity/updateIdentityResult
       input: '{
+      "id": "mosip.id.update",
       "registrationId":"$RID$",
       "UIN":"$ID:AddIdentity_Positive_valid_smoke_UIN$",
       "email": "$ID:AddIdentity_withValidParameters_smoke_Pos_EMAIL$",
+      "phone": "$ID:AddIdentity_withValidParameters_smoke_Pos_PHONE$",
+      "postalCode": "14022",
       "status": "ACTIVATED",
       "dateOfBirth": "1970/07/08",
       "requesttime": "$TIMESTAMP$",
@@ -80,9 +89,12 @@ UpdateIdentity:
       inputTemplate: ida/UpdateIdentity/updateIdentity
       outputTemplate: ida/UpdateIdentity/updateIdentityResult
       input: '{
+      "id": "mosip.id.update",
       "registrationId":"$RID$",
       "UIN":"$ID:AddIdentity_ValidParam_smoke_Pos_UIN$",
       "email": "$ID:AddIdentity_ValidParam_smoke_Pos_EMAIL$",
+      "phone": "$ID:AddIdentity_ValidParam_smoke_Pos_PHONE$",
+      "postalCode": "14022",
       "status": "ACTIVATED",
       "dateOfBirth": "1980/08/10",
       "requesttime": "$TIMESTAMP$",
@@ -100,9 +112,12 @@ UpdateIdentity:
       inputTemplate: ida/UpdateIdentity/updateIdentity
       outputTemplate: ida/UpdateIdentity/updateIdentityResult
       input: '{
+      "id": "mosip.id.update",
       "registrationId":"$RID$",
       "UIN":"$ID:AddIdentity_Deactivate_and_auth_smoke_Pos_UIN$",
       "email": "$ID:AddIdentity_withValidParameters_smoke_Pos_EMAIL$",
+      "phone": "$ID:AddIdentity_withValidParameters_smoke_Pos_PHONE$",
+      "postalCode": "14022",
       "status": "DEACTIVATED",
       "dateOfBirth": "1970/07/08",
       "requesttime": "$TIMESTAMP$",
@@ -120,9 +135,12 @@ UpdateIdentity:
       inputTemplate: ida/UpdateIdentity/updateIdentity
       outputTemplate: ida/UpdateIdentity/updateIdentityResult
       input: '{
+      "id": "mosip.id.update",
       "registrationId":"$RID$",
       "UIN":"$ID:AddIdentity_Positive_TRE_smoke_UIN$",
       "email": "$ID:AddIdentity_withValidParameters_smoke_Pos_EMAIL$",
+      "phone": "$ID:AddIdentity_withValidParameters_smoke_Pos_PHONE$",
+      "postalCode": "14022",
       "status": "DEACTIVATED",
       "dateOfBirth": "1970/07/08",
       "requesttime": "$TIMESTAMP$",
@@ -140,9 +158,12 @@ UpdateIdentity:
       inputTemplate: ida/UpdateIdentity/updateIdentity
       outputTemplate: ida/UpdateIdentity/updateIdentityResult
       input: '{
+      "id": "mosip.id.update",
       "registrationId":"$RID$",
       "UIN":"$ID:AddIdentity_Positive_TRE_smoke_UIN$",
       "email": "$ID:AddIdentity_withValidParameters_smoke_Pos_EMAIL$",
+      "phone": "$ID:AddIdentity_withValidParameters_smoke_Pos_PHONE$",
+      "postalCode": "14022",
       "status": "ACTIVATED",
       "dateOfBirth": "1970/07/08",
       "requesttime": "$TIMESTAMP$",
@@ -160,9 +181,12 @@ UpdateIdentity:
       inputTemplate: ida/UpdateIdentity/updateIdentity
       outputTemplate: ida/UpdateIdentity/updateIdentityResult
       input: '{
+      "id": "mosip.id.update",
       "registrationId":"$RID$",
       "UIN":"$ID:AddIdentity_ValidParameters_toUpdateIdentity_auditLog_smoke_Pos_UIN$",
       "email": "$ID:AddIdentity_withValidParameters_smoke_Pos_EMAIL$",
+      "phone": "$ID:AddIdentity_withValidParameters_smoke_Pos_PHONE$",
+      "postalCode": "14022",
       "status": "ACTIVATED",
       "dateOfBirth": "1970/07/08",
       "requesttime": "$TIMESTAMP$",
