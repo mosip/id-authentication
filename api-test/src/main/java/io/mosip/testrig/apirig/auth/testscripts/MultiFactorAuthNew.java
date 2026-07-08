@@ -147,9 +147,7 @@ public class MultiFactorAuthNew extends IdAuthenticationUtil implements ITest {
 			req.remove("identityRequest");
 		}
 		identityRequest = buildIdentityRequest(identityRequest);
-		
-		if(identityRequest.contains("$DATETIME$"))
-			identityRequest = identityRequest.replace("$DATETIME$", generateCurrentUTCTimeStamp());
+
 		JSONObject identityReqJson = new JSONObject(identityRequest);
 		identityRequestTemplate = identityReqJson.getString("identityRequestTemplate");
 		identityReqJson.remove("identityRequestTemplate");
@@ -158,6 +156,8 @@ public class MultiFactorAuthNew extends IdAuthenticationUtil implements ITest {
 		identityRequest = getJsonFromTemplate(identityReqJson.toString(), identityRequestTemplate);
 		otpChannel = inputJsonKeyWordHandeler(otpChannel, testCaseName);
 		String identyEnryptRequest = updateTimestampOtp(identityRequest, otpChannel, testCaseName);
+		if (identyEnryptRequest.contains("$DATETIME$"))
+			identyEnryptRequest = identyEnryptRequest.replace("$DATETIME$", generateCurrentUTCTimeStamp());
 		logger.info(identyEnryptRequest);
 		if (identyEnryptRequest.contains("baseurl")) {
 			String domainUrl =  BaseTestCase.ApplnURI;
