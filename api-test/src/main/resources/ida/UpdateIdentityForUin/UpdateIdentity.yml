@@ -8,9 +8,12 @@ UpdateIdentityForUin:
       inputTemplate: ida/UpdateIdentityForUin/updateIdentity
       outputTemplate: ida/UpdateIdentityForUin/updateIdentityResult
       input: '{
+      "id": "mosip.id.update",
       "registrationId":"$RID$",
       "UIN":"$ID:AddIdentity_deactivate_UIN_smoke_sid_Pos_UIN$",
       "email": "$ID:AddIdentity_deactivate_UIN_smoke_sid_Pos_EMAIL$",
+      "phone": "$ID:AddIdentity_deactivate_UIN_smoke_sid_Pos_PHONE$",
+      "postalCode": "14022",
       "status": "DEACTIVATED",
       "dateOfBirth": "1970/07/08",
       "requesttime": "$TIMESTAMP$",
@@ -28,9 +31,12 @@ UpdateIdentityForUin:
       inputTemplate: ida/UpdateIdentityForUin/updateIdentity
       outputTemplate: ida/UpdateIdentityForUin/updateIdentityResult
       input: '{
+      "id": "mosip.id.update",
       "registrationId":"$RID$",
       "UIN":"$ID:AddIdentity_ValidParameters_toCreateVid_deactivateUIN_toSendOtp_smoke_Pos_UIN$",
       "email": "$ID:AddIdentity_ValidParameters_toCreateVid_deactivateUIN_toSendOtp_smoke_Pos_EMAIL$",
+      "phone": "$ID:AddIdentity_ValidParameters_toCreateVid_deactivateUIN_toSendOtp_smoke_Pos_PHONE$",
+      "postalCode": "14022",
       "status": "DEACTIVATED",
       "dateOfBirth": "1970/07/08",
       "requesttime": "$TIMESTAMP$",
@@ -48,9 +54,12 @@ UpdateIdentityForUin:
       inputTemplate: ida/UpdateIdentityForUin/updateIdentity
       outputTemplate: ida/UpdateIdentityForUin/updateIdentityResult
       input: '{
+      "id": "mosip.id.update",
       "registrationId":"$RID$",
       "UIN":"$ID:AddIdentity_ValidParameters_toDeactivate_ReactivateUIN_smoke_Pos_UIN$",
       "email": "$ID:AddIdentity_ValidParameters_toDeactivate_ReactivateUIN_smoke_Pos_EMAIL$",
+      "phone": "$ID:AddIdentity_ValidParameters_toDeactivate_ReactivateUIN_smoke_Pos_PHONE$",
+      "postalCode": "14022",
       "status": "DEACTIVATED",
       "dateOfBirth": "1970/07/08",
       "requesttime": "$TIMESTAMP$",

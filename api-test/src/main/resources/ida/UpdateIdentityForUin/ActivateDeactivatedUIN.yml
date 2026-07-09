@@ -8,9 +8,12 @@ UpdateIdentityForUin:
       inputTemplate: ida/UpdateIdentityForUin/updateIdentity
       outputTemplate: ida/UpdateIdentityForUin/updateIdentityResult
       input: '{
+      "id": "mosip.id.update",
       "registrationId":"$RID$",
       "UIN":"$ID:AddIdentity_ValidParameters_toDeactivate_ReactivateUIN_smoke_Pos_UIN$",
       "email": "$ID:AddIdentity_ValidParameters_toDeactivate_ReactivateUIN_smoke_Pos_EMAIL$",
+      "phone": "$ID:AddIdentity_ValidParameters_toDeactivate_ReactivateUIN_smoke_Pos_PHONE$",
+      "postalCode": "14022",
       "status": "ACTIVATED",
       "dateOfBirth": "1970/07/08",
       "requesttime": "$TIMESTAMP$",
