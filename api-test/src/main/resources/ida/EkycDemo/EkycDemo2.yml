@@ -2,7 +2,7 @@ EkycDemo:
   auth_EkycDemo_Auth_With_Valid_UIN_Smoke:
       endPoint: /idauthentication/v1/kyc/$ekycPartnerKeyURL$
       uniqueIdentifier: TC_IDA_EkycDemo_01
-      description: Ekyc demo auth using dob with UIN
+      description: Verify that eKYC demo authentication works successfully with a valid UIN
       role: resident
       kycFields: ["gender"]
       restMethod: post
@@ -25,10 +25,10 @@ EkycDemo:
       output: '{
   "kycStatus": "true"
 }'
-  auth_EkycDemo_Auth_With_edited_updated_policy_UIN_Smoke:
+  auth_EkycDemo_Auth_With_edited_updated_policy_UIN:
       endPoint: /idauthentication/v1/kyc/$ekycPartnerKeyURL$
       uniqueIdentifier: TC_IDA_EkycDemo_02
-      description: Ekyc demo auth with dob using UIN
+      description: Verify that eKYC demo authentication works successfully when using a UIN with an edited or updated policy
       role: resident
       kycFields: ["gender"]
       restMethod: post
@@ -51,10 +51,10 @@ EkycDemo:
       output: '{
   "kycStatus": "true"
 }'
-  auth_EkycDemo_Auth_With_draft_uin_Smoke:
+  auth_EkycDemo_Auth_With_draft_uin:
       endPoint: /idauthentication/v1/kyc/$ekycPartnerKeyURL$
       uniqueIdentifier: TC_IDA_EkycDemo_03
-      description: Ekyc demo auth with dob using drafted UIN
+      description: Verify that eKYC demo authentication fails or returns an appropriate error when a draft UIN is used
       role: resident
       kycFields: ["name"]
       restMethod: post
@@ -77,13 +77,14 @@ EkycDemo:
       output: '{
   "kycStatus": "true"
 }'
-  auth_EkycDemo_Auth_With_Valid_VID_Smoke:
+  auth_EkycDemo_Auth_With_Valid_VID:
       endPoint: /idauthentication/v1/kyc/$ekycPartnerKeyURL$
       uniqueIdentifier: TC_IDA_EkycDemo_04
-      description: Ekyc demo auth with dob using VID
+      description: Verify that eKYC demo authentication succeeds when a valid VID is provided
       role: resident
       kycFields: ["name"]
       restMethod: post
+      additionalDependencies: TC_DependentModule_IdRepo_62
       inputTemplate: ida/EkycDemo/EkycDemo
       outputTemplate: ida/EkycDemo/EkycDemoResult
       input: '{
@@ -107,7 +108,7 @@ EkycDemo:
   auth_EkycDemo_Auth_With_Invalid_Past_Timestamp_UIN_Neg:
       endPoint: /idauthentication/v1/kyc/$ekycPartnerKeyURL$
       uniqueIdentifier: TC_IDA_EkycDemo_05
-      description: Ekyc demo auth with past time stamp using UIN
+      description: Verify that eKYC demo authentication fails or returns an appropriate error when a UIN is provided with an invalid past timestamp
       role: resident
       restMethod: post
       inputTemplate: ida/EkycDemo/EkycDemo
@@ -133,7 +134,7 @@ EkycDemo:
   auth_EkycDemo_Auth_With_Invalid_Future_Timestamp_UIN_Neg:
       endPoint: /idauthentication/v1/kyc/$ekycPartnerKeyURL$
       uniqueIdentifier: TC_IDA_EkycDemo_06
-      description: Ekyc demo auth with dob,future timestamp and with UIN
+      description: Verify that eKYC demo authentication fails or returns an appropriate error when a UIN is provided with an invalid future timestamp
       role: resident
       restMethod: post
       inputTemplate: ida/EkycDemo/EkycDemo
@@ -159,7 +160,7 @@ EkycDemo:
   auth_EkycDemo_Auth_With_Invalid_Empty_Timestamp_UIN_Neg:
       endPoint: /idauthentication/v1/kyc/$ekycPartnerKeyURL$
       uniqueIdentifier: TC_IDA_EkycDemo_07
-      description: Ekyc demo auth using dob,empty timestamp and with UIN
+      description: Verify that eKYC demo authentication fails an appropriate error when a UIN is provided with an empty timestamp
       role: resident
       restMethod: post
       inputTemplate: ida/EkycDemo/EkycDemo
@@ -185,9 +186,10 @@ EkycDemo:
   auth_EkycDemo_Auth_With_Invalid_Past_Timestamp_VID_Neg:
       endPoint: /idauthentication/v1/kyc/$ekycPartnerKeyURL$
       uniqueIdentifier: TC_IDA_EkycDemo_08
-      description: Ekyc demo auth using dob,past time stamp and with VID
+      description: Verify that eKYC demo authentication fails an appropriate error when a VID is provided with an invalid past timestamp
       role: resident
       restMethod: post
+      additionalDependencies: TC_DependentModule_IdRepo_06
       inputTemplate: ida/EkycDemo/EkycDemo
       outputTemplate: ida/EkycDemo/EkycDemoResult
       input: '{
@@ -211,9 +213,10 @@ EkycDemo:
   auth_EkycDemo_Auth_With_Invalid_Future_Timestamp_VID_Neg:
       endPoint: /idauthentication/v1/kyc/$ekycPartnerKeyURL$
       uniqueIdentifier: TC_IDA_EkycDemo_09
-      description: Ekyc demo auth using dob,future timestamp and with VID
+      description: Verify that eKYC demo authentication fails when a VID is provided with an invalid future timestamp
       role: resident
       restMethod: post
+      additionalDependencies: TC_DependentModule_IdRepo_06
       inputTemplate: ida/EkycDemo/EkycDemo
       outputTemplate: ida/EkycDemo/EkycDemoResult
       input: '{
@@ -237,9 +240,10 @@ EkycDemo:
   auth_EkycDemo_Auth_With_Invalid_Empty_Timestamp_VID_Neg:
       endPoint: /idauthentication/v1/kyc/$ekycPartnerKeyURL$
       uniqueIdentifier: TC_IDA_EkycDemo_10
-      description: Ekyc demo auth using dob,empty timestamp and with VID
+      description: Verify that eKYC demo authentication fails when a VID is provided with an invalid future timestamp
       role: resident
       restMethod: post
+      additionalDependencies: TC_DependentModule_IdRepo_06
       inputTemplate: ida/EkycDemo/EkycDemo
       outputTemplate: ida/EkycDemo/EkycDemoResult
       input: '{
@@ -263,7 +267,7 @@ EkycDemo:
   auth_EkycDemo_Auth_With_InValid_uin_DOB:
       endPoint: /idauthentication/v1/kyc/$ekycPartnerKeyURL$
       uniqueIdentifier: TC_IDA_EkycDemo_11
-      description: Ekyc demo auth using invalid dob with valid UIN
+      description: Verify that eKYC demo authentication fails when an invalid UIN or DOB is provided
       role: resident
       restMethod: post
       inputTemplate: ida/EkycDemo/EkycDemo
@@ -293,9 +297,10 @@ EkycDemo:
   auth_EkycDemo_Auth_With_InValid_DOB_With_VID:
       endPoint: /idauthentication/v1/kyc/$ekycPartnerKeyURL$
       uniqueIdentifier: TC_IDA_EkycDemo_12
-      description: Ekyc demo auth using invalid dob with valid VID
+      description: Verify that eKYC demo authentication fails when an invalid DOB is provided along with a VID
       role: resident
       restMethod: post
+      additionalDependencies: TC_DependentModule_IdRepo_06
       inputTemplate: ida/EkycDemo/EkycDemo
       outputTemplate: ida/EkycDemo/error
       input: '{
@@ -320,10 +325,10 @@ EkycDemo:
     }
   ]
 }'
-  auth_EkycDemo_Auth_With_email_Valid_UIN_Smoke:
+  auth_EkycDemo_Auth_With_email_Valid_UIN:
       endPoint: /idauthentication/v1/kyc/$ekycPartnerKeyURL$
       uniqueIdentifier: TC_IDA_EkycDemo_13
-      description: Ekyc demo auth using email and with valid UIN
+      description: Verify that eKYC demo authentication succeeds when a valid email is provided along with a valid UIN
       role: resident
       kycFields: ["dob"]
       restMethod: post
@@ -349,10 +354,11 @@ EkycDemo:
   auth_EkycDemo_Auth_With_Email_Valid_VID_Smoke:
       endPoint: /idauthentication/v1/kyc/$ekycPartnerKeyURL$
       uniqueIdentifier: TC_IDA_EkycDemo_14
-      description: Ekyc demo auth using email with VID
+      description: Verify that eKYC demo authentication succeeds when a valid email is provided along with a valid VID
       role: resident
       kycFields: ["dob"]
       restMethod: post
+      additionalDependencies: TC_DependentModule_IdRepo_06
       inputTemplate: ida/EkycDemo/EkycDemo
       outputTemplate: ida/EkycDemo/EkycDemoResult
       input: '{
@@ -375,7 +381,7 @@ EkycDemo:
   auth_EkycDemo_Auth_With_InValid_uin_email:
       endPoint: /idauthentication/v1/kyc/$ekycPartnerKeyURL$
       uniqueIdentifier: TC_IDA_EkycDemo_15
-      description: Ekyc demo auth using invalid email and with valid UIN
+      description: Verify that eKYC demo authentication fails when an invalid UIN or email is provided
       role: resident
       restMethod: post
       inputTemplate: ida/EkycDemo/EkycDemo
@@ -405,9 +411,10 @@ EkycDemo:
   auth_EkycDemo_Auth_With_InValid_email_With_VID:
       endPoint: /idauthentication/v1/kyc/$ekycPartnerKeyURL$
       uniqueIdentifier: TC_IDA_EkycDemo_16
-      description: Ekyc demo auth using invalid email with valid VID
+      description: Verify that eKYC demo authentication fails when an invalid email is provided along with a VID
       role: resident
       restMethod: post
+      additionalDependencies: TC_DependentModule_IdRepo_06
       inputTemplate: ida/EkycDemo/EkycDemo
       outputTemplate: ida/EkycDemo/error
       input: '{
@@ -435,21 +442,22 @@ EkycDemo:
   auth_EkycDemo_Auth_With_revoke_VID:
       endPoint: /idauthentication/v1/kyc/$ekycPartnerKeyURL$
       uniqueIdentifier: TC_IDA_EkycDemo_17
-      description: Ekyc demo auth with revoked VID
+      description: Verify that eKYC demo authentication fails when a revoked VID is used
       role: resident
       restMethod: post
+      additionalDependencies: TC_DependentModule_IdRepo_24,TC_IDA_RevokeVID_01
       inputTemplate: ida/EkycDemo/EkycDemo
       outputTemplate: ida/EkycDemo/error
       input: '{
         "requestTime": "$TIMESTAMP$",
-        "individualId": "$ID:GenerateVID_torevoke_audit_Smoke_sid_vid$",
+        "individualId": "$ID:GenerateVID_to_revoke_smoke_Perpetual_sid_vid$",
         "transactionId": "1234567890",
         "individualIdType": "VID",
         "bio": false,
         "demo": true,
         "otp": false,
         "identityRequest":{
-    "value": "$ID:AddIdentity_ValidParameters_VID_revoke_auditLog_smoke_Pos_EMAIL$",
+    "value": "$ID:AddIdentity_create_vid_using_uin_for_revoke_smoke_Pos_EMAIL$",
 "key": "emailId",
     "identityRequestTemplate": "ida/DemoAuth/DemoIdentityEncrypt"
     }
@@ -462,10 +470,10 @@ EkycDemo:
     }
   ]
 }'
-  auth_EkycDemo_Auth_With_gender_Valid_UIN_Smoke:
+  auth_EkycDemo_Auth_With_gender_Valid_UIN:
       endPoint: /idauthentication/v1/kyc/$ekycPartnerKeyURL$
       uniqueIdentifier: TC_IDA_EkycDemo_18
-      description: Ekyc demo auth using gender with UIN
+      description: Verify that eKYC demo authentication succeeds when a valid gender is provided along with a valid UIN
       role: resident
       kycFields: ["email"]
       restMethod: post
@@ -492,13 +500,14 @@ EkycDemo:
       output: '{
   "kycStatus": "true"
 }'
-  auth_EkycDemo_Auth_With_gender_Valid_VID_Smoke:
+  auth_EkycDemo_Auth_With_gender_Valid_VID:
       endPoint: /idauthentication/v1/kyc/$ekycPartnerKeyURL$
       uniqueIdentifier: TC_IDA_EkycDemo_19
-      description: Ekyc demo auth using gender with VID
+      description: Verify that eKYC demo authentication succeeds when a valid gender is provided along with a valid VID
       role: resident
       kycFields: ["email"]
       restMethod: post
+      additionalDependencies: TC_DependentModule_IdRepo_06 
       inputTemplate: ida/EkycDemo/EkycDemo
       outputTemplate: ida/EkycDemo/EkycDemoResult
       input: '{
@@ -525,9 +534,10 @@ EkycDemo:
   auth_EkycDemo_Auth_With_InValid_gender_With_VID:
       endPoint: /idauthentication/v1/kyc/$ekycPartnerKeyURL$
       uniqueIdentifier: TC_IDA_EkycDemo_20
-      description: Ekyc demo auth using invalid gender with valid VID
+      description: Verify that eKYC demo authentication fails when an invalid gender is provided along with a VID
       role: resident
       restMethod: post
+      additionalDependencies: TC_DependentModule_IdRepo_06
       inputTemplate: ida/EkycDemo/EkycDemo
       outputTemplate: ida/EkycDemo/error
       input: '{
@@ -559,14 +569,14 @@ EkycDemo:
   auth_EkycDemo_Auth_With_InValid_uin_gender:
       endPoint: /idauthentication/v1/kyc/$ekycPartnerKeyURL$
       uniqueIdentifier: TC_IDA_EkycDemo_21
-      description: Ekyc demo auth with invalid gender with valid UIN
+      description: Verify that eKYC demo authentication fails when an invalid UIN or invalid gender is provided
       role: resident
       restMethod: post
       inputTemplate: ida/EkycDemo/EkycDemo
       outputTemplate: ida/EkycDemo/error
       input: '{
         "requestTime": "$TIMESTAMP$",
-        "individualId": "$ID:AddIdentity_Positive_demoauth_name_smoke_UIN$",
+        "individualId": "$ID:AddIdentity_Positive_demoauth_name_UIN$",
         "transactionId": "1234567890",
         "individualIdType": "UIN",
         "bio": false,
@@ -590,10 +600,10 @@ EkycDemo:
     }
   ]
 }'
-  auth_EkycDemo_Auth_With_name_Valid_UIN_Smoke:
+  auth_EkycDemo_Auth_With_name_Valid_UIN:
       endPoint: /idauthentication/v1/kyc/$ekycPartnerKeyURL$
       uniqueIdentifier: TC_IDA_EkycDemo_22
-      description: Ekyc demo auth with valid name with UIN
+      description: Verify that eKYC demo authentication succeeds when a valid name is provided along with a valid UIN
       role: resident
       kycFields: ["dob"]
       restMethod: post
@@ -601,7 +611,7 @@ EkycDemo:
       outputTemplate: ida/EkycDemo/EkycDemoResult
       input: '{
         "requestTime": "$TIMESTAMP$",
-        "individualId": "$ID:AddIdentity_Positive_demoauth_name_smoke_UIN$",
+        "individualId": "$ID:AddIdentity_Positive_demoauth_name_UIN$",
         "transactionId": "1234567890",
         "individualIdType": "UIN",
         "bio": false,
@@ -620,10 +630,10 @@ EkycDemo:
       output: '{
   "kycStatus": "true"
 }'
-  auth_EkycDemo_Auth_With_Infant_Valid_UIN_Smoke:
+  auth_EkycDemo_Auth_With_Infant_Valid_UIN:
       endPoint: /idauthentication/v1/kyc/$ekycPartnerKeyURL$
       uniqueIdentifier: TC_IDA_EkycDemo_23
-      description: Ekyc demo auth with infant UIN
+      description: Verify that eKYC demo authentication succeeds for an infant when a valid UIN is provided
       role: resident
       kycFields: ["dob"]
       restMethod: post
@@ -650,13 +660,14 @@ EkycDemo:
       output: '{
   "kycStatus": "true"
 }'
-  auth_EkycDemo_Auth_With_name_Valid_VID_Smoke:
+  auth_EkycDemo_Auth_With_name_Valid_VID:
       endPoint: /idauthentication/v1/kyc/$ekycPartnerKeyURL$
       uniqueIdentifier: TC_IDA_EkycDemo_24
-      description: Ekyc demo auth with name and with VID
+      description: Verify that eKYC demo authentication succeeds when a valid name is provided along with a valid VID
       role: resident
       kycFields: ["dob"]
       restMethod: post
+      additionalDependencies: TC_DependentModule_IdRepo_06
       inputTemplate: ida/EkycDemo/EkycDemo
       outputTemplate: ida/EkycDemo/EkycDemoResult
       input: '{
@@ -683,7 +694,7 @@ EkycDemo:
   auth_EkycDemo_Auth_With_InValid_uin_name:
       endPoint: /idauthentication/v1/kyc/$ekycPartnerKeyURL$
       uniqueIdentifier: TC_IDA_EkycDemo_25
-      description: Ekyc demo auth with invalid name value and with valid UIN
+      description: Verify that eKYC demo authentication fails when an invalid UIN or invalid name is provided
       role: resident
       restMethod: post
       inputTemplate: ida/EkycDemo/EkycDemo
@@ -717,9 +728,10 @@ EkycDemo:
   auth_EkycDemo_Auth_With_InValid_name_With_VID:
       endPoint: /idauthentication/v1/kyc/$ekycPartnerKeyURL$
       uniqueIdentifier: TC_IDA_EkycDemo_26
-      description: Ekyc demo auth with invalid name with valid VID
+      description: Verify that eKYC demo authentication fails when an invalid name is provided along with a VID
       role: resident
       restMethod: post
+      additionalDependencies: TC_DependentModule_IdRepo_06
       inputTemplate: ida/EkycDemo/EkycDemo
       outputTemplate: ida/EkycDemo/error
       input: '{
@@ -748,10 +760,10 @@ EkycDemo:
     }
   ]
 }'
-  auth_EkycDemo_Auth_With_name1_Valid_UIN_Smoke:
+  auth_EkycDemo_Auth_With_name1_Valid_UIN:
       endPoint: /idauthentication/v1/kyc/$ekycPartnerKeyURL$
       uniqueIdentifier: TC_IDA_EkycDemo_27
-      description: Ekyc demo auth with valid name and UIN
+      description: Verify that eKYC demo authentication succeeds when a valid secondary name1 is provided along with a valid UIN
       role: resident
       kycFields: ["gender"]
       restMethod: post
@@ -759,7 +771,7 @@ EkycDemo:
       outputTemplate: ida/EkycDemo/EkycDemoResult
       input: '{
         "requestTime": "$TIMESTAMP$",
-        "individualId": "$ID:AddIdentity_Positive_demoauth_name_smoke_UIN$",
+        "individualId": "$ID:AddIdentity_Positive_demoauth_name_UIN$",
         "transactionId": "1234567890",
         "individualIdType": "UIN",
         "bio": false,
@@ -778,10 +790,10 @@ EkycDemo:
       output: '{
   "kycStatus": "true"
 }'
-  auth_EkycDemo_Auth_With_name2_Valid_titleFromAdmin_UIN_Smoke:
+  auth_EkycDemo_Auth_With_name2_Valid_titleFromAdmin_UIN:
       endPoint: /idauthentication/v1/kyc/$ekycPartnerKeyURL$
       uniqueIdentifier: TC_IDA_EkycDemo_28
-      description: Ekyc demo auth with valid name and valid UIN
+      description: Verify that eKYC demo authentication succeeds when a valid secondary name2 and title from admin are provided along with a valid UIN
       role: resident
       kycFields: ["gender"]
       restMethod: post
@@ -789,7 +801,7 @@ EkycDemo:
       outputTemplate: ida/EkycDemo/EkycDemoResult
       input: '{
         "requestTime": "$TIMESTAMP$",
-        "individualId": "$ID:AddIdentity_Positive_demoauth_name_smoke_UIN$",
+        "individualId": "$ID:AddIdentity_Positive_demoauth_name_UIN$",
         "transactionId": "1234567890",
         "individualIdType": "UIN",
         "bio": false,
@@ -808,10 +820,10 @@ EkycDemo:
       output: '{
   "kycStatus": "true"
 }'
-  auth_EkycDemo_Auth_With_name3_Valid_titleFromAdmin_UIN_Smoke:
+  auth_EkycDemo_Auth_With_name3_Valid_titleFromAdmin_UIN:
       endPoint: /idauthentication/v1/kyc/$ekycPartnerKeyURL$
       uniqueIdentifier: TC_IDA_EkycDemo_29
-      description: Ekyc demo auth with valid name and title with valid UIN
+      description: Verify that eKYC demo authentication succeeds when a valid tertiary name3 and title from admin are provided along with a valid UIN
       role: resident
       kycFields: ["dob"]
       restMethod: post
@@ -819,7 +831,7 @@ EkycDemo:
       outputTemplate: ida/EkycDemo/EkycDemoResult
       input: '{
         "requestTime": "$TIMESTAMP$",
-        "individualId": "$ID:AddIdentity_Positive_demoauth_name_smoke_UIN$",
+        "individualId": "$ID:AddIdentity_Positive_demoauth_name_UIN$",
         "transactionId": "1234567890",
         "individualIdType": "UIN",
         "bio": false,
@@ -838,10 +850,10 @@ EkycDemo:
       output: '{
   "kycStatus": "true"
 }'
-  auth_EkycDemo_Auth_With_name4_Valid_titleFromAdmin_UIN_Smoke:
+  auth_EkycDemo_Auth_With_name4_Valid_titleFromAdmin_UIN:
       endPoint: /idauthentication/v1/kyc/$ekycPartnerKeyURL$
       uniqueIdentifier: TC_IDA_EkycDemo_30
-      description: Ekyc demo auth with valid name and title with valid UIN
+      description: Verify that eKYC demo authentication succeeds when a valid quaternary name and title from admin are provided along with a valid UIN
       role: resident
       kycFields: ["dob"]
       restMethod: post
@@ -849,7 +861,7 @@ EkycDemo:
       outputTemplate: ida/EkycDemo/EkycDemoResult
       input: '{
         "requestTime": "$TIMESTAMP$",
-        "individualId": "$ID:AddIdentity_Positive_demoauth_name_smoke_UIN$",
+        "individualId": "$ID:AddIdentity_Positive_demoauth_name_UIN$",
         "transactionId": "1234567890",
         "individualIdType": "UIN",
         "bio": false,
@@ -868,10 +880,10 @@ EkycDemo:
       output: '{
   "kycStatus": "true"
 }'
-  auth_EkycDemo_Auth_With_name5_Valid_titleFromAdmin_UIN_Smoke:
+  auth_EkycDemo_Auth_With_name5_Valid_titleFromAdmin_UIN:
       endPoint: /idauthentication/v1/kyc/$ekycPartnerKeyURL$
       uniqueIdentifier: TC_IDA_EkycDemo_31
-      description: Ekyc demo auth with name and title with valid UIN
+      description: Verify that eKYC demo authentication succeeds when a valid fifth name5 and title from admin are provided along with a valid UIN
       role: resident
       kycFields: ["dob"]
       restMethod: post
@@ -879,7 +891,7 @@ EkycDemo:
       outputTemplate: ida/EkycDemo/EkycDemoResult
       input: '{
         "requestTime": "$TIMESTAMP$",
-        "individualId": "$ID:AddIdentity_Positive_demoauth_name_smoke_UIN$",
+        "individualId": "$ID:AddIdentity_Positive_demoauth_name_UIN$",
         "transactionId": "1234567890",
         "individualIdType": "UIN",
         "bio": false,
@@ -898,10 +910,10 @@ EkycDemo:
       output: '{
   "kycStatus": "true"
 }'
-  auth_EkycDemo_Auth_With_name6_Valid_titleFromAdmin_UIN_Smoke:
+  auth_EkycDemo_Auth_With_name6_Valid_titleFromAdmin_UIN:
       endPoint: /idauthentication/v1/kyc/$ekycPartnerKeyURL$
       uniqueIdentifier: TC_IDA_EkycDemo_32
-      description: Ekyc demo auth with name and title with valid UIN
+      description: Verify that eKYC demo authentication succeeds when a valid sixth name6 and title from admin are provided along with a valid UIN
       role: resident
       kycFields: ["fullName"]
       checkErrorsOnlyInResponse: true
@@ -910,7 +922,7 @@ EkycDemo:
       outputTemplate: ida/EkycDemo/EkycDemoResult
       input: '{
         "requestTime": "$TIMESTAMP$",
-        "individualId": "$ID:AddIdentity_Positive_demoauth_name_smoke_UIN$",
+        "individualId": "$ID:AddIdentity_Positive_demoauth_name_UIN$",
         "transactionId": "1234567890",
         "individualIdType": "UIN",
         "bio": false,
@@ -929,10 +941,10 @@ EkycDemo:
       output: '{
   "kycStatus": "true"
 }'
-  auth_EkycDemo_Auth_With_name7_Valid_titleFromAdmin_UIN_Smoke:
+  auth_EkycDemo_Auth_With_name7_Valid_titleFromAdmin_UIN:
       endPoint: /idauthentication/v1/kyc/$ekycPartnerKeyURL$
       uniqueIdentifier: TC_IDA_EkycDemo_33
-      description: Ekyc demo auth with name and title with valid UIN
+      description: Verify that eKYC demo authentication succeeds when a valid seventh name7 and title from admin are provided along with a valid UIN
       role: resident
       kycFields: ["fullName"]
       checkErrorsOnlyInResponse: true
@@ -941,7 +953,7 @@ EkycDemo:
       outputTemplate: ida/EkycDemo/EkycDemoResult
       input: '{
         "requestTime": "$TIMESTAMP$",
-        "individualId": "$ID:AddIdentity_Positive_demoauth_name_smoke_UIN$",
+        "individualId": "$ID:AddIdentity_Positive_demoauth_name_UIN$",
         "transactionId": "1234567890",
         "individualIdType": "UIN",
         "bio": false,
@@ -960,17 +972,17 @@ EkycDemo:
       output: '{
   "kycStatus": "true"
 }'
-  auth_EkycDemo_Auth_With_InValid_partner_uin_Smoke:
+  auth_EkycDemo_Auth_With_InValid_partner_uin:
       endPoint: /idauthentication/v1/kyc/zY22wDwZxwMdlxTZRWrM50m4zBoOiMyUGY/45362768/27822828287
       uniqueIdentifier: TC_IDA_EkycDemo_34
-      description: Ekyc demo auth with invalid partner with valid UIN
+      description: Verify that eKYC demo authentication fails when an invalid partner UIN is provided
       role: resident
       restMethod: post
       inputTemplate: ida/EkycDemo/EkycDemo
       outputTemplate: ida/EkycDemo/error
       input: '{
         "requestTime": "$TIMESTAMP$",
-        "individualId": "$ID:AddIdentity_Positive_demoauth_name_smoke_UIN$",
+        "individualId": "$ID:AddIdentity_Positive_demoauth_name_UIN$",
         "transactionId": "1234567890",
         "individualIdType": "UIN",
         "bio": false,
@@ -997,10 +1009,10 @@ EkycDemo:
       ],
         "kycStatus": false
 }'
-  auth_EkycDemo_Auth_With_age_Valid_UIN_Smoke:
+  auth_EkycDemo_Auth_With_age_Valid_UIN:
       endPoint: /idauthentication/v1/kyc/$ekycPartnerKeyURL$
       uniqueIdentifier: TC_IDA_EkycDemo_35
-      description: Ekyc demo auth with age and valid UIN
+      description: Verify that eKYC demo authentication succeeds when a valid age is provided along with a valid UIN
       role: resident
       kycFields: ["fullName"]
       checkErrorsOnlyInResponse: true
@@ -1024,13 +1036,14 @@ EkycDemo:
       output: '{
   "kycStatus": "true"
 }'
-  auth_EkycDemo_Auth_With_age_Valid_VID_Smoke:
+  auth_EkycDemo_Auth_With_age_Valid_VID:
       endPoint: /idauthentication/v1/kyc/$ekycPartnerKeyURL$
       uniqueIdentifier: TC_IDA_EkycDemo_36
-      description: Ekyc demo auth with age and VID
+      description: Verify that eKYC demo authentication succeeds when a valid age is provided along with a valid VID
       role: resident
       kycFields: ["email"]
       restMethod: post
+      additionalDependencies: TC_DependentModule_IdRepo_06
       inputTemplate: ida/EkycDemo/EkycDemo
       outputTemplate: ida/EkycDemo/EkycDemoResult
       input: '{
@@ -1053,7 +1066,7 @@ EkycDemo:
   auth_EkycDemo_Auth_With_age_uin_InValid:
       endPoint: /idauthentication/v1/kyc/$ekycPartnerKeyURL$
       uniqueIdentifier: TC_IDA_EkycDemo_37
-      description: Ekyc demo auth with invalid age value with UIN
+      description: Verify that eKYC demo authentication fails when an invalid age or invalid UIN is provided
       role: resident
       restMethod: post
       inputTemplate: ida/EkycDemo/EkycDemo
@@ -1083,9 +1096,10 @@ EkycDemo:
   auth_EkycDemo_Auth_With_Invalid_age_vid:
       endPoint: /idauthentication/v1/kyc/$ekycPartnerKeyURL$
       uniqueIdentifier: TC_IDA_EkycDemo_38
-      description: Skyc demo auth with invalid age value with valid VID
+      description: Verify that eKYC demo authentication fails when an invalid age is provided along with a VID
       role: resident
       restMethod: post
+      additionalDependencies: TC_DependentModule_IdRepo_06
       inputTemplate: ida/EkycDemo/EkycDemo
       outputTemplate: ida/EkycDemo/error
       input: '{
@@ -1110,10 +1124,10 @@ EkycDemo:
     }
   ]
 }'
-  auth_EkycDemo_Auth_With_phone_Valid_UIN_Smoke:
+  auth_EkycDemo_Auth_With_phone_Valid_UIN:
       endPoint: /idauthentication/v1/kyc/$ekycPartnerKeyURL$
       uniqueIdentifier: TC_IDA_EkycDemo_39
-      description: Ekyc demo auth with phone and valid UIN
+      description: Verify that eKYC demo authentication succeeds when a valid phone number is provided along with a valid UIN
       role: resident
       kycFields: ["email"]
       restMethod: post
@@ -1136,13 +1150,14 @@ EkycDemo:
       output: '{
   "kycStatus": "true"
 }'
-  auth_EkycDemo_Auth_With_phone_Valid_VID_Smoke:
+  auth_EkycDemo_Auth_With_phone_Valid_VID:
       endPoint: /idauthentication/v1/kyc/$ekycPartnerKeyURL$
       uniqueIdentifier: TC_IDA_EkycDemo_40
-      description: Ekyc demo auth with valid phone with VID
+      description: Verify that eKYC demo authentication succeeds when a valid phone number is provided along with a valid VID
       role: resident
       kycFields: ["email"]
       restMethod: post
+      additionalDependencies: TC_DependentModule_IdRepo_06
       inputTemplate: ida/EkycDemo/EkycDemo
       outputTemplate: ida/EkycDemo/EkycDemoResult
       input: '{
@@ -1165,7 +1180,7 @@ EkycDemo:
   auth_EkycDemo_Auth_With_phone_uin_InValid:
       endPoint: /idauthentication/v1/kyc/$ekycPartnerKeyURL$
       uniqueIdentifier: TC_IDA_EkycDemo_41
-      description: Ekyc demo auth with invalid phone with valid UIN
+      description: Verify that eKYC demo authentication fails when an invalid phone number or invalid UIN is provided
       role: resident
       restMethod: post
       inputTemplate: ida/EkycDemo/EkycDemo
@@ -1195,9 +1210,10 @@ EkycDemo:
   auth_EkycDemo_Auth_With_Invalid_phone_vid:
       endPoint: /idauthentication/v1/kyc/$ekycPartnerKeyURL$
       uniqueIdentifier: TC_IDA_EkycDemo_42
-      description: Ekyc demo auth with invalid phone and valid VID
+      description: Verify that eKYC demo authentication fails when an invalid phone number is provided along with a VID
       role: resident
       restMethod: post
+      additionalDependencies: TC_DependentModule_IdRepo_06
       inputTemplate: ida/EkycDemo/EkycDemo
       outputTemplate: ida/EkycDemo/error
       input: '{
@@ -1225,9 +1241,10 @@ EkycDemo:
   auth_EkycDemo_DOB_Invalid_transactionId_Pos_vid_Neg:
       endPoint: /idauthentication/v1/kyc/$ekycPartnerKeyURL$
       uniqueIdentifier: TC_IDA_EkycDemo_43
-      description: Ekyc demo auth with DOB,invalid transactionId and valid VID
+      description: Verify that eKYC demo authentication succeeds with a valid transaction ID but fails when a VID is invalid using DOB authentication
       role: resident
       restMethod: post
+      additionalDependencies: TC_DependentModule_IdRepo_06
       inputTemplate: ida/EkycDemo/EkycDemo
       outputTemplate: ida/EkycDemo/EkycDemoResult
       input: '{
@@ -1250,9 +1267,10 @@ EkycDemo:
   auth_EkycDemo_DOB_blank_transactionId_vid_neg:
       endPoint: /idauthentication/v1/kyc/$ekycPartnerKeyURL$
       uniqueIdentifier: TC_IDA_EkycDemo_44
-      description: Ekyc demo auth with dob,blank transactionId and with valid VID
+      description: Verify that eKYC demo authentication fails when the transaction ID is blank and a VID is provided using DOB authentication
       role: resident
       restMethod: post
+      additionalDependencies: TC_DependentModule_IdRepo_06
       inputTemplate: ida/EkycDemo/EkycDemo
       outputTemplate: ida/EkycDemo/EkycDemoResult
       input: '{
@@ -1275,9 +1293,10 @@ EkycDemo:
   auth_EkycDemo_without_individual_type_ID_Pos_vid:
       endPoint: /idauthentication/v1/kyc/$ekycPartnerKeyURL$
       uniqueIdentifier: TC_IDA_EkycDemo_45
-      description: Ekyc demo auth without individualId type and with valid VID
+      description: Verify that eKYC demo authentication succeeds when the individual ID type is not provided and a valid VID is used
       role: resident
       restMethod: post
+      additionalDependencies: TC_DependentModule_IdRepo_62
       inputTemplate: ida/EkycDemo/EkycDemo
       outputTemplate: ida/EkycDemo/EkycDemoResult
       input: '{
@@ -1300,7 +1319,7 @@ EkycDemo:
   auth_EkycDemo_missing_individual_ID:
       endPoint: /idauthentication/v1/kyc/$ekycPartnerKeyURL$
       uniqueIdentifier: TC_IDA_EkycDemo_46
-      description: Ekyc demo auth with missing individualId and with valid VID
+      description: Verify that eKYC demo authentication fails when the individual ID is missing
       role: resident
       restMethod: post
       inputTemplate: ida/EkycDemo/EkycDemo
@@ -1330,7 +1349,7 @@ EkycDemo:
   auth_EkycDemo_blank_individual_ID:
       endPoint: /idauthentication/v1/kyc/$ekycPartnerKeyURL$
       uniqueIdentifier: TC_IDA_EkycDemo_47
-      description: Ekyc demo auth with blank individualId and valid VID
+      description: Verify that eKYC demo authentication fails when the individual ID is left blank
       role: resident
       restMethod: post
       inputTemplate: ida/EkycDemo/EkycDemo
@@ -1357,12 +1376,13 @@ EkycDemo:
       ],
         "kycStatus": false
 }'
-  auth_EkycDemo_DOB_Unlock_Valid_Smoke_UIN_Neg:
+  auth_EkycDemo_DOB_Unlock_Valid_UIN_Neg:
       endPoint: /idauthentication/v1/kyc/$ekycPartnerKeyURL$
       uniqueIdentifier: TC_IDA_EkycDemo_48
-      description: Ekyc demo auth with locked UIN,unlocked demo auth and with valid UIN
+      description: Verify that eKYC demo authentication fails when attempting DOB-based unlock with a valid UIN under negative conditions
       role: resident
       restMethod: post
+      additionalDependencies: TC_IDA_AuthInternalLock_04
       inputTemplate: ida/EkycDemo/EkycDemo
       outputTemplate: ida/EkycDemo/error
       input: '{
@@ -1387,12 +1407,13 @@ EkycDemo:
       ],
         "kycStatus": false
 }'
-  auth_EkycDemo_DOB_Lock_Permanent_Valid_Smoke_UIN_Pos:
+  auth_EkycDemo_DOB_Lock_Permanent_Valid_UIN_Pos:
       endPoint: /idauthentication/v1/kyc/$ekycPartnerKeyURL$
       uniqueIdentifier: TC_IDA_EkycDemo_49
-      description: Ekyc demo auth with permanently locked UIN
+      description: Verify that eKYC demo authentication succeeds when performing a permanent DOB-based lock with a valid UIN
       role: resident
       restMethod: post
+      additionalDependencies: TC_IDA_AuthInternalLock_06
       inputTemplate: ida/EkycDemo/EkycDemo
       outputTemplate: ida/EkycDemo/error
       input: '{
@@ -1420,10 +1441,11 @@ EkycDemo:
   auth_EkycDemo_Auth_With_Deactivated_UIN:
       endPoint: /idauthentication/v1/kyc/$ekycPartnerKeyURL$
       uniqueIdentifier: TC_IDA_EkycDemo_50
-      description: Ekyc demo auth with deactivated UIN
+      description: Verify that eKYC demo authentication fails when a deactivated UIN is used
       role: resident
       kycFields: ["gender"]
       restMethod: post
+      additionalDependencies: TC_IDA_UpdateIdentityForUin_01
       inputTemplate: ida/EkycDemo/EkycDemo
       outputTemplate: ida/EkycDemo/EkycDemoResult
       input: '{
@@ -1443,10 +1465,10 @@ EkycDemo:
       output: '{
   "kycStatus": false
 }'
-  auth_EkycDemo_Auth_Without_kyc_attribute_in_policy_Smoke:
+  auth_EkycDemo_Auth_Without_kyc_attribute_in_policy:
       endPoint: /idauthentication/v1/kyc/$UpdatedPartnerKeyURL$
       uniqueIdentifier: TC_IDA_EkycDemo_51
-      description: Ekyc demo auth without kyc attribute
+      description: Verify that eKYC demo authentication fails an appropriate error when the policy does not include the required KYC attribute
       role: resident
       restMethod: post
       inputTemplate: ida/EkycDemo/EkycDemo
@@ -1468,10 +1490,10 @@ EkycDemo:
       output: '{
   "kycStatus": "false"
 }'
-  auth_EkycDemo1_Auth_for_auditLog_Valid_UIN_Smoke:
+  auth_EkycDemo1_Auth_for_auditLog_Valid_UIN:
       endPoint: /idauthentication/v1/kyc/$ekycPartnerKeyURL$
       uniqueIdentifier: TC_IDA_DependentTc_AuthTransaction_EkycDemo_52
-      description: Ekyc demo auth for audit log using dob with UIN
+      description: Verify that eKYC demo authentication fails when attempting audit log authentication with a valid UIN
       role: resident
       kycFields: ["gender"]
       restMethod: post
@@ -1479,7 +1501,7 @@ EkycDemo:
       outputTemplate: ida/EkycDemo/EkycDemoResult
       input: '{
         "requestTime": "$TIMESTAMP$",
-        "individualId": "$ID:AddIdentity_ValidParameters_ekycAuth_auditLog_smoke_Pos_UIN$",
+        "individualId": "$ID:AddIdentity_ValidParameters_ekycAuth_auditLog_Pos_UIN$",
         "transactionId": "1234567890",
         "individualIdType": "UIN",
         "bio": false,
@@ -1497,14 +1519,14 @@ EkycDemo:
   auth_EkycDemo2_Auth_auditLog_DOB_blank_transactionId_uin_neg:
       endPoint: /idauthentication/v1/kyc/$ekycPartnerKeyURL$
       uniqueIdentifier: TC_IDA_DependentTc_AuthTransaction_EkycDemo_53
-      description: Ekyc demo auth for audit log with blank transactionId and with valid UIN
+      description: Verify that eKYC demo authentication fails when performing audit log DOB authentication with a blank transaction ID and an invalid UIN
       role: resident
       restMethod: post
       inputTemplate: ida/EkycDemo/EkycDemo
       outputTemplate: ida/EkycDemo/EkycDemoResult
       input: '{
         "requestTime": "$TIMESTAMP$",
-        "individualId": "$ID:AddIdentity_ValidParameters_ekycAuth_fail_auditLog_smoke_Pos_UIN$",
+        "individualId": "$ID:AddIdentity_ValidParameters_ekycAuth_fail_auditLog_Pos_UIN$",
         "transactionId": "",
         "individualIdType": "UIN",
         "bio": false,

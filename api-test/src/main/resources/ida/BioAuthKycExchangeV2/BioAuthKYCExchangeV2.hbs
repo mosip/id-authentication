@@ -1,0 +1,39 @@
+{
+  "id": "{{id}}",
+  "version": "{{version}}",
+  "individualId": "{{individualId}}",
+  "individualIdType": "{{individualIdType}}",
+  "transactionID": "{{transactionID}}",
+  "requestTime": "{{requestTime}}",
+  "kycToken": "{{kycToken}}",
+  "locales": [
+      {{#each locales}}
+            "{{localesValue}}"
+          {{#unless @last}},{{/unless}}
+      	{{/each}}
+      ],
+  "respType": "{{respType}}",
+  "metadata": {},
+  "verifiedConsentedClaims": [
+    {
+      "verification": {
+        "trust_framework": {
+          "value": "mosip_trust_framework"
+        },
+        "time": {
+          "max_age": "3600"
+        }
+      },
+      "claims": {
+        "given_name": null,
+        "family_name": null,
+        "birthdate": null,
+        "gender": null
+      }
+    }
+  ],
+  "unVerifiedConsentedClaims": {
+    "email": null,
+    "phone_number": null
+  }
+}

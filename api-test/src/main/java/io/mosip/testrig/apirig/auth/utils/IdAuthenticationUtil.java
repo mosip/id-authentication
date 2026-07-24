@@ -1,11 +1,15 @@
 package io.mosip.testrig.apirig.auth.utils;
 
+import java.util.ArrayList;
+import java.util.List;
+
 import org.apache.log4j.Level;
 import org.apache.log4j.Logger;
 import org.json.JSONArray;
 import org.testng.SkipException;
 
 import io.mosip.testrig.apirig.auth.testrunner.MosipTestRunner;
+import io.mosip.testrig.apirig.dbaccess.DBManager;
 import io.mosip.testrig.apirig.dto.TestCaseDTO;
 import io.mosip.testrig.apirig.testrunner.BaseTestCase;
 import io.mosip.testrig.apirig.utils.AdminTestUtil;
@@ -13,6 +17,7 @@ import io.mosip.testrig.apirig.utils.ConfigManager;
 import io.mosip.testrig.apirig.utils.GlobalConstants;
 import io.mosip.testrig.apirig.utils.JWKKeyUtil;
 import io.mosip.testrig.apirig.utils.KeycloakUserManager;
+import io.mosip.testrig.apirig.utils.PartnerRegistration;
 import io.mosip.testrig.apirig.utils.SkipTestCaseHandler;
 
 public class IdAuthenticationUtil extends AdminTestUtil {
@@ -20,6 +25,8 @@ public class IdAuthenticationUtil extends AdminTestUtil {
 	private static final Logger logger = Logger.getLogger(IdAuthenticationUtil.class);
 	public static String genRid1 = "27847" + generateRandomNumberString(10);
 	public static String randomString = generateRandomNumberString(6) + generateRandomNumberString(3);
+	
+	public static List<String> testCasesInRunScope = new ArrayList<>();
 
 	public static void setLogLevel() {
 		if (IdAuthConfigManager.IsDebugEnabled())
@@ -30,11 +37,23 @@ public class IdAuthenticationUtil extends AdminTestUtil {
 	
 	public static String isTestCaseValidForExecution(TestCaseDTO testCaseDTO) {
 		String testCaseName = testCaseDTO.getTestCaseName();
+		currentTestCaseName = testCaseName;
 		
 		int indexof = testCaseName.indexOf("_");
 		String modifiedTestCaseName = testCaseName.substring(indexof + 1);
 
 		addTestCaseDetailsToMap(modifiedTestCaseName, testCaseDTO.getUniqueIdentifier());
+		
+		if (!testCasesInRunScope.isEmpty()
+				&& testCasesInRunScope.contains(testCaseDTO.getUniqueIdentifier()) == false) {
+			throw new SkipException(GlobalConstants.NOT_IN_RUN_SCOPE_MESSAGE);
+		}
+		
+		// Handle extra workflow dependencies
+		if (testCaseDTO != null && testCaseDTO.getAdditionalDependencies() != null
+				&& AdminTestUtil.generateDependency == true) {
+			addAdditionalDependencies(testCaseDTO);
+		}
 
 		if (MosipTestRunner.skipAll == true) {
 			throw new SkipException(GlobalConstants.PRE_REQUISITE_FAILED_MESSAGE);
@@ -54,6 +73,8 @@ public class IdAuthenticationUtil extends AdminTestUtil {
 						|| testCaseName.contains("_MultiFactorAuth_") || testCaseName.contains("_DemoAuth")
 						|| testCaseName.contains("_EkycDemo_"))
 				&& (!isElementPresent(globalRequiredFields, individualBiometrics))) {
+			throw new SkipException(GlobalConstants.FEATURE_NOT_SUPPORTED_MESSAGE);
+		} else if (testCaseName.startsWith("auth_") && testCaseName.contains("_DemoAuthDelegated") || testCaseName.contains("_DemoAuthKycExchange")) {
 			throw new SkipException(GlobalConstants.FEATURE_NOT_SUPPORTED_MESSAGE);
 		} else if (testCaseName.startsWith("auth_")
 				&& ((testCaseName.contains("_DeactivateUINs_")) || (testCaseName.contains("PublishDraft_")))
@@ -102,6 +123,14 @@ public class IdAuthenticationUtil extends AdminTestUtil {
 			jsonString = replaceKeywordWithValue(jsonString, IDAConstants.MODULENAME, BaseTestCase.certsForModule);
 		}
 		
+		if (jsonString.contains("$POLICYID_FOR_DELEGATED$")) {
+			jsonString = replaceKeywordWithValue(jsonString, "$POLICYID_FOR_DELEGATED$", policyId);
+		}
+		
+		if (jsonString.contains("$PARTNER_ID_FOR_DELEGATED$")) {
+			jsonString = replaceKeywordWithValue(jsonString, "$PARTNER_ID_FOR_DELEGATED$", PartnerRegistration.partnerId);
+		}
+		
 		if (jsonString.contains(IDAConstants.TRANSACTION_ID))
 			jsonString = replaceKeywordWithValue(jsonString, IDAConstants.TRANSACTION_ID, TRANSACTION_ID);
 		
@@ -134,6 +163,19 @@ public class IdAuthenticationUtil extends AdminTestUtil {
 		}
 		
 		return jsonString;
+	}
+	
+	public static void dbCleanUp() {
+		DBManager.executeDBQueries(ConfigManager.getKMDbUrl(), ConfigManager.getKMDbUser(), ConfigManager.getKMDbPass(),
+				ConfigManager.getKMDbSchema(),
+				getGlobalResourcePath() + "/" + "config/keyManagerCertDataDeleteQueries.txt");
+		DBManager.executeDBQueries(ConfigManager.getIdaDbUrl(), ConfigManager.getIdaDbUser(),
+				ConfigManager.getPMSDbPass(), ConfigManager.getIdaDbSchema(),
+				getGlobalResourcePath() + "/" + "config/idaCertDataDeleteQueries.txt");
+
+		DBManager.executeDBQueries(ConfigManager.getMASTERDbUrl(), ConfigManager.getMasterDbUser(),
+				ConfigManager.getMasterDbPass(), ConfigManager.getMasterDbSchema(),
+				getGlobalResourcePath() + "/" + "config/masterDataCertDataDeleteQueries.txt");
 	}
 	
 	public static String replaceKeywordValue(String jsonString, String keyword, String value) {

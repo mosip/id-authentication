@@ -2,7 +2,7 @@ AddIdentity:
    auth_AddIdentity_withValidParameters_smoke_Pos:
       endPoint: /idrepository/v1/identity/
       uniqueIdentifier: TC_DependentModule_IdRepo_01
-      description: create UIN with valid parameters
+      description: Validate that the Add Identity API successfully creates a new identity when all valid authentication parameters are provided
       role: idrepo
       restMethod: post
       inputTemplate: ida/AddIdentity/addIdentity_$LANGNUMBER$
@@ -16,9 +16,8 @@ AddIdentity:
   "UIN": "$UIN$",
   "dateOfBirth": "1970/07/08",
   "postalCode": "14022",
-  "email": "auth_AddIdentity_withValidParameters_smoke_Pos@mosip.net",
-  "phone": "7019858531",
-  "mobileno": "7019858531",
+  "email": "$EMAILVALUE$",
+  "phone": "$PHONENUMBERFORIDENTITY$",
   "referenceIdentityNumber": "6789545678878",
   "version": "v1",
   "introducerRID": "212124324784879",
@@ -29,10 +28,10 @@ AddIdentity:
       output: '{
   "status":"ACTIVATED"
 }'
-   auth_AddIdentity_withValidParameters_used_for_vid_smoke_Pos:
+   auth_AddIdentity_withValidParameters_used_for_vid_Pos:
       endPoint: /idrepository/v1/identity/
       uniqueIdentifier: TC_DependentModule_IdRepo_02
-      description: create UIN with valid parameters
+      description: Validate that the Add Identity API successfully creates an identity when valid parameters are provided and the request is used for VID generation
       role: idrepo
       restMethod: post
       inputTemplate: ida/AddIdentity/addIdentity_$LANGNUMBER$
@@ -46,9 +45,8 @@ AddIdentity:
   "UIN": "$UIN$",
   "dateOfBirth": "1970/07/08",
   "postalCode": "14022",
-  "email": "auth_AddIdentity_withValidParameters_used_for_vid_smoke_Pos@mosip.net",
-  "phone": "7019858531",
-  "mobileno": "7019858531",
+  "email": "$EMAILVALUE$",
+  "phone": "$PHONENUMBERFORIDENTITY$",
   "referenceIdentityNumber": "6789545678878",
   "version": "v1",
   "introducerRID": "212124324784879",
@@ -59,10 +57,10 @@ AddIdentity:
       output: '{
   "status":"ACTIVATED"
 }'
-   auth_AddIdentity_withValidParameters_new_uin_smoke_Pos:
+   auth_AddIdentity_withValidParameters_new_uin_Pos:
       endPoint: /idrepository/v1/identity/
       uniqueIdentifier: TC_DependentModule_IdRepo_03
-      description: create UIN with valid parameters
+      description: Validate that the Add Identity API successfully creates a new identity and generates a new UIN when valid parameters are provided
       role: idrepo
       restMethod: post
       inputTemplate: ida/AddIdentity/addIdentity_$LANGNUMBER$
@@ -76,9 +74,8 @@ AddIdentity:
   "UIN": "$UIN$",
   "dateOfBirth": "1970/07/08",
   "postalCode": "14022",
-  "email": "auth_AddIdentity_withValidParameters_smoke_Pos@mosip.net",
-  "phone": "7019858531",
-  "mobileno": "7019858531",
+  "email": "$EMAILVALUE$",
+  "phone": "$PHONENUMBERFORIDENTITY$",
   "referenceIdentityNumber": "6789545678878",
   "version": "v1",
   "introducerRID": "212124324784879",
@@ -92,7 +89,7 @@ AddIdentity:
    auth_AddIdentity_withValidParameters_Infant_smoke_Pos:
       endPoint: /idrepository/v1/identity/
       uniqueIdentifier: TC_DependentModule_IdRepo_04
-      description: create Infant UIN with valid parameters
+      description: Validate that the Add Identity API successfully creates an infant identity when valid parameters are provided
       role: idrepo
       restMethod: post
       inputTemplate: ida/AddIdentity/addIdentity_$LANGNUMBER$
@@ -106,9 +103,8 @@ AddIdentity:
   "UIN": "$UIN$",
   "dateOfBirth": "2023/09/28",
   "postalCode": "14022",
-  "email": "auth_AddIdentity_withValidParameters_smoke_Pos@mosip.net",
-  "phone": "7019858531",
-  "mobileno": "7019858531",
+  "email": "$EMAILVALUE$",
+  "phone": "$PHONENUMBERFORIDENTITY$",
   "referenceIdentityNumber": "6789545678878",
   "version": "v1",
   "introducerRID": "212124324784879",
@@ -119,10 +115,10 @@ AddIdentity:
       output: '{
   "status":"ACTIVATED"
 }'
-   auth_AddIdentity_withValidParameters_with_Infant_which_locked_smoke_Pos:
+   auth_AddIdentity_withValidParameters_with_Infant_which_locked_Pos:
       endPoint: /idrepository/v1/identity/
       uniqueIdentifier: TC_DependentModule_IdRepo_05
-      description: create Infant UIN with valid parameters
+      description: Validate that the Add Identity API successfully creates an infant identity with a locked status when valid parameters are provided
       role: idrepo
       restMethod: post
       inputTemplate: ida/AddIdentity/addIdentity_$LANGNUMBER$
@@ -136,9 +132,8 @@ AddIdentity:
   "UIN": "$UIN$",
   "dateOfBirth": "2023/09/28",
   "postalCode": "14022",
-  "email": "auth_AddIdentity_withValidParameters_smoke_Pos@mosip.net",
-  "phone": "7019858531",
-  "mobileno": "7019858531",
+  "email": "$EMAILVALUE$",
+  "phone": "$PHONENUMBERFORIDENTITY$",
   "referenceIdentityNumber": "6789545678878",
   "version": "v1",
   "introducerRID": "212124324784879",
@@ -152,7 +147,7 @@ AddIdentity:
    auth_AddIdentity_ValidParam_smoke_Pos:
       endPoint: /idrepository/v1/identity/
       uniqueIdentifier: TC_DependentModule_IdRepo_06
-      description: create UIN with valid parameters
+      description: Validate that the Add Identity API successfully processes the request when valid parameters are provided
       role: idrepo
       restMethod: post
       inputTemplate: ida/AddIdentity/addIdentity_$LANGNUMBER$
@@ -166,9 +161,8 @@ AddIdentity:
   "UIN": "$UIN$",
   "dateOfBirth": "1970/07/08",
   "postalCode": "14022",
-  "email": "auth_AddIdentity_ValidParam_smoke_Pos@mosip.net",
-  "phone": "7019858531",
-  "mobileno": "7019858531",
+  "email": "$EMAILVALUE$",
+  "phone": "$PHONENUMBERFORIDENTITY$",
   "referenceIdentityNumber": "6789545678878",
   "version": "v1",
   "introducerRID": "212124324784879",
@@ -182,7 +176,7 @@ AddIdentity:
    auth_AddIdentity_For_Otp_Auth_smoke_Pos:
       endPoint: /idrepository/v1/identity/
       uniqueIdentifier: TC_DependentModule_IdRepo_07
-      description: create UIN for OTP Authentication
+      description: Validate that the Add Identity API successfully creates an identity for OTP based authentication when valid parameters are provided
       role: idrepo
       restMethod: post
       inputTemplate: ida/AddIdentity/addIdentity_$LANGNUMBER$
@@ -196,9 +190,8 @@ AddIdentity:
   "UIN": "$UIN$",
   "dateOfBirth": "1970/07/08",
   "postalCode": "14022",
-  "email": "auth_AddIdentity_For_Otp_Auth_smoke_Pos@mosip.net",
-  "phone": "7019858531",
-  "mobileno": "7019858531",
+  "email": "$EMAILVALUE$",
+  "phone": "$PHONENUMBERFORIDENTITY$",
   "referenceIdentityNumber": "6789545678878",
   "version": "v1",
   "introducerRID": "212124324784879",
@@ -209,10 +202,10 @@ AddIdentity:
       output: '{
   "status":"ACTIVATED"
 }'
-   auth_AddIdentity_UIN_smoke:
+   auth_AddIdentity_UIN:
       endPoint: /idrepository/v1/identity/
       uniqueIdentifier: TC_DependentModule_IdRepo_08
-      description: create UIN with valid parameters
+      description: Validate that the Add Identity API successfully creates an identity and generates a UIN when valid parameters are provided
       role: idrepo
       restMethod: post
       inputTemplate: ida/AddIdentity/addIdentity_$LANGNUMBER$
@@ -226,9 +219,8 @@ AddIdentity:
   "UIN": "$UIN$",
   "dateOfBirth": "1970/07/08",
   "postalCode": "14022",
-  "email": "auth_AddIdentity_UIN_smoke@mosip.net",
-  "phone": "7019858531",
-  "mobileno": "7019858531",
+  "email": "$EMAILVALUE$",
+  "phone": "$PHONENUMBERFORIDENTITY$",
   "referenceIdentityNumber": "6789545678878",
   "version": "v1",
   "introducerRID": "212124324784879",
@@ -242,7 +234,7 @@ AddIdentity:
    auth_AddIdentity_Positive_EKYC_smoke:
       endPoint: /idrepository/v1/identity/
       uniqueIdentifier: TC_DependentModule_IdRepo_09
-      description: create UIN for Ekyc Authentication
+      description: Validate that the Add Identity API successfully creates an identity for eKYC authentication when valid parameters are provided
       role: idrepo
       restMethod: post
       inputTemplate: ida/AddIdentity/addIdentity_$LANGNUMBER$
@@ -256,9 +248,8 @@ AddIdentity:
   "UIN": "$UIN$",  
   "dateOfBirth": "1970/07/08",
   "postalCode": "14022",
-  "email": "auth_AddIdentity_Positive_EKYC_smoke@mosip.net",
-  "phone": "7019858531",
-  "mobileno": "7019858531",
+  "email": "$EMAILVALUE$",
+  "phone": "$PHONENUMBERFORIDENTITY$",
   "referenceIdentityNumber": "6789545678878",
   "version": "v1",
   "introducerRID": "212124324784879",
@@ -269,10 +260,10 @@ AddIdentity:
       output: '{
   "status":"ACTIVATED"
 }'
-   auth_AddIdentity_InternalOTP_smoke:
+   auth_AddIdentity_InternalOTP:
       endPoint: /idrepository/v1/identity/
       uniqueIdentifier: TC_DependentModule_IdRepo_10
-      description: create UIN for Internal OTP Authentication
+      description: Validate that the Add Identity API successfully creates an identity using internal OTP authentication when valid parameters are provided
       role: idrepo
       restMethod: post
       inputTemplate: ida/AddIdentity/addIdentity_$LANGNUMBER$
@@ -286,9 +277,8 @@ AddIdentity:
   "UIN": "$UIN$",
   "dateOfBirth": "1970/07/08",
   "postalCode": "14022",
-  "email": "auth_AddIdentity_InternalOTP_smoke@mosip.net",
-  "phone": "7019858531",
-  "mobileno": "7019858531",
+  "email": "$EMAILVALUE$",
+  "phone": "$PHONENUMBERFORIDENTITY$",
   "referenceIdentityNumber": "6789545678878",
   "version": "v1",
   "introducerRID": "212124324784879",
@@ -299,10 +289,10 @@ AddIdentity:
       output: '{
   "status":"ACTIVATED"
 }'
-   auth_AddIdentity_EKYCOTP_PRE_smoke:
+   auth_AddIdentity_EKYCOTP_PRE:
       endPoint: /idrepository/v1/identity/
       uniqueIdentifier: TC_DependentModule_IdRepo_11
-      description: create UIN for Ekyc OTP Authentication
+      description: Validate that the Add Identity API successfully creates an identity using eKYC OTP authentication when valid parameters are provided
       role: idrepo
       restMethod: post
       inputTemplate: ida/AddIdentity/addIdentity_$LANGNUMBER$
@@ -316,9 +306,8 @@ AddIdentity:
   "UIN": "$UIN$",
   "dateOfBirth": "1970/07/08",
   "postalCode": "14022",
-  "email": "auth_AddIdentity_EKYCOTP_PRE_smoke@mosip.net",
-  "phone": "7019858531",
-  "mobileno": "7019858531",
+  "email": "$EMAILVALUE$",
+  "phone": "$PHONENUMBERFORIDENTITY$",
   "referenceIdentityNumber": "6789545678878",
   "version": "v1",
   "introducerRID": "212124324784879",
@@ -332,7 +321,7 @@ AddIdentity:
    auth_AddIdentity_Positive_TRE_smoke:
       endPoint: /idrepository/v1/identity/
       uniqueIdentifier: TC_DependentModule_IdRepo_12
-      description: create UIN for Authentication
+      description: Validate that the Add Identity API successfully creates an identity using TRE authentication when valid parameters are provided
       role: idrepo
       restMethod: post
       inputTemplate: ida/AddIdentity/addIdentity_$LANGNUMBER$
@@ -346,9 +335,8 @@ AddIdentity:
   "UIN": "$UIN$",
   "dateOfBirth": "1970/07/08",
   "postalCode": "14022",
-  "email": "auth_AddIdentity_Positive_TRE_smoke@mosip.net",
-  "phone": "7019858531",
-  "mobileno": "7019858531",
+  "email": "$EMAILVALUE$",
+  "phone": "$PHONENUMBERFORIDENTITY$",
   "referenceIdentityNumber": "6789545678878",
   "version": "v1",
   "introducerRID": "212124324784879",
@@ -362,7 +350,7 @@ AddIdentity:
    auth_AddIdentity_Positive_valid_smoke:
       endPoint: /idrepository/v1/identity/
       uniqueIdentifier: TC_DependentModule_IdRepo_13
-      description: create UIN for Authentication
+      description: Validate that the Add Identity API successfully creates an identity when valid parameters are provided
       role: idrepo
       restMethod: post
       inputTemplate: ida/AddIdentity/addIdentity_$LANGNUMBER$
@@ -376,9 +364,8 @@ AddIdentity:
   "UIN": "$UIN$",
   "dateOfBirth": "1970/07/08",
   "postalCode": "14022",
-  "email": "auth_AddIdentity_Positive_valid_smoke@mosip.net",
-  "phone": "7019858531",
-  "mobileno": "7019858531",
+  "email": "$EMAILVALUE$",
+  "phone": "$PHONENUMBERFORIDENTITY$",
   "referenceIdentityNumber": "6789545678878",
   "version": "v1",
   "introducerRID": "212124324784879",
@@ -392,7 +379,7 @@ AddIdentity:
    auth_AddIdentity_Lock_UIN_Unlock_BioAuth_withValidParameters_smoke_Pos:
       endPoint: /idrepository/v1/identity/
       uniqueIdentifier: TC_DependentModule_IdRepo_14
-      description: create UIN and use for Lock, Unlock and Bio Authentication
+      description: Validate that the Add Identity API successfully creates an identity locks the UIN and allows successful unlock using biometric authentication with valid parameters
       role: idrepo
       restMethod: post
       inputTemplate: ida/AddIdentity/addIdentity_$LANGNUMBER$
@@ -406,9 +393,8 @@ AddIdentity:
   "UIN": "$UIN$",
   "dateOfBirth": "1970/07/08",
   "postalCode": "14022",
-  "email": "auth_AddIdentity_Lock_UIN_Unlock_BioAuth_withValidParameters_smoke_Pos@mosip.net",
-  "phone": "7019858531",
-  "mobileno": "7019858531",
+  "email": "$EMAILVALUE$",
+  "phone": "$PHONENUMBERFORIDENTITY$",
   "referenceIdentityNumber": "6789545678878",
   "version": "v1",
   "introducerRID": "212124324784879",
@@ -422,7 +408,7 @@ AddIdentity:
    auth_AddIdentity_Lock_UIN_Unlock_DemoAuth_withValidParameters_smoke_Pos:
       endPoint: /idrepository/v1/identity/
       uniqueIdentifier: TC_DependentModule_IdRepo_15
-      description: create UIN and use for Lock,Unlock and Demo Authentication
+      description: Validate that an identity is successfully created the UIN is locked and the UIN can be successfully unlocked using demographic authentication when valid parameters are provided
       role: idrepo
       restMethod: post
       inputTemplate: ida/AddIdentity/addIdentity_$LANGNUMBER$
@@ -436,9 +422,8 @@ AddIdentity:
   "UIN": "$UIN$",
   "dateOfBirth": "1970/07/08",  
   "postalCode": "14022",
-  "email": "auth_AddIdentity_Lock_UIN_Unlock_DemoAuth_withValidParameters_smoke_Pos@mosip.net",
-  "phone": "7019858531",
-  "mobileno": "7019858531",
+  "email": "$EMAILVALUE$",
+  "phone": "$PHONENUMBERFORIDENTITY$",
   "referenceIdentityNumber": "6789545678878",
   "version": "v1",
   "introducerRID": "212124324784879",
@@ -452,7 +437,7 @@ AddIdentity:
    auth_AddIdentity_Lock_permanent_BioAuth_withValidParameters_smoke_Pos:
       endPoint: /idrepository/v1/identity/
       uniqueIdentifier: TC_DependentModule_IdRepo_16
-      description: create UIN and use for Locking and Bio Authentication
+      description: Validate that an identity is successfully created and the UIN is permanently locked using biometric authentication when valid parameters are provided
       role: idrepo
       restMethod: post
       inputTemplate: ida/AddIdentity/addIdentity_$LANGNUMBER$
@@ -466,9 +451,8 @@ AddIdentity:
   "UIN": "$UIN$",  
   "dateOfBirth": "1970/07/08", 
   "postalCode": "14022",
-  "email": "auth_AddIdentity_Lock_permanent_BioAuth_withValidParameters_smoke_Pos@mosip.net",
-  "phone": "7019858531",
-  "mobileno": "7019858531",
+  "email": "$EMAILVALUE$",
+  "phone": "$PHONENUMBERFORIDENTITY$",
   "referenceIdentityNumber": "6789545678878",
   "version": "v1",
   "introducerRID": "212124324784879",
@@ -482,7 +466,7 @@ AddIdentity:
    auth_AddIdentity_Lock_permanent_DemoAuth_withValidParameters_smoke_Pos:
       endPoint: /idrepository/v1/identity/
       uniqueIdentifier: TC_DependentModule_IdRepo_17
-      description: create UIN and use for Locking and Demo Authentication
+      description: Validate that an identity is successfully created and the UIN is permanently locked using demographic authentication when valid parameters are provided
       role: idrepo
       restMethod: post
       inputTemplate: ida/AddIdentity/addIdentity_$LANGNUMBER$
@@ -496,9 +480,8 @@ AddIdentity:
   "UIN": "$UIN$",   
   "dateOfBirth": "1970/07/08",   
   "postalCode": "14022",
-  "email": "auth_AddIdentity_Lock_permanent_DemoAuth_withValidParameters_smoke_Pos@mosip.net",
-  "phone": "7019858531",
-  "mobileno": "7019858531",
+  "email": "$EMAILVALUE$",
+  "phone": "$PHONENUMBERFORIDENTITY$",
   "referenceIdentityNumber": "6789545678878",
   "version": "v1", 
   "introducerRID": "212124324784879",
@@ -512,7 +495,7 @@ AddIdentity:
    auth_AddIdentity_Positive_unblockUIN_valid_smoke:
       endPoint: /idrepository/v1/identity/
       uniqueIdentifier: TC_DependentModule_IdRepo_18
-      description: create UIN and use for Unblocking
+      description: Validate that the UIN is successfully unblocked for an existing identity when valid parameters are provided
       role: idrepo
       restMethod: post
       inputTemplate: ida/AddIdentity/addIdentity_$LANGNUMBER$
@@ -526,9 +509,8 @@ AddIdentity:
   "UIN": "$UIN$", 
   "dateOfBirth": "1970/07/08", 
   "postalCode": "14022",
-  "email": "auth_AddIdentity_Positive_unblockUIN_valid_smoke@mosip.net",
-  "phone": "7019858531",
-  "mobileno": "7019858531",
+  "email": "$EMAILVALUE$",
+  "phone": "$PHONENUMBERFORIDENTITY$",
   "referenceIdentityNumber": "6789545678878",
   "version": "v1", 
   "introducerRID": "212124324784879",
@@ -542,7 +524,7 @@ AddIdentity:
    auth_AddIdentity_Positive_LockUIN_valid_smoke:
       endPoint: /idrepository/v1/identity/
       uniqueIdentifier: TC_DependentModule_IdRepo_19
-      description: create UIN and use for Locking
+      description: Validate that the UIN is successfully locked for an existing identity when valid parameters are provided
       role: idrepo
       restMethod: post
       inputTemplate: ida/AddIdentity/addIdentity_$LANGNUMBER$
@@ -556,9 +538,8 @@ AddIdentity:
   "UIN": "$UIN$", 
   "dateOfBirth": "1970/07/08",  
   "postalCode": "14022",
-  "email": "auth_AddIdentity_Positive_LockUIN_valid_smoke@mosip.net",
-  "phone": "7019858531",
-  "mobileno": "7019858531",
+  "email": "$EMAILVALUE$",
+  "phone": "$PHONENUMBERFORIDENTITY$",
   "referenceIdentityNumber": "6789545678878",
   "version": "v1",  
   "introducerRID": "212124324784879",
@@ -569,10 +550,10 @@ AddIdentity:
       output: '{
   "status":"ACTIVATED"
 }'
-   auth_AddIdentity_Positive_LockUIN_For_bio_valid_smoke:
+   auth_AddIdentity_Positive_LockUIN_For_bio_valid:
       endPoint: /idrepository/v1/identity/
       uniqueIdentifier: TC_DependentModule_IdRepo_20
-      description: create UIN and use for Biometric Lock
+      description: Validate that the UIN is successfully locked using biometric authentication when valid parameters are provided
       role: idrepo
       restMethod: post
       inputTemplate: ida/AddIdentity/addIdentity_$LANGNUMBER$
@@ -586,9 +567,8 @@ AddIdentity:
   "UIN": "$UIN$",    
   "dateOfBirth": "1970/07/08",  
   "postalCode": "14022",
-  "email": "auth_AddIdentity_Positive_LockUIN_For_bio_valid_smoke@mosip.net",
-  "phone": "7019858531",
-  "mobileno": "7019858531",
+  "email": "$EMAILVALUE$",
+  "phone": "$PHONENUMBERFORIDENTITY$",
   "referenceIdentityNumber": "6789545678878",
   "version": "v1",  
   "introducerRID": "212124324784879",
@@ -602,7 +582,7 @@ AddIdentity:
    auth_AddIdentity_EkycDemo_Auth_smoke_Pos:
       endPoint: /idrepository/v1/identity/
       uniqueIdentifier: TC_DependentModule_IdRepo_21
-      description: create UIN and use for Ekyc Demo Authentication
+      description: Validate that the Add Identity API successfully creates an identity using eKYC demographic authentication when valid parameters are provided
       role: idrepo
       restMethod: post
       inputTemplate: ida/AddIdentity/addIdentity_$LANGNUMBER$
@@ -616,9 +596,8 @@ AddIdentity:
   "UIN": "$UIN$",  
   "dateOfBirth": "1970/07/08",   
   "postalCode": "14022",
-  "email": "auth_AddIdentity_EkycDemo_Auth_smoke_Pos@mosip.net",
-  "phone": "7019858531",
-  "mobileno": "7019858531",
+  "email": "$EMAILVALUE$",
+  "phone": "$PHONENUMBERFORIDENTITY$",
   "referenceIdentityNumber": "6789545678878",
   "version": "v1", 
   "introducerRID": "212124324784879",
@@ -629,10 +608,10 @@ AddIdentity:
       output: '{
   "status":"ACTIVATED"
 }'
-   auth_AddIdentity_Positive_EKYCUIN_valid_smoke:
+   auth_AddIdentity_Positive_EKYCUIN_valid:
       endPoint: /idrepository/v1/identity/
       uniqueIdentifier: TC_DependentModule_IdRepo_22
-      description: create UIN and use for Ekyc Authentication
+      description: Validate that the Add Identity API successfully creates an identity and generates a UIN using eKYC authentication when valid parameters are provided
       role: idrepo
       restMethod: post
       inputTemplate: ida/AddIdentity/addIdentity_$LANGNUMBER$
@@ -646,9 +625,8 @@ AddIdentity:
   "UIN": "$UIN$", 
   "dateOfBirth": "1970/07/08",  
   "postalCode": "14022",
-  "email": "auth_AddIdentity_Positive_EKYCUIN_valid_smoke@mosip.net",
-  "phone": "7019858531",
-  "mobileno": "7019858531",
+  "email": "$EMAILVALUE$",
+  "phone": "$PHONENUMBERFORIDENTITY$",
   "referenceIdentityNumber": "6789545678878",
   "version": "v1", 
   "introducerRID": "212124324784879",
@@ -662,7 +640,7 @@ AddIdentity:
    auth_AddIdentity_Deactivate_and_auth_smoke_Pos:
       endPoint: /idrepository/v1/identity/
       uniqueIdentifier: TC_DependentModule_IdRepo_23
-      description: create UIN and use for Deactivation and Authentication
+      description: Validate that an identity is successfully created deactivated and subsequently authenticated when valid parameters are provided
       role: idrepo
       restMethod: post
       inputTemplate: ida/AddIdentity/addIdentity_$LANGNUMBER$
@@ -676,9 +654,8 @@ AddIdentity:
   "UIN": "$UIN$",   
   "dateOfBirth": "1970/07/08",    
   "postalCode": "14022",
-  "email": "auth_AddIdentity_Deactivate_and_auth_smoke_Pos@mosip.net",
-  "phone": "7019858531",
-  "mobileno": "7019858531",
+  "email": "$EMAILVALUE$",
+  "phone": "$PHONENUMBERFORIDENTITY$",
   "referenceIdentityNumber": "6789545678878",
   "version": "v1",  
   "introducerRID": "212124324784879",
@@ -692,7 +669,7 @@ AddIdentity:
    auth_AddIdentity_create_vid_using_uin_for_revoke_smoke_Pos:
       endPoint: /idrepository/v1/identity/
       uniqueIdentifier: TC_DependentModule_IdRepo_24
-      description: create UIN to use for VID creation and to Revoke
+      description: Validate that an identity is successfully created a VID is generated using the UIN and the VID can be successfully revoked
       role: idrepo
       restMethod: post
       inputTemplate: ida/AddIdentity/addIdentity_$LANGNUMBER$
@@ -706,9 +683,8 @@ AddIdentity:
   "UIN": "$UIN$",  
   "dateOfBirth": "1970/07/08",    
   "postalCode": "14022",
-  "email": "auth_AddIdentity_create_vid_using_uin_for_revoke_smoke_Pos@mosip.net",
-  "phone": "7019858531",
-  "mobileno": "7019858531",
+  "email": "$EMAILVALUE$",
+  "phone": "$PHONENUMBERFORIDENTITY$",
   "referenceIdentityNumber": "6789545678878",
   "version": "v1", 
   "introducerRID": "212124324784879",
@@ -722,7 +698,7 @@ AddIdentity:
    auth_AddIdentity_for_hotlist_id_service_Pos:
       endPoint: /idrepository/v1/identity/
       uniqueIdentifier: TC_DependentModule_IdRepo_25
-      description: create UIN for Hotlist
+      description: Validate that the Add Identity API successfully creates an identity for hotlist ID service when valid parameters are provided
       role: idrepo
       restMethod: post
       inputTemplate: ida/AddIdentity/addIdentity_$LANGNUMBER$
@@ -736,9 +712,8 @@ AddIdentity:
   "UIN": "$UIN$",  
   "dateOfBirth": "1970/07/08",   
   "postalCode": "14022",
-  "email": "auth_AddIdentity_for_hotlist_id_service_Pos@mosip.net",
-  "phone": "7019858531",
-  "mobileno": "7019858531",
+  "email": "$EMAILVALUE$",
+  "phone": "$PHONENUMBERFORIDENTITY$",
   "referenceIdentityNumber": "6789545678878",
   "version": "v1",   
   "introducerRID": "212124324784879",
@@ -753,7 +728,7 @@ AddIdentity:
    auth_AddIdentity_Lock_UIN_Unlock_BioAuth_withValidParams_smoke_Pos:
       endPoint: /idrepository/v1/identity/
       uniqueIdentifier: TC_DependentModule_IdRepo_26
-      description: create UIN for Locking ,Unlocking and Bio Authentication
+      description: Validate the creation of UIN locking and unlocking of the UIN and successful biometric authentication using valid parameters
       role: idrepo
       restMethod: post
       inputTemplate: ida/AddIdentity/addIdentity_$LANGNUMBER$
@@ -767,9 +742,8 @@ AddIdentity:
   "UIN": "$UIN$",  
   "dateOfBirth": "1970/07/08",    
   "postalCode": "14022",
-  "email": "auth_AddIdentity_Lock_UIN_Unlock_BioAuth_withValidParams_smoke_Pos@mosip.net",
-  "phone": "7019858531",
-  "mobileno": "7019858531",
+  "email": "$EMAILVALUE$",
+  "phone": "$PHONENUMBERFORIDENTITY$",
   "referenceIdentityNumber": "6789545678878",
   "version": "v1", 
   "introducerRID": "212124324784879",
@@ -783,7 +757,7 @@ AddIdentity:
    auth_AddIdentity_Lock_UIN_Unlock_DemoAuth_withValidParams_smoke_Pos:
       endPoint: /idrepository/v1/identity/
       uniqueIdentifier: TC_DependentModule_IdRepo_27
-      description: create UIN for Unlocking and Demo Authentication
+      description: Validate the creation of UIN locking and unlocking of the UIN and successful demographic authentication using valid parameters
       role: idrepo
       restMethod: post
       inputTemplate: ida/AddIdentity/addIdentity_$LANGNUMBER$
@@ -797,9 +771,8 @@ AddIdentity:
   "UIN": "$UIN$",    
   "dateOfBirth": "1970/07/08",    
   "postalCode": "14022",
-  "email": "auth_AddIdentity_Lock_UIN_Unlock_DemoAuth_withValidParams_smoke_Pos@mosip.net",
-  "phone": "7019858531",
-  "mobileno": "7019858531",
+  "email": "$EMAILVALUE$",
+  "phone": "$PHONENUMBERFORIDENTITY$",
   "referenceIdentityNumber": "6789545678878",
   "version": "v1",    
   "introducerRID": "212124324784879",
@@ -813,7 +786,7 @@ AddIdentity:
    auth_AddIdentity_Lock_permanent_BioAuth_withValidParams_smoke_Pos:
       endPoint: /idrepository/v1/identity/
       uniqueIdentifier: TC_DependentModule_IdRepo_28
-      description: create UIN for Locking and Bio Authentication
+      description: Validate the creation of UIN and the permanent locking of the UIN using biometric authentication with valid parameters
       role: idrepo
       restMethod: post
       inputTemplate: ida/AddIdentity/addIdentity_$LANGNUMBER$
@@ -827,9 +800,8 @@ AddIdentity:
   "UIN": "$UIN$",  
   "dateOfBirth": "1970/07/08",    
   "postalCode": "14022",
-  "email": "auth_AddIdentity_Lock_permanent_BioAuth_withValidParams_smoke_Pos@mosip.net",
-  "phone": "7019858531",
-  "mobileno": "7019858531",
+  "email": "$EMAILVALUE$",
+  "phone": "$PHONENUMBERFORIDENTITY$",
   "referenceIdentityNumber": "6789545678878",
   "version": "v1", 
   "introducerRID": "212124324784879",
@@ -843,7 +815,7 @@ AddIdentity:
    auth_AddIdentity_Lock_permanent_DemoAuth_withValidParams_smoke_Pos:
       endPoint: /idrepository/v1/identity/
       uniqueIdentifier: TC_DependentModule_IdRepo_29
-      description: create UIN and use for Locking and Demo Authentication
+      description: Validate the creation of a UIN and the permanent locking of the UIN using demographic authentication with valid parameters
       role: idrepo
       restMethod: post
       inputTemplate: ida/AddIdentity/addIdentity_$LANGNUMBER$
@@ -857,9 +829,8 @@ AddIdentity:
   "UIN": "$UIN$", 
   "dateOfBirth": "1970/07/08",  
   "postalCode": "14022",
-  "email": "auth_AddIdentity_Lock_permanent_DemoAuth_withValidParams_smoke_Pos@mosip.net",
-  "phone": "7019858531",
-  "mobileno": "7019858531",
+  "email": "$EMAILVALUE$",
+  "phone": "$PHONENUMBERFORIDENTITY$",
   "referenceIdentityNumber": "6789545678878",
   "version": "v1",
   "introducerRID": "212124324784879",
@@ -871,10 +842,10 @@ AddIdentity:
   "status":"ACTIVATED"
 }'
 
-   auth_AddIdentity_Valid_Parameters_Auth_smoke_Pos:
+   auth_AddIdentity_Valid_Parameters_Auth_Pos:
       endPoint: /idrepository/v1/identity/
       uniqueIdentifier: TC_DependentModule_IdRepo_30
-      description: create UIN for Authentication
+      description: Validate that an identity is successfully created using valid authentication parameters
       role: idrepo
       restMethod: post
       inputTemplate: ida/AddIdentity/addIdentity_$LANGNUMBER$
@@ -888,9 +859,8 @@ AddIdentity:
   "UIN": "$UIN$",   
   "dateOfBirth": "1970/07/08",  
   "postalCode": "14022",
-  "email": "auth_AddIdentity_Valid_Parameters_Auth_smoke_Pos@mosip.net",
-  "phone": "7019858531",
-  "mobileno": "7019858531",
+  "email": "$EMAILVALUE$",
+  "phone": "$PHONENUMBERFORIDENTITY$",
   "referenceIdentityNumber": "6789545678878",
   "version": "v1",
   "introducerRID": "212124324784879",
@@ -901,10 +871,10 @@ AddIdentity:
       output: '{
   "status":"ACTIVATED"
 }'
-   auth_AddIdentity_Positive_demoauth_name_smoke:
+   auth_AddIdentity_Positive_demoauth_name:
       endPoint: /idrepository/v1/identity/
       uniqueIdentifier: TC_DependentModule_IdRepo_31
-      description: create UIN and use for Demo Authentication
+      description: Validate that an identity is successfully created using demographic authentication with valid parameters
       role: idrepo
       regenerateHbs: true      
       restMethod: post
@@ -919,9 +889,8 @@ AddIdentity:
   "UIN": "$UIN$",   
   "dateOfBirth": "1970/07/08",    
   "postalCode": "14022",
-  "email": "auth_AddIdentity_Positive_demoauth_name_smoke@mosip.net",
-  "phone": "7019858531",
-  "mobileno": "7019858531",
+  "email": "$EMAILVALUE$",
+  "phone": "$PHONENUMBERFORIDENTITY$",
   "referenceIdentityNumber": "6789545678878",
   "version": "v1", 
   "introducerRID": "212124324784879",
@@ -935,7 +904,7 @@ AddIdentity:
    auth_AddIdentity_deactivate_UIN_smoke_sid_Pos:
       endPoint: /idrepository/v1/identity/
       uniqueIdentifier: TC_DependentModule_IdRepo_32
-      description: create UIN and use for Deactivation
+      description: Validate that an identity is successfully created and the UIN is deactivated using a valid SID
       role: idrepo
       regenerateHbs: true      
       restMethod: post
@@ -950,9 +919,8 @@ AddIdentity:
   "UIN": "$UIN$",
   "dateOfBirth": "1970/07/08",
   "postalCode": "14022",
-  "email": "auth_AddIdentity_deactivate_UIN_smoke_sid_Pos@mosip.net",
-  "phone": "7019858531",
-  "mobileno": "7019858531",
+  "email": "$EMAILVALUE$",
+  "phone": "$PHONENUMBERFORIDENTITY$",
   "referenceIdentityNumber": "6789545678878",
   "version": "v1",
   "introducerRID": "212124324784879",
@@ -966,7 +934,7 @@ AddIdentity:
    auth_AddIdentity_hotlist_UIN_forever_smoke_sid_Pos:
       endPoint: /idrepository/v1/identity/
       uniqueIdentifier: TC_DependentModule_IdRepo_33
-      description: create UIN and use for Hotlisting the UIN
+      description: Validate that an identity is successfully created and the UIN is added to the hotlist permanently using a valid SID
       role: idrepo
       regenerateHbs: true      
       restMethod: post
@@ -981,9 +949,8 @@ AddIdentity:
   "UIN": "$UIN$",
   "dateOfBirth": "1970/07/08",
   "postalCode": "14022",
-  "email": "auth_AddIdentity_Positive_demoauth_name_smoke@mosip.net",
-  "phone": "7019858531",
-  "mobileno": "7019858531",
+  "email": "$EMAILVALUE$",
+  "phone": "$PHONENUMBERFORIDENTITY$",
   "referenceIdentityNumber": "6789545678878",
   "version": "v1",
   "introducerRID": "212124324784879",
@@ -1035,8 +1002,7 @@ AddIdentity:
 #   "UIN": "$UIN$",
 #  "dateOfBirth": "1970/07/08",
 #  "postalCode": "14022",
-#  "phone": "7019858531",
-#  "mobileno": "7019858531",
+#  "phone": "$PHONENUMBERFORIDENTITY$",
 #  "referenceIdentityNumber": "6789545678878",
 #  "version": "v1",
 #   "introducerRID": "212124324784879",
@@ -1047,15 +1013,14 @@ AddIdentity:
 #      output: '{
 #   "errors": [
 #    {
-#      "errorCode": "IDR-IDC-002",
-#      "message": "$IGNORE$"
+#      "errorCode": "IDR-IDC-002"
 #    }
 #  ]
 #}'
    auth_AddIdentity_lock_unlock_forever_smoke_sid_Pos:
       endPoint: /idrepository/v1/identity/
       uniqueIdentifier: TC_DependentModule_IdRepo_34
-      description: create UIN and use for Locking and Unlocking
+      description: Validate that an identity is successfully created the UIN is locked and then unlocked permanently using a valid SID
       role: idrepo
       regenerateHbs: true      
       restMethod: post
@@ -1070,9 +1035,8 @@ AddIdentity:
   "UIN": "$UIN$",
   "dateOfBirth": "1970/07/08",
   "postalCode": "14022",
-  "email": "auth_AddIdentity_Positive_demoauth_name_smoke@mosip.net",
-  "phone": "7019858531",
-  "mobileno": "7019858531",
+  "email": "$EMAILVALUE$",
+  "phone": "$PHONENUMBERFORIDENTITY$",
   "referenceIdentityNumber": "6789545678878",
   "version": "v1",
   "introducerRID": "212124324784879",
@@ -1086,7 +1050,7 @@ AddIdentity:
    auth_AddIdentity_with_zero_age_Pos:
       endPoint: /idrepository/v1/identity/
       uniqueIdentifier: TC_DependentModule_IdRepo_35
-      description: create UIN for authentication with zero age
+      description: Validate that an identity is successfully created when the age is provided as zero
       role: idrepo
       restMethod: post
       inputTemplate: ida/AddIdentity/addIdentity_$LANGNUMBER$
@@ -1100,9 +1064,8 @@ AddIdentity:
   "UIN": "$UIN$",
   "dateOfBirth": "2000/01/10",
   "postalCode": "14022",
-  "email": "auth_AddIdentity_withValidParameters_smoke_Pos@mosip.net",
-  "phone": "7019858531",
-  "mobileno": "7019858531",
+  "email": "$EMAILVALUE$",
+  "phone": "$PHONENUMBERFORIDENTITY$",
   "referenceIdentityNumber": "6789545678878",
   "version": "v1",
   "introducerRID": "212124324784879",
@@ -1116,7 +1079,7 @@ AddIdentity:
    auth_AddIdentity_with_negative_age_Pos:
       endPoint: /idrepository/v1/identity/
       uniqueIdentifier: TC_DependentModule_IdRepo_36
-      description: create UIN for authentication with negative age
+      description: Validate that the Add Identity API handles and processes an identity creation request when a negative age is provided
       role: idrepo
       restMethod: post
       inputTemplate: ida/AddIdentity/addIdentity_$LANGNUMBER$
@@ -1130,9 +1093,8 @@ AddIdentity:
   "UIN": "$UIN$",
  "dateOfBirth": "2010/12/10",
   "postalCode": "14022",
-  "email": "auth_AddIdentity_withValidParameters_smoke_Pos@mosip.net",
-  "phone": "7019858531",
-  "mobileno": "7019858531",
+  "email": "$EMAILVALUE$",
+  "phone": "$PHONENUMBERFORIDENTITY$",
   "referenceIdentityNumber": "6789545678878",
   "version": "v1",
   "introducerRID": "212124324784879",
@@ -1146,7 +1108,7 @@ AddIdentity:
    auth_AddIdentity_with_age_more_than_calculated_Pos:
       endPoint: /idrepository/v1/identity/
       uniqueIdentifier: TC_DependentModule_IdRepo_37
-      description: create UIN for authentication
+      description: Validate that the Add Identity API successfully creates an identity when the provided age is greater than the calculated age
       role: idrepo
       restMethod: post
       inputTemplate: ida/AddIdentity/addIdentity_$LANGNUMBER$
@@ -1160,9 +1122,8 @@ AddIdentity:
   "UIN": "$UIN$",
   "dateOfBirth": "2010/01/14",
   "postalCode": "14022",
-  "email": "auth_AddIdentity_withValidParameters_smoke_Pos@mosip.net",
-  "phone": "7019858531",
-  "mobileno": "7019858531",
+  "email": "$EMAILVALUE$",
+  "phone": "$PHONENUMBERFORIDENTITY$",
   "referenceIdentityNumber": "6789545678878",
   "version": "v1",
   "introducerRID": "212124324784879",
@@ -1176,7 +1137,7 @@ AddIdentity:
    auth_AddIdentity_with_age_below_calculated_value_Pos:
       endPoint: /idrepository/v1/identity/
       uniqueIdentifier: TC_DependentModule_IdRepo_38
-      description: create UIN for authentication
+      description: Validate that the Add Identity API successfully creates an identity when the provided age is less than the calculated age
       role: idrepo
       restMethod: post
       inputTemplate: ida/AddIdentity/addIdentity_$LANGNUMBER$
@@ -1190,9 +1151,8 @@ AddIdentity:
   "UIN": "$UIN$",
   "dateOfBirth": "2000/01/14",
   "postalCode": "14022",
-  "email": "auth_AddIdentity_withValidParameters_smoke_Pos@mosip.net",
-  "phone": "7019858531",
-  "mobileno": "7019858531",
+  "email": "$EMAILVALUE$",
+  "phone": "$PHONENUMBERFORIDENTITY$",
   "referenceIdentityNumber": "6789545678878",
   "version": "v1",
   "introducerRID": "212124324784879",
@@ -1206,7 +1166,7 @@ AddIdentity:
    auth_AddIdentity_ValidParameters_auditLog_smoke_Pos:
       endPoint: /idrepository/v1/identity/
       uniqueIdentifier: TC_IDA_dependentTC_AuthTransaction_39
-      description: create UIN to check audit log scenario
+      description: Validate that the Add Identity API successfully creates an identity and records the operation in the audit log when valid parameters are provided
       role: idrepo
       restMethod: post
       inputTemplate: ida/AddIdentity/addIdentity_$LANGNUMBER$
@@ -1220,9 +1180,8 @@ AddIdentity:
   "UIN": "$UIN$",
   "dateOfBirth": "2000/01/14",
   "postalCode": "14022",
-  "email": "auth_AddIdentity_withValidParameters_smoke_Pos@mosip.net",
-  "phone": "7019858531",
-  "mobileno": "7019858531",
+  "email": "$EMAILVALUE$",
+  "phone": "$PHONENUMBERFORIDENTITY$",
   "referenceIdentityNumber": "6789545678878",
   "version": "v1",
   "introducerRID": "212124324784879",
@@ -1233,10 +1192,10 @@ AddIdentity:
       output: '{
   "status":"ACTIVATED"
 }'
-   auth_AddIdentity_ValidParameters_authLock_bioIris_auditLog_smoke_Pos:
+   auth_AddIdentity_ValidParameters_authLock_bioIris_auditLog_Pos:
       endPoint: /idrepository/v1/identity/
       uniqueIdentifier: TC_IDA_dependentTC_AuthTransaction_40
-      description: create UIN to lock and perform auth to check audit log
+      description: Validate identity creation with biometric iris lock and audit log using valid parameters
       role: idrepo
       restMethod: post
       inputTemplate: ida/AddIdentity/addIdentity_$LANGNUMBER$
@@ -1250,9 +1209,8 @@ AddIdentity:
   "UIN": "$UIN$",
   "dateOfBirth": "2000/01/14",
   "postalCode": "14022",
-  "email": "auth_AddIdentity_withValidParameters_smoke_Pos@mosip.net",
-  "phone": "7019858531",
-  "mobileno": "7019858531",
+  "email": "$EMAILVALUE$",
+  "phone": "$PHONENUMBERFORIDENTITY$",
   "referenceIdentityNumber": "6789545678878",
   "version": "v1",
   "introducerRID": "212124324784879",
@@ -1263,10 +1221,10 @@ AddIdentity:
       output: '{
   "status":"ACTIVATED"
 }'
-   auth_AddIdentity_ValidParameters_authLock_Face_auditLog_smoke_Pos:
+   auth_AddIdentity_ValidParameters_authLock_Face_auditLog_Pos:
       endPoint: /idrepository/v1/identity/
       uniqueIdentifier: TC_IDA_dependentTC_AuthTransaction_41
-      description: create UIN to lock and perform auth to check audit log
+      description: Validate identity creation with biometric face lock and audit log using valid parameters
       role: idrepo
       restMethod: post
       inputTemplate: ida/AddIdentity/addIdentity_$LANGNUMBER$
@@ -1280,9 +1238,8 @@ AddIdentity:
   "UIN": "$UIN$",
   "dateOfBirth": "2000/01/14",
   "postalCode": "14022",
-  "email": "auth_AddIdentity_withValidParameters_smoke_Pos@mosip.net",
-  "phone": "7019858531",
-  "mobileno": "7019858531",
+  "email": "$EMAILVALUE$",
+  "phone": "$PHONENUMBERFORIDENTITY$",
   "referenceIdentityNumber": "6789545678878",
   "version": "v1",
   "introducerRID": "212124324784879",
@@ -1293,10 +1250,10 @@ AddIdentity:
       output: '{
   "status":"ACTIVATED"
 }'
-   auth_AddIdentity_ValidParameters_authLock_Demo_auditLog_smoke_Pos:
+   auth_AddIdentity_ValidParameters_authLock_Demo_auditLog_Pos:
       endPoint: /idrepository/v1/identity/
       uniqueIdentifier: TC_IDA_dependentTC_AuthTransaction_42
-      description: create UIN to lock and perform auth to check audit log
+      description: Validate identity creation with demographic authentication lock and audit log using valid parameters
       role: idrepo
       restMethod: post
       inputTemplate: ida/AddIdentity/addIdentity_$LANGNUMBER$
@@ -1310,9 +1267,8 @@ AddIdentity:
   "UIN": "$UIN$",
   "dateOfBirth": "2000/01/14",
   "postalCode": "14022",
-  "email": "auth_AddIdentity_withValidParameters_smoke_Pos@mosip.net",
-  "phone": "7019858531",
-  "mobileno": "7019858531",
+  "email": "$EMAILVALUE$",
+  "phone": "$PHONENUMBERFORIDENTITY$",
   "referenceIdentityNumber": "6789545678878",
   "version": "v1",
   "introducerRID": "212124324784879",
@@ -1323,10 +1279,10 @@ AddIdentity:
       output: '{
   "status":"ACTIVATED"
 }'
-   auth_AddIdentity_ValidParameters_ekycAuth_auditLog_smoke_Pos:
+   auth_AddIdentity_ValidParameters_ekycAuth_auditLog_Pos:
       endPoint: /idrepository/v1/identity/
       uniqueIdentifier: TC_IDA_dependentTC_AuthTransaction_43
-      description: create UIN to perform ekyc auth to check audit log
+      description: Validate identity creation with eKYC authentication and audit log using valid parameters
       role: idrepo
       restMethod: post
       inputTemplate: ida/AddIdentity/addIdentity_$LANGNUMBER$
@@ -1340,9 +1296,8 @@ AddIdentity:
   "UIN": "$UIN$",
   "dateOfBirth": "1970/07/08",
   "postalCode": "14022",
-  "email": "auth_AddIdentity_withValidParameters_smoke_Pos@mosip.net",
-  "phone": "7019858531",
-  "mobileno": "7019858531",
+  "email": "$EMAILVALUE$",
+  "phone": "$PHONENUMBERFORIDENTITY$",
   "referenceIdentityNumber": "6789545678878",
   "version": "v1",
   "introducerRID": "212124324784879",
@@ -1353,10 +1308,10 @@ AddIdentity:
       output: '{
   "status":"ACTIVATED"
 }'
-   auth_AddIdentity_ValidParameters_ekycAuth_fail_auditLog_smoke_Pos:
+   auth_AddIdentity_ValidParameters_ekycAuth_fail_auditLog_Pos:
       endPoint: /idrepository/v1/identity/
       uniqueIdentifier: TC_IDA_dependentTC_AuthTransaction_44
-      description: create UIN to perform ekyc auth to check audit log
+      description: Validate that a failed eKYC authentication attempt is recorded in the audit log when valid parameters are provided
       role: idrepo
       restMethod: post
       inputTemplate: ida/AddIdentity/addIdentity_$LANGNUMBER$
@@ -1370,9 +1325,8 @@ AddIdentity:
   "UIN": "$UIN$",
   "dateOfBirth": "2000/01/14",
   "postalCode": "14022",
-  "email": "auth_AddIdentity_withValidParameters_smoke_Pos@mosip.net",
-  "phone": "7019858531",
-  "mobileno": "7019858531",
+  "email": "$EMAILVALUE$",
+  "phone": "$PHONENUMBERFORIDENTITY$",
   "referenceIdentityNumber": "6789545678878",
   "version": "v1",
   "introducerRID": "212124324784879",
@@ -1386,7 +1340,7 @@ AddIdentity:
    auth_AddIdentity_ValidParameters_toCreateVid_auditLog_smoke_Pos:
       endPoint: /idrepository/v1/identity/
       uniqueIdentifier: TC_IDA_dependentTC_AuthTransaction_45
-      description: create UIN to perform ekyc auth to check audit log
+      description: Validate identity creation for VID generation and audit log recording using valid parameters
       role: idrepo
       restMethod: post
       inputTemplate: ida/AddIdentity/addIdentity_$LANGNUMBER$
@@ -1400,9 +1354,8 @@ AddIdentity:
   "UIN": "$UIN$",
   "dateOfBirth": "2000/01/14",
   "postalCode": "14022",
-  "email": "auth_AddIdentity_withValidParameters_smoke_Pos@mosip.net",
-  "phone": "7019858531",
-  "mobileno": "7019858531",
+  "email": "$EMAILVALUE$",
+  "phone": "$PHONENUMBERFORIDENTITY$",
   "referenceIdentityNumber": "6789545678878",
   "version": "v1",
   "introducerRID": "212124324784879",
@@ -1416,7 +1369,7 @@ AddIdentity:
    auth_AddIdentity_ValidParameters_toUpdateIdentity_auditLog_smoke_Pos:
       endPoint: /idrepository/v1/identity/
       uniqueIdentifier: TC_IDA_dependentTC_AuthTransaction_46
-      description: create UIN to perform updatation of UIN to check audit log
+      description: Validate updating an existing identity and recording the operation in the audit log using valid parameters
       role: idrepo
       restMethod: post
       inputTemplate: ida/AddIdentity/addIdentity_$LANGNUMBER$
@@ -1430,9 +1383,8 @@ AddIdentity:
   "UIN": "$UIN$",
   "dateOfBirth": "2000/01/14",
   "postalCode": "14022",
-  "email": "auth_AddIdentity_withValidParameters_smoke_Pos@mosip.net",
-  "phone": "7019858531",
-  "mobileno": "7019858531",
+  "email": "$EMAILVALUE$",
+  "phone": "$PHONENUMBERFORIDENTITY$",
   "referenceIdentityNumber": "6789545678878",
   "version": "v1",
   "introducerRID": "212124324784879",
@@ -1446,7 +1398,7 @@ AddIdentity:
    auth_AddIdentity_ValidParameters_toRetrieveAuthType_auditLog_smoke_Pos:
       endPoint: /idrepository/v1/identity/
       uniqueIdentifier: TC_IDA_dependentTC_AuthTransaction_47
-      description: create UIN to perform updatation of UIN to check audit log
+      description: Validate retrieval of an identity's authentication type and recording in the audit log using valid parameters
       role: idrepo
       restMethod: post
       inputTemplate: ida/AddIdentity/addIdentity_$LANGNUMBER$
@@ -1460,9 +1412,8 @@ AddIdentity:
   "UIN": "$UIN$",
   "dateOfBirth": "2000/01/14",
   "postalCode": "14022",
-  "email": "auth_AddIdentity_withValidParameters_smoke_Pos@mosip.net",
-  "phone": "7019858531",
-  "mobileno": "7019858531",
+  "email": "$EMAILVALUE$",
+  "phone": "$PHONENUMBERFORIDENTITY$",
   "referenceIdentityNumber": "6789545678878",
   "version": "v1",
   "introducerRID": "212124324784879",
@@ -1476,7 +1427,7 @@ AddIdentity:
    auth_AddIdentity_ValidParameters_toDeactivate_Reactivate_auditLog_smoke_Pos:
       endPoint: /idrepository/v1/identity/
       uniqueIdentifier: TC_IDA_dependentTC_AuthTransaction_48
-      description: create UIN to deactivate and reactivate to check audit log
+      description: Validate deactivation and reactivation of an identity and recording the actions in the audit log using valid parameters
       role: idrepo
       restMethod: post
       inputTemplate: ida/AddIdentity/addIdentity_$LANGNUMBER$
@@ -1490,9 +1441,8 @@ AddIdentity:
   "UIN": "$UIN$",
   "dateOfBirth": "2000/01/14",
   "postalCode": "14022",
-  "email": "auth_AddIdentity_withValidParameters_smoke_Pos@mosip.net",
-  "phone": "7019858531",
-  "mobileno": "7019858531",
+  "email": "$EMAILVALUE$",
+  "phone": "$PHONENUMBERFORIDENTITY$",
   "referenceIdentityNumber": "6789545678878",
   "version": "v1",
   "introducerRID": "212124324784879",
@@ -1506,7 +1456,7 @@ AddIdentity:
    auth_AddIdentity_ValidParameters_toRegenrateVid_auditLog_smoke_Pos:
       endPoint: /idrepository/v1/identity/
       uniqueIdentifier: TC_IDA_dependentTC_AuthTransaction_49
-      description: create UIN to generate and regenrate VID to check audit log
+      description: Validate regeneration of VID for an identity and recording the action in the audit log using valid parameters
       role: idrepo
       restMethod: post
       inputTemplate: ida/AddIdentity/addIdentity_$LANGNUMBER$
@@ -1520,9 +1470,8 @@ AddIdentity:
   "UIN": "$UIN$",
   "dateOfBirth": "2000/01/14",
   "postalCode": "14022",
-  "email": "auth_AddIdentity_withValidParameters_smoke_Pos@mosip.net",
-  "phone": "7019858531",
-  "mobileno": "7019858531",
+  "email": "$EMAILVALUE$",
+  "phone": "$PHONENUMBERFORIDENTITY$",
   "referenceIdentityNumber": "6789545678878",
   "version": "v1",
   "introducerRID": "212124324784879",
@@ -1536,7 +1485,7 @@ AddIdentity:
    auth_AddIdentity_ValidParameters_genrateVid_toDeactivate_smoke_Pos:
       endPoint: /idrepository/v1/identity/
       uniqueIdentifier: TC_DependentModule_IdRepo_50
-      description: create UIN to generate VID and to deactivate VID
+      description: Validate VID generation for an identity and subsequent deactivation using valid parameters
       role: idrepo
       restMethod: post
       inputTemplate: ida/AddIdentity/addIdentity_$LANGNUMBER$
@@ -1550,9 +1499,8 @@ AddIdentity:
   "UIN": "$UIN$",
   "dateOfBirth": "2000/01/14",
   "postalCode": "14022",
-  "email": "auth_AddIdentity_withValidParameters_smoke_Pos@mosip.net",
-  "phone": "7019858531",
-  "mobileno": "7019858531",
+  "email": "$EMAILVALUE$",
+  "phone": "$PHONENUMBERFORIDENTITY$",
   "referenceIdentityNumber": "6789545678878",
   "version": "v1",
   "introducerRID": "212124324784879",
@@ -1563,10 +1511,10 @@ AddIdentity:
       output: '{
   "status":"ACTIVATED"
 }'
-   auth_AddIdentity_ValidParameters_toLock_email_perfromOtpEmail_auth_smoke_Pos:
+   auth_AddIdentity_ValidParameters_toLock_email_perfromOtpEmail_auth_Pos:
       endPoint: /idrepository/v1/identity/
       uniqueIdentifier: TC_DependentModule_IdRepo_51
-      description: create UIN to lock otp-email and to perform otp auth
+      description: Validate that an identity’s email is locked and OTP email authentication is successfully performed using valid parameters
       role: idrepo
       restMethod: post
       inputTemplate: ida/AddIdentity/addIdentity_$LANGNUMBER$
@@ -1580,9 +1528,8 @@ AddIdentity:
   "UIN": "$UIN$",
   "dateOfBirth": "2000/01/14",
   "postalCode": "14022",
-  "email": "auth_AddIdentity_withValidParameters_smoke_Pos@mosip.net",
-  "phone": "7019858531",
-  "mobileno": "7019858531",
+  "email": "$EMAILVALUE$",
+  "phone": "$PHONENUMBERFORIDENTITY$",
   "referenceIdentityNumber": "6789545678878",
   "version": "v1",
   "introducerRID": "212124324784879",
@@ -1593,10 +1540,10 @@ AddIdentity:
       output: '{
   "status":"ACTIVATED"
 }'
-   auth_AddIdentity_ValidParameters_toLock_phone_smoke_Pos:
+   auth_AddIdentity_ValidParameters_toLock_phone_Pos:
       endPoint: /idrepository/v1/identity/
       uniqueIdentifier: TC_DependentModule_IdRepo_52
-      description: create UIN to lock otp-phone and to perform otp auth
+      description: Validate that an identity's phone number is locked using valid parameters
       role: idrepo
       restMethod: post
       inputTemplate: ida/AddIdentity/addIdentity_$LANGNUMBER$
@@ -1610,9 +1557,8 @@ AddIdentity:
   "UIN": "$UIN$",
   "dateOfBirth": "2000/01/14",
   "postalCode": "14022",
-  "email": "auth_AddIdentity_withValidParameters_smoke_Pos@mosip.net",
-  "phone": "7019858531",
-  "mobileno": "7019858531",
+  "email": "$EMAILVALUE$",
+  "phone": "$PHONENUMBERFORIDENTITY$",
   "referenceIdentityNumber": "6789545678878",
   "version": "v1",
   "introducerRID": "212124324784879",
@@ -1623,10 +1569,10 @@ AddIdentity:
       output: '{
   "status":"ACTIVATED"
 }'
-   auth_AddIdentity_ValidParameters_toLock_phoneAndEmail_smoke_Pos:
+   auth_AddIdentity_ValidParameters_toLock_phoneAndEmail_Pos:
       endPoint: /idrepository/v1/identity/
       uniqueIdentifier: TC_DependentModule_IdRepo_53
-      description: create UIN to lock otp-phone and email and to perform otp auth
+      description: Validate that an identity's phone number and email are locked using valid parameters
       role: idrepo
       restMethod: post
       inputTemplate: ida/AddIdentity/addIdentity_$LANGNUMBER$
@@ -1640,9 +1586,8 @@ AddIdentity:
   "UIN": "$UIN$",
   "dateOfBirth": "2000/01/14",
   "postalCode": "14022",
-  "email": "auth_AddIdentity_withValidParameters_smoke_Pos@mosip.net",
-  "phone": "7019858531",
-  "mobileno": "7019858531",
+  "email": "$EMAILVALUE$",
+  "phone": "$PHONENUMBERFORIDENTITY$",
   "referenceIdentityNumber": "6789545678878",
   "version": "v1",
   "introducerRID": "212124324784879",
@@ -1656,7 +1601,7 @@ AddIdentity:
    auth_AddIdentity_ValidParameters_toCreateVid_deactivateUIN_toSendOtp_smoke_Pos:
       endPoint: /idrepository/v1/identity/
       uniqueIdentifier: TC_DependentModule_IdRepo_54
-      description: create valid UIN
+      description: Validate creation of VID deactivation of UIN and sending OTP using valid parameters
       role: idrepo
       restMethod: post
       inputTemplate: ida/AddIdentity/addIdentity_$LANGNUMBER$
@@ -1670,9 +1615,8 @@ AddIdentity:
   "UIN": "$UIN$",
   "dateOfBirth": "2000/01/14",
   "postalCode": "14022",
-  "email": "auth_AddIdentity_withValidParameters_smoke_Pos@mosip.net",
-  "phone": "7019858531",
-  "mobileno": "7019858531",
+  "email": "$EMAILVALUE$",
+  "phone": "$PHONENUMBERFORIDENTITY$",
   "referenceIdentityNumber": "6789545678878",
   "version": "v1",
   "introducerRID": "212124324784879",
@@ -1686,7 +1630,7 @@ AddIdentity:
    auth_AddIdentity_ValidParameters_toDeactivate_ReactivateUIN_smoke_Pos:
       endPoint: /idrepository/v1/identity/
       uniqueIdentifier: TC_DependentModule_IdRepo_55
-      description: create UIN to deactivate and reactivateUIN to check send OTP
+      description: Validate deactivation and reactivation of a UIN using valid parameters
       role: idrepo
       restMethod: post
       inputTemplate: ida/AddIdentity/addIdentity_$LANGNUMBER$
@@ -1700,9 +1644,8 @@ AddIdentity:
   "UIN": "$UIN$",
   "dateOfBirth": "2000/01/14",
   "postalCode": "14022",
-  "email": "auth_AddIdentity_withValidParameters_smoke_Pos@mosip.net",
-  "phone": "7019858531",
-  "mobileno": "7019858531",
+  "email": "$EMAILVALUE$",
+  "phone": "$PHONENUMBERFORIDENTITY$",
   "referenceIdentityNumber": "6789545678878",
   "version": "v1",
   "introducerRID": "212124324784879",
@@ -1716,7 +1659,7 @@ AddIdentity:
    auth_AddIdentity_ValidParameters_toBlock_toSendOtp_smoke_Pos:
       endPoint: /idrepository/v1/identity/
       uniqueIdentifier: TC_DependentModule_IdRepo_56
-      description: create UIN to block and to check send OTP
+      description: Validate that a UIN is blocked and OTP can be sent successfully using valid parameters
       role: idrepo
       restMethod: post
       inputTemplate: ida/AddIdentity/addIdentity_$LANGNUMBER$
@@ -1730,9 +1673,8 @@ AddIdentity:
   "UIN": "$UIN$",
   "dateOfBirth": "2000/01/14",
   "postalCode": "14022",
-  "email": "auth_AddIdentity_withValidParameters_smoke_Pos@mosip.net",
-  "phone": "7019858531",
-  "mobileno": "7019858531",
+  "email": "$EMAILVALUE$",
+  "phone": "$PHONENUMBERFORIDENTITY$",
   "referenceIdentityNumber": "6789545678878",
   "version": "v1",
   "introducerRID": "212124324784879",
@@ -1746,7 +1688,7 @@ AddIdentity:
    auth_AddIdentity_toBlockVID_SendOtp_smoke_Pos:
       endPoint: /idrepository/v1/identity/
       uniqueIdentifier: TC_DependentModule_IdRepo_57
-      description: create UIN to block VID and to check send OTP
+      description: Validate that a VID is blocked and OTP is successfully sent using valid parameters
       role: idrepo
       restMethod: post
       inputTemplate: ida/AddIdentity/addIdentity_$LANGNUMBER$
@@ -1760,9 +1702,8 @@ AddIdentity:
   "UIN": "$UIN$",
   "dateOfBirth": "2000/01/14",
   "postalCode": "14022",
-  "email": "auth_AddIdentity_withValidParameters_smoke_Pos@mosip.net",
-  "phone": "7019858531",
-  "mobileno": "7019858531",
+  "email": "$EMAILVALUE$",
+  "phone": "$PHONENUMBERFORIDENTITY$",
   "referenceIdentityNumber": "6789545678878",
   "version": "v1",
   "introducerRID": "212124324784879",
@@ -1776,7 +1717,7 @@ AddIdentity:
    auth_AddIdentity_toBlockUIN_forSeconds_Pos:
       endPoint: /idrepository/v1/identity/
       uniqueIdentifier: TC_DependentModule_IdRepo_58
-      description: create UIN to block for seconds and then unblock
+      description: Validate that a UIN is blocked for a specified duration using valid parameters
       role: idrepo
       restMethod: post
       inputTemplate: ida/AddIdentity/addIdentity_$LANGNUMBER$
@@ -1790,9 +1731,8 @@ AddIdentity:
   "UIN": "$UIN$",
   "dateOfBirth": "2000/01/14",
   "postalCode": "14022",
-  "email": "auth_AddIdentity_withValidParameters_smoke_Pos@mosip.net",
-  "phone": "7019858531",
-  "mobileno": "7019858531",
+  "email": "$EMAILVALUE$",
+  "phone": "$PHONENUMBERFORIDENTITY$",
   "referenceIdentityNumber": "6789545678878",
   "version": "v1",
   "introducerRID": "212124324784879",
@@ -1806,7 +1746,7 @@ AddIdentity:
    auth_AddIdentity_ValidParameters_auditLog_smoke_Pos:
       endPoint: /idrepository/v1/identity/
       uniqueIdentifier: TC_IDA_dependentTC_AuthTransaction_59
-      description: create UIN and check audit log
+      description: Validate identity creation and audit log recording using valid parameters
       role: idrepo
       restMethod: post
       inputTemplate: ida/AddIdentity/addIdentity_$LANGNUMBER$
@@ -1820,9 +1760,8 @@ AddIdentity:
   "UIN": "$UIN$",
   "dateOfBirth": "2000/01/14",
   "postalCode": "14022",
-  "email": "auth_AddIdentity_withValidParameters_smoke_Pos@mosip.net",
-  "phone": "7019858531",
-  "mobileno": "7019858531",
+  "email": "$EMAILVALUE$",
+  "phone": "$PHONENUMBERFORIDENTITY$",
   "referenceIdentityNumber": "6789545678878",
   "version": "v1",
   "introducerRID": "212124324784879",
@@ -1836,7 +1775,7 @@ AddIdentity:
    auth_AddIdentity_ValidParameters_VID_revoke_auditLog_smoke_Pos:
       endPoint: /idrepository/v1/identity/
       uniqueIdentifier: TC_IDA_dependentTC_AuthTransaction_60
-      description: create UIN to createVId and revoke Vid to check audit log
+      description: Validate VID generation, revocation and audit log recording using valid parameters
       role: idrepo
       restMethod: post
       inputTemplate: ida/AddIdentity/addIdentity_$LANGNUMBER$
@@ -1850,9 +1789,8 @@ AddIdentity:
   "UIN": "$UIN$",
   "dateOfBirth": "2000/01/14",
   "postalCode": "14022",
-  "email": "auth_AddIdentity_withValidParameters_smoke_Pos@mosip.net",
-  "phone": "7019858531",
-  "mobileno": "7019858531",
+  "email": "$EMAILVALUE$",
+  "phone": "$PHONENUMBERFORIDENTITY$",
   "referenceIdentityNumber": "6789545678878",
   "version": "v1",
   "introducerRID": "212124324784879",
@@ -1863,10 +1801,10 @@ AddIdentity:
       output: '{
   "status":"ACTIVATED"
 }'
-   auth_AddIdentity_ValidParameters_fordemo_smoke_Pos:
+   auth_AddIdentity_ValidParameters_fordemo_Pos:
       endPoint: /idrepository/v1/identity/
       uniqueIdentifier: TC_DependentModule_IdRepo_61
-      description: create UIN for demo auth
+      description: Validate that an identity is successfully created using valid parameters for demographic authentication
       role: idrepo
       restMethod: post
       inputTemplate: ida/AddIdentity/addIdentity_$LANGNUMBER$
@@ -1880,9 +1818,8 @@ AddIdentity:
   "UIN": "$UIN$",
   "dateOfBirth": "2000/01/14",
   "postalCode": "14022",
-  "email": "auth_AddIdentity_withValidParameters_smoke_Pos@mosip.net",
-  "phone": "7019858531",
-  "mobileno": "7019858531",
+  "email": "$EMAILVALUE$",
+  "phone": "$PHONENUMBERFORIDENTITY$",
   "referenceIdentityNumber": "6789545678878",
   "version": "v1",
   "introducerRID": "212124324784879",
@@ -1893,11 +1830,10 @@ AddIdentity:
       output: '{
   "status":"ACTIVATED"
 }'
-
    auth_AddIdentity_ValidParameters_for_EkycDemo_Dob_Pos:
       endPoint: /idrepository/v1/identity/
-      uniqueIdentifier: TC_DependentModule_IdRepo_61
-      description: create UIN for demo auth
+      uniqueIdentifier: TC_DependentModule_IdRepo_62
+      description: Validate that an identity is successfully created using eKYC demographic authentication with DOB as input
       role: idrepo
       restMethod: post
       inputTemplate: ida/AddIdentity/addIdentity_$LANGNUMBER$
@@ -1911,9 +1847,444 @@ AddIdentity:
   "UIN": "$UIN$",
   "dateOfBirth": "1970/07/08",
   "postalCode": "14022",
-  "email": "auth_AddIdentity_ValidParameters_for_EkycDemo_Dob_Pos@mosip.net",
-  "phone": "7019858531",
-  "mobileno": "7019858531",
+  "email": "$EMAILVALUE$",
+  "phone": "$PHONENUMBERFORIDENTITY$",
+  "referenceIdentityNumber": "6789545678878",
+  "version": "v1",
+  "introducerRID": "212124324784879",
+  "introducerUIN": "212124324784879",
+  "category": "individualBiometrics",
+  "requesttime": "$TIMESTAMP$"
+}'
+      output: '{
+  "status":"ACTIVATED"
+}'
+
+   auth_AddIdentity_For_Kyc_Delegated_Bio_Auth_Smoke_Pos:
+      endPoint: /idrepository/v1/identity/
+      uniqueIdentifier: TC_DependentModule_Delegated_IdRepo_01
+      description: Validate that an identity is successfully created using delegated biometric authentication for KYC
+      role: idrepo
+      restMethod: post
+      inputTemplate: ida/AddIdentity/addIdentity_$LANGNUMBER$
+      outputTemplate: ida/AddIdentity/addIdentityResult
+      input: '{
+  "value": "$BIOVALUE$",
+  "id": "mosip.id.create",
+  "registrationId": "$RID$",
+  "addressCopy": "Y",
+  "biometricReferenceId": "23452353",
+  "UIN": "$UIN$",
+  "dateOfBirth": "1970/07/08",
+  "postalCode": "14022",
+  "email": "$EMAILVALUE$",
+  "phone": "$PHONENUMBERFORIDENTITY$",
+  "referenceIdentityNumber": "6789545678878",
+  "version": "v1",
+  "introducerRID": "212124324784879",
+  "introducerUIN": "212124324784879",
+  "category": "individualBiometrics",
+  "requesttime": "$TIMESTAMP$"
+}'
+      output: '{
+  "status":"ACTIVATED"
+}'
+   auth_AddIdentity_For_Kyc_Delegated_Bio_Auth_VID_smoke_Pos:
+      endPoint: /idrepository/v1/identity/
+      uniqueIdentifier: TC_DependentModule_Delegated_IdRepo_02
+      description: Validate that an identity is successfully created a VID is generated using delegated biometric authentication for KYC
+      role: idrepo
+      restMethod: post
+      inputTemplate: ida/AddIdentity/addIdentity_$LANGNUMBER$
+      outputTemplate: ida/AddIdentity/addIdentityResult
+      input: '{
+  "value": "$BIOVALUE$",
+  "id": "mosip.id.create",
+  "registrationId": "$RID$",
+  "addressCopy": "Y",
+  "biometricReferenceId": "23452353",
+  "UIN": "$UIN$",
+  "dateOfBirth": "1970/07/08",
+  "postalCode": "14022",
+  "email": "$EMAILVALUE$",
+  "phone": "$PHONENUMBERFORIDENTITY$",
+  "referenceIdentityNumber": "6789545678878",
+  "version": "v1",
+  "introducerRID": "212124324784879",
+  "introducerUIN": "212124324784879",
+  "category": "individualBiometrics",
+  "requesttime": "$TIMESTAMP$"
+}'
+      output: '{
+  "status":"ACTIVATED"
+}'
+   auth_AddIdentity_For_Kyc_Delegated_leftIris_Auth_UIN_Pos:
+      endPoint: /idrepository/v1/identity/
+      uniqueIdentifier: TC_DependentModule_Delegated_IdRepo_03
+      description: Validate that an identity is successfully created using delegated left iris biometric authentication for KYC and a UIN is generated
+      role: idrepo
+      restMethod: post
+      inputTemplate: ida/AddIdentity/addIdentity_$LANGNUMBER$
+      outputTemplate: ida/AddIdentity/addIdentityResult
+      input: '{
+  "value": "$BIOVALUE$",
+  "id": "mosip.id.create",
+  "registrationId": "$RID$",
+  "addressCopy": "Y",
+  "biometricReferenceId": "23452353",
+  "UIN": "$UIN$",
+  "dateOfBirth": "1970/07/08",
+  "postalCode": "14022",
+  "email": "$EMAILVALUE$",
+  "phone": "$PHONENUMBERFORIDENTITY$",
+  "referenceIdentityNumber": "6789545678878",
+  "version": "v1",
+  "introducerRID": "212124324784879",
+  "introducerUIN": "212124324784879",
+  "category": "individualBiometrics",
+  "requesttime": "$TIMESTAMP$"
+}'
+      output: '{
+  "status":"ACTIVATED"
+}'
+   auth_AddIdentity_For_Kyc_Delegated_leftIris_Auth_VID_Pos:
+      endPoint: /idrepository/v1/identity/
+      uniqueIdentifier: TC_DependentModule_Delegated_IdRepo_04
+      description: Validate that an identity is successfully created using delegated left iris biometric authentication for KYC and a VID is generated
+      role: idrepo
+      restMethod: post
+      inputTemplate: ida/AddIdentity/addIdentity_$LANGNUMBER$
+      outputTemplate: ida/AddIdentity/addIdentityResult
+      input: '{
+  "value": "$BIOVALUE$",
+  "id": "mosip.id.create",
+  "registrationId": "$RID$",
+  "addressCopy": "Y",
+  "biometricReferenceId": "23452353",
+  "UIN": "$UIN$",
+  "dateOfBirth": "1970/07/08",
+  "postalCode": "14022",
+  "email": "$EMAILVALUE$",
+  "phone": "$PHONENUMBERFORIDENTITY$",
+  "referenceIdentityNumber": "6789545678878",
+  "version": "v1",
+  "introducerRID": "212124324784879",
+  "introducerUIN": "212124324784879",
+  "category": "individualBiometrics",
+  "requesttime": "$TIMESTAMP$"
+}'
+      output: '{
+  "status":"ACTIVATED"
+}'
+   auth_AddIdentity_For_Kyc_Delegated_rightIris_Auth_UIN_Pos:
+      endPoint: /idrepository/v1/identity/
+      uniqueIdentifier: TC_DependentModule_Delegated_IdRepo_05
+      description: Validate that an identity is successfully created using delegated right iris biometric authentication for KYC and a UIN is generated
+      role: idrepo
+      restMethod: post
+      inputTemplate: ida/AddIdentity/addIdentity_$LANGNUMBER$
+      outputTemplate: ida/AddIdentity/addIdentityResult
+      input: '{
+  "value": "$BIOVALUE$",
+  "id": "mosip.id.create",
+  "registrationId": "$RID$",
+  "addressCopy": "Y",
+  "biometricReferenceId": "23452353",
+  "UIN": "$UIN$",
+  "dateOfBirth": "1970/07/08",
+  "postalCode": "14022",
+  "email": "$EMAILVALUE$",
+  "phone": "$PHONENUMBERFORIDENTITY$",
+  "referenceIdentityNumber": "6789545678878",
+  "version": "v1",
+  "introducerRID": "212124324784879",
+  "introducerUIN": "212124324784879",
+  "category": "individualBiometrics",
+  "requesttime": "$TIMESTAMP$"
+}'
+      output: '{
+  "status":"ACTIVATED"
+}'
+   auth_AddIdentity_For_Kyc_Delegated_rightIris_Auth_VID_smoke_Pos:
+      endPoint: /idrepository/v1/identity/
+      uniqueIdentifier: TC_DependentModule_Delegated_IdRepo_06
+      description: Validate that an identity is successfully created using delegated right iris biometric authentication for KYC and a VID is generated
+      role: idrepo
+      restMethod: post
+      inputTemplate: ida/AddIdentity/addIdentity_$LANGNUMBER$
+      outputTemplate: ida/AddIdentity/addIdentityResult
+      input: '{
+  "value": "$BIOVALUE$",
+  "id": "mosip.id.create",
+  "registrationId": "$RID$",
+  "addressCopy": "Y",
+  "biometricReferenceId": "23452353",
+  "UIN": "$UIN$",
+  "dateOfBirth": "1970/07/08",
+  "postalCode": "14022",
+  "email": "$EMAILVALUE$",
+  "phone": "$PHONENUMBERFORIDENTITY$",
+  "referenceIdentityNumber": "6789545678878",
+  "version": "v1",
+  "introducerRID": "212124324784879",
+  "introducerUIN": "212124324784879",
+  "category": "individualBiometrics",
+  "requesttime": "$TIMESTAMP$"
+}'
+      output: '{
+  "status":"ACTIVATED"
+}'
+   auth_AddIdentity_withValidParameters_forDelegated_Infant_Pos:
+      endPoint: /idrepository/v1/identity/
+      uniqueIdentifier: TC_DependentModule_Delegated_IdRepo_07
+      description: Validate that an infant identity is successfully created using valid parameters for delegated authentication
+      role: idrepo
+      restMethod: post
+      inputTemplate: ida/AddIdentity/addIdentity_$LANGNUMBER$
+      outputTemplate: ida/AddIdentity/addIdentityResult
+      input: '{
+  "value": "$BIOVALUE$",
+  "id": "mosip.id.create",
+  "registrationId": "$RID$",
+  "addressCopy": "Y",
+  "biometricReferenceId": "23452353",
+  "UIN": "$UIN$",
+  "dateOfBirth": "2023/09/28",
+  "postalCode": "14022",
+  "email": "$EMAILVALUE$",
+  "phone": "$PHONENUMBERFORIDENTITY$",
+  "referenceIdentityNumber": "6789545678878",
+  "version": "v1",
+  "introducerRID": "212124324784879",
+  "introducerUIN": "212124324784879",
+  "category": "individualBiometrics",
+  "requesttime": "$TIMESTAMP$"
+}'
+      output: '{
+  "status":"ACTIVATED"
+}'
+   auth_AddIdentity_withValidParameters_forDelegated_differentIdType_Pos:
+      endPoint: /idrepository/v1/identity/
+      uniqueIdentifier: TC_DependentModule_Delegated_IdRepo_08
+      description: Validate that an identity is successfully created using valid parameters for delegated authentication with different ID types
+      role: idrepo
+      restMethod: post
+      inputTemplate: ida/AddIdentity/addIdentity_$LANGNUMBER$
+      outputTemplate: ida/AddIdentity/addIdentityResult
+      input: '{
+  "value": "$BIOVALUE$",
+  "id": "mosip.id.create",
+  "registrationId": "$RID$",
+  "addressCopy": "Y",
+  "biometricReferenceId": "23452353",
+  "UIN": "$UIN$",
+  "dateOfBirth": "2000/09/28",
+  "postalCode": "14022",
+  "email": "$EMAILVALUE$",
+  "phone": "$PHONENUMBERFORIDENTITY$",
+  "referenceIdentityNumber": "6789545678878",
+  "version": "v1",
+  "introducerRID": "212124324784879",
+  "introducerUIN": "212124324784879",
+  "category": "individualBiometrics",
+  "requesttime": "$TIMESTAMP$"
+}'
+      output: '{
+  "status":"ACTIVATED"
+}'
+   auth_AddIdentity_withValidParameters_forDemoDelegated_Pos:
+      endPoint: /idrepository/v1/identity/
+      uniqueIdentifier: TC_DependentModule_Delegated_IdRepo_09
+      description: Validate that an identity is successfully created using valid parameters for delegated demographic authentication
+      role: idrepo
+      restMethod: post
+      inputTemplate: ida/AddIdentity/addIdentity_$LANGNUMBER$
+      outputTemplate: ida/AddIdentity/addIdentityResult
+      input: '{
+  "value": "$BIOVALUE$",
+  "id": "mosip.id.create",
+  "registrationId": "$RID$",
+  "addressCopy": "Y",
+  "biometricReferenceId": "23452353",
+  "UIN": "$UIN$",
+  "dateOfBirth": "1990/09/28",
+  "postalCode": "14022",
+  "email": "$EMAILVALUE$",
+  "phone": "$PHONENUMBERFORIDENTITY$",
+  "referenceIdentityNumber": "6789545678878",
+  "version": "v1",
+  "introducerRID": "212124324784879",
+  "introducerUIN": "212124324784879",
+  "category": "individualBiometrics",
+  "requesttime": "$TIMESTAMP$"
+}'
+      output: '{
+  "status":"ACTIVATED"
+}'
+   auth_AddIdentity_For_Kyc_Delegated_leftIris_Auth_UIN_smoke_Pos:
+      endPoint: /idrepository/v1/identity/
+      uniqueIdentifier: TC_DependentModule_IdRepo_Delegated_03
+      description: Add identity with valid parameters for delegated left iris auth and UIN generation
+      role: idrepo
+      restMethod: post
+      inputTemplate: ida/AddIdentity/addIdentity_$LANGNUMBER$
+      outputTemplate: ida/AddIdentity/addIdentityResult
+      input: '{
+  "value": "$BIOVALUE$",
+  "id": "mosip.id.create",
+  "registrationId": "$RID$",
+  "addressCopy": "Y",
+  "biometricReferenceId": "23452353",
+  "UIN": "$UIN$",
+  "dateOfBirth": "1970/07/08",
+  "postalCode": "14022",
+  "email": "$EMAILVALUE$",
+  "phone": "$PHONENUMBERFORIDENTITY$",
+  "referenceIdentityNumber": "6789545678878",
+  "version": "v1",
+  "introducerRID": "212124324784879",
+  "introducerUIN": "212124324784879",
+  "category": "individualBiometrics",
+  "requesttime": "$TIMESTAMP$"
+}'
+      output: '{
+  "status":"ACTIVATED"
+}'
+   auth_AddIdentity_For_Kyc_Delegated_leftIris_Auth_VID_smoke_Pos:
+      endPoint: /idrepository/v1/identity/
+      uniqueIdentifier: TC_DependentModule_IdRepo_Delegated_04
+      description: create UIN with valid parameters for delegated left iris auth and use the same in VID generation
+      role: idrepo
+      restMethod: post
+      inputTemplate: ida/AddIdentity/addIdentity_$LANGNUMBER$
+      outputTemplate: ida/AddIdentity/addIdentityResult
+      input: '{
+  "value": "$BIOVALUE$",
+  "id": "mosip.id.create",
+  "registrationId": "$RID$",
+  "addressCopy": "Y",
+  "biometricReferenceId": "23452353",
+  "UIN": "$UIN$",
+  "dateOfBirth": "1970/07/08",
+  "postalCode": "14022",
+  "email": "$EMAILVALUE$",
+  "phone": "$PHONENUMBERFORIDENTITY$",
+  "referenceIdentityNumber": "6789545678878",
+  "version": "v1",
+  "introducerRID": "212124324784879",
+  "introducerUIN": "212124324784879",
+  "category": "individualBiometrics",
+  "requesttime": "$TIMESTAMP$"
+}'
+      output: '{
+  "status":"ACTIVATED"
+}'
+   auth_AddIdentity_For_Kyc_Delegated_rightIris_Auth_UIN_smoke_Pos:
+      endPoint: /idrepository/v1/identity/
+      uniqueIdentifier: TC_DependentModule_IdRepo_Delegated_05
+      description: create UIN with valid parameters for delegated right iris auth
+      role: idrepo
+      restMethod: post
+      inputTemplate: ida/AddIdentity/addIdentity_$LANGNUMBER$
+      outputTemplate: ida/AddIdentity/addIdentityResult
+      input: '{
+  "value": "$BIOVALUE$",
+  "id": "mosip.id.create",
+  "registrationId": "$RID$",
+  "addressCopy": "Y",
+  "biometricReferenceId": "23452353",
+  "UIN": "$UIN$",
+  "dateOfBirth": "1970/07/08",
+  "postalCode": "14022",
+  "email": "$EMAILVALUE$",
+  "phone": "$PHONENUMBERFORIDENTITY$",
+  "referenceIdentityNumber": "6789545678878",
+  "version": "v1",
+  "introducerRID": "212124324784879",
+  "introducerUIN": "212124324784879",
+  "category": "individualBiometrics",
+  "requesttime": "$TIMESTAMP$"
+}'
+      output: '{
+  "status":"ACTIVATED"
+}'
+   auth_AddIdentity_withValidParameters_forDelegated_Infant_smoke_Pos:
+      endPoint: /idrepository/v1/identity/
+      uniqueIdentifier: TC_DependentModule_IdRepo_Delegated_07
+      description: create Infant UIN with valid parameters for delegate
+      role: idrepo
+      restMethod: post
+      inputTemplate: ida/AddIdentity/addIdentity_$LANGNUMBER$
+      outputTemplate: ida/AddIdentity/addIdentityResult
+      input: '{
+  "value": "$BIOVALUE$",
+  "id": "mosip.id.create",
+  "registrationId": "$RID$",
+  "addressCopy": "Y",
+  "biometricReferenceId": "23452353",
+  "UIN": "$UIN$",
+  "dateOfBirth": "2023/09/28",
+  "postalCode": "14022",
+  "email": "$EMAILVALUE$",
+  "phone": "$PHONENUMBERFORIDENTITY$",
+  "referenceIdentityNumber": "6789545678878",
+  "version": "v1",
+  "introducerRID": "212124324784879",
+  "introducerUIN": "212124324784879",
+  "category": "individualBiometrics",
+  "requesttime": "$TIMESTAMP$"
+}'
+      output: '{
+  "status":"ACTIVATED"
+}'
+   auth_AddIdentity_withValidParameters_forOtpDelegated_Pos:
+      endPoint: /idrepository/v1/identity/
+      uniqueIdentifier: TC_DependentModule_IdRepo_Delegated_10
+      description: create  UIN with valid parameters for otp auth delegate
+      role: idrepo
+      restMethod: post
+      inputTemplate: ida/AddIdentity/addIdentity_$LANGNUMBER$
+      outputTemplate: ida/AddIdentity/addIdentityResult
+      input: '{
+  "value": "$BIOVALUE$",
+  "id": "mosip.id.create",
+  "registrationId": "$RID$",
+  "addressCopy": "Y",
+  "biometricReferenceId": "23452353",
+  "UIN": "$UIN$",
+  "dateOfBirth": "1990/09/28",
+  "postalCode": "14022",
+  "email": "$EMAILVALUE$",
+  "phone": "$PHONENUMBERFORIDENTITY$",
+  "referenceIdentityNumber": "6789545678878",
+  "version": "v1",
+  "introducerRID": "212124324784879",
+  "introducerUIN": "212124324784879",
+  "category": "individualBiometrics",
+  "requesttime": "$TIMESTAMP$"
+}'
+      output: '{
+  "status":"ACTIVATED"
+}'
+   auth_AddIdentity_withValidParameters_forLockedUIN_DemoDelegated_Pos:
+      endPoint: /idrepository/v1/identity/
+      uniqueIdentifier: TC_DependentModule_IdRepo_Delegated_11
+      description: create  UIN with valid parameters for demo auth delegate
+      role: idrepo
+      restMethod: post
+      inputTemplate: ida/AddIdentity/addIdentity_$LANGNUMBER$
+      outputTemplate: ida/AddIdentity/addIdentityResult
+      input: '{
+  "value": "$BIOVALUE$",
+  "id": "mosip.id.create",
+  "registrationId": "$RID$",
+  "addressCopy": "Y",
+  "biometricReferenceId": "23452353",
+  "UIN": "$UIN$",
+  "dateOfBirth": "1990/09/28",
+  "postalCode": "14022",
+  "email": "$EMAILVALUE$",
+  "phone": "$PHONENUMBERFORIDENTITY$",
   "referenceIdentityNumber": "6789545678878",
   "version": "v1",
   "introducerRID": "212124324784879",

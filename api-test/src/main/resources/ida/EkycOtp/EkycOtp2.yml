@@ -2,7 +2,7 @@ EkycOtp:
   auth_EkycOtp_Auth_With_Valid_UIN_Smoke:
       endPoint: /idauthentication/v1/kyc/$ekycPartnerKeyURL$
       uniqueIdentifier: TC_IDA_EkycOtp_01
-      description: Ekyc otp auth with valid UIN
+      description: Verify that eKYC OTP authentication succeeds when a valid UIN is provided
       role: resident
       restMethod: post
       inputTemplate: ida/EkycOtp/EkycOtp
@@ -35,10 +35,10 @@ EkycOtp:
         "maskedEmail": "$IGNORE$"
     }
 }'
-  auth_EkycOtp_Auth_With_Valid__with_edited_updated_UIN_Smoke:
+  auth_EkycOtp_Auth_With_Valid__with_edited_updated_UIN:
       endPoint: /idauthentication/v1/kyc/$ekycPartnerKeyURL$
       uniqueIdentifier: TC_IDA_EkycOtp_02
-      description: Ekyc otp auth with valid updated UIN
+      description: Verify that eKYC OTP authentication succeeds when using a UIN that has been edited or updated
       role: resident
       checkErrorsOnlyInResponse: true
       restMethod: post
@@ -72,10 +72,10 @@ EkycOtp:
         "maskedEmail": "$IGNORE$"
     }
 }'
-  auth_EkycOtp_Auth_With_Infant_Valid_UIN_Smoke:
+  auth_EkycOtp_Auth_With_Infant_Valid_UIN:
       endPoint: /idauthentication/v1/kyc/$ekycPartnerKeyURL$
       uniqueIdentifier: TC_IDA_EkycOtp_03
-      description: Ekyc otp auth with infant UIN
+      description: Verify that eKYC OTP authentication succeeds for an infant when a valid UIN is provided
       role: resident
       checkErrorsOnlyInResponse: true
       restMethod: post
@@ -109,10 +109,10 @@ EkycOtp:
         "maskedEmail": "$IGNORE$"
     }
 }'
-  auth_EkycOtp_Auth_With_deactivate_UIN_Smoke:
+  auth_EkycOtp_Auth_With_deactivate_UIN:
       endPoint: /idauthentication/v1/kyc/$ekycPartnerKeyURL$
       uniqueIdentifier: TC_IDA_EkycOtp_04
-      description: Ekyc otp auth with deactivated UIN
+      description: Verify that eKYC OTP authentication fails when a deactivated UIN is used
       role: resident
       checkErrorsOnlyInResponse: true
       restMethod: post
@@ -146,17 +146,17 @@ EkycOtp:
         "maskedEmail": "$IGNORE$"
     }
 }'
-  auth_EkycOtp_Auth_With_draft_UIN_Smoke:
+  auth_EkycOtp_Auth_With_draft_UIN:
       endPoint: /idauthentication/v1/kyc/$ekycPartnerKeyURL$
       uniqueIdentifier: TC_IDA_EkycOtp_05
-      description: Ekyc otp auth with drafted UIN
+      description: Verify that eKYC OTP authentication fails or returns an appropriate error when a draft UIN is used
       role: resident
       checkErrorsOnlyInResponse: true
       restMethod: post
       inputTemplate: ida/EkycOtp/EkycOtp
       outputTemplate: ida/EkycOtp/EkycOtpResult
       input: '{
-        "otpChannel": "mosipuser123@mailinator.com",
+        "otpChannel": "$ID:UpdateDraft_Smoke_Pos_EMAIL$",
         "requestTime": "$TIMESTAMP$",
         "individualId": "$ID:GetDraft_all_valid_smoke_sid_UIN$",
         "transactionId": "$TRANSACTIONID$",
@@ -186,9 +186,10 @@ EkycOtp:
   auth_EkycOtp_With_Valid_VID_Smoke_Pos:
       endPoint: /idauthentication/v1/kyc/$ekycPartnerKeyURL$
       uniqueIdentifier: TC_IDA_EkycOtp_06
-      description: Ekyc otp auth with valid VID
+      description: Verify that eKYC OTP authentication succeeds when a valid VID is provided
       role: resident
       restMethod: post
+      additionalDependencies: TC_DependentModule_IdRepo_06
       inputTemplate: ida/EkycOtp/EkycOtp
       outputTemplate: ida/EkycOtp/EkycOtpResult
       input: '{
@@ -222,7 +223,7 @@ EkycOtp:
   auth_EkycOtp_Auth_With_Invalid_Past_Timestamp_UIN_Neg:
       endPoint: /idauthentication/v1/kyc/$ekycPartnerKeyURL$
       uniqueIdentifier: TC_IDA_EkycOtp_07
-      description: Ekyc otp auth with past timestamp using UIN
+      description: Verify that eKYC OTP authentication fails when a UIN is provided with an invalid past timestamp
       role: resident
       checkErrorsOnlyInResponse: true
       restMethod: post
@@ -259,10 +260,11 @@ EkycOtp:
   auth_EkycOtp_With_Invalid_Past_Timestamp_VID_Neg:
       endPoint: /idauthentication/v1/kyc/$ekycPartnerKeyURL$
       uniqueIdentifier: TC_IDA_EkycOtp_08
-      description: Ekyc otp auth with past timestamp using VID
+      description: Verify that eKYC OTP authentication fails when a VID is provided with an invalid past timestamp
       role: resident
       checkErrorsOnlyInResponse: true
       restMethod: post
+      additionalDependencies: TC_DependentModule_IdRepo_06
       inputTemplate: ida/EkycOtp/EkycOtp
       outputTemplate: ida/EkycOtp/EkycOtpResult
       input: '{
@@ -297,7 +299,7 @@ EkycOtp:
   auth_EkycOtp_Auth_With_Invalid_Future_Timestamp_UIN_Neg:
       endPoint: /idauthentication/v1/kyc/$ekycPartnerKeyURL$
       uniqueIdentifier: TC_IDA_EkycOtp_09
-      description: Ekyc otp auth with future timestamp using UIN
+      description: Verify that eKYC OTP authentication fails when a UIN is provided with an invalid future timestamp
       role: resident
       checkErrorsOnlyInResponse: true
       restMethod: post
@@ -334,10 +336,11 @@ EkycOtp:
   auth_EkycOtp_With_Invalid_Future_Timestamp_VID_Neg:
       endPoint: /idauthentication/v1/kyc/$ekycPartnerKeyURL$
       uniqueIdentifier: TC_IDA_EkycOtp_10
-      description: Ekyc otp auth with future timestamp using VID
+      description: Verify that eKYC OTP authentication fails when a VID is provided with an invalid future timestamp
       role: resident
       checkErrorsOnlyInResponse: true
       restMethod: post
+      additionalDependencies: TC_DependentModule_IdRepo_06
       inputTemplate: ida/EkycOtp/EkycOtp
       outputTemplate: ida/EkycOtp/EkycOtpResult
       input: '{
@@ -372,7 +375,7 @@ EkycOtp:
   auth_EkycOtp_Auth_With_Invalid_Empty_Timestamp_UIN_Neg:
       endPoint: /idauthentication/v1/kyc/$ekycPartnerKeyURL$
       uniqueIdentifier: TC_IDA_EkycOtp_11
-      description: Ekyc otp auth with empty timestamp using UIN
+      description: Verify that eKYC OTP authentication fails when a UIN is provided with an empty timestamp
       role: resident
       checkErrorsOnlyInResponse: true
       restMethod: post
@@ -409,10 +412,11 @@ EkycOtp:
   auth_EkycOtp_With_Invalid_Empty_Timestamp_VID_Neg:
       endPoint: /idauthentication/v1/kyc/$ekycPartnerKeyURL$
       uniqueIdentifier: TC_IDA_EkycOtp_12
-      description: Ekyc otp auth with empty timestamp using VID
+      description: Verify that eKYC OTP authentication fails when a VID is provided with an empty timestamp
       role: resident
       checkErrorsOnlyInResponse: true
       restMethod: post
+      additionalDependencies: TC_DependentModule_IdRepo_06
       inputTemplate: ida/EkycOtp/EkycOtp
       outputTemplate: ida/EkycOtp/EkycOtpResult
       input: '{
@@ -443,19 +447,20 @@ EkycOtp:
         "maskedEmail": "$IGNORE$"
     }
 }'
-  auth_EkycOtp_With_revoke_VID_Smoke_Pos:
+  auth_EkycOtp_With_revoke_VID_Pos:
       endPoint: /idauthentication/v1/kyc/$ekycPartnerKeyURL$
       uniqueIdentifier: TC_IDA_EkycOtp_13
-      description: Ekyc otp auth with revoked VID
+      description: Verify that eKYC OTP authentication fails when a revoked VID is used
       role: resident
       checkErrorsOnlyInResponse: true
       restMethod: post
+      additionalDependencies: TC_DependentModule_IdRepo_24,TC_IDA_RevokeVID_01
       inputTemplate: ida/EkycOtp/EkycOtp
       outputTemplate: ida/EkycOtp/error
       input: '{
-        "otpChannel": "$ID:AddIdentity_ValidParameters_VID_revoke_auditLog_smoke_Pos_EMAIL$",
+        "otpChannel": "$ID:AddIdentity_create_vid_using_uin_for_revoke_smoke_Pos_EMAIL$",
         "requestTime": "$TIMESTAMP$",
-        "individualId": "$ID:GenerateVID_torevoke_audit_Smoke_sid_vid$",
+        "individualId": "$ID:GenerateVID_to_revoke_smoke_Perpetual_sid_vid$",
         "transactionId": "$TRANSACTIONID$",
         "individualIdType": "VID",
         "bio": false,
@@ -489,7 +494,7 @@ EkycOtp:
   auth_EkycOtp_With_Invalid_individualId_uin_neg:
       endPoint: /idauthentication/v1/kyc/$ekycPartnerKeyURL$
       uniqueIdentifier: TC_IDA_EkycOtp_14
-      description: Ekyc otp auth with invalid UIN
+      description: Verify that eKYC OTP authentication fails when an invalid individual ID is provided along with a UIN
       role: resident
       checkErrorsOnlyInResponse: true
       restMethod: post
@@ -532,7 +537,7 @@ EkycOtp:
   auth_EkycOtp_With_Invalid_individualId_VID_neg:
       endPoint: /idauthentication/v1/kyc/$ekycPartnerKeyURL$
       uniqueIdentifier: TC_IDA_EkycOtp_15
-      description: Ekyc otp auth with invalid VID
+      description: Verify that eKYC OTP authentication fails when an invalid individual ID is provided along with a VID
       role: resident
       checkErrorsOnlyInResponse: true
       restMethod: post
@@ -575,7 +580,7 @@ EkycOtp:
   auth_EkycOtp_With_Blank_individualId_uin_neg:
       endPoint: /idauthentication/v1/kyc/$ekycPartnerKeyURL$
       uniqueIdentifier: TC_IDA_EkycOtp_16
-      description: Ekyc otp auth with blank individualId with individualId type as UIN
+      description: Verify that eKYC OTP authentication fails when the individual ID is blank and a UIN is provided
       role: resident
       checkErrorsOnlyInResponse: true
       restMethod: post
@@ -617,7 +622,7 @@ EkycOtp:
   auth_EkycOtp_With_Blank_individualId_VID_neg:
       endPoint: /idauthentication/v1/kyc/$ekycPartnerKeyURL$
       uniqueIdentifier: TC_IDA_EkycOtp_17
-      description: Ekyc otp auth with blank individualId with individualId type as VID
+      description: Verify that eKYC OTP authentication fails when the individual ID is blank and a VID is provided
       role: resident
       checkErrorsOnlyInResponse: true
       restMethod: post
@@ -659,7 +664,7 @@ EkycOtp:
   auth_EkycOtp_With_Missing_individualId_uin_neg:
       endPoint: /idauthentication/v1/kyc/$ekycPartnerKeyURL$
       uniqueIdentifier: TC_IDA_EkycOtp_18
-      description: Ekyc otp auth with missing individualId with UIN as individualId type
+      description: Verify that eKYC OTP authentication fails when the individual ID is missing and a UIN is provided
       role: resident
       checkErrorsOnlyInResponse: true
       restMethod: post
@@ -702,7 +707,7 @@ EkycOtp:
   auth_EkycOtp_With_Missing_individualId_VID_neg:
       endPoint: /idauthentication/v1/kyc/$ekycPartnerKeyURL$
       uniqueIdentifier: TC_IDA_EkycOtp_19
-      description: Ekyc otp auth with missing individualId with VID as individualId type
+      description: Verify that eKYC OTP authentication fails when the individual ID is missing and a VID is provided
       role: resident
       checkErrorsOnlyInResponse: true
       restMethod: post
@@ -745,7 +750,7 @@ EkycOtp:
   auth_EkycOtp_With_Invalid_transactionId_uin_Pos:
       endPoint: /idauthentication/v1/kyc/$ekycPartnerKeyURL$
       uniqueIdentifier: TC_IDA_EkycOtp_20
-      description: Ekyc otp auth with invalid transactionId using UIN
+      description: Verify that eKYC OTP authentication fails when an invalid transaction ID is provided along with a UIN
       role: resident
       checkErrorsOnlyInResponse: true
       restMethod: post
@@ -782,10 +787,11 @@ EkycOtp:
   auth_EkycOtp_With_Invalid_transactionId_VID_Neg:
       endPoint: /idauthentication/v1/kyc/$ekycPartnerKeyURL$
       uniqueIdentifier: TC_IDA_EkycOtp_21
-      description: Ekyc otp auth with invalid transactionId using VID
+      description: Verify that eKYC OTP authentication fails when an invalid transaction ID is provided along with a VID
       role: resident
       checkErrorsOnlyInResponse: true
       restMethod: post
+      additionalDependencies: TC_DependentModule_IdRepo_06
       inputTemplate: ida/EkycOtp/EkycOtp
       outputTemplate: ida/EkycOtp/EkycOtpResult
       input: '{
@@ -819,7 +825,7 @@ EkycOtp:
   auth_EkycOtp_With_Blank_transactionId_uin_Neg:
       endPoint: /idauthentication/v1/kyc/$ekycPartnerKeyURL$
       uniqueIdentifier: TC_IDA_EkycOtp_22
-      description: Ekyc otp auth with blank transactionId using UIN
+      description: Verify that eKYC OTP authentication fails when the transaction ID is blank and a UIN is provided
       role: resident
       checkErrorsOnlyInResponse: true
       restMethod: post
@@ -856,10 +862,11 @@ EkycOtp:
   auth_EkycOtp_With_Blank_transactionId_VID_Neg:
       endPoint: /idauthentication/v1/kyc/$ekycPartnerKeyURL$
       uniqueIdentifier: TC_IDA_EkycOtp_23
-      description: Ekyc otp auth with blank transactionId using VID
+      description: Verify that eKYC OTP authentication fails when the transaction ID is blank and a VID is provided
       role: resident
       checkErrorsOnlyInResponse: true
       restMethod: post
+      additionalDependencies: TC_DependentModule_IdRepo_06
       inputTemplate: ida/EkycOtp/EkycOtp
       outputTemplate: ida/EkycOtp/EkycOtpResult
       input: '{
@@ -893,10 +900,11 @@ EkycOtp:
   auth_EkycOtp_With_Invalid_individualIdType_VID_Neg:
       endPoint: /idauthentication/v1/kyc/$ekycPartnerKeyURL$
       uniqueIdentifier: TC_IDA_EkycOtp_24
-      description: Ekyc otp auth with invalid individualId Type using VID
+      description: Verify that eKYC OTP authentication fails when an invalid individual ID type is provided along with a VID
       role: resident
       checkErrorsOnlyInResponse: true
       restMethod: post
+      additionalDependencies: TC_DependentModule_IdRepo_06
       inputTemplate: ida/EkycOtp/EkycOtp
       outputTemplate: ida/EkycOtp/error
       input: '{
@@ -930,10 +938,11 @@ EkycOtp:
   auth_EkycOtp_With_Blank_individualIdType_VID_Neg:
       endPoint: /idauthentication/v1/kyc/$ekycPartnerKeyURL$
       uniqueIdentifier: TC_IDA_EkycOtp_25
-      description: Ekyc otp auth with blank individualId Type using VID
+      description: Verify that eKYC OTP authentication fails when the individual ID type is blank and a VID is provided
       role: resident
       checkErrorsOnlyInResponse: true
       restMethod: post
+      additionalDependencies: TC_DependentModule_IdRepo_06
       inputTemplate: ida/EkycOtp/EkycOtp
       outputTemplate: ida/EkycOtp/EkycOtpResult
       input: '{
@@ -967,10 +976,11 @@ EkycOtp:
   auth_EkycOtp_With_Different_transaction_id_VID_Neg:
       endPoint: /idauthentication/v1/kyc/$ekycPartnerKeyURL$
       uniqueIdentifier: TC_IDA_EkycOtp_26
-      description: Ekyc otp auth with different transactionId using VID
+      description: Verify that eKYC OTP authentication fails when a transaction ID different from the original is provided along with a VID
       role: resident
       checkErrorsOnlyInResponse: true
       restMethod: post
+      additionalDependencies: TC_DependentModule_IdRepo_06
       inputTemplate: ida/EkycOtp/EkycOtp
       outputTemplate: ida/EkycOtp/error
       input: '{
@@ -1004,7 +1014,7 @@ EkycOtp:
   auth_EkycOtp_With_Different_transaction_id_uin_Neg:
       endPoint: /idauthentication/v1/kyc/$ekycPartnerKeyURL$
       uniqueIdentifier: TC_IDA_EkycOtp_27
-      description: Ekyc otp auth with different transactionId using UIN
+      description: Verify that eKYC OTP authentication fails when a transaction ID different from the original is provided along with a UIN
       role: resident
       checkErrorsOnlyInResponse: true
       restMethod: post
@@ -1041,7 +1051,7 @@ EkycOtp:
   auth_EkycOtp_With_invalid_uin_partner:
       endPoint: /idauthentication/v1/kyc/$ekycPartnerKe
       uniqueIdentifier: TC_IDA_EkycOtp_28
-      description: Ekyc otp auth with invalid partner using UIN
+      description: Verify that eKYC OTP authentication fails when an invalid UIN is provided for a partner
       role: resident
       checkErrorsOnlyInResponse: true
       restMethod: post

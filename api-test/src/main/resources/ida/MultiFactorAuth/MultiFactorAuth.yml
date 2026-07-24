@@ -2,7 +2,7 @@ MultiFactorAuth:
   auth_MultiFactorAuth_Biometric_Face_With_Valid_Smoke_Pos:
       endPoint: /idauthentication/v1/auth/$partnerKeyURL$
       uniqueIdentifier: TC_IDA_MultiFactorAuth_01
-      description: Multifactor auth with Demographic,otp and biometric
+      description: Verify that multi-factor authentication succeeds when face biometric authentication is performed with valid input data under smoke test condition
       role: resident
       restMethod: post
       checkErrorsOnlyInResponse: true

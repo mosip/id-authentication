@@ -2,7 +2,7 @@ HotlistAPI:
    auth_BlockHotlistAPI_All_Valid_Smoke_UIN_without_expirytime_sid:
       endPoint: /v1/hotlist/block
       uniqueIdentifier: TC_IDA_HotlistAPI_01
-      description: block UIN without expiry time
+      description: Verify that the block/hotlist API successfully blocks a UIN when all valid inputs are provided without specifying expiry time or SID
       role: hotlist
       restMethod: post
       inputTemplate: ida/BlockHotlistAPI/blockHotlistAPI
@@ -16,10 +16,10 @@ HotlistAPI:
       output: '{
         "status": "BLOCKED"
     }'
-   auth_BlockHotlistAPI_All_Valid_Smoke_UIN_forever_sid:
+   auth_BlockHotlistAPI_All_Valid_UIN_forever_sid:
       endPoint: /v1/hotlist/block
-      uniqueIdentifier: TC_IDA_HotlistAPI_01
-      description: block UIN for forever without expiry time
+      uniqueIdentifier: TC_IDA_HotlistAPI_02
+      description: Verify that the block/hotlist API successfully blocks a UIN permanently when all valid inputs are provided including SID
       role: hotlist
       restMethod: post
       inputTemplate: ida/BlockHotlistAPI/blockHotlistAPI
@@ -35,8 +35,8 @@ HotlistAPI:
     }'
    auth_BlockHotlistAPI_when_id_type_uin_incorrect:
       endPoint: /v1/hotlist/block
-      uniqueIdentifier: TC_IDA_HotlistAPI_02
-      description: block UIN when id type is incorrect without expiry time
+      uniqueIdentifier: TC_IDA_HotlistAPI_03
+      description: Verify that the block/hotlist API fails when an incorrect ID type is provided for UIN
       role: hotlist
       restMethod: post
       inputTemplate: ida/BlockHotlistAPI/blockHotlistAPI
@@ -52,10 +52,11 @@ HotlistAPI:
     }'
    auth_BlockHotlistAPI_when_id_type_vid_incorrect:
       endPoint: /v1/hotlist/block
-      uniqueIdentifier: TC_IDA_HotlistAPI_03
-      description: block VID when id type is incorrect without expiry time
+      uniqueIdentifier: TC_IDA_HotlistAPI_04
+      description: Verify that the block/hotlist API fails when an incorrect ID type is provided for VID
       role: hotlist
       restMethod: post
+      additionalDependencies: TC_DependentModule_IdRepo_25
       inputTemplate: ida/BlockHotlistAPI/blockHotlistAPI
       outputTemplate: ida/BlockHotlistAPI/blockHotlistAPIResult
       input: '{
@@ -69,10 +70,11 @@ HotlistAPI:
     }'
    auth_BlockHotlistAPI_when_expiry_time_old_incorrect:
       endPoint: /v1/hotlist/block
-      uniqueIdentifier: TC_IDA_HotlistAPI_04
-      description: block VID when expiry time and id type are incorrect
+      uniqueIdentifier: TC_IDA_HotlistAPI_05
+      description: Verify that the block/hotlist API fails when an invalid or past expiry time is provided
       role: hotlist
       restMethod: post
+      additionalDependencies: TC_DependentModule_IdRepo_25 
       inputTemplate: ida/BlockHotlistAPI/blockHotlistAPI
       outputTemplate: ida/BlockHotlistAPI/error
       input: '{
@@ -90,8 +92,8 @@ HotlistAPI:
   }'
    auth_BlockHotlistAPI_All_Valid_Smoke_UIN_with_expirytime_sid:
       endPoint: /v1/hotlist/block
-      uniqueIdentifier: TC_IDA_HotlistAPI_05
-      description: block UIN with expiry time
+      uniqueIdentifier: TC_IDA_HotlistAPI_06
+      description: Verify that the block/hotlist API successfully blocks a UIN when all valid inputs are provided including expiry time and SID
       role: hotlist
       restMethod: post
       inputTemplate: ida/BlockHotlistAPI/blockHotlistAPI
@@ -107,10 +109,11 @@ HotlistAPI:
     }'
    auth_BlockHotlistAPI_All_Valid_Smoke_VID_without_expirytime_sid:
       endPoint: /v1/hotlist/block
-      uniqueIdentifier: TC_IDA_HotlistAPI_06
-      description: block VID without expiry time
+      uniqueIdentifier: TC_IDA_HotlistAPI_07
+      description: Verify that the block/hotlist API successfully blocks a VID when all valid inputs are provided without specifying expiry time or SID
       role: hotlist
       restMethod: post
+      additionalDependencies: TC_DependentModule_IdRepo_06
       inputTemplate: ida/BlockHotlistAPI/blockHotlistAPI
       outputTemplate: ida/BlockHotlistAPI/blockHotlistAPIResult
       input: '{
@@ -124,10 +127,11 @@ HotlistAPI:
     }'
    auth_BlockHotlistAPI_All_Valid_Smoke_VID_with_expirytime_sid:
       endPoint: /v1/hotlist/block
-      uniqueIdentifier: TC_IDA_HotlistAPI_07
-      description: block VID with expiry time
+      uniqueIdentifier: TC_IDA_HotlistAPI_08
+      description: Verify that the block/hotlist API successfully blocks a VID when all valid inputs are provided including expiry time and SID
       role: hotlist
       restMethod: post
+      additionalDependencies: TC_DependentModule_IdRepo_06
       inputTemplate: ida/BlockHotlistAPI/blockHotlistAPI
       outputTemplate: ida/BlockHotlistAPI/blockHotlistAPIResult
       input: '{
@@ -139,44 +143,44 @@ HotlistAPI:
       output: '{
         "status": "BLOCKED"
     }'
-   auth_BlockHotlistAPI_All_Valid_Smoke_Device_with_expirytime_sid:
-      endPoint: /v1/hotlist/block
-      uniqueIdentifier: TC_IDA_HotlistAPI_08
-      description: block device without expiry time
-      role: hotlist
-      restMethod: post
-      inputTemplate: ida/BlockHotlistAPI/blockHotlistAPI
-      outputTemplate: ida/BlockHotlistAPI/blockHotlistAPIResult
-      input: '{
-    "id": "78467171Logitech4d36e96c-e325-11ce-bfc1-08002be10318",
-    "idType": "DEVICE",
-    "requestTime": "$TIMESTAMP$",
-    "expiryTimestamp": ""
-  }'
-      output: '{
-        "status": "BLOCKED"
-    }'
-   auth_BlockHotlistAPI_All_Valid_Smoke_Device_withOUT_expirytime_sid:
-      endPoint: /v1/hotlist/block
-      uniqueIdentifier: TC_IDA_HotlistAPI_08
-      description: block device without expiry time
-      role: hotlist
-      restMethod: post
-      inputTemplate: ida/BlockHotlistAPI/blockHotlistAPI
-      outputTemplate: ida/BlockHotlistAPI/blockHotlistAPIResult
-      input: '{
-    "id": "78467171Logitech4d36e96c-e325-11ce-bfc1-08002be10318",
-    "idType": "DEVICE",
-    "requestTime": "$TIMESTAMP$",
-    "expiryTimestamp": ""
-  }'
-      output: '{
-        "status": "BLOCKED"
-    }'
-   auth_BlockHotlistAPI_All_Valid_Smoke_deviceProviderId:
+   auth_BlockHotlistAPI_All_Valid_Device_with_expirytime:
       endPoint: /v1/hotlist/block
       uniqueIdentifier: TC_IDA_HotlistAPI_09
-      description: block device provider id without expiry time
+      description: Verify that the block/hotlist API successfully blocks a device when all valid inputs are provided including expiry time
+      role: hotlist
+      restMethod: post
+      inputTemplate: ida/BlockHotlistAPI/blockHotlistAPI
+      outputTemplate: ida/BlockHotlistAPI/blockHotlistAPIResult
+      input: '{
+    "id": "78467171Logitech4d36e96c-e325-11ce-bfc1-08002be10318",
+    "idType": "DEVICE",
+    "requestTime": "$TIMESTAMP$",
+    "expiryTimestamp": ""
+  }'
+      output: '{
+        "status": "BLOCKED"
+    }'
+   auth_BlockHotlistAPI_All_Valid_Device_withOUT_expirytime:
+      endPoint: /v1/hotlist/block
+      uniqueIdentifier: TC_IDA_HotlistAPI_10
+      description: Verify that the block/hotlist API successfully blocks a device when all valid inputs are provided without specifying expiry time
+      role: hotlist
+      restMethod: post
+      inputTemplate: ida/BlockHotlistAPI/blockHotlistAPI
+      outputTemplate: ida/BlockHotlistAPI/blockHotlistAPIResult
+      input: '{
+    "id": "78467171Logitech4d36e96c-e325-11ce-bfc1-08002be10318",
+    "idType": "DEVICE",
+    "requestTime": "$TIMESTAMP$",
+    "expiryTimestamp": ""
+  }'
+      output: '{
+        "status": "BLOCKED"
+    }'
+   auth_BlockHotlistAPI_All_Valid_deviceProviderId:
+      endPoint: /v1/hotlist/block
+      uniqueIdentifier: TC_IDA_HotlistAPI_11
+      description: Verify that the block/hotlist API successfully blocks a device when a valid device provider ID is provided
       role: hotlist
       restMethod: post
       inputTemplate: ida/BlockHotlistAPI/blockHotlistAPI
@@ -192,8 +196,8 @@ HotlistAPI:
     }'
    auth_BlockHotlistAPI_blockUIN_toSendOtp_sid:
       endPoint: /v1/hotlist/block
-      uniqueIdentifier: TC_IDA_HotlistAPI_10
-      description: block UIN to send otp
+      uniqueIdentifier: TC_IDA_HotlistAPI_12
+      description: Verify that the block/hotlist API successfully blocks a UIN and triggers OTP sending when SID is provided
       role: hotlist
       restMethod: post
       inputTemplate: ida/BlockHotlistAPI/blockHotlistAPI
@@ -209,10 +213,11 @@ HotlistAPI:
     }'
    auth_BlockHotlistAPI_blockVID_toSendOtp_sid:
       endPoint: /v1/hotlist/block
-      uniqueIdentifier: TC_IDA_HotlistAPI_11
-      description: block VID to send otp
+      uniqueIdentifier: TC_IDA_HotlistAPI_13
+      description: Verify that the block/hotlist API successfully blocks a VID and triggers OTP sending when SID is provided
       role: hotlist
       restMethod: post
+      additionalDependencies: TC_DependentModule_IdRepo_57
       inputTemplate: ida/BlockHotlistAPI/blockHotlistAPI
       outputTemplate: ida/BlockHotlistAPI/blockHotlistAPIResult
       input: '{
@@ -226,8 +231,8 @@ HotlistAPI:
     }'
    auth_BlockHotlistAPI_ForSeconds_sid:
       endPoint: /v1/hotlist/block
-      uniqueIdentifier: TC_IDA_HotlistAPI_12
-      description: block UIN for few seconds
+      uniqueIdentifier: TC_IDA_HotlistAPI_14
+      description: Verify that the block/hotlist API successfully blocks an entity for a specified number of seconds when SID is provided
       role: hotlist
       restMethod: post
       inputTemplate: ida/BlockHotlistAPI/blockHotlistAPI

@@ -2,8 +2,9 @@ BlockHotlistStatus:
   auth_BlockHotlistStatus_ofUIN_valid_sid:
       endPoint: /v1/hotlist/status/UIN/{id}
       uniqueIdentifier: TC_IDA_BlockHotlistStatus_01
-      description: get the status of hotlist UIN
+      description: Verify that the block/hotlist status API returns the correct status of a UIN when a valid SID is provided
       role: idrepo
+      additionalDependencies: TC_IDA_HotlistAPI_14
       checkErrorsOnlyInResponse: true
       restMethod: get
       inputTemplate: ida/BlockHotlistStatus/blockHotlistStatus
