@@ -1,6 +1,5 @@
 package io.mosip.testrig.apirig.auth.testscripts;
 
-import java.lang.reflect.Field;
 import java.text.DateFormat;
 import java.text.SimpleDateFormat;
 import java.util.Calendar;
@@ -21,8 +20,6 @@ import org.testng.annotations.AfterMethod;
 import org.testng.annotations.BeforeClass;
 import org.testng.annotations.DataProvider;
 import org.testng.annotations.Test;
-import org.testng.internal.BaseTestMethod;
-import org.testng.internal.TestResult;
 
 import io.mosip.testrig.apirig.auth.utils.IdAuthConfigManager;
 import io.mosip.testrig.apirig.auth.utils.IdAuthenticationUtil;
@@ -31,6 +28,7 @@ import io.mosip.testrig.apirig.dto.TestCaseDTO;
 import io.mosip.testrig.apirig.testrunner.BaseTestCase;
 import io.mosip.testrig.apirig.testrunner.HealthChecker;
 import io.mosip.testrig.apirig.utils.AdminTestException;
+import io.mosip.testrig.apirig.utils.AdminTestUtil;
 import io.mosip.testrig.apirig.utils.AuthenticationTestException;
 import io.mosip.testrig.apirig.utils.GlobalConstants;
 import io.mosip.testrig.apirig.utils.OutputValidationUtil;
@@ -142,7 +140,8 @@ public class UpdateIdentity extends IdAuthenticationUtil implements ITest {
 		String genRid = "27847" + generateRandomNumberString(10) + timestampValue;
 		generatedRid = genRid;
 
-		String inputJson = getJsonFromTemplate(testCaseDTO.getInput(), testCaseDTO.getInputTemplate());
+		testCaseDTO.setInputTemplate(AdminTestUtil.updateIdentityHbs(testCaseDTO.isRegenerateHbs()));
+		String inputJson = getJsonFromTemplate(testCaseDTO.getInput(), testCaseDTO.getInputTemplate(), false);
 
 		JSONObject reqJsonObject = new JSONObject(inputJson);
 
@@ -222,16 +221,6 @@ public class UpdateIdentity extends IdAuthenticationUtil implements ITest {
 	 */
 	@AfterMethod(alwaysRun = true)
 	public void setResultTestName(ITestResult result) {
-		try {
-			Field method = TestResult.class.getDeclaredField("m_method");
-			method.setAccessible(true);
-			method.set(result, result.getMethod().clone());
-			BaseTestMethod baseTestMethod = (BaseTestMethod) result.getMethod();
-			Field f = baseTestMethod.getClass().getSuperclass().getDeclaredField("m_methodName");
-			f.setAccessible(true);
-			f.set(baseTestMethod, testCaseName);
-		} catch (Exception e) {
-			Reporter.log("Exception : " + e.getMessage());
-		}
+		result.setAttribute("TestCaseName", testCaseName);
 	}
 }

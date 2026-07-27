@@ -2,7 +2,7 @@ EkycBio:
     auth_EkycBio_Face_With_Valid_Smoke_Pos:
       endPoint: /idauthentication/v1/kyc/$ekycPartnerKeyURL$
       uniqueIdentifier: TC_IDA_EkycBio_01
-      description: Ekyc bio face auth using valid UIN
+      description: Verify that eKYC biometric face authentication succeeds with valid input
       role: resident
       restMethod: post
       inputTemplate: ida/EkycBio/ekycBio

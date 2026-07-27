@@ -1,7 +1,7 @@
 GetUnusedUIN:
    auth_GetUnusedUIN_All_Valid_Smoke_sid:
       endPoint: /v1/idgenerator/uin
-      description: Fetching the unused UIN
+      description: Verify that fetching an unused UIN succeeds when all required fields are valid and a valid SID is provided
       role: idRepo
       checkErrorsOnlyInResponse: true
       restMethod: get

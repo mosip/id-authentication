@@ -2,16 +2,17 @@ OtpAuth:
   auth_OTP_Auth_With_blocked_partnerid_Pos:
       endPoint: /idauthentication/v1/auth/$partnerKeyURL$
       uniqueIdentifier: TC_IDA_OtpAuth_blockedPartnerId_01
-      description: Otp auth with blocked_partnerid
+      description: Verify that OTP authentication succeeds with a blocked partner ID
       role: resident
       restMethod: post
       checkErrorsOnlyInResponse: true
+      additionalDependencies: TC_IDA_HotlistAPI_15
       inputTemplate: ida/OtpAuth/OtpAuth
       outputTemplate: ida/OtpAuth/OtpAuthResult
       input: '{
-        "otpChannel": "auth_AddIdentity_For_Otp_Auth_smoke_Pos@mosip.net",
+        "otpChannel": "$ID:AddIdentity_For_Otp_Auth_smoke_Pos_EMAIL$",
         "requestTime": "$TIMESTAMP$",
-        "individualId": "2092179504",
+        "individualId": "$ID:AddIdentity_For_Otp_Auth_smoke_Pos_UIN$",
         "transactionId": "$TRANSACTIONID$",
         "individualIdType": "UIN",
         "bio": false,
@@ -20,7 +21,7 @@ OtpAuth:
         "sendOtp":{
     "transactionID": "$TRANSACTIONID$",
     "requestTime": "$TIMESTAMP$",
-    "individualId": "2092179504",
+    "individualId": "$ID:AddIdentity_For_Otp_Auth_smoke_Pos_UIN$",
     "individualIdType": "UIN",
     "sendOtpReqTemplate": "ida/OtpAuth/sendOtp",
     "sendOtpEndPoint": "/idauthentication/v1/otp/$partnerKeyURL$",
@@ -38,10 +39,11 @@ OtpAuth:
   auth_OTP_Auth_With_blocked_misp_Pos:
       endPoint: /idauthentication/v1/auth/$partnerKeyURL$
       uniqueIdentifier: TC_IDA_OtpAuth_blockedMisp_02
-      description: Otp auth with blocked misp
+      description: Verify that OTP authentication succeeds with a blocked MISP
       role: resident
       restMethod: post
       checkErrorsOnlyInResponse: true
+      additionalDependencies: TC_IDA_HotlistAPI_17
       inputTemplate: ida/OtpAuth/OtpAuth
       outputTemplate: ida/OtpAuth/OtpAuthResult
       input: '{

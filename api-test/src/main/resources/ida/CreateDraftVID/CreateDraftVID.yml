@@ -2,7 +2,7 @@ CreateDraftVID:
   auth_CreateDraftVID_Smoke_Pos:
       endPoint: /idrepository/v1/draft/vid
       uniqueIdentifier: TC_IDA_CreateDraftVID_01
-      description: create Draft Perpetual VID using UIN
+      description: Verify that a draft is successfully created for a VID with valid inputs
       role: idrepo
       restMethod: post
       inputTemplate: ida/CreateDraftVID/createDraftVID

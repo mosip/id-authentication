@@ -1,6 +1,5 @@
 package io.mosip.testrig.apirig.auth.testscripts;
 
-import java.lang.reflect.Field;
 import java.util.Arrays;
 import java.util.List;
 import java.util.Map;
@@ -17,8 +16,6 @@ import org.testng.annotations.AfterMethod;
 import org.testng.annotations.BeforeClass;
 import org.testng.annotations.DataProvider;
 import org.testng.annotations.Test;
-import org.testng.internal.BaseTestMethod;
-import org.testng.internal.TestResult;
 
 import io.mosip.testrig.apirig.auth.utils.IdAuthConfigManager;
 import io.mosip.testrig.apirig.auth.utils.IdAuthenticationUtil;
@@ -30,6 +27,7 @@ import io.mosip.testrig.apirig.utils.AdminTestException;
 import io.mosip.testrig.apirig.utils.AuthenticationTestException;
 import io.mosip.testrig.apirig.utils.BioDataUtility;
 import io.mosip.testrig.apirig.utils.EncryptionDecrptionUtil;
+import io.mosip.testrig.apirig.utils.NotificationListener;
 import io.mosip.testrig.apirig.utils.OutputValidationUtil;
 import io.mosip.testrig.apirig.utils.PartnerRegistration;
 import io.mosip.testrig.apirig.utils.ReportUtil;
@@ -84,12 +82,12 @@ public class MultiFactorAuthNew extends IdAuthenticationUtil implements ITest {
 			
 		{
 			testCaseDTO.setEndPoint(testCaseDTO.getEndPoint().replace("$partnerKeyURL$", partnerKeyUrl));
-			PartnerRegistration.appendEkycOrRp = "rp-";
+			PartnerRegistration.appendEkycOrRp.set("rp-");
 		}
 		if(testCaseDTO.getEndPoint().contains("$ekycPartnerKeyURL$"))
 		{
 			testCaseDTO.setEndPoint(testCaseDTO.getEndPoint().replace("$ekycPartnerKeyURL$", ekycPartnerKeyURL));
-			PartnerRegistration.appendEkycOrRp = "ekyc-";
+			PartnerRegistration.appendEkycOrRp.set("ekyc-");
 		}
 		if (testCaseDTO.getEndPoint().contains("$UpdatedPartnerKeyURL$")) {
 			testCaseDTO.setEndPoint(testCaseDTO.getEndPoint().replace("$UpdatedPartnerKeyURL$",
@@ -123,6 +121,8 @@ public class MultiFactorAuthNew extends IdAuthenticationUtil implements ITest {
 		{
 			sendOtpEndPoint = sendOtpEndPoint.replace("$partnerKeyURL$", ekycPartnerKeyURL);
 		}
+		
+		NotificationListener.markRequestStart();
 		Response otpResponse = postRequestWithAuthHeaderAndSignature(ApplnURI + sendOtpEndPoint,
 				getJsonFromTemplate(otpReqJson.toString(), sendOtpReqTemplate), testCaseDTO.getTestCaseName());
 
@@ -147,9 +147,7 @@ public class MultiFactorAuthNew extends IdAuthenticationUtil implements ITest {
 			req.remove("identityRequest");
 		}
 		identityRequest = buildIdentityRequest(identityRequest);
-		
-		if(identityRequest.contains("$DATETIME$"))
-			identityRequest = identityRequest.replace("$DATETIME$", generateCurrentUTCTimeStamp());
+
 		JSONObject identityReqJson = new JSONObject(identityRequest);
 		identityRequestTemplate = identityReqJson.getString("identityRequestTemplate");
 		identityReqJson.remove("identityRequestTemplate");
@@ -158,6 +156,8 @@ public class MultiFactorAuthNew extends IdAuthenticationUtil implements ITest {
 		identityRequest = getJsonFromTemplate(identityReqJson.toString(), identityRequestTemplate);
 		otpChannel = inputJsonKeyWordHandeler(otpChannel, testCaseName);
 		String identyEnryptRequest = updateTimestampOtp(identityRequest, otpChannel, testCaseName);
+		if (identyEnryptRequest.contains("$DATETIME$"))
+			identyEnryptRequest = identyEnryptRequest.replace("$DATETIME$", generateCurrentUTCTimeStamp());
 		logger.info(identyEnryptRequest);
 		if (identyEnryptRequest.contains("baseurl")) {
 			String domainUrl =  BaseTestCase.ApplnURI;
@@ -230,17 +230,8 @@ public class MultiFactorAuthNew extends IdAuthenticationUtil implements ITest {
 	 */
 	@AfterMethod(alwaysRun = true)
 	public void setResultTestName(ITestResult result) {
-		try {
-			Field method = TestResult.class.getDeclaredField("m_method");
-			method.setAccessible(true);
-			method.set(result, result.getMethod().clone());
-			BaseTestMethod baseTestMethod = (BaseTestMethod) result.getMethod();
-			Field f = baseTestMethod.getClass().getSuperclass().getDeclaredField("m_methodName");
-			f.setAccessible(true);
-			f.set(baseTestMethod, testCaseName);
-		} catch (Exception e) {
-			Reporter.log("Exception : " + e.getMessage());
-		}
+		result.setAttribute("TestCaseName", testCaseName);
+	    NotificationListener.markRequestRemove();
 	}
 
 	@AfterClass

@@ -2,7 +2,7 @@ AuthInternalLock:
   auth_AuthInternal_Lock_UIN_Unlock_BioAuth_Smoke_Pos:
       endPoint: /idrepository/v1/identity/authtypes/status
       uniqueIdentifier: TC_IDA_AuthInternalLock_01
-      description: lock Bio-authType Iris-authSubType for given UIN
+      description: Validate the successful unlocking of a UIN using internal authentication with biometric authentication.
       role: idrepo
       restMethod: post
       inputTemplate: ida/AuthInternalLock/authInternalLock
@@ -21,13 +21,13 @@ AuthInternalLock:
   auth_AuthInternal_Lock_UIN_child_UIN_which_locked_Pos:
       endPoint: /idrepository/v1/identity/authtypes/status
       uniqueIdentifier: TC_IDA_AuthInternalLock_02
-      description: lock Bio-authType Iris-authSubType for child UIN
+      description: Validate the locking of a child UIN using internal authentication when the UIN is already locked
       role: idrepo
       restMethod: post
       inputTemplate: ida/AuthInternalLock/authInternalLock
       outputTemplate: ida/AuthInternalLock/authInternalLockResult
       input: '{
-    "individualId": "$ID:AddIdentity_withValidParameters_with_Infant_which_locked_smoke_Pos_UIN$",
+    "individualId": "$ID:AddIdentity_withValidParameters_with_Infant_which_locked_Pos_UIN$",
     "individualIdType": "UIN",
     "authType": "Bio",
     "authSubType": "Iris",
@@ -37,10 +37,10 @@ AuthInternalLock:
       output: '{
   "status": "Success"
 }'
-  auth_AuthInternal_lock_with_explicitly_Smoke_Pos:
+  auth_AuthInternal_lock_with_explicitly_Pos:
       endPoint: /idrepository/v1/identity/authtypes/status
-      uniqueIdentifier: TC_IDA_AuthInternalLock_01
-      description: lock Bio-authType Iris-authSubType for given UIN
+      uniqueIdentifier: TC_IDA_AuthInternalLock_03
+      description: Validate that the UIN is successfully locked using internal authentication when the lock request is made explicitly
       role: idrepo
       restMethod: post
       inputTemplate: ida/AuthInternalLock/authInternalLock
@@ -59,8 +59,8 @@ AuthInternalLock:
 
   auth_AuthInternal_Lock_UIN_Unlock_DemoAuth_Smoke_Pos:
       endPoint: /idrepository/v1/identity/authtypes/status
-      uniqueIdentifier: TC_IDA_AuthInternalLock_03
-      description: unLock Demo authType for given UIN
+      uniqueIdentifier: TC_IDA_AuthInternalLock_04
+      description: Validate the successful unlocking of a UIN using internal authentication with demographic authentication
       role: idrepo
       restMethod: post
       inputTemplate: ida/AuthInternalLock/authInternalLock
@@ -79,8 +79,8 @@ AuthInternalLock:
 
   auth_AuthInternal_Permanent_Lock_BioAuth_Smoke_Pos:
       endPoint: /idrepository/v1/identity/authtypes/status
-      uniqueIdentifier: TC_IDA_AuthInternalLock_04
-      description: lock Bio-authType Iris-authSubType Permanently for UIN
+      uniqueIdentifier: TC_IDA_AuthInternalLock_05
+      description: Validate the permanent locking of a UIN using internal authentication with biometric authentication
       role: idrepo
       restMethod: post
       inputTemplate: ida/AuthInternalLock/authInternalLock
@@ -99,8 +99,8 @@ AuthInternalLock:
 
   auth_AuthInternal_Permanent_Lock_DemoAuth_Smoke_Pos:
       endPoint: /idrepository/v1/identity/authtypes/status
-      uniqueIdentifier: TC_IDA_AuthInternalLock_05
-      description: lock Demo authType Permanently for UIN 
+      uniqueIdentifier: TC_IDA_AuthInternalLock_06
+      description: Validate the permanent locking of a UIN using internal authentication with demographic authentication 
       role: idrepo
       restMethod: post
       inputTemplate: ida/AuthInternalLock/authInternalLock
@@ -119,8 +119,8 @@ AuthInternalLock:
 
   auth_AuthInternal_Lock_UIN_Unlock_WithSecs_BioAuth_Smoke_Pos:
       endPoint: /idrepository/v1/identity/authtypes/status
-      uniqueIdentifier: TC_IDA_AuthInternalLock_04
-      description: lock Bio-authType Iris-authSubType for UIN
+      uniqueIdentifier: TC_IDA_AuthInternalLock_07
+      description: Validate the successful unlocking of a UIN using internal authentication with biometric authentication and security parameters
       role: idrepo
       restMethod: post
       inputTemplate: ida/AuthInternalLock/authInternalLock
@@ -139,8 +139,8 @@ AuthInternalLock:
 
   auth_AuthInternal_Lock_UIN_Unlock_WithSecs_DemoAuth_Smoke_Pos:
       endPoint: /idrepository/v1/identity/authtypes/status
-      uniqueIdentifier: TC_IDA_AuthInternalLock_06
-      description: unlock Demo authType for seconds for UIN
+      uniqueIdentifier: TC_IDA_AuthInternalLock_08
+      description: Validate the successful unlocking of a UIN using internal authentication with demographic authentication and security parameters
       role: idrepo
       restMethod: post
       inputTemplate: ida/AuthInternalLock/authInternalLock
@@ -159,8 +159,8 @@ AuthInternalLock:
 
   auth_AuthInternal_Permanent_Lock_BioAuth_Valid_Smoke_Pos:
       endPoint: /idrepository/v1/identity/authtypes/status
-      uniqueIdentifier: TC_IDA_AuthInternalLock_04
-      description: lock Bio-authType Iris-authSubType Permanently for UIN 
+      uniqueIdentifier: TC_IDA_AuthInternalLock_09
+      description: Validate the permanent locking of a UIN using internal authentication with valid biometric authentication
       role: idrepo
       restMethod: post
       inputTemplate: ida/AuthInternalLock/authInternalLock
@@ -179,14 +179,34 @@ AuthInternalLock:
 
   auth_AuthInternal_Permanent_Lock_DemoAuth_Valid_Smoke_Pos:
       endPoint: /idrepository/v1/identity/authtypes/status
-      uniqueIdentifier: TC_IDA_AuthInternalLock_05
-      description: lock Demo authType Permanently for UIN
+      uniqueIdentifier: TC_IDA_AuthInternalLock_10
+      description: Validate the permanent locking of a UIN using internal authentication with valid demographic authentication
       role: idrepo
       restMethod: post
       inputTemplate: ida/AuthInternalLock/authInternalLock
       outputTemplate: ida/AuthInternalLock/authInternalLockResult
       input: '{
     "individualId": "$ID:AddIdentity_Lock_permanent_DemoAuth_withValidParams_smoke_Pos_UIN$",
+    "individualIdType": "UIN",
+    "authType": "Demo",
+    "authSubType": "",
+    "locked": true,
+    "unlockForSeconds": 0
+}'
+      output: '{
+  "status": "Success"
+}'
+
+  auth_AuthInternal_Permanent_Lock_DemoAuthDelegate_Valid_Smoke_Pos:
+      endPoint: /idrepository/v1/identity/authtypes/status
+      uniqueIdentifier: TC_IDA_AuthInternalLock_07
+      description: lock Demo authType Permanently for UIN and demo auth shoud fail with the same UIN
+      role: idrepo
+      restMethod: post
+      inputTemplate: ida/AuthInternalLock/authInternalLock
+      outputTemplate: ida/AuthInternalLock/authInternalLockResult
+      input: '{
+    "individualId": "$ID:AddIdentity_withValidParameters_forLockedUIN_DemoDelegated_Pos_UIN$",
     "individualIdType": "UIN",
     "authType": "Demo",
     "authSubType": "",

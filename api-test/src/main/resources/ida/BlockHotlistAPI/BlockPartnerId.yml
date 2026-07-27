@@ -1,8 +1,8 @@
 HotlistAPI:
    auth_BlockPartnerId_All_Valid_Smoke_block_partner_id_sid:
       endPoint: /v1/hotlist/block
-      uniqueIdentifier: TC_IDA_HotlistAPI_10
-      description: block partner id without expiry time
+      uniqueIdentifier: TC_IDA_HotlistAPI_15
+      description: Verify that the block partner API successfully blocks a partner ID when all valid inputs including SID are provided
       role: hotlist
       restMethod: post
       inputTemplate: ida/BlockHotlistAPI/blockHotlistAPI
@@ -18,8 +18,8 @@ HotlistAPI:
     }'
    auth_BlockPartnerId_All_Valid_Smoke_block_api_key_sid:
       endPoint: /v1/hotlist/block
-      uniqueIdentifier: TC_IDA_HotlistAPI_11
-      description: block api key without expiry time
+      uniqueIdentifier: TC_IDA_HotlistAPI_16
+      description: Verify that the block partner API successfully blocks an API key when all valid inputs including SID are provided
       role: hotlist
       restMethod: post
       inputTemplate: ida/BlockHotlistAPI/blockHotlistAPI
@@ -35,8 +35,8 @@ HotlistAPI:
     }'
    auth_BlockPartnerId_All_Valid_Smoke_block_MISP_LIC_key_sid:
       endPoint: /v1/hotlist/block
-      uniqueIdentifier: TC_IDA_HotlistAPI_12
-      description: block misp lic Key without expiry time
+      uniqueIdentifier: TC_IDA_HotlistAPI_17
+      description: Verify that the block partner API successfully blocks a MISP LIC key when all valid inputs including SID are provided
       role: hotlist
       restMethod: post
       inputTemplate: ida/BlockHotlistAPI/blockHotlistAPI

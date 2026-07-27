@@ -2,7 +2,7 @@ RetrieveAuthTypeStatus:
   auth_RetrieveAuthTypeStatus_audit_Uin_Active_smoke:
       endPoint: /idrepository/v1/identity/authtypes/status/{ID}
       uniqueIdentifier: TC_IDA_DependentTc_AuthTransaction_RetrieveAuthTypeStatus_01
-      description: Retrieve Auth type status passing valid ID
+      description: Verify that retrieving authentication type status for an active UIN generates a valid audit entry under smoke test conditions
       role: idrepo
       checkErrorsOnlyInResponse: true
       restMethod: get
