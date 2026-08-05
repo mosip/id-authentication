@@ -2,14 +2,15 @@ DemoAuth:
   auth_DemoAuth_blocked_partnerid_Pos:
       endPoint: /idauthentication/v1/auth/$partnerKeyURL$
       uniqueIdentifier: TC_IDA_DemoAuth_blockedPartnerId_01
-      description: perform Demo auth with blocked partner id
+      description: Verify that demographic authentication fails when a blocked partner ID is used even if all other request parameters are valid and satisfy positive validation conditions
       role: resident
       restMethod: post
+      additionalDependencies: TC_IDA_HotlistAPI_15
       inputTemplate: ida/HotlistTestcases/hotlistTestcases
       outputTemplate: ida/HotlistTestcases/HotlistTestcasesResult
       input: '{
         "requestTime": "$TIMESTAMP$",
-        "individualId": "$ID:AddIdentity_Positive_EKYCUIN_valid_smoke_UIN$",
+        "individualId": "$ID:AddIdentity_Positive_EKYCUIN_valid_UIN$",
         "transactionId": "$TRANSACTIONID$",
         "individualIdType": "UIN",
         "bio": false,
@@ -25,17 +26,17 @@ DemoAuth:
     "authStatus": false,
    "errors": [
     {
-      "errorCode": "IDA-MLC-006",
-      "errorMessage": "$IGNORE$"
+      "errorCode": "IDA-MLC-006"
     }
   ]
 }'
   auth_DemoAuth_blocked_partnerid__VID_Pos:
       endPoint: /idauthentication/v1/auth/$partnerKeyURL$
       uniqueIdentifier: TC_IDA_DemoAuth_blockedPartnerId_02
-      description: perform Demo auth with VID with blocked partner id
+      description: Verify that demographic authentication fails when a blocked partner ID and VID are used despite valid request parameters
       role: resident
       restMethod: post
+      additionalDependencies: TC_IDA_HotlistAPI_15,TC_DependentModule_IdRepo_06
       inputTemplate: ida/HotlistTestcases/hotlistTestcases
       outputTemplate: ida/HotlistTestcases/HotlistTestcasesResult
       input: '{
@@ -56,8 +57,7 @@ DemoAuth:
     "authStatus": false,
    "errors": [
     {
-      "errorCode": "IDA-MLC-006",
-      "errorMessage": "$IGNORE$"
+      "errorCode": "IDA-MLC-006"
     }
   ]
 }'

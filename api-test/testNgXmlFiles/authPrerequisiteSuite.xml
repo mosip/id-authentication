@@ -16,12 +16,33 @@
 		</classes>
 	</test>
 
+	<test name="OIDCClient">
+		<parameter name="ymlFile"
+			value="ida/OidcClient/OIDCClient.yml" />
+		<parameter name="idKeyName" value="clientId" />
+		<parameter name="prerequisite" value="Yes" />
+		<classes>
+			<class
+				name="io.mosip.testrig.apirig.auth.testscripts.SimplePostForAutoGenId" />
+		</classes>
+	</test>
+
 	<test name="CreateVID">
 		<parameter name="ymlFile" value="ida/CreateVID/CreateVid.yml" />
 		<parameter name="idKeyName" value="VID" />
 		<classes>
 			<class
 				name="io.mosip.testrig.apirig.auth.testscripts.SimplePostForAutoGenId" />
+		</classes>
+	</test>
+
+	<test name="GenerateVidForSendOtpAndDeactivateUIN">
+		<parameter name="ymlFile"
+			value="ida/GenerateVID/GenVidForSendOtpAndDeactivateUIN.yml" />
+		<parameter name="idKeyName" value="vid" />
+		<classes>
+			<class
+				name="io.mosip.testrig.apirig.auth.testscripts.PostWithAutogenIdWithOtpGenerate" />
 		</classes>
 	</test>
 

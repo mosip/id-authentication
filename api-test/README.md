@@ -149,7 +149,6 @@ To execute the tests using Eclipse IDE, use the following steps:
 
    **Note**: You can also run in **Debug Mode** to troubleshoot issues by setting breakpoints in your code and choosing `Debug` instead of `Run`.
 
-
 ## 6. **View Test Results**
 
    - After the tests are executed, you can view the detailed results in the `api-test\testng-report` directory.

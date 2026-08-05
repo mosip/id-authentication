@@ -2,7 +2,7 @@ DemoAuthNew:
   auth_DemoAuth_DOB_Valid_Smoke_UIN:
       endPoint: /idauthentication/v1/auth/$partnerKeyURL$
       uniqueIdentifier: TC_IDA_DemoAuth_01
-      description: Demo auth using valid dob and valid UIN
+      description: Verify that demo authentication succeeds with a valid date of birth for a UIN
       role: resident
       restMethod: post
       inputTemplate: ida/DemoAuth/DemoAuth
@@ -27,7 +27,7 @@ DemoAuthNew:
   auth_DemoAuth_DOB_InValid_UIN_Neg:
       endPoint: /idauthentication/v1/auth/$partnerKeyURL$
       uniqueIdentifier: TC_IDA_DemoAuth_02
-      description: Demo auth using valid dob and invalid UIN
+      description: Verify that demo authentication fails with an invalid date of birth for a UIN
       role: resident
       restMethod: post
       inputTemplate: ida/DemoAuth/DemoAuth
@@ -52,7 +52,7 @@ DemoAuthNew:
   auth_DemoAuth_DOB_SpaceValue_UIN_Neg:
       endPoint: /idauthentication/v1/auth/$partnerKeyURL$
       uniqueIdentifier: TC_IDA_DemoAuth_03
-      description: Demo auth using valid dob with space as UIN
+      description: Verify that demo authentication fails when the date of birth field contains only spaces for a UIN
       role: resident
       restMethod: post
       inputTemplate: ida/DemoAuth/DemoAuth
@@ -77,14 +77,15 @@ DemoAuthNew:
   auth_DemoAuth_DOB_Valid_Smoke_VID_Pos:
       endPoint: /idauthentication/v1/auth/$partnerKeyURL$
       uniqueIdentifier: TC_IDA_DemoAuth_04
-      description: Demo auth using valid dob with valid perpetual VID
+      description: Verify that demo authentication succeeds with a valid date of birth for a VID
       role: resident
       restMethod: post
+      additionalDependencies: TC_DependentModule_IdRepo_06
       inputTemplate: ida/DemoAuth/DemoAuth
       outputTemplate: ida/DemoAuth/DemoAuthResult
       input: '{
         "requestTime": "$TIMESTAMP$",
-        "individualId": "$ID:GenerateVID_for_EkycDemo_Dob_sid_vid$",
+        "individualId": "$ID:GenerateVID_All_Valid_Smoke_Perpetual_sid_vid$",
         "transactionId": "1234567890",
         "individualIdType": "VID",
         "bio": false,
@@ -99,12 +100,13 @@ DemoAuthNew:
       output: '{
   "authStatus": "true"
 }'
-  auth_DemoAuth_DOB_Valid_Smoke_with_updated_edited_policy_VID_Pos:
+  auth_DemoAuth_DOB_Valid_with_updated_edited_policy_VID_Pos:
       endPoint: /idauthentication/v1/auth/$partnerKeyURL$
       uniqueIdentifier: TC_IDA_DemoAuth_05
-      description: Demo auth using valid dob with perpetual VID
+      description: Verify that demo authentication succeeds with a valid DOB for a VID when using an updated or edited policy
       role: resident
       restMethod: post
+      additionalDependencies: TC_DependentModule_IdRepo_62
       inputTemplate: ida/DemoAuth/DemoAuth
       outputTemplate: ida/DemoAuth/DemoAuthResult
       input: '{
@@ -124,12 +126,13 @@ DemoAuthNew:
       output: '{
   "authStatus": "true"
 }'
-  auth_DemoAuth_DOB_Valid_Smoke_VID_invalid_transaction_Pos:
+  auth_DemoAuth_DOB_Valid_VID_invalid_transaction_Pos:
       endPoint: /idauthentication/v1/auth/$partnerKeyURL$
       uniqueIdentifier: TC_IDA_DemoAuth_06
-      description: Demo auth using valid dob with invalid transactionId
+      description: Verify that demo authentication fails with a valid DOB for a VID when an invalid transaction ID is provided
       role: resident
       restMethod: post
+      additionalDependencies: TC_DependentModule_IdRepo_06
       inputTemplate: ida/DemoAuth/DemoAuth
       outputTemplate: ida/DemoAuth/DemoAuthResult
       input: '{
@@ -152,7 +155,7 @@ DemoAuthNew:
   auth_DemoAuth_DOB_Valid_Smoke_Infant_Uin_Pos:
       endPoint: /idauthentication/v1/auth/$partnerKeyURL$
       uniqueIdentifier: TC_IDA_DemoAuth_07
-      description: Demo auth using dob with infant UIN
+      description: Verify that demo authentication succeeds with a valid DOB for an infant UIN
       role: resident
       restMethod: post
       inputTemplate: ida/DemoAuth/DemoAuth
@@ -175,17 +178,17 @@ DemoAuthNew:
   "authStatus": "true"
 }'
 
-  auth_DemoAuth_DOB_Valid_Smoke_Infant_Uin_which_locked_for_demo_Pos:
+  auth_DemoAuth_DOB_Valid_Infant_Uin_which_locked_for_demo_Pos:
       endPoint: /idauthentication/v1/auth/$partnerKeyURL$
       uniqueIdentifier: TC_IDA_DemoAuth_08
-      description: Demo auth using valid dob and locked infant UIN 
+      description: Verify that demo authentication succeeds with a valid DOB for an infant UIN even when the UIN is locked for demo authentication
       role: resident
       restMethod: post
       inputTemplate: ida/DemoAuth/DemoAuth
       outputTemplate: ida/DemoAuth/DemoAuthResult
       input: '{
         "requestTime": "$TIMESTAMP$",
-        "individualId": "$ID:AddIdentity_withValidParameters_with_Infant_which_locked_smoke_Pos_UIN$",
+        "individualId": "$ID:AddIdentity_withValidParameters_with_Infant_which_locked_Pos_UIN$",
         "transactionId": "1234567890",
         "individualIdType": "UIN",
         "bio": false,
@@ -204,9 +207,10 @@ DemoAuthNew:
   auth_DemoAuth_DOB_Invalid_Past_Timestamp_VID_Neg:
       endPoint: /idauthentication/v1/auth/$partnerKeyURL$
       uniqueIdentifier: TC_IDA_DemoAuth_09
-      description: Demo auth using valid dob,valid VID and past timestamp 
+      description: Verify that demo authentication fails when an invalid past timestamp is provided for a VID
       role: resident
       restMethod: post
+      additionalDependencies: TC_DependentModule_IdRepo_06
       inputTemplate: ida/DemoAuth/DemoAuth
       outputTemplate: ida/DemoAuth/DemoAuthResult
       input: '{
@@ -230,9 +234,10 @@ DemoAuthNew:
   auth_DemoAuth_DOB_Invalid_Future_Timestamp_VID_Neg:
       endPoint: /idauthentication/v1/auth/$partnerKeyURL$
       uniqueIdentifier: TC_IDA_DemoAuth_10
-      description: Demo auth using valid dob,valid VID and future timestamp
+      description: Verify that demo authentication fails when an invalid future timestamp is provided for a VID
       role: resident
       restMethod: post
+      additionalDependencies: TC_DependentModule_IdRepo_06
       inputTemplate: ida/DemoAuth/DemoAuth
       outputTemplate: ida/DemoAuth/DemoAuthResult
       input: '{
@@ -256,9 +261,10 @@ DemoAuthNew:
   auth_DemoAuth_DOB_Empty_Timestamp_VID_Neg:
       endPoint: /idauthentication/v1/auth/$partnerKeyURL$
       uniqueIdentifier: TC_IDA_DemoAuth_11
-      description: Demo auth using valid dob,valid VID and empty timestamp
+      description: Verify that demo authentication fails when the DOB timestamp is empty for a VID
       role: resident
       restMethod: post
+      additionalDependencies: TC_DependentModule_IdRepo_06
       inputTemplate: ida/DemoAuth/DemoAuth
       outputTemplate: ida/DemoAuth/DemoAuthResult
       input: '{
@@ -282,7 +288,7 @@ DemoAuthNew:
   auth_DemoAuth_DOB_InValid_uin_Dateofbirth:
       endPoint: /idauthentication/v1/auth/$partnerKeyURL$
       uniqueIdentifier: TC_IDA_DemoAuth_12
-      description: Demo auth using invalid dob and valid UIN
+      description: Verify that demo authentication fails when an invalid date of birth is provided for a UIN
       role: resident
       restMethod: post
       inputTemplate: ida/DemoAuth/DemoAuth
@@ -307,9 +313,10 @@ DemoAuthNew:
   auth_DemoAuth_DOB_InValid_Dateofbirth_with_VID:
       endPoint: /idauthentication/v1/auth/$partnerKeyURL$
       uniqueIdentifier: TC_IDA_DemoAuth_13
-      description: Demo auth using invalid dob and valid VID
+      description: Verify that demo authentication fails when an invalid date of birth is provided for a VID
       role: resident
       restMethod: post
+      additionalDependencies: TC_DependentModule_IdRepo_06
       inputTemplate: ida/DemoAuth/DemoAuth
       outputTemplate: ida/DemoAuth/error
       input: '{
@@ -329,12 +336,13 @@ DemoAuthNew:
       output: '{
         "authStatus": "false"
 }'
-  auth_DemoAuth_Email_Valid_Smoke_Pos_VID:
+  auth_DemoAuth_Email_Valid_Pos_VID:
       endPoint: /idauthentication/v1/auth/$partnerKeyURL$
       uniqueIdentifier: TC_IDA_DemoAuth_14
-      description: Demo auth using email with valid VID
+      description: Verify that demo authentication succeeds with a valid email for a VID
       role: resident
       restMethod: post
+      additionalDependencies: TC_DependentModule_IdRepo_06
       inputTemplate: ida/DemoAuth/DemoAuth
       outputTemplate: ida/DemoAuth/DemoAuthResult
       input: '{
@@ -358,9 +366,10 @@ DemoAuthNew:
   auth_DemoAuth_Email_Invalid_Past_Timestamp_VID_Neg_VID:
       endPoint: /idauthentication/v1/auth/$partnerKeyURL$
       uniqueIdentifier: TC_IDA_DemoAuth_15
-      description: Demo auth using email with valid VID and past timestamp
+      description: Verify that demo authentication fails with an invalid past timestamp when using an email for a VID
       role: resident
       restMethod: post
+      additionalDependencies: TC_DependentModule_IdRepo_06
       inputTemplate: ida/DemoAuth/DemoAuth
       outputTemplate: ida/DemoAuth/DemoAuthResult
       input: '{
@@ -384,9 +393,10 @@ DemoAuthNew:
   auth_DemoAuth_Email_Invalid_Future_Timestamp_VID_Neg_VID:
       endPoint: /idauthentication/v1/auth/$partnerKeyURL$
       uniqueIdentifier: TC_IDA_DemoAuth_16
-      description: Demo auth with email using valid VID and future timestamp
+      description: Verify that demo authentication fails with an invalid future timestamp when using an email for a VID
       role: resident
       restMethod: post
+      additionalDependencies: TC_DependentModule_IdRepo_06
       inputTemplate: ida/DemoAuth/DemoAuth
       outputTemplate: ida/DemoAuth/DemoAuthResult
       input: '{
@@ -407,12 +417,13 @@ DemoAuthNew:
         "authStatus": "false"
 }'
 
-  auth_DemoAuth_Email_Valid_Smoke_Poss_VID:
+  auth_DemoAuth_Email_Valid_Poss_VID:
       endPoint: /idauthentication/v1/auth/$partnerKeyURL$
       uniqueIdentifier: TC_IDA_DemoAuth_14
-      description: Demo auth with email using valid VID
+      description: Verify that demo authentication succeeds with a valid email for a VID
       role: resident
       restMethod: post
+      additionalDependencies: TC_DependentModule_IdRepo_06
       inputTemplate: ida/DemoAuth/DemoAuth
       outputTemplate: ida/DemoAuth/DemoAuthResult
       input: '{
@@ -435,7 +446,7 @@ DemoAuthNew:
   auth_DemoAuth_Email_InValid_uin_Email:
       endPoint: /idauthentication/v1/auth/$partnerKeyURL$
       uniqueIdentifier: TC_IDA_DemoAuth_17
-      description: Demo auth with invalid email using valid UIN
+      description: Verify that demo authentication fails when an invalid email is provided for a UIN
       role: resident
       restMethod: post
       inputTemplate: ida/DemoAuth/DemoAuth
@@ -460,9 +471,10 @@ DemoAuthNew:
   auth_DemoAuth_Email_InValid_Email_VID:
       endPoint: /idauthentication/v1/auth/$partnerKeyURL$
       uniqueIdentifier: TC_IDA_DemoAuth_18
-      description: Demo auth with invalid email using valid VID
+      description: Verify that demo authentication fails when an invalid email is provided for a VID
       role: resident
       restMethod: post
+      additionalDependencies: TC_DependentModule_IdRepo_06
       inputTemplate: ida/DemoAuth/DemoAuth
       outputTemplate: ida/DemoAuth/error
       input: '{
@@ -482,10 +494,10 @@ DemoAuthNew:
       output: '{
         "authStatus": "false"
 }'
-  auth_DemoAuth_gender_Valid_uin_Smoke_Pos:
+  auth_DemoAuth_gender_Valid_uin_Pos:
       endPoint: /idauthentication/v1/auth/$partnerKeyURL$
       uniqueIdentifier: TC_IDA_DemoAuth_19
-      description: Demo auth using valid gender and valid UIN
+      description: Verify that demo authentication succeeds with a valid gender value for a UIN
       role: resident
       restMethod: post
       inputTemplate: ida/DemoAuth/DemoAuth
@@ -514,7 +526,7 @@ DemoAuthNew:
   auth_DemoAuth_gender_InValid_LangCode:
       endPoint: /idauthentication/v1/auth/$partnerKeyURL$
       uniqueIdentifier: TC_IDA_DemoAuth_20
-      description: Demo auth using valid gender,invalid lang code and valid UIN
+      description: Verify that demo authentication fails when an invalid language code is provided for the gender field
       role: resident
       restMethod: post
       inputTemplate: ida/DemoAuth/DemoIdentityEncryptGender
@@ -543,7 +555,7 @@ DemoAuthNew:
   auth_DemoAuth_gender_InValid_Gender_Invalid_RS:
       endPoint: /idauthentication/v1/auth/$partnerKeyURL$
       uniqueIdentifier: TC_IDA_DemoAuth_21
-      description: Demo auth using invalid gender,invalid residence status and valid UIN
+      description: Verify that demo authentication fails when an invalid gender value is provided
       role: resident
       restMethod: post
       inputTemplate: ida/DemoAuth/DemoAuth
@@ -578,7 +590,7 @@ DemoAuthNew:
   auth_DemoAuth_gender_Valid_Gender_Invalid_RS:
       endPoint: /idauthentication/v1/auth/$partnerKeyURL$
       uniqueIdentifier: TC_IDA_DemoAuth_22
-      description: Demo auth using valid gender, invalid residence status and valid UIN
+      description: Verify that demo authentication succeeds when a valid gender value is provided even if other related fields might be invalid
       role: resident
       restMethod: post
       inputTemplate: ida/DemoAuth/DemoAuth
@@ -613,7 +625,7 @@ DemoAuthNew:
   auth_DemoAuth_gender_InValid_Gender_valid_RS:
       endPoint: /idauthentication/v1/auth/$partnerKeyURL$
       uniqueIdentifier: TC_IDA_DemoAuth_23
-      description: Demo auth using invalid gender ,valid residence status and valid UIN
+      description: Verify that demo authentication fails when an invalid gender value is provided even if related fields are valid
       role: resident
       restMethod: post
       inputTemplate: ida/DemoAuth/DemoAuth
@@ -648,9 +660,10 @@ DemoAuthNew:
   auth_DemoAuth_gender_InValid_Gender_valid_RS_with_VID:
       endPoint: /idauthentication/v1/auth/$partnerKeyURL$
       uniqueIdentifier: TC_IDA_DemoAuth_24
-      description: Demo auth using invalid gender,valid residence status and valid VID
+      description: Verify that demo authentication fails when an invalid gender value is provided for a VID even if related fields are valid
       role: resident
       restMethod: post
+      additionalDependencies: TC_DependentModule_IdRepo_06
       inputTemplate: ida/DemoAuth/DemoAuth
       outputTemplate: ida/DemoAuth/error
       input: '{
@@ -683,9 +696,10 @@ DemoAuthNew:
   auth_DemoAuth_gender_Valid_Gender_valid_RS_with_VID:
       endPoint: /idauthentication/v1/auth/$partnerKeyURL$
       uniqueIdentifier: TC_IDA_DemoAuth_25
-      description: Demo auth using valid gender,valid residence status and valid perpetual VID
+      description: Verify that demo authentication succeeds when a valid gender value is provided for a VID with valid related fields
       role: resident
       restMethod: post
+      additionalDependencies: TC_DependentModule_IdRepo_06
       inputTemplate: ida/DemoAuth/DemoAuth
       outputTemplate: ida/DemoAuth/error
       input: '{
@@ -718,7 +732,7 @@ DemoAuthNew:
   auth_DemoAuth_gender_InValid_Lang_Valid_Gender:
       endPoint: /idauthentication/v1/auth/$partnerKeyURL$
       uniqueIdentifier: TC_IDA_DemoAuth_26
-      description: Demo auth using valid gender,invalid language code and valid UIN
+      description: Verify that demo authentication fails when an invalid language code is provided even if the gender value is valid
       role: resident
       restMethod: post
       inputTemplate: ida/DemoAuth/DemoIdentityEncryptGender
@@ -744,12 +758,13 @@ DemoAuthNew:
       output: '{
   "authStatus": "false"
 }'
-  auth_DemoAuth_gender_Valid_Smoke_Pos_VID:
+  auth_DemoAuth_gender_Valid_Pos_VID:
       endPoint: /idauthentication/v1/auth/$partnerKeyURL$
       uniqueIdentifier: TC_IDA_DemoAuth_27
-      description: Demo auth using valid gender and valid perpetual VID
+      description: Verify that demo authentication succeeds with a valid gender value for a VID
       role: resident
       restMethod: post
+      additionalDependencies: TC_DependentModule_IdRepo_06
       inputTemplate: ida/DemoAuth/DemoAuth
       outputTemplate: ida/DemoAuth/DemoAuthResult
       input: '{
@@ -773,12 +788,13 @@ DemoAuthNew:
       output: '{
   "authStatus": "true"
 }'
-  auth_DemoAuth_gender_Valid_Smoke_Pos_VID_with_RS_DOB:
+  auth_DemoAuth_gender_Valid_Pos_VID_with_RS_DOB:
       endPoint: /idauthentication/v1/auth/$partnerKeyURL$
       uniqueIdentifier: TC_IDA_DemoAuth_04
-      description: Demo auth using valid dob and valid perpetual VID
+      description: Verify that demo authentication succeeds with a valid gender value for a VID when using related RS and DOB fields
       role: resident
       restMethod: post
+      additionalDependencies: TC_DependentModule_IdRepo_62
       inputTemplate: ida/DemoAuth/DemoAuth
       outputTemplate: ida/DemoAuth/DemoAuthResult
       input: '{
@@ -798,12 +814,13 @@ DemoAuthNew:
       output: '{
   "authStatus": "true"
 }'
-  auth_DemoAuth_gender_Valid_Smoke_Pos_Temp_VID_with_RS_DOB:
+  auth_DemoAuth_gender_Valid_Pos_Temp_VID_with_RS_DOB:
       endPoint: /idauthentication/v1/auth/$partnerKeyURL$
       uniqueIdentifier: TC_IDA_DemoAuth_28
-      description: Demo auth using valid dob and valid temporary VID
+      description: Verify that demo authentication succeeds with a valid gender value for a temporary VID when using related RS and DOB fields
       role: resident
       restMethod: post
+      additionalDependencies: TC_DependentModule_IdRepo_06
       inputTemplate: ida/DemoAuth/DemoAuth
       outputTemplate: ida/DemoAuth/error
       input: '{
@@ -826,9 +843,10 @@ DemoAuthNew:
   auth_DemoAuth_gender_InValid_LangCode_with_VID:
       endPoint: /idauthentication/v1/auth/$partnerKeyURL$
       uniqueIdentifier: TC_IDA_DemoAuth_29
-      description: Demo auth using invalid gender language code and valid perpetual VID
+      description: Verify that demo authentication fails with an invalid language code for gender when using a VID
       role: resident
       restMethod: post
+      additionalDependencies: TC_DependentModule_IdRepo_06
       inputTemplate: ida/DemoAuth/DemoIdentityEncryptGender
       outputTemplate: ida/DemoAuth/DemoAuthResult
       input: '{
@@ -855,9 +873,10 @@ DemoAuthNew:
   auth_DemoAuth_InValid_gender_VID:
       endPoint: /idauthentication/v1/auth/$partnerKeyURL$
       uniqueIdentifier: TC_IDA_DemoAuth_30
-      description: Demo auth using invalid gender and valid perpetual VID
+      description: Verify that demo authentication fails with an invalid gender value when using a VID
       role: resident
       restMethod: post
+      additionalDependencies: TC_DependentModule_IdRepo_06
       inputTemplate: ida/DemoAuth/DemoIdentityEncryptGender
       outputTemplate: ida/DemoAuth/error
       input: '{
@@ -884,7 +903,7 @@ DemoAuthNew:
   auth_DemoAuth_InValid_uin_gender:
       endPoint: /idauthentication/v1/auth/$partnerKeyURL$
       uniqueIdentifier: TC_IDA_DemoAuth_31
-      description: Demo auth using invalid gender and valid UIN
+      description: Verify that demo authentication fails with an invalid gender value when using a UIN
       role: resident
       restMethod: post
       inputTemplate: ida/DemoAuth/DemoIdentityEncryptGender
@@ -910,10 +929,10 @@ DemoAuthNew:
       output: '{
         "authStatus": "false"
 }'
-  auth_DemoAuth_Name_Valid_uin_Smoke_Pos:
+  auth_DemoAuth_Name_Valid_uin_Pos:
       endPoint: /idauthentication/v1/auth/$partnerKeyURL$
       uniqueIdentifier: TC_IDA_DemoAuth_32
-      description: Demo auth using valid name and valid UIN
+      description: Verify that demo authentication succeeds with a valid name when using a UIN
       role: resident
       restMethod: post
       inputTemplate: ida/DemoAuth/DemoAuth
@@ -939,17 +958,17 @@ DemoAuthNew:
       output: '{
   "authStatus": "true"
 }'
-  auth_DemoAuth_same_Name1_Valid_uin_Smoke_Pos:
+  auth_DemoAuth_same_Name1_Valid_uin_Pos:
       endPoint: /idauthentication/v1/auth/$partnerKeyURL$
       uniqueIdentifier: TC_IDA_DemoAuth_33
-      description: Demo auth using valid name and valid UIN
+      description: Verify that demo authentication succeeds with the same Name1 value when using a valid UIN
       role: resident
       restMethod: post
       inputTemplate: ida/DemoAuth/DemoAuth
       outputTemplate: ida/DemoAuth/DemoAuthResult
       input: '{
         "requestTime": "$TIMESTAMP$",
-        "individualId": "$ID:AddIdentity_Positive_demoauth_name_smoke_UIN$",
+        "individualId": "$ID:AddIdentity_Positive_demoauth_name_UIN$",
         "transactionId": "1234567890",
         "individualIdType": "UIN",
         "bio": false,
@@ -968,17 +987,17 @@ DemoAuthNew:
       output: '{
   "authStatus": "true"
 }'
-  auth_DemoAuth_same_Name2_Valid_titleFromAdmin_uin_Smoke_Pos:
+  auth_DemoAuth_same_Name2_Valid_titleFromAdmin_uin_Pos:
       endPoint: /idauthentication/v1/auth/$partnerKeyURL$
       uniqueIdentifier: TC_IDA_DemoAuth_34
-      description: Demo auth using valid name with title and valid UIN
+      description: Verify that demo authentication succeeds with the same Name2 value and title from admin when using a valid UIN
       role: resident
       restMethod: post
       inputTemplate: ida/DemoAuth/DemoAuth
       outputTemplate: ida/DemoAuth/DemoAuthResult
       input: '{
         "requestTime": "$TIMESTAMP$",
-        "individualId": "$ID:AddIdentity_Positive_demoauth_name_smoke_UIN$",
+        "individualId": "$ID:AddIdentity_Positive_demoauth_name_UIN$",
         "transactionId": "1234567890",
         "individualIdType": "UIN",
         "bio": false,
@@ -997,17 +1016,17 @@ DemoAuthNew:
       output: '{
   "authStatus": "true"
 }'
-  auth_DemoAuth_same_Name3_Valid_titleFromAdmin_uin_Smoke_Pos:
+  auth_DemoAuth_same_Name3_Valid_titleFromAdmin_uin_Pos:
       endPoint: /idauthentication/v1/auth/$partnerKeyURL$
       uniqueIdentifier: TC_IDA_DemoAuth_35
-      description: Demo auth using valid name with title and valid UIN
+      description: Verify that demo authentication succeeds with the same Name3 value and title from admin when using a valid UIN
       role: resident
       restMethod: post
       inputTemplate: ida/DemoAuth/DemoAuth
       outputTemplate: ida/DemoAuth/DemoAuthResult
       input: '{
         "requestTime": "$TIMESTAMP$",
-        "individualId": "$ID:AddIdentity_Positive_demoauth_name_smoke_UIN$",
+        "individualId": "$ID:AddIdentity_Positive_demoauth_name_UIN$",
         "transactionId": "1234567890",
         "individualIdType": "UIN",
         "bio": false,
@@ -1026,17 +1045,17 @@ DemoAuthNew:
       output: '{
   "authStatus": "true"
 }'
-  auth_DemoAuth_same_Name4_Valid_uin_Smoke_Pos:
+  auth_DemoAuth_same_Name4_Valid_uin_Pos:
       endPoint: /idauthentication/v1/auth/$partnerKeyURL$
       uniqueIdentifier: TC_IDA_DemoAuth_36
-      description: Demo auth using name and valid UIN
+      description: Verify that demo authentication succeeds with the same Name4 value when using a valid UIN
       role: resident
       restMethod: post
       inputTemplate: ida/DemoAuth/DemoAuth
       outputTemplate: ida/DemoAuth/DemoAuthResult
       input: '{
         "requestTime": "$TIMESTAMP$",
-        "individualId": "$ID:AddIdentity_Positive_demoauth_name_smoke_UIN$",
+        "individualId": "$ID:AddIdentity_Positive_demoauth_name_UIN$",
         "transactionId": "1234567890",
         "individualIdType": "UIN",
         "bio": false,
@@ -1055,17 +1074,17 @@ DemoAuthNew:
       output: '{
   "authStatus": "true"
 }'
-  auth_DemoAuth_same_Name5_Valid_titleFromAdmin_uin_Smoke_Pos:
+  auth_DemoAuth_same_Name5_Valid_titleFromAdmin_uin_Pos:
       endPoint: /idauthentication/v1/auth/$partnerKeyURL$
       uniqueIdentifier: TC_IDA_DemoAuth_37
-      description: Demo auth using name with title and valid UIN
+      description: Verify that demo authentication succeeds with the same Name5 value and title from admin when using a valid UIN
       role: resident
       restMethod: post
       inputTemplate: ida/DemoAuth/DemoAuth
       outputTemplate: ida/DemoAuth/DemoAuthResult
       input: '{
         "requestTime": "$TIMESTAMP$",
-        "individualId": "$ID:AddIdentity_Positive_demoauth_name_smoke_UIN$",
+        "individualId": "$ID:AddIdentity_Positive_demoauth_name_UIN$",
         "transactionId": "1234567890",
         "individualIdType": "UIN",
         "bio": false,
@@ -1084,17 +1103,17 @@ DemoAuthNew:
       output: '{
   "authStatus": "true"
 }'
-  auth_DemoAuth_same_Name6_Valid_titleFromAdmin_uin_Smoke_Pos:
+  auth_DemoAuth_same_Name6_Valid_titleFromAdmin_uin_Pos:
       endPoint: /idauthentication/v1/auth/$partnerKeyURL$
       uniqueIdentifier: TC_IDA_DemoAuth_38
-      description: Demo auth using valid name with title and UIN
+      description: Verify that demo authentication succeeds with the same Name6 value and title from admin when using a valid UIN
       role: resident
       restMethod: post
       inputTemplate: ida/DemoAuth/DemoAuth
       outputTemplate: ida/DemoAuth/DemoAuthResult
       input: '{
         "requestTime": "$TIMESTAMP$",
-        "individualId": "$ID:AddIdentity_Positive_demoauth_name_smoke_UIN$",
+        "individualId": "$ID:AddIdentity_Positive_demoauth_name_UIN$",
         "transactionId": "1234567890",
         "individualIdType": "UIN",
         "bio": false,
@@ -1113,17 +1132,17 @@ DemoAuthNew:
       output: '{
   "authStatus": "true"
 }'
-  auth_DemoAuth_same_Name7_Valid_titleFromAdmin_uin_Smoke_Pos:
+  auth_DemoAuth_same_Name7_Valid_titleFromAdmin_uin_Pos:
       endPoint: /idauthentication/v1/auth/$partnerKeyURL$
       uniqueIdentifier: TC_IDA_DemoAuth_39
-      description: Demo auth using name with title and valid UIN
+      description: Verify that demo authentication succeeds with the same Name7 value and title from admin when using a valid UIN
       role: resident
       restMethod: post
       inputTemplate: ida/DemoAuth/DemoAuth
       outputTemplate: ida/DemoAuth/DemoAuthResult
       input: '{
         "requestTime": "$TIMESTAMP$",
-        "individualId": "$ID:AddIdentity_Positive_demoauth_name_smoke_UIN$",
+        "individualId": "$ID:AddIdentity_Positive_demoauth_name_UIN$",
         "transactionId": "1234567890",
         "individualIdType": "UIN",
         "bio": false,
@@ -1142,12 +1161,13 @@ DemoAuthNew:
       output: '{
   "authStatus": "true"
 }'
-  auth_DemoAuth_Name_Valid_Smoke_VID_Pos:
+  auth_DemoAuth_Name_Valid_VID_Pos:
       endPoint: /idauthentication/v1/auth/$partnerKeyURL$
       uniqueIdentifier: TC_IDA_DemoAuth_40
-      description: Demo auth using valid name and valid perpetual VID
+      description: Verify that demo authentication succeeds with a valid name when using a VID
       role: resident
       restMethod: post
+      additionalDependencies: TC_DependentModule_IdRepo_06
       inputTemplate: ida/DemoAuth/DemoAuth
       outputTemplate: ida/DemoAuth/DemoAuthResult
       input: '{
@@ -1173,7 +1193,7 @@ DemoAuthNew:
 }'
   auth_DemoAuth_InValid_uin_name:
       endPoint: /idauthentication/v1/auth/$partnerKeyURL$
-      description: Demo auth using invalid name and valid UIN
+      description: Verify that demo authentication fails with an invalid name when using a UIN
       role: resident
       restMethod: post
       inputTemplate: ida/DemoAuth/DemoAuth
@@ -1202,9 +1222,10 @@ DemoAuthNew:
   auth_DemoAuth_InValid_Name_VID:
       endPoint: /idauthentication/v1/auth/$partnerKeyURL$
       uniqueIdentifier: TC_IDA_DemoAuth_41
-      description: Demo auth using invalid name and valid perpetual VID
+      description: Verify that demo authentication fails with an invalid name when using a VID
       role: resident
       restMethod: post
+      additionalDependencies: TC_DependentModule_IdRepo_06
       inputTemplate: ida/DemoAuth/DemoAuth
       outputTemplate: ida/DemoAuth/error
       input: '{
@@ -1228,10 +1249,10 @@ DemoAuthNew:
       output: '{
         "authStatus": "false"
 }'
-  auth_DemoAuth_age_Valid_uin_Smoke_Pos:
+  auth_DemoAuth_age_Valid_uin_Pos:
       endPoint: /idauthentication/v1/auth/$partnerKeyURL$
       uniqueIdentifier: TC_IDA_DemoAuth_42
-      description: Demo auth using valid age and valid UIN
+      description: Verify that demo authentication succeeds with a valid age when using a UIN
       role: resident
       restMethod: post
       inputTemplate: ida/DemoAuth/DemoAuth
@@ -1253,12 +1274,13 @@ DemoAuthNew:
       output: '{
   "authStatus": "true"
 }'
-  auth_DemoAuth_age_Valid_Smoke_VID_Pos:
+  auth_DemoAuth_age_Valid_VID_Pos:
       endPoint: /idauthentication/v1/auth/$partnerKeyURL$
       uniqueIdentifier: TC_IDA_DemoAuth_43
-      description: Demo auth using valid age and valid perpetual VID
+      description: Verify that demo authentication succeeds with a valid age when using a VID
       role: resident
       restMethod: post
+      additionalDependencies: TC_DependentModule_IdRepo_06
       inputTemplate: ida/DemoAuth/DemoAuth
       outputTemplate: ida/DemoAuth/DemoAuthResult
       input: '{
@@ -1281,9 +1303,10 @@ DemoAuthNew:
   auth_DemoAuth_invalid_age_VID:
       endPoint: /idauthentication/v1/auth/$partnerKeyURL$
       uniqueIdentifier: TC_IDA_DemoAuth_44
-      description: Demo auth using invalid age and valid perpetual VID
+      description: Verify that demo authentication fails with an invalid age when using a VID
       role: resident
       restMethod: post
+      additionalDependencies: TC_DependentModule_IdRepo_06
       inputTemplate: ida/DemoAuth/DemoAuth
       outputTemplate: ida/DemoAuth/DemoAuthResult
       input: '{
@@ -1306,7 +1329,7 @@ DemoAuthNew:
   auth_DemoAuth_age_InValid_uin:
       endPoint: /idauthentication/v1/auth/$partnerKeyURL$
       uniqueIdentifier: TC_IDA_DemoAuth_45
-      description: Demo auth using invalid age and valid UIN
+      description: Verify that demo authentication fails with an invalid age when using a UIN
       role: resident
       restMethod: post
       inputTemplate: ida/DemoAuth/DemoAuth
@@ -1328,12 +1351,13 @@ DemoAuthNew:
       output: '{
         "authStatus": "false"
 }'
-  auth_DemoAuth_PhoneNumber_Valid_VID_Smoke_Pos:
+  auth_DemoAuth_PhoneNumber_Valid_VID_Pos:
       endPoint: /idauthentication/v1/auth/$partnerKeyURL$
       uniqueIdentifier: TC_IDA_DemoAuth_46
-      description: Demo auth using valid phone number and valid perpetual VID
+      description: Verify that demo authentication succeeds with a valid phone number when using a VID
       role: resident
       restMethod: post
+      additionalDependencies: TC_DependentModule_IdRepo_06
       inputTemplate: ida/DemoAuth/DemoAuth
       outputTemplate: ida/DemoAuth/DemoAuthResult
       input: '{
@@ -1356,7 +1380,7 @@ DemoAuthNew:
   auth_DemoAuth_PhoneNumber_InValid_uin_PhoneNumber:
       endPoint: /idauthentication/v1/auth/$partnerKeyURL$
       uniqueIdentifier: TC_IDA_DemoAuth_47
-      description: Demo auth using invalid phone number and valid UIN
+      description: Verify that demo authentication fails with an invalid phone number when using a UIN
       role: resident
       restMethod: post
       inputTemplate: ida/DemoAuth/DemoAuth
@@ -1381,9 +1405,10 @@ DemoAuthNew:
   auth_DemoAuth_PhoneNumber_InValid_PhoneNumber_VID:
       endPoint: /idauthentication/v1/auth/$partnerKeyURL$
       uniqueIdentifier: TC_IDA_DemoAuth_48
-      description: Demo auth using invalid phone number and valid perpetual VID
+      description: Verify that demo authentication fails with an invalid phone number when using a VID
       role: resident
       restMethod: post
+      additionalDependencies: TC_DependentModule_IdRepo_06
       inputTemplate: ida/DemoAuth/DemoAuth
       outputTemplate: ida/DemoAuth/error
       input: '{
@@ -1403,12 +1428,13 @@ DemoAuthNew:
       output: '{
         "authStatus": "false"
 }'
-  auth_DemoAuth_PhoneNumber__with_Valid_TVID_Smoke_Pos:
+  auth_DemoAuth_PhoneNumber__with_Valid_TVID_Pos:
       endPoint: /idauthentication/v1/auth/$partnerKeyURL$
       uniqueIdentifier: TC_IDA_DemoAuth_49
-      description: Demo auth using valid phone number and valid temporary VID
+      description: Verify that demo authentication succeeds with a valid phone number when using a temporary VID
       role: resident
       restMethod: post
+      additionalDependencies: TC_DependentModule_IdRepo_06
       inputTemplate: ida/DemoAuth/DemoAuth
       outputTemplate: ida/DemoAuth/error
       input: '{
@@ -1431,7 +1457,7 @@ DemoAuthNew:
   auth_DemoAuth_DOB_InValid_individualId_VID:
       endPoint: /idauthentication/v1/auth/$partnerKeyURL$
       uniqueIdentifier: TC_IDA_DemoAuth_50
-      description: Demo auth using valid dob and invalid VID
+      description: Verify that demo authentication fails with an invalid DOB when using an individualId and VID
       role: resident
       restMethod: post
       inputTemplate: ida/DemoAuth/DemoAuth
@@ -1456,7 +1482,7 @@ DemoAuthNew:
   auth_DemoAuth_DOB_Missing_individualId:
       endPoint: /idauthentication/v1/auth/$partnerKeyURL$
       uniqueIdentifier: TC_IDA_DemoAuth_51
-      description: Demo auth using valid dob and without individualId
+      description: Verify that demo authentication fails when DOB is missing for an individualId
       role: resident
       restMethod: post
       inputTemplate: ida/DemoAuth/DemoAuth
@@ -1481,7 +1507,7 @@ DemoAuthNew:
   auth_DemoAuth_DOB_Blank_individualId:
       endPoint: /idauthentication/v1/auth/$partnerKeyURL$
       uniqueIdentifier: TC_IDA_DemoAuth_52
-      description: Demo auth using valid dob and blank individualId
+      description: Verify that demo authentication fails when DOB is blank for an individualId
       role: resident
       restMethod: post
       inputTemplate: ida/DemoAuth/DemoAuth
@@ -1506,7 +1532,7 @@ DemoAuthNew:
   auth_DemoAuth_DOB_Invalid_transactionId_uin_Neg:
       endPoint: /idauthentication/v1/auth/$partnerKeyURL$
       uniqueIdentifier: TC_IDA_DemoAuth_53
-      description: Demo auth using valid dob,invalid transactionId and valid UIN 
+      description: Verify that demo authentication fails with an invalid DOB and transactionId when using a UIN
       role: resident
       restMethod: post
       inputTemplate: ida/DemoAuth/DemoAuth
@@ -1531,7 +1557,7 @@ DemoAuthNew:
   auth_DemoAuth_DOB_Blank_transactionId_uin_Neg:
       endPoint: /idauthentication/v1/auth/$partnerKeyURL$
       uniqueIdentifier: TC_IDA_DemoAuth_54
-      description: Demo auth using valid dob,blank transactionId and valid UIN
+      description: Verify that demo authentication fails when DOB is blank for the transactionId and UIN
       role: resident
       restMethod: post
       inputTemplate: ida/DemoAuth/DemoAuth
@@ -1553,10 +1579,10 @@ DemoAuthNew:
       output: '{
       "authStatus": "false"
 }'
-  auth_DemoAuth_DOB_Unlock_Valid_Smoke_UIN_Neg:
+  auth_DemoAuth_DOB_Unlock_Valid_UIN_Neg:
       endPoint: /idauthentication/v1/auth/$partnerKeyURL$
       uniqueIdentifier: TC_IDA_DemoAuth_55
-      description: Demo auth using valid dob and with locked UIN
+      description: Verify that demo authentication fails when DOB is unlocked for a valid UIN
       role: resident
       restMethod: post
       inputTemplate: ida/DemoAuth/DemoAuth
@@ -1582,7 +1608,7 @@ DemoAuthNew:
   auth_DemoAuth_DOB_Lock_Permanent_Valid_UIN_Neg:
       endPoint: /idauthentication/v1/auth/$partnerKeyURL$
       uniqueIdentifier: TC_IDA_DemoAuth_56
-      description: Demo auth using valid dob and on locking UIN permanently
+      description: Verify that demo authentication fails when DOB is permanently locked for a valid UIN
       role: resident
       restMethod: post
       inputTemplate: ida/DemoAuth/DemoAuth
@@ -1604,17 +1630,18 @@ DemoAuthNew:
       output: '{
         "authStatus": "false"
 }'
-  auth_DemoAuth_revoke_vid_Pos:
+  auth_DemoAuth_revoke_vid_Neg:
       endPoint: /idauthentication/v1/auth/$partnerKeyURL$
       uniqueIdentifier: TC_IDA_DemoAuth_57
-      description: Demo auth using revoked VID
+      description: Verify that demo authentication fails when a revoked VID is used
       role: resident
       restMethod: post
+      additionalDependencies: TC_DependentModule_IdRepo_24,TC_IDA_RevokeVID_01
       inputTemplate: ida/DemoAuth/DemoAuth
-      outputTemplate: ida/DemoAuth/DemoAuthResult
+      outputTemplate: ida/DemoAuth/error
       input: '{
         "requestTime": "$TIMESTAMP$",
-        "individualId": "$ID:GenerateVID_torevoke_audit_Smoke_sid_vid$",
+        "individualId": "$ID:GenerateVID_to_revoke_smoke_Perpetual_sid_vid$",
         "transactionId": "1234567890",
         "individualIdType": "VID",
         "bio": false,
@@ -1632,7 +1659,7 @@ DemoAuthNew:
   auth_DemoAuth_dummy_partnerkey_uin_Pos:
       endPoint: /idauthentication/v1/auth/zY22wDwZxwMdlxTZRWrM50m4zBoOiMyUGY/45362768/27822828287
       uniqueIdentifier: TC_IDA_DemoAuth_58
-      description: Demo auth using dummy parterner key and using valid UIN
+      description: Verify that demo authentication succeeds with a dummy partner key when using a UIN
       role: resident
       restMethod: post
       inputTemplate: ida/DemoAuth/DemoAuth
@@ -1658,7 +1685,7 @@ DemoAuthNew:
   auth_DemoAuth_DOB_Unlock_AllValid_UIN_Neg:
       endPoint: /idauthentication/v1/auth/$partnerKeyURL$
       uniqueIdentifier: TC_IDA_DemoAuth_59
-      description: Demo auth using valid dob on locking UIN and unlocking demo auth
+      description: Verify that demo authentication fails when DOB is unlocked even though all other inputs are valid for a UIN
       role: resident
       restMethod: post
       inputTemplate: ida/DemoAuth/DemoAuth
@@ -1683,7 +1710,7 @@ DemoAuthNew:
   auth_DemoAuth_DOB_Lock_Permanent_AllValid_UIN_Neg:
       endPoint: /idauthentication/v1/auth/$partnerKeyURL$
       uniqueIdentifier: TC_IDA_DemoAuth_60
-      description: Demo auth using valid dob and with locked UIN
+      description: Verify that demo authentication fails when DOB is permanently locked even though all other inputs are valid for a UIN
       role: resident
       restMethod: post
       inputTemplate: ida/DemoAuth/DemoAuth
@@ -1708,7 +1735,7 @@ DemoAuthNew:
   auth_DemoAuth_with_Deactivated_UIN:
       endPoint: /idauthentication/v1/auth/$partnerKeyURL$
       uniqueIdentifier: TC_IDA_DemoAuth_61
-      description: Demo auth using deactivated UIN
+      description: Verify that demo authentication fails when using a deactivated UIN
       role: resident
       restMethod: post
       inputTemplate: ida/DemoAuth/DemoAuth
@@ -1730,10 +1757,10 @@ DemoAuthNew:
       output: '{
         "authStatus": "false"
 }'
-  auth_DemoAuth_DOB_Valid_Smoke_with_Draft_audit_UIN_Neg:
+  auth_DemoAuth_DOB_Valid_with_Draft_audit_UIN_Neg:
       endPoint: /idauthentication/v1/auth/$partnerKeyURL$
       uniqueIdentifier: TC_IDA_DemoAuth_62
-      description: Demo auth using dob with drafted UIN
+      description: Verify that demo authentication fails with a valid DOB when the audit status is draft for a UIN
       role: resident
       restMethod: post
       inputTemplate: ida/DemoAuth/DemoAuth
@@ -1788,7 +1815,7 @@ DemoAuthNew:
   auth_DemoAuthValid_with_phone:
       endPoint: /idauthentication/v1/auth/$partnerKeyURL$
       uniqueIdentifier: TC_IDA_DemoAuth_63
-      description: Demo auth using valid phone and valid UIN
+      description: Verify that demo authentication succeeds with a valid phone number
       role: resident
       restMethod: post
       inputTemplate: ida/DemoAuth/DemoAuth
@@ -1813,7 +1840,7 @@ DemoAuthNew:
   auth_DemoAuthValid_with_firstName:
       endPoint: /idauthentication/v1/auth/$partnerKeyURL$
       uniqueIdentifier: TC_IDA_DemoAuth_64
-      description: Demo auth using first name and valid UIN
+      description: Verify that demo authentication succeeds with a valid first name
       role: resident
       restMethod: post
       inputTemplate: ida/DemoAuth/DemoAuth
@@ -1839,10 +1866,10 @@ DemoAuthNew:
       output: '{
   "authStatus": "true"
 }'
-  auth_DemoAuth_DOB_Valid_Smoke_with_invalid_certs:
+  auth_DemoAuth_DOB_Valid_with_invalid_certs:
       endPoint: /idauthentication/v1/auth/dhdhdh464744
       uniqueIdentifier: TC_IDA_DemoAuth_65
-      description: Demo auth using valid dob and invalid certs
+      description: Verify that demo authentication fails with a valid DOB when invalid certificates are used
       role: resident
       restMethod: post
       allowedErrorCodes: Internal Server Error
@@ -1868,9 +1895,10 @@ DemoAuthNew:
   auth_DemoAuth_DOB_with_invalid_certs_and_invalid_vid:
       endPoint: /idauthentication/v1/auth/$partnerKeyURL$
       uniqueIdentifier: TC_IDA_DemoAuth_66
-      description: Demo auth using valid dob,invalid certs and invalid perpetual VID
+      description: Verify that demo authentication fails with a valid DOB when invalid certificates and an invalid VID are used
       role: resident
       restMethod: post
+      additionalDependencies: TC_DependentModule_IdRepo_06
       allowedErrorCodes: Internal Server Error
       inputTemplate: ida/DemoAuth/DemoAuth
       outputTemplate: ida/DemoAuth/error
@@ -1894,7 +1922,7 @@ DemoAuthNew:
   auth_DemoAuth_gender_IRIS_as_true_anddo_auth_policy:
       endPoint: /idauthentication/v1/auth/$UpdatedPartnerKeyURL$
       uniqueIdentifier: TC_IDA_DemoAuth_67
-      description: Demo auth using valid gender with incorrect individualId type
+      description: Verify that demo authentication fails when gender and IRIS are set to true and the auth policy is applied
       role: resident
       restMethod: post
       inputTemplate: ida/DemoAuth/DemoIdentityEncryptGender
@@ -1923,7 +1951,7 @@ DemoAuthNew:
   auth_DemoAuth_with_zero_age_value_Neg:
       endPoint: /idauthentication/v1/auth/$partnerKeyURL$
       uniqueIdentifier: TC_IDA_DemoAuth_68
-      description: Demo auth with zero age
+      description: Verify that demo authentication fails when the age value is zero
       role: resident
       restMethod: post
       inputTemplate: ida/DemoAuth/DemoAuth
@@ -1948,7 +1976,7 @@ DemoAuthNew:
   auth_DemoAuth_with_negative_age_value_Neg:
       endPoint: /idauthentication/v1/auth/$partnerKeyURL$
       uniqueIdentifier: TC_IDA_DemoAuth_69
-      description: Demo auth with negative age
+      description: Verify that demo authentication fails when the age value is negative
       role: resident
       restMethod: post
       inputTemplate: ida/DemoAuth/DemoAuth
@@ -1973,7 +2001,7 @@ DemoAuthNew:
   auth_DemoAuth_with_age_greater_than_calculated_Neg:
       endPoint: /idauthentication/v1/auth/$partnerKeyURL$
       uniqueIdentifier: TC_IDA_DemoAuth_70
-      description: Demo auth with age greater than the calculated value
+      description: Verify that demo authentication fails when the age value is greater than the calculated age
       role: resident
       restMethod: post
       inputTemplate: ida/DemoAuth/DemoAuth
@@ -1998,7 +2026,7 @@ DemoAuthNew:
   auth_DemoAuth_with_age_below_calculated_value_Neg:
       endPoint: /idauthentication/v1/auth/$partnerKeyURL$
       uniqueIdentifier: TC_IDA_DemoAuth_71
-      description: Demo auth with age below the calculated value
+      description: Verify that demo authentication fails when the age value is below the calculated age
       role: resident
       restMethod: post
       inputTemplate: ida/DemoAuth/DemoAuth
@@ -2023,7 +2051,7 @@ DemoAuthNew:
   auth_DemoAuth_with_unusedUIN_value_audit_Neg:
       endPoint: /idauthentication/v1/auth/$partnerKeyURL$
       uniqueIdentifier: TC_IDA_dependentTC_AuthTransaction_DemoAuth_72
-      description: Demo auth with unused Uin
+      description: Verify that demo authentication fails when an unused UIN value is provided with audit
       role: resident
       restMethod: post
       inputTemplate: ida/DemoAuth/DemoAuth
@@ -2048,14 +2076,14 @@ DemoAuthNew:
   auth_DemoAuth_with_wrongPartnerKeyUrl_Neg:
       endPoint: /idauthentication/v1/auth/Z0kPjifb7xsv8oEsv0B5YDZqChr7TuBtToVbgARGkO8Jy6U0/auth_pid17424601504/959765
       uniqueIdentifier: TC_IDA_DemoAuth_73
-      description: Demo auth wrong partnerkeyurl
+      description: Verify that demo authentication fails when a wrong partner key URL is used
       role: resident
       restMethod: post
       inputTemplate: ida/DemoAuth/DemoAuth
       outputTemplate: ida/DemoAuth/error
       input: '{
         "requestTime": "$TIMESTAMP$",
-        "individualId": "$ID:AddIdentity_ValidParameters_fordemo_smoke_Pos_UIN$",
+        "individualId": "$ID:AddIdentity_ValidParameters_fordemo_Pos_UIN$",
         "transactionId": "1234567890",
         "individualIdType": "UIN",
         "bio": false,

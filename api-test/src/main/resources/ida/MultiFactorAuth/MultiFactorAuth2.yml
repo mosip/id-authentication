@@ -2,7 +2,7 @@ MultiFactorAuth:
   auth_MultiFactorAuth_Biometric_Face_With_Valid_uin_Smoke_Pos:
       endPoint: /idauthentication/v1/auth/$partnerKeyURL$
       uniqueIdentifier: TC_IDA_MultiFactorAuth_01
-      description: Multifactor auth with demo,otp and bio using UIN
+      description: Verify that multi-factor authentication succeeds using face biometric authentication with a valid UIN under smoke test conditions
       role: resident
       checkErrorsOnlyInResponse: true
       restMethod: post
@@ -54,10 +54,10 @@ MultiFactorAuth:
         "sendOtpResTemplate":"ida/MultiFactorAuth/sendOtpRes"
     }
 }'
-  auth_MultiFactorAuth_Biometric_Face_With_Valid_edited_updated_uin_Smoke_Pos:
+  auth_MultiFactorAuth_Biometric_Face_With_Valid_edited_updated_uin_Pos:
       endPoint: /idauthentication/v1/auth/$partnerKeyURL$
       uniqueIdentifier: TC_IDA_MultiFactorAuth_02
-      description: Multifactor auth with demo,otp and bio using updated UIN
+      description: Verify that multi-factor authentication succeeds using face biometric authentication with a valid edited and updated UIN
       role: resident
       checkErrorsOnlyInResponse: true
       restMethod: post
@@ -109,17 +109,17 @@ MultiFactorAuth:
         "sendOtpResTemplate":"ida/MultiFactorAuth/sendOtpRes"
     }
 }'
-  auth_MultiFactorAuth_Biometric_Face_With_draft_uin_Smoke_Pos:
+  auth_MultiFactorAuth_Biometric_Face_With_draft_uin_Pos:
       endPoint: /idauthentication/v1/auth/$partnerKeyURL$
       uniqueIdentifier: TC_IDA_MultiFactorAuth_04
-      description: Multifactor auth with demo,otp and bio using drafted UIN
+      description: Verify that multi-factor authentication fails when face biometric authentication is attempted with a draft UIN
       role: resident
       checkErrorsOnlyInResponse: true
       restMethod: post
       inputTemplate: ida/MultiFactorAuth/MultiFactorAuth
       outputTemplate: ida/MultiFactorAuth/MultiFactorAuthResult
       input: '{
-        "otpChannel": "mosipuser123@mailinator.com",
+        "otpChannel": "$ID:UpdateDraft_Smoke_Pos_EMAIL$",
         "requestTime": "$TIMESTAMP$",
         "individualId": "$ID:GetDraft_all_valid_smoke_sid_UIN$",
         "transactionId": "1234567890",
@@ -167,7 +167,7 @@ MultiFactorAuth:
   auth_MultiFactorAuth_Biometric_Face_With_InValid_transactionId_uin_Neg:
       endPoint: /idauthentication/v1/auth/$partnerKeyURL$
       uniqueIdentifier: TC_IDA_MultiFactorAuth_05
-      description: Multifactor auth with demo,otp and bio with invalid transactionId using UIN
+      description: Verify that multi-factor authentication fails when face biometric authentication is attempted with an invalid transaction ID and UIN
       role: resident
       checkErrorsOnlyInResponse: true
       restMethod: post
@@ -222,7 +222,7 @@ MultiFactorAuth:
   auth_MultiFactorAuth_Biometric_Face_With_Missing_transactionId_uin_Neg:
       endPoint: /idauthentication/v1/auth/$partnerKeyURL$
       uniqueIdentifier: TC_IDA_MultiFactorAuth_06
-      description: Multifactor auth with demo,otp and bio with missing transactionId using UIN
+      description: Verify that multi factor authentication fails when face biometric authentication is attempted with a missing transaction ID and a valid UIN
       role: resident
       checkErrorsOnlyInResponse: true
       restMethod: post
@@ -277,10 +277,11 @@ MultiFactorAuth:
   auth_MultiFactorAuth_Biometric_Face_With_Valid_vid_Smoke_Pos:
       endPoint: /idauthentication/v1/auth/$partnerKeyURL$
       uniqueIdentifier: TC_IDA_MultiFactorAuth_07
-      description: Multifactor auth with demo,otp and bio using VID
+      description: Verify that multi-factor authentication succeeds using face biometric authentication with a valid VID under smoke test conditions
       role: resident
       checkErrorsOnlyInResponse: true
       restMethod: post
+      additionalDependencies: TC_DependentModule_IdRepo_06
       inputTemplate: ida/MultiFactorAuth/MultiFactorAuth
       outputTemplate: ida/MultiFactorAuth/MultiFactorAuthResult
       input: '{
@@ -332,10 +333,11 @@ MultiFactorAuth:
   auth_MultiFactorAuth_Biometric_Face_With_InValid_vid_transactionId_Neg:
       endPoint: /idauthentication/v1/auth/$partnerKeyURL$
       uniqueIdentifier: TC_IDA_MultiFactorAuth_09
-      description: Multifactor auth with demo,otp and bio with invalid transactionId using VID
+      description: Verify that multi-factor authentication fails when face biometric authentication is attempted with an invalid VID and transaction ID
       role: resident
       checkErrorsOnlyInResponse: true
       restMethod: post
+      additionalDependencies: TC_DependentModule_IdRepo_06
       inputTemplate: ida/MultiFactorAuth/MultiFactorAuth
       outputTemplate: ida/MultiFactorAuth/error
       input: '{
@@ -393,10 +395,11 @@ MultiFactorAuth:
   auth_MultiFactorAuth_Biometric_Face_With_blank_vid_transactionId_Neg:
       endPoint: /idauthentication/v1/auth/$partnerKeyURL$
       uniqueIdentifier: TC_IDA_MultiFactorAuth_10
-      description: Multifactor auth with demo,otp and bio with blank transactionId using VID
+      description: Verify that multi-factor authentication fails when face biometric authentication is attempted with a blank VID and transaction ID
       role: resident
       checkErrorsOnlyInResponse: true
       restMethod: post
+      additionalDependencies: TC_DependentModule_IdRepo_06
       inputTemplate: ida/MultiFactorAuth/MultiFactorAuth
       outputTemplate: ida/MultiFactorAuth/error
       input: '{
@@ -451,10 +454,10 @@ MultiFactorAuth:
         "sendOtpResTemplate":"ida/OtpAuth/sendOtpRes"
     }
 }'
-  auth_MultiFactorAuth_Biometric_RingFinger_With_Valid_uin_Smoke_Pos:
+  auth_MultiFactorAuth_Biometric_RingFinger_With_Valid_uin_Pos:
       endPoint: /idauthentication/v1/auth/$partnerKeyURL$
       uniqueIdentifier: TC_IDA_MultiFactorAuth_11
-      description: Multifactor auth with demo,otp and bio ring finger with valid UIN
+      description: Verify that multi-factor authentication succeeds using ring finger biometric authentication with a valid UIN
       role: resident
       checkErrorsOnlyInResponse: true
       restMethod: post
@@ -509,7 +512,7 @@ MultiFactorAuth:
   auth_MultiFactorAuth_Biometric_RingFinger_With_missing_transactionId_uin_Neg:
       endPoint: /idauthentication/v1/auth/$partnerKeyURL$
       uniqueIdentifier: TC_IDA_MultiFactorAuth_12
-      description: Multifactor auth with demo,otp and bio ring finger with missing transactionId using UIN
+      description: Verify that multi-factor authentication fails when ring finger biometric authentication is attempted with a missing transaction ID and a valid UIN
       role: resident
       checkErrorsOnlyInResponse: true
       restMethod: post
@@ -569,7 +572,7 @@ MultiFactorAuth:
   auth_MultiFactorAuth_Biometric_RingFinger_With_invalid_transactionId_uin_Neg:
       endPoint: /idauthentication/v1/auth/$partnerKeyURL$
       uniqueIdentifier: TC_IDA_MultiFactorAuth_13
-      description: Multifactor auth with demo,otp and bio ring finger with invalid transactionId using UIN
+      description: Verify that multi factor authentication fails when ring finger biometric authentication is attempted with an invalid transaction ID and a valid UIN
       role: resident
       checkErrorsOnlyInResponse: true
       restMethod: post
@@ -630,10 +633,11 @@ MultiFactorAuth:
   auth_MultiFactorAuth_Biometric_RingFinger_With_vid_InValid_transactionId_Neg:
       endPoint: /idauthentication/v1/auth/$partnerKeyURL$
       uniqueIdentifier: TC_IDA_MultiFactorAuth_14
-      description: Multifactor auth with demo,otp and bio ring finger with invalid transactionId using VID
+      description: Verify that multi-factor authentication fails when ring finger biometric authentication is attempted with a VID and an invalid transaction ID
       role: resident
       checkErrorsOnlyInResponse: true
       restMethod: post
+      additionalDependencies: TC_DependentModule_IdRepo_06
       inputTemplate: ida/MultiFactorAuth/MultiFactorAuth
       outputTemplate: ida/MultiFactorAuth/error
       input: '{
@@ -691,10 +695,11 @@ MultiFactorAuth:
   auth_MultiFactorAuth_Biometric_RingFinger_With_vid_blank_transactionId_Neg:
       endPoint: /idauthentication/v1/auth/$partnerKeyURL$
       uniqueIdentifier: TC_IDA_MultiFactorAuth_15
-      description: Multifactor auth with demo,otp and bio ring finger with blank transactionId using VID
+      description: Verify that multi factor authentication fails when ring finger biometric authentication is attempted with a VID and a blank transaction ID
       role: resident
       checkErrorsOnlyInResponse: true
       restMethod: post
+      additionalDependencies: TC_DependentModule_IdRepo_06
       inputTemplate: ida/MultiFactorAuth/MultiFactorAuth
       outputTemplate: ida/MultiFactorAuth/error
       input: '{
@@ -749,13 +754,14 @@ MultiFactorAuth:
         "sendOtpResTemplate":"ida/OtpAuth/sendOtpRes"
     }
 }'
-  auth_MultiFactorAuth_Biometric_RingFinger_With_Valid_VID_Smoke_Pos:
+  auth_MultiFactorAuth_Biometric_RingFinger_With_Valid_VID_Pos:
       endPoint: /idauthentication/v1/auth/$partnerKeyURL$
       uniqueIdentifier: TC_IDA_MultiFactorAuth_16
-      description: Multifactor auth with demo,otp and bio ring finger using valid VID
+      description: Verify that multi factor authentication succeeds using ring finger biometric authentication with a valid VID
       role: resident
       checkErrorsOnlyInResponse: true
       restMethod: post
+      additionalDependencies: TC_DependentModule_IdRepo_06
       inputTemplate: ida/MultiFactorAuth/MultiFactorAuth
       outputTemplate: ida/MultiFactorAuth/MultiFactorAuthResult
       input: '{
@@ -804,10 +810,10 @@ MultiFactorAuth:
         "sendOtpResTemplate":"ida/MultiFactorAuth/sendOtpRes"
     }
 }'
-  auth_MultiFactorAuth_Biometric_LeftMiddleFingerr_With_uin_Valid_Smoke_Pos:
+  auth_MultiFactorAuth_Biometric_LeftMiddleFingerr_With_uin_Valid_Pos:
       endPoint: /idauthentication/v1/auth/$partnerKeyURL$
       uniqueIdentifier: TC_IDA_MultiFactorAuth_17
-      description: Multifactor auth with demo,otp and bio left middle finger using valid UIN
+      description: Verify that multi-factor authentication succeeds using left middle finger biometric authentication with a valid UIN
       role: resident
       checkErrorsOnlyInResponse: true
       restMethod: post
@@ -862,7 +868,7 @@ MultiFactorAuth:
   auth_MultiFactorAuth_Biometric_LeftMiddleFingerr_With_uin_InValid_transactionId_Neg:
       endPoint: /idauthentication/v1/auth/$partnerKeyURL$
       uniqueIdentifier: TC_IDA_MultiFactorAuth_18
-      description: Multifactor auth with demo,otp and bio left middle finger with invalid transactionId using valid UIN
+      description: Verify that multi-factor authentication fails when left middle finger biometric authentication is attempted with a valid UIN and an invalid transaction ID
       role: resident
       checkErrorsOnlyInResponse: true
       restMethod: post
@@ -923,7 +929,7 @@ MultiFactorAuth:
   auth_MultiFactorAuth_Biometric_LeftMiddleFingerr_With_uin_blank_transactionId_Neg:
       endPoint: /idauthentication/v1/auth/$partnerKeyURL$
       uniqueIdentifier: TC_IDA_MultiFactorAuth_19
-      description: Multifactor auth with demo,otp and bio left middle finger with blank transactionId using valid UIN
+      description: Verify that multi-factor authentication fails when left middle finger biometric authentication is attempted with a valid UIN and a blank transaction ID
       role: resident
       checkErrorsOnlyInResponse: true
       restMethod: post
@@ -981,13 +987,14 @@ MultiFactorAuth:
         "sendOtpResTemplate":"ida/OtpAuth/sendOtpRes"
     }
 }'
-  auth_MultiFactorAuth_Biometric_LeftMiddleFingerr_With_Valid_VID_Smoke_Pos:
+  auth_MultiFactorAuth_Biometric_LeftMiddleFingerr_With_Valid_VID_Pos:
       endPoint: /idauthentication/v1/auth/$partnerKeyURL$
       uniqueIdentifier: TC_IDA_MultiFactorAuth_20
-      description: Multifactor auth with demo,otp and bio left middle finger using valid VID
+      description: Verify that multi-factor authentication succeeds using left middle finger biometric authentication with a valid VID
       role: resident
       checkErrorsOnlyInResponse: true
       restMethod: post
+      additionalDependencies: TC_DependentModule_IdRepo_06
       inputTemplate: ida/MultiFactorAuth/MultiFactorAuth
       outputTemplate: ida/MultiFactorAuth/MultiFactorAuthResult
       input: '{
@@ -1036,10 +1043,10 @@ MultiFactorAuth:
         "sendOtpResTemplate":"ida/MultiFactorAuth/sendOtpRes"
     }
 }'
-  auth_MultiFactorAuth_Biometric_LeftIndexFingerr_With_uin_Valid_Smoke_Pos:
+  auth_MultiFactorAuth_Biometric_LeftIndexFingerr_With_uin_Valid_Pos:
       endPoint: /idauthentication/v1/auth/$partnerKeyURL$
       uniqueIdentifier: TC_IDA_MultiFactorAuth_21
-      description: Multifactor auth with demo,otp and bio left index finger using valid UIN
+      description: Verify that multi factor authentication succeeds using left index finger biometric authentication with a valid UIN
       role: resident
       checkErrorsOnlyInResponse: true
       restMethod: post
@@ -1091,13 +1098,14 @@ MultiFactorAuth:
         "sendOtpResTemplate":"ida/MultiFactorAuth/sendOtpRes"
     }
 }'
-  auth_MultiFactorAuth_Biometric_LeftIndexFingerr_With_Valid_vid_Smoke_Pos:
+  auth_MultiFactorAuth_Biometric_LeftIndexFingerr_With_Valid_vid_Pos:
       endPoint: /idauthentication/v1/auth/$partnerKeyURL$
       uniqueIdentifier: TC_IDA_MultiFactorAuth_22
-      description: Multifactor auth with demo,otp and bio left index finger using valid VID
+      description: Verify that multi factor authentication succeeds using left index finger biometric authentication with a valid VID
       role: resident
       checkErrorsOnlyInResponse: true
       restMethod: post
+      additionalDependencies: TC_DependentModule_IdRepo_06
       inputTemplate: ida/MultiFactorAuth/MultiFactorAuth
       outputTemplate: ida/MultiFactorAuth/MultiFactorAuthResult
       input: '{
@@ -1146,10 +1154,10 @@ MultiFactorAuth:
         "sendOtpResTemplate":"ida/MultiFactorAuth/sendOtpRes"
     }
 }'
-  auth_MultiFactorAuth_Biometric_LeftLittleFinger_With_uin_Valid_Smoke_Pos:
+  auth_MultiFactorAuth_Biometric_LeftLittleFinger_With_uin_Valid_Pos:
       endPoint: /idauthentication/v1/auth/$partnerKeyURL$
       uniqueIdentifier: TC_IDA_MultiFactorAuth_23
-      description: Multifactor auth with demo,otp and bio left little finger using valid UIN
+      description: Verify that multi factor authentication succeeds using left little finger biometric authentication with a valid UIN
       role: resident
       checkErrorsOnlyInResponse: true
       restMethod: post
@@ -1201,13 +1209,14 @@ MultiFactorAuth:
         "sendOtpResTemplate":"ida/MultiFactorAuth/sendOtpRes"
     }
 }'
-  auth_MultiFactorAuth_Biometric_LeftLittleFinger_With_Valid_VID_Smoke_Pos:
+  auth_MultiFactorAuth_Biometric_LeftLittleFinger_With_Valid_VID_Pos:
       endPoint: /idauthentication/v1/auth/$partnerKeyURL$
       uniqueIdentifier: TC_IDA_MultiFactorAuth_24
-      description: Multifactor auth with demo,otp and bio left little finger using valid VID
+      description: Verify that multi factor authentication succeeds using left little finger biometric authentication with a valid VID
       role: resident
       checkErrorsOnlyInResponse: true
       restMethod: post
+      additionalDependencies: TC_DependentModule_IdRepo_06
       inputTemplate: ida/MultiFactorAuth/MultiFactorAuth
       outputTemplate: ida/MultiFactorAuth/MultiFactorAuthResult
       input: '{
@@ -1256,10 +1265,10 @@ MultiFactorAuth:
         "sendOtpResTemplate":"ida/MultiFactorAuth/sendOtpRes"
     }
 }'
-  auth_MultiFactorAuth_Biometric_RightIndexFinger_With_uin_Valid_Smoke_Pos:
+  auth_MultiFactorAuth_Biometric_RightIndexFinger_With_uin_Valid_Pos:
       endPoint: /idauthentication/v1/auth/$partnerKeyURL$
       uniqueIdentifier: TC_IDA_MultiFactorAuth_25
-      description: Multifactor auth with demo,otp and bio right index finger using valid UIN
+      description: Verify that multi factor authentication succeeds using right index finger biometric authentication with a valid UIN
       role: resident
       checkErrorsOnlyInResponse: true
       restMethod: post
@@ -1311,13 +1320,14 @@ MultiFactorAuth:
         "sendOtpResTemplate":"ida/MultiFactorAuth/sendOtpRes"
     }
 }'
-  auth_MultiFactorAuth_Biometric_RightIndexFinger_With_Valid_VID_Smoke_Pos:
+  auth_MultiFactorAuth_Biometric_RightIndexFinger_With_Valid_VID_Pos:
       endPoint: /idauthentication/v1/auth/$partnerKeyURL$
       uniqueIdentifier: TC_IDA_MultiFactorAuth_26
-      description: Multifactor auth with demo,otp and bio right index finger using valid VID
+      description: Verify that multi factor authentication succeeds using right index finger biometric authentication with a valid VID
       role: resident
       checkErrorsOnlyInResponse: true
       restMethod: post
+      additionalDependencies: TC_DependentModule_IdRepo_06
       inputTemplate: ida/MultiFactorAuth/MultiFactorAuth
       outputTemplate: ida/MultiFactorAuth/MultiFactorAuthResult
       input: '{
@@ -1366,10 +1376,10 @@ MultiFactorAuth:
         "sendOtpResTemplate":"ida/MultiFactorAuth/sendOtpRes"
     }
 }'
-  auth_MultiFactorAuth_Biometric_RightRingFinger_With_uin_Valid_Smoke_Pos:
+  auth_MultiFactorAuth_Biometric_RightRingFinger_With_uin_Valid_Pos:
       endPoint: /idauthentication/v1/auth/$partnerKeyURL$
       uniqueIdentifier: TC_IDA_MultiFactorAuth_27
-      description: Multifactor auth with demo,otp and bio right ring finger using valid UIN
+      description: Verify that multi factor authentication succeeds using right ring finger biometric authentication with a valid UIN
       role: resident
       checkErrorsOnlyInResponse: true
       restMethod: post
@@ -1421,13 +1431,14 @@ MultiFactorAuth:
         "sendOtpResTemplate":"ida/MultiFactorAuth/sendOtpRes"
     }
 }'
-  auth_MultiFactorAuth_Biometric_RightRingFinger_With_Valid_VID_Smoke_Pos:
+  auth_MultiFactorAuth_Biometric_RightRingFinger_With_Valid_VID_Pos:
       endPoint: /idauthentication/v1/auth/$partnerKeyURL$
       uniqueIdentifier: TC_IDA_MultiFactorAuth_28
-      description: Multifactor auth with demo,otp and bio right ring finger using valid VID
+      description: Verify that multi-factor authentication succeeds using right ring finger biometric authentication with a valid VID
       role: resident
       checkErrorsOnlyInResponse: true
       restMethod: post
+      additionalDependencies: TC_DependentModule_IdRepo_06
       inputTemplate: ida/MultiFactorAuth/MultiFactorAuth
       outputTemplate: ida/MultiFactorAuth/MultiFactorAuthResult
       input: '{
@@ -1476,10 +1487,10 @@ MultiFactorAuth:
         "sendOtpResTemplate":"ida/MultiFactorAuth/sendOtpRes"
     }
 }'
-  auth_MultiFactorAuth_Biometric_RightMiddleFinger_With_uin_Valid_Smoke_Pos:
+  auth_MultiFactorAuth_Biometric_RightMiddleFinger_With_uin_Valid_Pos:
       endPoint: /idauthentication/v1/auth/$partnerKeyURL$
       uniqueIdentifier: TC_IDA_MultiFactorAuth_29
-      description: Multifactor auth with demo,otp and bio right middle finger using valid UIN
+      description: Verify that multi factor authentication succeeds using right middle finger biometric authentication with a valid UIN
       role: resident
       checkErrorsOnlyInResponse: true
       restMethod: post
@@ -1531,13 +1542,14 @@ MultiFactorAuth:
         "sendOtpResTemplate":"ida/MultiFactorAuth/sendOtpRes"
     }
 }'
-  auth_MultiFactorAuth_Biometric_RightMiddleFinger_With_Valid_VID_Smoke_Pos:
+  auth_MultiFactorAuth_Biometric_RightMiddleFinger_With_Valid_VID_Pos:
       endPoint: /idauthentication/v1/auth/$partnerKeyURL$
       uniqueIdentifier: TC_IDA_MultiFactorAuth_30
-      description: Multifactor auth with demo,otp and bio right middle finger using valid VID
+      description: Verify that multi factor authentication succeeds using right middle finger biometric authentication with a valid VID
       role: resident
       checkErrorsOnlyInResponse: true
       restMethod: post
+      additionalDependencies: TC_DependentModule_IdRepo_06
       inputTemplate: ida/MultiFactorAuth/MultiFactorAuth
       outputTemplate: ida/MultiFactorAuth/MultiFactorAuthResult
       input: '{
@@ -1586,10 +1598,10 @@ MultiFactorAuth:
         "sendOtpResTemplate":"ida/MultiFactorAuth/sendOtpRes"
     }
 }'
-  auth_MultiFactorAuth_Biometric_RightLittleFinger_With_uin_Valid_Smoke_Pos:
+  auth_MultiFactorAuth_Biometric_RightLittleFinger_With_uin_Valid_Pos:
       endPoint: /idauthentication/v1/auth/$partnerKeyURL$
       uniqueIdentifier: TC_IDA_MultiFactorAuth_31
-      description: Multifactor auth with demo,otp and bio right little finger using valid UIN
+      description: Verify that multi factor authentication succeeds using right little finger biometric authentication with a valid UIN
       role: resident
       checkErrorsOnlyInResponse: true
       restMethod: post
@@ -1641,13 +1653,14 @@ MultiFactorAuth:
         "sendOtpResTemplate":"ida/MultiFactorAuth/sendOtpRes"
     }
 }'
-  auth_MultiFactorAuth_Biometric_RightLittleFinger_With_Valid_VID_Smoke_Pos:
+  auth_MultiFactorAuth_Biometric_RightLittleFinger_With_Valid_VID_Pos:
       endPoint: /idauthentication/v1/auth/$partnerKeyURL$
       uniqueIdentifier: TC_IDA_MultiFactorAuth_32
-      description: Multifactor auth with demo,otp and bio right little finger using valid VID
+      description: Verify that multi factor authentication succeeds using right little finger biometric authentication with a valid VID
       role: resident
       checkErrorsOnlyInResponse: true
       restMethod: post
+      additionalDependencies: TC_DependentModule_IdRepo_06
       inputTemplate: ida/MultiFactorAuth/MultiFactorAuth
       outputTemplate: ida/MultiFactorAuth/MultiFactorAuthResult
       input: '{
@@ -1696,10 +1709,10 @@ MultiFactorAuth:
         "sendOtpResTemplate":"ida/MultiFactorAuth/sendOtpRes"
     }
 }'
-  auth_MultiFactorAuth_Biometric_LeftThumb_With_uin_Valid_Smoke_Pos:
+  auth_MultiFactorAuth_Biometric_LeftThumb_With_uin_Valid_Pos:
       endPoint: /idauthentication/v1/auth/$partnerKeyURL$
       uniqueIdentifier: TC_IDA_MultiFactorAuth_33
-      description: Multifactor auth with demo,otp and bio left thumb using valid UIN
+      description: Verify that multi factor authentication succeeds using left thumb biometric authentication with a valid UIN
       role: resident
       checkErrorsOnlyInResponse: true
       restMethod: post
@@ -1751,13 +1764,14 @@ MultiFactorAuth:
         "sendOtpResTemplate":"ida/MultiFactorAuth/sendOtpRes"
     }
 }'
-  auth_MultiFactorAuth_Biometric_LeftThumb_With_Valid_VID_Smoke_Pos:
+  auth_MultiFactorAuth_Biometric_LeftThumb_With_Valid_VID_Pos:
       endPoint: /idauthentication/v1/auth/$partnerKeyURL$
       uniqueIdentifier: TC_IDA_MultiFactorAuth_34
-      description: Multifactor auth with demo,otp and bio left thumb using valid VID
+      description: Verify that multi factor authentication succeeds using left thumb biometric authentication with a valid VID
       role: resident
       checkErrorsOnlyInResponse: true
       restMethod: post
+      additionalDependencies: TC_DependentModule_IdRepo_06
       inputTemplate: ida/MultiFactorAuth/MultiFactorAuth
       outputTemplate: ida/MultiFactorAuth/MultiFactorAuthResult
       input: '{
@@ -1806,10 +1820,10 @@ MultiFactorAuth:
         "sendOtpResTemplate":"ida/MultiFactorAuth/sendOtpRes"
     }
 }'
-  auth_MultiFactorAuth_Biometric_RightThumb_With_Valid_uin_Smoke_Pos:
+  auth_MultiFactorAuth_Biometric_RightThumb_With_Valid_uin_Pos:
       endPoint: /idauthentication/v1/auth/$partnerKeyURL$
       uniqueIdentifier: TC_IDA_MultiFactorAuth_35
-      description: Multifactor auth with demo,otp and bio right thumb using valid UIN
+      description: Verify that multi factor authentication succeeds using right thumb biometric authentication with a valid UIN
       role: resident
       checkErrorsOnlyInResponse: true
       restMethod: post
@@ -1861,13 +1875,14 @@ MultiFactorAuth:
         "sendOtpResTemplate":"ida/MultiFactorAuth/sendOtpRes"
     }
 }'
-  auth_MultiFactorAuth_Biometric_RightThumb_With_Valid_VID_Smoke_Pos:
+  auth_MultiFactorAuth_Biometric_RightThumb_With_Valid_VID_Pos:
       endPoint: /idauthentication/v1/auth/$partnerKeyURL$
       uniqueIdentifier: TC_IDA_MultiFactorAuth_36
-      description: Multifactor auth with demo,otp and bio right thumb using valid VID
+      description: Verify that multi factor authentication succeeds using right thumb biometric authentication with a valid VID
       role: resident
       checkErrorsOnlyInResponse: true
       restMethod: post
+      additionalDependencies: TC_DependentModule_IdRepo_06
       inputTemplate: ida/MultiFactorAuth/MultiFactorAuth
       outputTemplate: ida/MultiFactorAuth/MultiFactorAuthResult
       input: '{
@@ -1916,10 +1931,10 @@ MultiFactorAuth:
         "sendOtpResTemplate":"ida/MultiFactorAuth/sendOtpRes"
     }
 }'
-  auth_MultiFactorAuth_Biometric_RightIris_With_uin_Valid_Smoke_Pos:
+  auth_MultiFactorAuth_Biometric_RightIris_With_uin_Valid_Pos:
       endPoint: /idauthentication/v1/auth/$partnerKeyURL$
       uniqueIdentifier: TC_IDA_MultiFactorAuth_37
-      description: Multifactor auth with demo,otp and bio right iris using valid UIN
+      description: Verify that multi factor authentication succeeds using right iris biometric authentication with a valid UIN
       role: resident
       checkErrorsOnlyInResponse: true
       restMethod: post
@@ -1971,13 +1986,14 @@ MultiFactorAuth:
         "sendOtpResTemplate":"ida/MultiFactorAuth/sendOtpRes"
     }
 }'
-  auth_MultiFactorAuth_Biometric_RightIris_With_Valid_VID_Smoke_Pos:
+  auth_MultiFactorAuth_Biometric_RightIris_With_Valid_VID_Pos:
       endPoint: /idauthentication/v1/auth/$partnerKeyURL$
       uniqueIdentifier: TC_IDA_MultiFactorAuth_38
-      description: Multifactor auth with demo,otp and bio right iris using valid VID
+      description: Verify that multi factor authentication succeeds using right iris biometric authentication with a valid VID
       role: resident
       checkErrorsOnlyInResponse: true
       restMethod: post
+      additionalDependencies: TC_DependentModule_IdRepo_06
       inputTemplate: ida/MultiFactorAuth/MultiFactorAuth
       outputTemplate: ida/MultiFactorAuth/MultiFactorAuthResult
       input: '{
@@ -2026,10 +2042,10 @@ MultiFactorAuth:
         "sendOtpResTemplate":"ida/MultiFactorAuth/sendOtpRes"
     }
 }'
-  auth_MultiFactorAuth_Biometric_LeftIris_With_uin_Valid_Smoke_Pos:
+  auth_MultiFactorAuth_Biometric_LeftIris_With_uin_Valid_Pos:
       endPoint: /idauthentication/v1/auth/$partnerKeyURL$
       uniqueIdentifier: TC_IDA_MultiFactorAuth_39
-      description: Multifactor auth with demo,otp and bio left iris using valid UIN
+      description: Verify that multi factor authentication succeeds using left iris biometric authentication with a valid UIN
       role: resident
       checkErrorsOnlyInResponse: true
       restMethod: post
@@ -2081,13 +2097,14 @@ MultiFactorAuth:
         "sendOtpResTemplate":"ida/MultiFactorAuth/sendOtpRes"
     }
 }'
-  auth_MultiFactorAuth_Biometric_LeftIris_With__VID_Valid_Smoke_Pos:
+  auth_MultiFactorAuth_Biometric_LeftIris_With__VID_Valid_Pos:
       endPoint: /idauthentication/v1/auth/$partnerKeyURL$
       uniqueIdentifier: TC_IDA_MultiFactorAuth_40
-      description: Multifactor auth with demo,otp and bio left iris using valid VID
+      description: Verify that multi factor authentication succeeds using left iris biometric authentication with a valid VID
       role: resident
       checkErrorsOnlyInResponse: true
       restMethod: post
+      additionalDependencies: TC_DependentModule_IdRepo_06
       inputTemplate: ida/MultiFactorAuth/MultiFactorAuth
       outputTemplate: ida/MultiFactorAuth/MultiFactorAuthResult
       input: '{
@@ -2139,10 +2156,11 @@ MultiFactorAuth:
   auth_MultiFactorAuth_Biometric_LeftIris_With_VID_InValid_transactionId_Neg:
       endPoint: /idauthentication/v1/auth/$partnerKeyURL$
       uniqueIdentifier: TC_IDA_MultiFactorAuth_41
-      description: Multifactor auth with demo,otp and bio left iris using invalid transactionId with valid VID
+      description: Verify that multi factor authentication fails when left iris biometric authentication is attempted with a VID and an invalid transaction ID
       role: resident
       checkErrorsOnlyInResponse: true
       restMethod: post
+      additionalDependencies: TC_DependentModule_IdRepo_06
       inputTemplate: ida/MultiFactorAuth/MultiFactorAuth
       outputTemplate: ida/MultiFactorAuth/error
       input: '{
@@ -2200,7 +2218,7 @@ MultiFactorAuth:
   auth_MultiFactorAuth_Biometric_LeftIris_With_UIN_InValid_transactionId_Neg:
       endPoint: /idauthentication/v1/auth/$partnerKeyURL$
       uniqueIdentifier: TC_IDA_MultiFactorAuth_42
-      description: Multifactor auth with demo,otp and bio left iris using invalid transactionId with valid UIN
+      description: Verify that multi factor authentication fails when left iris biometric authentication is attempted with a UIN and an invalid transaction ID
       role: resident
       checkErrorsOnlyInResponse: true
       restMethod: post
@@ -2261,10 +2279,11 @@ MultiFactorAuth:
   auth_MultiFactorAuth_Biometric_LeftIris_With_VID_blank_transactionId_Neg:
       endPoint: /idauthentication/v1/auth/$partnerKeyURL$
       uniqueIdentifier: TC_IDA_MultiFactorAuth_43
-      description: Multifactor auth with demo,otp and bio left iris using blank transactionId with valid VID
+      description: Verify that multi factor authentication fails when left iris biometric authentication is attempted with a VID and a blank transaction ID
       role: resident
       checkErrorsOnlyInResponse: true
       restMethod: post
+      additionalDependencies: TC_DependentModule_IdRepo_06
       inputTemplate: ida/MultiFactorAuth/MultiFactorAuth
       outputTemplate: ida/MultiFactorAuth/error
       input: '{
@@ -2322,7 +2341,7 @@ MultiFactorAuth:
   auth_MultiFactorAuth_Biometric_LeftIris_With_uin_blank_transactionId_Neg:
       endPoint: /idauthentication/v1/auth/$partnerKeyURL$
       uniqueIdentifier: TC_IDA_MultiFactorAuth_44
-      description: Multifactor auth with demo,otp and bio left iris using blank transactionId with valid UIN
+      description: Verify that multi factor authentication fails when left iris biometric authentication is attempted with a UIN and a blank transaction ID
       role: resident
       checkErrorsOnlyInResponse: true
       restMethod: post
@@ -2382,10 +2401,11 @@ MultiFactorAuth:
   auth_MultiFactorAuth_Biometric_LeftIris_With_VID_blank_individualIdType_Pos:
       endPoint: /idauthentication/v1/auth/$partnerKeyURL$
       uniqueIdentifier: TC_IDA_MultiFactorAuth_45
-      description: Multifactor auth with demo,otp and bio left iris using blank individualId type with valid VID
+      description: Verify that multi factor authentication succeeds when left iris biometric authentication is attempted with a VID and a blank individual ID type
       role: resident
       checkErrorsOnlyInResponse: true
       restMethod: post
+      additionalDependencies: TC_DependentModule_IdRepo_06
       inputTemplate: ida/MultiFactorAuth/MultiFactorAuth
       outputTemplate: ida/MultiFactorAuth/error
       input: '{
@@ -2444,10 +2464,11 @@ MultiFactorAuth:
   auth_MultiFactorAuth_Biometric_LeftIris_With_VID_invalid_individualIdType_Pos:
       endPoint: /idauthentication/v1/auth/$partnerKeyURL$
       uniqueIdentifier: TC_IDA_MultiFactorAuth_46
-      description: Multifactor auth with demo,otp and bio left iris using invalid individualId type with valid VID
+      description: Verify that multi factor authentication succeeds using left iris biometric with a VID and an invalid individual ID type
       role: resident
       checkErrorsOnlyInResponse: true
       restMethod: post
+      additionalDependencies: TC_DependentModule_IdRepo_06
       inputTemplate: ida/MultiFactorAuth/MultiFactorAuth
       outputTemplate: ida/MultiFactorAuth/error
       input: '{
@@ -2506,10 +2527,11 @@ MultiFactorAuth:
   auth_MultiFactorAuth_Biometric_LeftIris_With_VID_invalid_bioSubType:
       endPoint: /idauthentication/v1/auth/$partnerKeyURL$
       uniqueIdentifier: TC_IDA_MultiFactorAuth_47
-      description: Multifactor auth with demo,otp and bio left iris using invalid bio sub type with valid VID
+      description: Verify that multi factor authentication succeeds using left iris biometric with a VID and an invalid biometric subtype
       role: resident
       checkErrorsOnlyInResponse: true
       restMethod: post
+      additionalDependencies: TC_DependentModule_IdRepo_06
       inputTemplate: ida/MultiFactorAuth/MultiFactorAuth
       outputTemplate: ida/MultiFactorAuth/error
       input: '{
@@ -2556,8 +2578,7 @@ MultiFactorAuth:
     "authStatus": false,
    "errors": [
     {
-      "errorCode": "IDA-MLC-009",
-      "errorMessage": "$IGNORE$"
+      "errorCode": "IDA-MLC-009"
     }
   ],
   "sendOtpResp":{
@@ -2567,7 +2588,7 @@ MultiFactorAuth:
   auth_MultiFactorAuth_Biometric_LeftIris_With_UIN_invalid_bioSubType:
       endPoint: /idauthentication/v1/auth/$partnerKeyURL$
       uniqueIdentifier: TC_IDA_MultiFactorAuth_48
-      description: Multifactor auth with demo,otp and bio left iris using invalid bio sub type with valid UIN
+      description: Verify that multi factor authentication succeeds using left iris biometric with a UIN and an invalid biometric subtype
       role: resident
       checkErrorsOnlyInResponse: true
       restMethod: post
@@ -2617,8 +2638,7 @@ MultiFactorAuth:
     "authStatus": false,
    "errors": [
     {
-      "errorCode": "IDA-MLC-009",
-      "errorMessage": "$IGNORE$"
+      "errorCode": "IDA-MLC-009"
     }
   ],
   "sendOtpResp":{
@@ -2628,10 +2648,11 @@ MultiFactorAuth:
   auth_MultiFactorAuth_Biometric_LeftIris_With_VID_blank_bioSubType:
       endPoint: /idauthentication/v1/auth/$partnerKeyURL$
       uniqueIdentifier: TC_IDA_MultiFactorAuth_49
-      description: Multifactor auth with demo,otp and bio left iris using blank bio sub type with valid VID
+      description: Verify that multi factor authentication succeeds using left iris biometric with a VID and a blank biometric subtype
       role: resident
       checkErrorsOnlyInResponse: true
       restMethod: post
+      additionalDependencies: TC_DependentModule_IdRepo_06
       inputTemplate: ida/MultiFactorAuth/MultiFactorAuth
       outputTemplate: ida/MultiFactorAuth/error
       input: '{
@@ -2689,7 +2710,7 @@ MultiFactorAuth:
   auth_MultiFactorAuth_Biometric_LeftIris_With_UIN_blank_bioSubType:
       endPoint: /idauthentication/v1/auth/$partnerKeyURL$
       uniqueIdentifier: TC_IDA_MultiFactorAuth_50
-      description: Multifactor auth with demo,otp and bio left iris using blank bio sub type with valid UIN
+      description: Verify that multi factor authentication succeeds using left iris biometric with a UIN and a blank biometric subtype
       role: resident
       checkErrorsOnlyInResponse: true
       restMethod: post
@@ -2750,10 +2771,11 @@ MultiFactorAuth:
   auth_MultiFactorAuth_Biometric_LeftIris_With_VID_missing_bioSubType_Neg:
       endPoint: /idauthentication/v1/auth/$partnerKeyURL$
       uniqueIdentifier: TC_IDA_MultiFactorAuth_51
-      description: Multifactor auth with demo,otp and bio left iris with missing bioSubtype with valid VID
+      description: Verify that multi factor authentication fails when left iris biometric authentication is attempted with a VID and a missing biometric subtype
       role: resident
       checkErrorsOnlyInResponse: true
       restMethod: post
+      additionalDependencies: TC_DependentModule_IdRepo_06
       inputTemplate: ida/MultiFactorAuth/MultiFactorAuth
       outputTemplate: ida/MultiFactorAuth/error
       input: '{
@@ -2800,8 +2822,7 @@ MultiFactorAuth:
     "authStatus": false,
    "errors": [
     {
-      "errorCode": "IDA-MLC-009",
-      "errorMessage": "$IGNORE$"
+      "errorCode": "IDA-MLC-009"
     }
   ],
   "sendOtpResp":{
@@ -2811,7 +2832,7 @@ MultiFactorAuth:
   auth_MultiFactorAuth_Biometric_LeftIris_With_UIN_missing_bioSubType:
       endPoint: /idauthentication/v1/auth/$partnerKeyURL$
       uniqueIdentifier: TC_IDA_MultiFactorAuth_52
-      description: Multifactor auth with demo,otp and bio left iris with missing bioSubType with valid UIN
+      description: Verify that multi factor authentication fails when left iris biometric authentication is attempted with a UIN and a missing biometric subtype
       role: resident
       checkErrorsOnlyInResponse: true
       restMethod: post
@@ -2861,8 +2882,7 @@ MultiFactorAuth:
     "authStatus": false,
    "errors": [
     {
-      "errorCode": "IDA-MLC-009",
-      "errorMessage": "$IGNORE$"
+      "errorCode": "IDA-MLC-009"
     }
   ],
   "sendOtpResp":{
@@ -2908,7 +2928,7 @@ MultiFactorAuth:
   auth_MultiFactorAuth_Biometric_LeftIris_With_UIN_BLANK_bioType:
       endPoint: /idauthentication/v1/auth/$partnerKeyURL$
       uniqueIdentifier: TC_IDA_MultiFactorAuth_53
-      description: Multifactor auth with demo,otp and bio left iris with blank bioType with valid UIN
+      description: Verify that multi factor authentication fails when left iris biometric authentication is attempted with a UIN and a blank biometric type
       role: resident
       checkErrorsOnlyInResponse: true
       restMethod: post
@@ -2969,7 +2989,7 @@ MultiFactorAuth:
   auth_MultiFactorAuth_Biometric_LeftIris_With_UIN_invalid_bioType:
       endPoint: /idauthentication/v1/auth/$partnerKeyURL$
       uniqueIdentifier: TC_IDA_MultiFactorAuth_54
-      description: Multifactor auth with demo,otp and bio left iris with invalid bioType with valid UIN
+      description: Verify that multi factor authentication fails when left iris biometric authentication is attempted with a UIN and an invalid biometric type
       role: resident
       checkErrorsOnlyInResponse: true
       restMethod: post
@@ -3019,8 +3039,7 @@ MultiFactorAuth:
     "authStatus": false,
    "errors": [
     {
-      "errorCode": "IDA-MLC-011",
-      "errorMessage": "$IGNORE$"
+      "errorCode": "IDA-MLC-011"
     }
   ],
   "sendOtpResp":{
@@ -3030,10 +3049,11 @@ MultiFactorAuth:
   auth_MultiFactorAuth_Biometric_LeftIris_With_VID_valid_bioType_and_invalid_digitalId_type:
       endPoint: /idauthentication/v1/auth/$partnerKeyURL$
       uniqueIdentifier: TC_IDA_MultiFactorAuth_55
-      description: Multifactor auth with demo,otp and bio left iris with valid bioType,invalid digitalId_Type with valid VID
+      description: Verify that multi factor authentication succeeds using left iris biometric with a VID a valid biometric type and an invalid digital ID type
       role: resident
       checkErrorsOnlyInResponse: true
       restMethod: post
+      additionalDependencies: TC_DependentModule_IdRepo_06
       inputTemplate: ida/MultiFactorAuth/MultiFactorAuth
       outputTemplate: ida/MultiFactorAuth/error
       input: '{
@@ -3095,7 +3115,7 @@ MultiFactorAuth:
   auth_MultiFactorAuth_Biometric_LeftIris_With_UIN_valid_bioType_and_invalid_digitalId_type:
       endPoint: /idauthentication/v1/auth/$partnerKeyURL$
       uniqueIdentifier: TC_IDA_MultiFactorAuth_56
-      description: Multifactor auth with demo,otp and bio left iris with valid bioType,invalid digitalId_Type with valid UIN
+      description: Verify that multi-factor authentication succeeds using left iris biometric with a UIN a valid biometric type and an invalid digital ID type
       role: resident
       checkErrorsOnlyInResponse: true
       restMethod: post
@@ -3160,10 +3180,11 @@ MultiFactorAuth:
   auth_MultiFactorAuth_Biometric_LeftIris_With_VID_INvalid_bioValue:
       endPoint: /idauthentication/v1/auth/$partnerKeyURL$
       uniqueIdentifier: TC_IDA_MultiFactorAuth_57
-      description: Multifactor auth with demo,otp and bio left iris with invalid bioValue and valid VID
+      description: Verify that multi-factor authentication fails when left iris biometric authentication is attempted with a VID and an invalid biometric value
       role: resident
       checkErrorsOnlyInResponse: true
       restMethod: post
+      additionalDependencies: TC_DependentModule_IdRepo_06
       inputTemplate: ida/MultiFactorAuth/MultiFactorAuth
       outputTemplate: ida/MultiFactorAuth/error
       input: '{
@@ -3210,8 +3231,7 @@ MultiFactorAuth:
     "authStatus": false,
    "errors": [
     {
-      "errorCode": "IDA-BIA-001",
-      "errorMessage": "$IGNORE$"
+      "errorCode": "IDA-BIA-001"
     }
   ],
   "sendOtpResp":{
@@ -3221,7 +3241,7 @@ MultiFactorAuth:
   auth_MultiFactorAuth_Biometric_LeftIris_With_UIN_INvalid_bioValue:
       endPoint: /idauthentication/v1/auth/$partnerKeyURL$
       uniqueIdentifier: TC_IDA_MultiFactorAuth_58
-      description: Multifactor auth with demo,otp and bio left iris with invalid bioValue and valid UIN
+      description: Verify that multi-factor authentication fails when left iris biometric authentication is attempted with a UIN and an invalid biometric value
       role: resident
       checkErrorsOnlyInResponse: true
       restMethod: post
@@ -3271,8 +3291,7 @@ MultiFactorAuth:
     "authStatus": false,
    "errors": [
     {
-      "errorCode": "IDA-BIA-001",
-      "errorMessage": "$IGNORE$"
+      "errorCode": "IDA-BIA-001"
     }
   ],
   "sendOtpResp":{
@@ -3282,10 +3301,11 @@ MultiFactorAuth:
   auth_MultiFactorAuth_Biometric_LeftIris_With_VID_With_Face_Invalid:
       endPoint: /idauthentication/v1/auth/$partnerKeyURL$
       uniqueIdentifier: TC_IDA_MultiFactorAuth_59
-      description: Multifactor auth with demo,otp and bio left iris with invalid bioType and bioValue with valid VID
+      description: Verify that multi-factor authentication fails when left iris biometric authentication is attempted with a VID using an invalid face biometric
       role: resident
       checkErrorsOnlyInResponse: true
       restMethod: post
+      additionalDependencies: TC_DependentModule_IdRepo_06
       inputTemplate: ida/MultiFactorAuth/MultiFactorAuth
       outputTemplate: ida/MultiFactorAuth/error
       input: '{
@@ -3332,8 +3352,7 @@ MultiFactorAuth:
     "authStatus": false,
    "errors": [
     {
-      "errorCode": "IDA-BIA-001",
-      "errorMessage": "$IGNORE$"
+      "errorCode": "IDA-BIA-001"
     }
   ],
   "sendOtpResp":{
@@ -3343,7 +3362,7 @@ MultiFactorAuth:
   auth_MultiFactorAuth_Biometric_LeftIris_With_UIN_With_Face_Invalid:
       endPoint: /idauthentication/v1/auth/$partnerKeyURL$
       uniqueIdentifier: TC_IDA_MultiFactorAuth_60
-      description: Multifactor auth with demo,otp and bio left iris with invalid bioType and bioValue with valid UIN
+      description: Verify that multi-factor authentication fails when left iris biometric authentication is attempted with a UIN using an invalid face biometric
       role: resident
       checkErrorsOnlyInResponse: true
       restMethod: post
@@ -3393,8 +3412,7 @@ MultiFactorAuth:
     "authStatus": false,
    "errors": [
     {
-      "errorCode": "IDA-BIA-001",
-      "errorMessage": "$IGNORE$"
+      "errorCode": "IDA-BIA-001"
     }
   ],
   "sendOtpResp":{
@@ -3404,10 +3422,11 @@ MultiFactorAuth:
   auth_MultiFactorAuth_Biometric_LeftIris_With_VID_With_Finger_Invalid:
       endPoint: /idauthentication/v1/auth/$partnerKeyURL$
       uniqueIdentifier: TC_IDA_MultiFactorAuth_61
-      description: Multifactor auth with demo,otp and bio left iris with invalid bioType and bioValue with valid VID
+      description: Verify that multi-factor authentication fails when left iris biometric authentication is attempted with a VID using an invalid finger biometric
       role: resident
       checkErrorsOnlyInResponse: true
       restMethod: post
+      additionalDependencies: TC_DependentModule_IdRepo_06
       inputTemplate: ida/MultiFactorAuth/MultiFactorAuth
       outputTemplate: ida/MultiFactorAuth/error
       input: '{
@@ -3454,8 +3473,7 @@ MultiFactorAuth:
     "authStatus": false,
    "errors": [
     {
-      "errorCode": "IDA-BIA-001",
-      "errorMessage": "$IGNORE$"
+      "errorCode": "IDA-BIA-001"
     }
   ],
   "sendOtpResp":{
@@ -3465,7 +3483,7 @@ MultiFactorAuth:
   auth_MultiFactorAuth_Biometric_LeftIris_With_UIN_With_Finger_Invalid:
       endPoint: /idauthentication/v1/auth/$partnerKeyURL$
       uniqueIdentifier: TC_IDA_MultiFactorAuth_62
-      description: Multifactor auth with demo,otp and bio left iris with invalid bioType and bioValue with valid UIN
+      description: Verify that multi-factor authentication fails when left iris biometric authentication is attempted with a UIN using an invalid finger biometric
       role: resident
       checkErrorsOnlyInResponse: true
       restMethod: post
@@ -3515,8 +3533,7 @@ MultiFactorAuth:
     "authStatus": false,
    "errors": [
     {
-      "errorCode": "IDA-BIA-001",
-      "errorMessage": "$IGNORE$"
+      "errorCode": "IDA-BIA-001"
     }
   ],
   "sendOtpResp":{
@@ -3526,10 +3543,11 @@ MultiFactorAuth:
   auth_MultiFactorAuth_Biometric_LeftIris_With_VID_invalid_Bio-Type_value_as_IR_instead_of_Iris:
       endPoint: /idauthentication/v1/auth/$partnerKeyURL$
       uniqueIdentifier: TC_IDA_MultiFactorAuth_63
-      description: Multifactor auth with demo,otp and bio left iris with invalid bioType with valid VID
+      description: Verify that multi factor authentication fails when left iris biometric authentication is attempted with a VID and an invalid biometric type value IR instead of Iris
       role: resident
       checkErrorsOnlyInResponse: true
       restMethod: post
+      additionalDependencies: TC_DependentModule_IdRepo_06
       inputTemplate: ida/MultiFactorAuth/MultiFactorAuth
       outputTemplate: ida/MultiFactorAuth/error
       input: '{
@@ -3576,8 +3594,7 @@ MultiFactorAuth:
     "authStatus": false,
    "errors": [
     {
-      "errorCode": "IDA-MLC-011",
-      "errorMessage": "$IGNORE$"
+      "errorCode": "IDA-MLC-011"
     }
   ],
   "sendOtpResp":{
@@ -3587,7 +3604,7 @@ MultiFactorAuth:
   auth_MultiFactorAuth_Biometric_LeftIris_With_UIN_invalid_Bio-Type_value_as_IR_instead_of_Iris:
       endPoint: /idauthentication/v1/auth/$partnerKeyURL$
       uniqueIdentifier: TC_IDA_MultiFactorAuth_64
-      description: Multifactor auth with demo,otp and bio left iris with invalid bioType and bioValue value with valid UIN
+      description: Verify that multi-factor authentication fails when left iris biometric authentication is attempted with a UIN and an invalid biometric type value IR instead of Iris
       role: resident
       checkErrorsOnlyInResponse: true
       restMethod: post
@@ -3637,8 +3654,7 @@ MultiFactorAuth:
     "authStatus": false,
    "errors": [
     {
-      "errorCode": "IDA-MLC-011",
-      "errorMessage": "$IGNORE$"
+      "errorCode": "IDA-MLC-011"
     }
   ],
   "sendOtpResp":{
@@ -3648,7 +3664,7 @@ MultiFactorAuth:
   auth_MultiFactorAuth_Biometric_With_VID_invalid_Bio-Type_value_as_FIR_instead_of_Finger:
       endPoint: /idauthentication/v1/auth/$partnerKeyURL$
       uniqueIdentifier: TC_IDA_MultiFactorAuth_65
-      description: Multifactor auth with demo,otp and bio left iris with invalid bioType and bioValue with valid VID
+      description: Verify that multi-factor authentication fails when biometric authentication is attempted with a VID and an invalid biometric type value FIR instead of Finger
       role: resident
       checkErrorsOnlyInResponse: true
       restMethod: post
@@ -3698,8 +3714,7 @@ MultiFactorAuth:
     "authStatus": false,
    "errors": [
     {
-      "errorCode": "IDA-MLC-011",
-      "errorMessage": "$IGNORE$"
+      "errorCode": "IDA-MLC-011"
     }
   ],
   "sendOtpResp":{
@@ -3709,7 +3724,7 @@ MultiFactorAuth:
   auth_MultiFactorAuth_Biometric_With_UIN_invalid_Bio-Type_value_as_FIR_instead_of_Finger:
       endPoint: /idauthentication/v1/auth/$partnerKeyURL$
       uniqueIdentifier: TC_IDA_MultiFactorAuth_66
-      description: Multifactor auth with demo,otp and bio with invalid bioType and bioValue with valid UIN
+      description: Verify that multi-factor authentication fails when biometric authentication is attempted with a UIN and an invalid biometric type value FIR instead of Finger
       role: resident
       checkErrorsOnlyInResponse: true
       restMethod: post
@@ -3759,8 +3774,7 @@ MultiFactorAuth:
     "authStatus": false,
    "errors": [
     {
-      "errorCode": "IDA-MLC-011",
-      "errorMessage": "$IGNORE$"
+      "errorCode": "IDA-MLC-011"
     }
   ],
   "sendOtpResp":{
@@ -3770,7 +3784,7 @@ MultiFactorAuth:
   auth_MultiFactorAuth_with_uin_invalid_partner:
       endPoint: /idauthentication/v1/auth/zY22wDwZxwMdlxTZRWrM50m4zBoOiMyUGY/45362768/27822828287
       uniqueIdentifier: TC_IDA_MultiFactorAuth_67
-      description: Multifactor auth with demo,otp and bio with invalid partner with valid UIN
+      description: Verify that multi factor authentication fails when attempted with a UIN and an invalid partner ID
       role: resident
       checkErrorsOnlyInResponse: true
       restMethod: post
@@ -3832,10 +3846,10 @@ MultiFactorAuth:
         "sendOtpResTemplate":"ida/OtpAuth/sendOtpRes"
     }
 }'
-  auth_MultiFactorAuth_Biometric_Face_With_Valid_NOAUTH_no_resident_token_uin_Smoke_Pos:
+  auth_MultiFactorAuth_Biometric_Face_With_Valid_NOAUTH_no_resident_token_uin_Pos:
       endPoint: /idauthentication/v1/auth/$partnerKeyURL$
       uniqueIdentifier: TC_IDA_MultiFactorAuth_68
-      description: MultiFactorAuth_Biometric_Face_With_Valid_NOAUTH_no_resident_token_uin
+      description: Verify that multi-factor authentication succeeds using face biometric with a valid UIN and NOAUTH option without a resident token
       role: resident
       checkErrorsOnlyInResponse: true
       restMethod: post
@@ -3895,10 +3909,10 @@ MultiFactorAuth:
         "sendOtpResTemplate":"ida/MultiFactorAuth/Sendotperror"
     }
 }'
-  auth_MultiFactorAuth_Biometric_Face_With_Valid_uin_expiredOTP_Smoke_Pos:
+  auth_MultiFactorAuth_Biometric_Face_With_Valid_uin_expiredOTP_Pos:
       endPoint: /idauthentication/v1/auth/$partnerKeyURL$
       uniqueIdentifier: TC_IDA_MultiFactorAuth_69
-      description: MultiFactorAuth_Biometric_Face_With_Valid_uin_expiredOTP
+      description: Verify that multi factor authentication fails using face biometric with a valid UIN when an expired OTP is provided
       role: resident
       checkErrorsOnlyInResponse: true
       restMethod: post
@@ -3953,7 +3967,7 @@ MultiFactorAuth:
   auth_MultiFactorAuth_Biometric_Face_With_Valid_uin_expiredOTP_EKYCBIO_Pos:
       endPoint: /idauthentication/v1/auth/$partnerKeyURL$
       uniqueIdentifier: TC_IDA_MultiFactorAuth_70
-      description: MultiFactorAuth_Biometric_Face_With_Valid_uin_expiredOTP_EKYCBIO
+      description: Verify that multi-factor authentication fails using face biometric in eKYC mode with a valid UIN when an expired OTP is provided
       role: resident
       checkErrorsOnlyInResponse: true
       restMethod: post
@@ -4008,7 +4022,7 @@ MultiFactorAuth:
   auth_MultiFactorAuth_Biometric_Face_With_IRIS_as_true_anddo_bio_auth_policy:
       endPoint: /idauthentication/v1/auth/$UpdatedPartnerKeyURL$
       uniqueIdentifier: TC_IDA_MultiFactorAuth_71
-      description: MultiFactorAuth_Biometric_Face_With_IRIS_as_true_and do_bio_auth
+      description: Verify that multi factor authentication succeeds using face biometric when IRIS is enabled and bio authentication policy is enforced
       role: resident
       checkErrorsOnlyInResponse: true
       restMethod: post

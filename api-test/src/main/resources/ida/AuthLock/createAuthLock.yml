@@ -2,7 +2,7 @@ AuthLock:
    auth_AuthLock_Valid_UIN_All:
       endPoint: /resident/v1/req/auth-lock
       uniqueIdentifier: TC_IDA_AuthLock_01
-      description: lock demo and bio-Face authType for UIN
+      description: Validate the locking of a valid UIN using the authentication lock service across all applicable scenarios
       role: resident
       checkErrorsOnlyInResponse: true
       restMethod: post
@@ -27,7 +27,6 @@ AuthLock:
     }
     }'
       output: '{
-  "message": "$IGNORE$",
   "sendOtpResp":{
         "maskedMobile": "$IGNORE$",
         "sendOtpResTemplate":"ida/SendOTP/createSendOTPResult"
@@ -36,7 +35,7 @@ AuthLock:
    auth_AuthLock_Valid_UIN_locked_All:
       endPoint: /resident/v1/req/auth-lock
       uniqueIdentifier: TC_IDA_AuthLock_01
-      description: lock demo and bio-Face authType for UIN
+      description: Validate the behavior of the authentication lock service when a valid UIN that is already locked is processed
       role: resident
       checkErrorsOnlyInResponse: true
       restMethod: post
@@ -61,7 +60,6 @@ AuthLock:
     }
     }'
       output: '{
-  "message": "$IGNORE$",
   "sendOtpResp":{
         "maskedMobile": "$IGNORE$",
         "sendOtpResTemplate":"ida/SendOTP/createSendOTPResult"
@@ -70,7 +68,7 @@ AuthLock:
    auth_AuthLock_Valid_UIN_for_bio_auth:
       endPoint: /resident/v1/req/auth-lock
       uniqueIdentifier: TC_IDA_AuthLock_02
-      description: lock bio-Finger authType for UIN
+      description: Validate the locking of a valid UIN for biometric authentication using the authentication lock service
       role: resident
       checkErrorsOnlyInResponse: true
       restMethod: post
@@ -78,24 +76,23 @@ AuthLock:
       outputTemplate: ida/AuthLock/createAuthLockResult
       input: '{
         "transactionID": "$TRANSACTIONID$",
-        "individualId": "$ID:AddIdentity_Positive_LockUIN_For_bio_valid_smoke_UIN$",
+        "individualId": "$ID:AddIdentity_Positive_LockUIN_For_bio_valid_UIN$",
         "individualIdType": "UIN",
         "requesttime": "$TIMESTAMP$",
         "id": "mosip.resident.authlock",
         "version": "v1",
         "authType": [{auth: "bio-Finger"}],
-        "otp": "$ID:AddIdentity_Positive_LockUIN_For_bio_valid_smoke_EMAIL$",
+        "otp": "$ID:AddIdentity_Positive_LockUIN_For_bio_valid_EMAIL$",
         "sendOtp":{
     "transactionID": "$TRANSACTIONID$",
     "requestTime": "$TIMESTAMP$",
-    "individualId": "$ID:AddIdentity_Positive_LockUIN_For_bio_valid_smoke_UIN$",
+    "individualId": "$ID:AddIdentity_Positive_LockUIN_For_bio_valid_UIN$",
     "individualIdType": "UIN",
     "sendOtpReqTemplate": "ida/SendOTP/createSendOTP",
     "sendOtpEndPoint": "/resident/v1/req/otp"
     }
     }'
       output: '{
-  "message": "$IGNORE$",
   "sendOtpResp":{
         "maskedMobile": "$IGNORE$",
         "sendOtpResTemplate":"ida/SendOTP/createSendOTPResult"
@@ -135,7 +132,7 @@ AuthLock:
    auth_AuthLock_Valid_UIN_for_audit_bioIris_auth:
       endPoint: /resident/v1/req/auth-lock
       uniqueIdentifier: TC_IDA_dependentTC_AuthTransaction_AuthLock_03
-      description: lock bio-Iris authType for UIN
+      description: Validate the locking of a valid UIN for audit biometric iris authentication using the authentication lock service
       role: resident
       checkErrorsOnlyInResponse: true
       restMethod: post
@@ -143,24 +140,23 @@ AuthLock:
       outputTemplate: ida/AuthLock/createAuthLockResult
       input: '{
         "transactionID": "$TRANSACTIONID$",
-        "individualId": "$ID:AddIdentity_ValidParameters_authLock_bioIris_auditLog_smoke_Pos_UIN$",
+        "individualId": "$ID:AddIdentity_ValidParameters_authLock_bioIris_auditLog_Pos_UIN$",
         "individualIdType": "UIN",
         "requesttime": "$TIMESTAMP$",
         "id": "mosip.resident.authlock",
         "version": "v1",
         "authType": [{auth: "bio-Iris"}],
-        "otp": "$ID:AddIdentity_ValidParameters_authLock_bioIris_auditLog_smoke_Pos_EMAIL$",
+        "otp": "$ID:AddIdentity_ValidParameters_authLock_bioIris_auditLog_Pos_EMAIL$",
         "sendOtp":{
     "transactionID": "$TRANSACTIONID$",
     "requestTime": "$TIMESTAMP$",
-    "individualId": "$ID:AddIdentity_ValidParameters_authLock_bioIris_auditLog_smoke_Pos_UIN$",
+    "individualId": "$ID:AddIdentity_ValidParameters_authLock_bioIris_auditLog_Pos_UIN$",
     "individualIdType": "UIN",
     "sendOtpReqTemplate": "ida/SendOTP/createSendOTP",
     "sendOtpEndPoint": "/resident/v1/req/otp"
     }
     }'
       output: '{
-  "message": "$IGNORE$",
   "sendOtpResp":{
         "maskedMobile": "$IGNORE$",
         "sendOtpResTemplate":"ida/SendOTP/createSendOTPResult"
@@ -169,7 +165,7 @@ AuthLock:
    auth_AuthLock_Valid_UIN_for_audit_Face_auth:
       endPoint: /resident/v1/req/auth-lock
       uniqueIdentifier: TC_IDA_dependentTC_AuthTransaction_AuthLock_04
-      description: lock Face authType for UIN
+      description: Validate the locking of a valid UIN for audit face authentication using the authentication lock service
       role: resident
       checkErrorsOnlyInResponse: true
       restMethod: post
@@ -177,24 +173,23 @@ AuthLock:
       outputTemplate: ida/AuthLock/createAuthLockResult
       input: '{
         "transactionID": "$TRANSACTIONID$",
-        "individualId": "$ID:AddIdentity_ValidParameters_authLock_Face_auditLog_smoke_Pos_UIN$",
+        "individualId": "$ID:AddIdentity_ValidParameters_authLock_Face_auditLog_Pos_UIN$",
         "individualIdType": "UIN",
         "requesttime": "$TIMESTAMP$",
         "id": "mosip.resident.authlock",
         "version": "v1",
         "authType": [{auth: "bio-Face"}],
-        "otp": "$ID:AddIdentity_ValidParameters_authLock_Face_auditLog_smoke_Pos_EMAIL$",
+        "otp": "$ID:AddIdentity_ValidParameters_authLock_Face_auditLog_Pos_EMAIL$",
         "sendOtp":{
     "transactionID": "$TRANSACTIONID$",
     "requestTime": "$TIMESTAMP$",
-    "individualId": "$ID:AddIdentity_ValidParameters_authLock_Face_auditLog_smoke_Pos_UIN$",
+    "individualId": "$ID:AddIdentity_ValidParameters_authLock_Face_auditLog_Pos_UIN$",
     "individualIdType": "UIN",
     "sendOtpReqTemplate": "ida/SendOTP/createSendOTP",
     "sendOtpEndPoint": "/resident/v1/req/otp"
     }
     }'
       output: '{
-  "message": "$IGNORE$",
   "sendOtpResp":{
         "maskedMobile": "$IGNORE$",
         "sendOtpResTemplate":"ida/SendOTP/createSendOTPResult"
@@ -203,7 +198,7 @@ AuthLock:
    auth_AuthLock_Valid_UIN_for_audit_Demo_auth:
       endPoint: /resident/v1/req/auth-lock
       uniqueIdentifier: TC_IDA_dependentTC_AuthTransaction_AuthLock_05
-      description: lock Face authType for UIN
+      description: Validate the locking of a valid UIN for audit demographic authentication using the authentication lock service
       role: resident
       checkErrorsOnlyInResponse: true
       restMethod: post
@@ -211,24 +206,23 @@ AuthLock:
       outputTemplate: ida/AuthLock/createAuthLockResult
       input: '{
         "transactionID": "$TRANSACTIONID$",
-        "individualId": "$ID:AddIdentity_ValidParameters_authLock_Demo_auditLog_smoke_Pos_UIN$",
+        "individualId": "$ID:AddIdentity_ValidParameters_authLock_Demo_auditLog_Pos_UIN$",
         "individualIdType": "UIN",
         "requesttime": "$TIMESTAMP$",
         "id": "mosip.resident.authlock",
         "version": "v1",
         "authType": [{auth: "bio-Face"}],
-        "otp": "$ID:AddIdentity_ValidParameters_authLock_Demo_auditLog_smoke_Pos_EMAIL$",
+        "otp": "$ID:AddIdentity_ValidParameters_authLock_Demo_auditLog_Pos_EMAIL$",
         "sendOtp":{
     "transactionID": "$TRANSACTIONID$",
     "requestTime": "$TIMESTAMP$",
-    "individualId": "$ID:AddIdentity_ValidParameters_authLock_Demo_auditLog_smoke_Pos_UIN$",
+    "individualId": "$ID:AddIdentity_ValidParameters_authLock_Demo_auditLog_Pos_UIN$",
     "individualIdType": "UIN",
     "sendOtpReqTemplate": "ida/SendOTP/createSendOTP",
     "sendOtpEndPoint": "/resident/v1/req/otp"
     }
     }'
       output: '{
-  "message": "$IGNORE$",
   "sendOtpResp":{
         "maskedMobile": "$IGNORE$",
         "sendOtpResTemplate":"ida/SendOTP/createSendOTPResult"
@@ -237,7 +231,7 @@ AuthLock:
    auth_AuthLock_Valid_UIN_audit_All:
       endPoint: /resident/v1/req/auth-lock
       uniqueIdentifier: TC_IDA_dependentTC_AuthTransaction_AuthLock_06
-      description: lock demo and bio-Face authType for UIN to check audit log
+      description: Validate the locking of a valid UIN for all audit authentication types using the authentication lock service
       role: resident
       checkErrorsOnlyInResponse: true
       restMethod: post
@@ -262,7 +256,6 @@ AuthLock:
     }
     }'
       output: '{
-  "message": "$IGNORE$",
   "sendOtpResp":{
         "maskedMobile": "$IGNORE$",
         "sendOtpResTemplate":"ida/SendOTP/createSendOTPResult"
@@ -271,7 +264,7 @@ AuthLock:
    auth_AuthLock_Valid_UIN_for_otp-email_otp_auth:
       endPoint: /resident/v1/req/auth-lock
       uniqueIdentifier: TC_IDA_AuthLock_07
-      description: lock otp-email for UIN
+      description: Validate the locking of a valid UIN for OTP-based authentication using email OTP through the authentication lock service
       role: resident
       checkErrorsOnlyInResponse: true
       restMethod: post
@@ -279,24 +272,23 @@ AuthLock:
       outputTemplate: ida/AuthLock/createAuthLockResult
       input: '{
         "transactionID": "$TRANSACTIONID$",
-        "individualId": "$ID:AddIdentity_ValidParameters_toLock_email_perfromOtpEmail_auth_smoke_Pos_UIN$",
+        "individualId": "$ID:AddIdentity_ValidParameters_toLock_email_perfromOtpEmail_auth_Pos_UIN$",
         "individualIdType": "UIN",
         "requesttime": "$TIMESTAMP$",
         "id": "mosip.resident.authlock",
         "version": "v1",
         "authType": [{auth: "otp-email"}],
-        "otp": "$ID:AddIdentity_ValidParameters_toLock_email_perfromOtpEmail_auth_smoke_Pos_EMAIL$",
+        "otp": "$ID:AddIdentity_ValidParameters_toLock_email_perfromOtpEmail_auth_Pos_EMAIL$",
         "sendOtp":{
     "transactionID": "$TRANSACTIONID$",
     "requestTime": "$TIMESTAMP$",
-    "individualId": "$ID:AddIdentity_ValidParameters_toLock_email_perfromOtpEmail_auth_smoke_Pos_UIN$",
+    "individualId": "$ID:AddIdentity_ValidParameters_toLock_email_perfromOtpEmail_auth_Pos_UIN$",
     "individualIdType": "UIN",
     "sendOtpReqTemplate": "ida/SendOTP/createSendOTP",
     "sendOtpEndPoint": "/resident/v1/req/otp"
     }
     }'
       output: '{
-  "message": "$IGNORE$",
   "sendOtpResp":{
         "maskedMobile": "$IGNORE$",
         "sendOtpResTemplate":"ida/SendOTP/createSendOTPResult"
@@ -305,7 +297,7 @@ AuthLock:
    auth_AuthLock_Valid_UIN_for_otp-phone_otp_auth:
       endPoint: /resident/v1/req/auth-lock
       uniqueIdentifier: TC_IDA_AuthLock_08
-      description: lock otp-phone for UIN
+      description: Validate the locking of a valid UIN for OTP-based authentication using phone OTP through the authentication lock service
       role: resident
       checkErrorsOnlyInResponse: true
       restMethod: post
@@ -313,24 +305,23 @@ AuthLock:
       outputTemplate: ida/AuthLock/createAuthLockResult
       input: '{
         "transactionID": "$TRANSACTIONID$",
-        "individualId": "$ID:AddIdentity_ValidParameters_toLock_phone_smoke_Pos_UIN$",
+        "individualId": "$ID:AddIdentity_ValidParameters_toLock_phone_Pos_UIN$",
         "individualIdType": "UIN",
         "requesttime": "$TIMESTAMP$",
         "id": "mosip.resident.authlock",
         "version": "v1",
         "authType": [{auth: "otp-phone"}],
-        "otp": "$ID:AddIdentity_ValidParameters_toLock_phone_smoke_Pos_EMAIL$",
+        "otp": "$ID:AddIdentity_ValidParameters_toLock_phone_Pos_EMAIL$",
         "sendOtp":{
     "transactionID": "$TRANSACTIONID$",
     "requestTime": "$TIMESTAMP$",
-    "individualId": "$ID:AddIdentity_ValidParameters_toLock_phone_smoke_Pos_UIN$",
+    "individualId": "$ID:AddIdentity_ValidParameters_toLock_phone_Pos_UIN$",
     "individualIdType": "UIN",
     "sendOtpReqTemplate": "ida/SendOTP/createSendOTP",
     "sendOtpEndPoint": "/resident/v1/req/otp"
     }
     }'
       output: '{
-  "message": "$IGNORE$",
   "sendOtpResp":{
         "maskedMobile": "$IGNORE$",
         "sendOtpResTemplate":"ida/SendOTP/createSendOTPResult"
@@ -339,7 +330,7 @@ AuthLock:
    auth_AuthLock_Valid_UIN_for_otp-phone_And_otp-email_otp_auth:
       endPoint: /resident/v1/req/auth-lock
       uniqueIdentifier: TC_IDA_AuthLock_09
-      description: lock otp-phone and otp-email for UIN
+      description: Validate the locking of a valid UIN for OTP based authentication using both phone OTP and email OTP through the authentication lock service
       role: resident
       checkErrorsOnlyInResponse: true
       restMethod: post
@@ -347,24 +338,23 @@ AuthLock:
       outputTemplate: ida/AuthLock/createAuthLockResult
       input: '{
         "transactionID": "$TRANSACTIONID$",
-        "individualId": "$ID:AddIdentity_ValidParameters_toLock_phoneAndEmail_smoke_Pos_UIN$",
+        "individualId": "$ID:AddIdentity_ValidParameters_toLock_phoneAndEmail_Pos_UIN$",
         "individualIdType": "UIN",
         "requesttime": "$TIMESTAMP$",
         "id": "mosip.resident.authlock",
         "version": "v1",
         "authType": [{"auth": "otp-phone"}, {"auth": "otp-email"}],
-        "otp": "$ID:AddIdentity_ValidParameters_toLock_phoneAndEmail_smoke_Pos_EMAIL$",
+        "otp": "$ID:AddIdentity_ValidParameters_toLock_phoneAndEmail_Pos_EMAIL$",
         "sendOtp":{
     "transactionID": "$TRANSACTIONID$",
     "requestTime": "$TIMESTAMP$",
-    "individualId": "$ID:AddIdentity_ValidParameters_toLock_phoneAndEmail_smoke_Pos_UIN$",
+    "individualId": "$ID:AddIdentity_ValidParameters_toLock_phoneAndEmail_Pos_UIN$",
     "individualIdType": "UIN",
     "sendOtpReqTemplate": "ida/SendOTP/createSendOTP",
     "sendOtpEndPoint": "/resident/v1/req/otp"
     }
     }'
       output: '{
-  "message": "$IGNORE$",
   "sendOtpResp":{
         "maskedMobile": "$IGNORE$",
         "sendOtpResTemplate":"ida/SendOTP/createSendOTPResult"

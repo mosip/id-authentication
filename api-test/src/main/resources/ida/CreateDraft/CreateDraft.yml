@@ -2,7 +2,7 @@ CreateDraft:
   auth_CreateDraft_Smoke_Pos:
       endPoint: /idrepository/v1/identity/draft/create/{registrationId}
       uniqueIdentifier: TC_IDA_CreateDraft_01
-      description: create Draft with regitrationId
+      description: Verify that a draft is successfully created with valid inputs
       role: idrepo
       checkErrorsOnlyInResponse: true
       restMethod: post
@@ -17,7 +17,7 @@ CreateDraft:
   auth_CreateDraft_audit_Smoke_Pos:
       endPoint: /idrepository/v1/identity/draft/create/{registrationId}
       uniqueIdentifier: TC_IDA_dependentTC_AuthTransaction_CreateDraft_02
-      description: create Draft with regitrationId
+      description: Verify that creating a draft successfully generates the corresponding audit records
       role: idrepo
       checkErrorsOnlyInResponse: true
       restMethod: post

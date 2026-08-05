@@ -2,7 +2,7 @@ OtpAuth:
   auth_OTP_Auth_With_Valid_UIN_Smoke_Pos:
       endPoint: /idauthentication/v1/auth/$partnerKeyURL$
       uniqueIdentifier: TC_IDA_OtpAuth_01
-      description: Otp auth with valid UIN
+      description: Verify that OTP authentication succeeds with a valid UIN
       role: resident
       restMethod: post
       checkErrorsOnlyInResponse: true
