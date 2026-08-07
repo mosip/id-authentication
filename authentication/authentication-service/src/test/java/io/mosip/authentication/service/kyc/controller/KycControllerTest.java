@@ -46,6 +46,7 @@ import io.mosip.authentication.common.service.integration.PartnerServiceManager;
 import io.mosip.authentication.common.service.util.EnvUtil;
 import io.mosip.authentication.common.service.util.TestHttpServletRequest;
 import io.mosip.authentication.common.service.util.TestObjectWithMetadata;
+import io.mosip.authentication.common.service.validator.AuthRequestValidator;
 import io.mosip.authentication.core.constant.IdAuthCommonConstants;
 import io.mosip.authentication.core.exception.IdAuthenticationAppException;
 import io.mosip.authentication.core.exception.IdAuthenticationBusinessException;
@@ -61,6 +62,11 @@ import io.mosip.authentication.core.indauth.dto.IdentityInfoDTO;
 import io.mosip.authentication.core.indauth.dto.EkycAuthRequestDTO;
 import io.mosip.authentication.core.indauth.dto.EKycAuthResponseDTO;
 import io.mosip.authentication.core.indauth.dto.EKycResponseDTO;
+import io.mosip.authentication.core.indauth.dto.KycAuthRequestDTOV2;
+import io.mosip.authentication.core.indauth.dto.KycAuthResponseDTOV2;
+import io.mosip.authentication.core.indauth.dto.KycExchangeRequestDTOV2;
+import io.mosip.authentication.core.indauth.dto.KycExchangeResponseDTO;
+import io.mosip.authentication.core.indauth.dto.KycRequestDTOV2;
 import io.mosip.authentication.core.indauth.dto.RequestDTO;
 import io.mosip.authentication.core.indauth.dto.ResponseDTO;
 import io.mosip.authentication.core.partner.dto.PartnerDTO;
@@ -68,6 +74,7 @@ import io.mosip.authentication.core.util.IdTypeUtil;
 import io.mosip.authentication.service.kyc.facade.KycFacadeImpl;
 import io.mosip.authentication.service.kyc.impl.KycServiceImpl;
 import io.mosip.authentication.service.kyc.validator.KycAuthRequestValidator;
+import io.mosip.authentication.service.kyc.validator.KycExchangeRequestValidator;
 import io.mosip.idrepository.core.helper.RestHelper;
 
 /**
@@ -125,8 +132,14 @@ public class KycControllerTest {
 	@Mock 
 	PartnerServiceManager partnerServiceManager;
 	
-	@Mock
+	@Mock 
 	private KycAuthRequestValidator kycReqValidator;
+
+	@Mock
+	private AuthRequestValidator authRequestValidator;
+
+	@Mock
+	private KycExchangeRequestValidator kycExchangeValidator;
 
 	@Autowired
 	private ObjectMapper mapper;
@@ -159,6 +172,8 @@ public class KycControllerTest {
 		ReflectionTestUtils.setField(kycAuthController, "kycFacade", kycFacade);
 		ReflectionTestUtils.setField(kycAuthController, "authTransactionHelper", authTransactionHelper);
 		ReflectionTestUtils.setField(kycAuthController, "kycReqValidator", kycReqValidator);
+		ReflectionTestUtils.setField(kycAuthController, "authRequestValidator", authRequestValidator);
+		ReflectionTestUtils.setField(kycAuthController, "kycExchangeValidator", kycExchangeValidator);
 		ReflectionTestUtils.setField(kycReqValidator, "idInfoFetcher", idInfoFetcherImpl);
 		when(idTypeUtil.getIdType(Mockito.any())).thenReturn(IdType.UIN);
 
@@ -294,5 +309,100 @@ public class KycControllerTest {
 		Mockito.when(kycFacade.authenticateIndividual(kycAuthReqDTO, true, "1635497344579", "1635497344579", requestWithMetadata)).thenThrow(new IdAuthenticationBusinessException());
 		Mockito.when(kycFacade.processEKycAuth(kycAuthReqDTO, authResponseDTO, "1635497344579", requestWithMetadata.getMetadata())).thenReturn(kycAuthResponseDTO);
 		kycAuthController.processKyc(kycAuthReqDTO, errors, "1635497344579", "1635497344579", "1635497344579", new TestHttpServletRequest());
+	}
+
+	@Test
+	public void processKycAuthV2Success() throws Exception {
+		KycAuthRequestDTOV2 request = new KycAuthRequestDTOV2();
+		request.setId("ida");
+		request.setVersion("2.0");
+		request.setTransactionID("transaction-id");
+		request.setIndividualId("5134256294");
+		request.setIndividualIdType(IdType.UIN.getType());
+		request.setRequestTime(kycAuthReqDTO.getRequestTime());
+		request.setRequest(new KycRequestDTOV2());
+		request.setMetadata(new HashMap<>());
+
+		KycAuthResponseDTOV2 expectedResponse = new KycAuthResponseDTOV2();
+		AuthTransactionBuilder authTxnBuilder = AuthTransactionBuilder.newInstance();
+		TestHttpServletRequest requestWithMetadata = new TestHttpServletRequest();
+		requestWithMetadata.putMetadata(IdAuthCommonConstants.IDENTITY_DATA, new HashMap<>());
+		requestWithMetadata.putMetadata(IdAuthCommonConstants.IDENTITY_INFO, new HashMap<>());
+
+		when(partnerService.getPartner("partnerId", request.getMetadata())).thenReturn(Optional.empty());
+		when(authTransactionHelper.createAndSetAuthTxnBuilderMetadataToRequest(request, false, Optional.empty()))
+				.thenReturn(authTxnBuilder);
+		when(kycFacade.authenticateIndividual(request, true, "partnerId", "oidcClientId", requestWithMetadata,
+				IdAuthCommonConstants.KYC_AUTH_CONSUME_VID_DEFAULT)).thenReturn(authResponseDTO);
+		when(kycFacade.processKycAuthV2(request, authResponseDTO, "partnerId", "oidcClientId",
+				requestWithMetadata.getMetadata())).thenReturn(expectedResponse);
+
+		assertEquals(expectedResponse, kycAuthController.processKycAuthV2(request,
+				new BindException(request, "kycAuthRequestDTOV2"), "mispLK", "partnerId", "oidcClientId",
+				requestWithMetadata));
+	}
+
+	@Test(expected = IdAuthenticationAppException.class)
+	public void processKycAuthV2ValidationFailure() throws Exception {
+		KycAuthRequestDTOV2 request = new KycAuthRequestDTOV2();
+		request.setIndividualId("5134256294");
+		request.setIndividualIdType(IdType.UIN.getType());
+		request.setTransactionID("transaction-id");
+		request.setMetadata(new HashMap<>());
+		Errors validationErrors = new BindException(request, "kycAuthRequestDTOV2");
+		validationErrors.rejectValue("id", "IDA-MLC-006");
+
+		when(partnerService.getPartner("partnerId", request.getMetadata())).thenReturn(Optional.empty());
+		when(authTransactionHelper.createAndSetAuthTxnBuilderMetadataToRequest(request, false, Optional.empty()))
+				.thenReturn(AuthTransactionBuilder.newInstance());
+		when(authTransactionHelper.createDataValidationException(Mockito.any(), Mockito.any(), Mockito.any()))
+				.thenReturn(new IdAuthenticationAppException());
+
+		kycAuthController.processKycAuthV2(request, validationErrors, "mispLK", "partnerId", "oidcClientId",
+				new TestHttpServletRequest());
+	}
+
+	@Test
+	public void processKycExchangeV2Success() throws Exception {
+		KycExchangeRequestDTOV2 request = new KycExchangeRequestDTOV2();
+		request.setId("ida");
+		request.setVersion("2.0");
+		request.setTransactionID("transaction-id");
+		request.setIndividualId("5134256294");
+		request.setIndividualIdType(IdType.UIN.getType());
+		request.setKycToken("kyc-token");
+		request.setMetadata(new HashMap<>());
+
+		KycExchangeResponseDTO expectedResponse = new KycExchangeResponseDTO();
+		TestHttpServletRequest requestWithMetadata = new TestHttpServletRequest();
+		when(partnerService.getPartner("partnerId", request.getMetadata())).thenReturn(Optional.empty());
+		when(authTransactionHelper.createAndSetAuthTxnBuilderMetadataToRequest(request, false, Optional.empty()))
+				.thenReturn(AuthTransactionBuilder.newInstance());
+		when(kycFacade.processKycExchangeV2(request, "partnerId", "oidcClientId", request.getMetadata(),
+				requestWithMetadata)).thenReturn(expectedResponse);
+
+		assertEquals(expectedResponse, kycAuthController.processKycExchangeV2(request,
+				new BindException(request, "kycExchangeRequestDTOV2"), "mispLK", "partnerId", "oidcClientId",
+				requestWithMetadata));
+	}
+
+	@Test(expected = IdAuthenticationAppException.class)
+	public void processKycExchangeV2ValidationFailure() throws Exception {
+		KycExchangeRequestDTOV2 request = new KycExchangeRequestDTOV2();
+		request.setIndividualId("5134256294");
+		request.setIndividualIdType(IdType.UIN.getType());
+		request.setTransactionID("transaction-id");
+		request.setMetadata(new HashMap<>());
+		Errors validationErrors = new BindException(request, "kycExchangeRequestDTOV2");
+		validationErrors.rejectValue("kycToken", "IDA-MLC-009");
+
+		when(partnerService.getPartner("partnerId", request.getMetadata())).thenReturn(Optional.empty());
+		when(authTransactionHelper.createAndSetAuthTxnBuilderMetadataToRequest(request, false, Optional.empty()))
+				.thenReturn(AuthTransactionBuilder.newInstance());
+		when(authTransactionHelper.createDataValidationException(Mockito.any(), Mockito.any(), Mockito.any()))
+				.thenReturn(new IdAuthenticationAppException());
+
+		kycAuthController.processKycExchangeV2(request, validationErrors, "mispLK", "partnerId", "oidcClientId",
+				new TestHttpServletRequest());
 	}
 }
