@@ -156,7 +156,7 @@ EkycOtp:
       inputTemplate: ida/EkycOtp/EkycOtp
       outputTemplate: ida/EkycOtp/EkycOtpResult
       input: '{
-        "otpChannel": "mosipuser123@mailinator.com",
+        "otpChannel": "$ID:UpdateDraft_Smoke_Pos_EMAIL$",
         "requestTime": "$TIMESTAMP$",
         "individualId": "$ID:GetDraft_all_valid_smoke_sid_UIN$",
         "transactionId": "$TRANSACTIONID$",

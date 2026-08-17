@@ -10,7 +10,7 @@ OtpAuth:
       inputTemplate: ida/OtpAuth/OtpAuth
       outputTemplate: ida/OtpAuth/OtpAuthResult
       input: '{
-        "otpChannel": "auth_AddIdentity_For_Otp_Auth_smoke_Pos@mosip.net",
+        "otpChannel": "$ID:AddIdentity_For_Otp_Auth_smoke_Pos_EMAIL$",
         "requestTime": "$TIMESTAMP$",
         "individualId": "$ID:AddIdentity_For_Otp_Auth_smoke_Pos_UIN$",
         "transactionId": "$TRANSACTIONID$",

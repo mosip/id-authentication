@@ -28,6 +28,7 @@ import io.mosip.testrig.apirig.dto.TestCaseDTO;
 import io.mosip.testrig.apirig.testrunner.BaseTestCase;
 import io.mosip.testrig.apirig.testrunner.HealthChecker;
 import io.mosip.testrig.apirig.utils.AdminTestException;
+import io.mosip.testrig.apirig.utils.AdminTestUtil;
 import io.mosip.testrig.apirig.utils.AuthenticationTestException;
 import io.mosip.testrig.apirig.utils.GlobalConstants;
 import io.mosip.testrig.apirig.utils.OutputValidationUtil;
@@ -139,7 +140,8 @@ public class UpdateIdentity extends IdAuthenticationUtil implements ITest {
 		String genRid = "27847" + generateRandomNumberString(10) + timestampValue;
 		generatedRid = genRid;
 
-		String inputJson = getJsonFromTemplate(testCaseDTO.getInput(), testCaseDTO.getInputTemplate());
+		testCaseDTO.setInputTemplate(AdminTestUtil.updateIdentityHbs(testCaseDTO.isRegenerateHbs()));
+		String inputJson = getJsonFromTemplate(testCaseDTO.getInput(), testCaseDTO.getInputTemplate(), false);
 
 		JSONObject reqJsonObject = new JSONObject(inputJson);
 
