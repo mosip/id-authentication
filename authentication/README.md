@@ -11,9 +11,7 @@ Refer wiki page for [ID Authentication API](https://github.com/mosip/mosip-docs/
 
 Services included in ID Authentication module are -
 
-1.[Internal Authentication Service](./authentication-internal-service/README.md)
-2.[OTP Service](./authentication-otp-service/README.md)
-3.[Authentication service](./authentication-service/README.md)
+1.[Authentication service](./authentication-service/README.md) (includes OTP generation/dispatch and internal authentication, merged from the former authentication-otp-service and authentication-internal-service)
 
 ## Databases
 Before starting the local setup, execute the required SQL scripts to initialize the database.
@@ -45,8 +43,6 @@ Install or configure the following:
 ### Local Setup (for Development or Contribution)
 1. Make sure the config server is running. For detailed instructions on setting up and running the, refer to the 
 - [Authentication service Server Setup Guide](https://docs.mosip.io/1.2.0/id-lifecycle-management/identity-verification/id-authentication-services/id-authentication-service-developer-guide)
-- [Id authentication otp serivce Server setup guide](https://docs.mosip.io/1.2.0/id-lifecycle-management/identity-verification/id-authentication-services/id-authentication-otp-service-developer-guide)
-- [Id authentication internal serivce Server setup guide](https://docs.mosip.io/1.2.0/id-lifecycle-management/identity-verification/id-authentication-services/id-authentication-internal-service-developer-guide)
 2. Clone the repository:
 ```text
 git clone <repo-url>

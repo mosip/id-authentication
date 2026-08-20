@@ -32,10 +32,14 @@ import io.mosip.authentication.common.service.impl.BioAuthServiceImpl;
 import io.mosip.authentication.common.service.impl.DemoAuthServiceImpl;
 import io.mosip.authentication.common.service.impl.IdInfoFetcherImpl;
 import io.mosip.authentication.common.service.impl.IdServiceImpl;
+import io.mosip.authentication.common.service.impl.AuthTxnServiceImpl;
 import io.mosip.authentication.common.service.impl.OTPAuthServiceImpl;
+import io.mosip.authentication.common.service.impl.OTPServiceImpl;
 import io.mosip.authentication.common.service.impl.PasswordAuthServiceImpl;
 import io.mosip.authentication.common.service.impl.KeyBindedTokenAuthServiceImpl;
 import io.mosip.authentication.common.service.impl.hotlist.HotlistServiceImpl;
+import io.mosip.authentication.common.service.impl.idevent.CredentialStoreServiceImpl;
+import io.mosip.authentication.common.service.impl.idevent.IdChangeEventHandlerServiceImpl;
 import io.mosip.authentication.common.service.impl.masterdata.MasterDataCacheUpdateServiceImpl;
 import io.mosip.authentication.common.service.impl.notification.NotificationServiceImpl;
 import io.mosip.authentication.common.service.impl.patrner.PartnerCACertEventServiceImpl;
@@ -44,13 +48,20 @@ import io.mosip.authentication.common.service.kafka.impl.AuthenticationErrorEven
 import io.mosip.authentication.common.service.transaction.manager.IdAuthSecurityManager;
 import io.mosip.authentication.common.service.validator.AuthFiltersValidator;
 import io.mosip.authentication.common.service.validator.AuthRequestValidator;
+import io.mosip.authentication.common.service.validator.OTPRequestValidator;
 import io.mosip.authentication.common.service.websub.IdAuthWebSubInitializer;
 import io.mosip.authentication.common.service.websub.impl.AuthAnonymousEventPublisher;
 import io.mosip.authentication.common.service.websub.impl.AuthTransactionStatusEventPublisher;
+import io.mosip.authentication.common.service.websub.impl.AuthTypeStatusEventPublisher;
+import io.mosip.authentication.common.service.websub.impl.AuthTypeStatusEventSubscriber;
+import io.mosip.authentication.common.service.websub.impl.CredentialStoreStatusEventPublisher;
+import io.mosip.authentication.common.service.websub.impl.HotlistEventInitializer;
 import io.mosip.authentication.common.service.websub.impl.IdAuthFraudAnalysisEventPublisher;
+import io.mosip.authentication.common.service.websub.impl.IdChangeEventsInitializer;
 import io.mosip.authentication.common.service.websub.impl.MasterDataUpdateEventInitializer;
 import io.mosip.authentication.common.service.websub.impl.PartnerCACertEventInitializer;
 import io.mosip.authentication.common.service.websub.impl.PartnerServiceEventsInitializer;
+import io.mosip.authentication.common.service.websub.impl.RemoveIdStatusEventPublisher;
 import io.mosip.authentication.core.util.DemoMatcherUtil;
 import io.mosip.authentication.core.util.DemoNormalizer;
 import io.mosip.authentication.core.util.IdTypeUtil;
@@ -65,18 +76,22 @@ import io.mosip.kernel.core.retry.RetryConfig;
 import io.mosip.kernel.core.retry.RetryListenerImpl;
 import io.mosip.kernel.core.util.RetryUtil;
 import io.mosip.kernel.crypto.jce.core.CryptoCore;
+import io.mosip.kernel.cryptomanager.controller.CryptomanagerController;
 import io.mosip.kernel.cryptomanager.service.impl.CryptomanagerServiceImpl;
 import io.mosip.kernel.cryptomanager.util.CryptomanagerUtils;
 import io.mosip.kernel.keygenerator.bouncycastle.KeyGenerator;
 import io.mosip.kernel.keymanager.hsm.impl.KeyStoreImpl;
+import io.mosip.kernel.keymanagerservice.controller.KeymanagerController;
 import io.mosip.kernel.keymanagerservice.helper.KeymanagerDBHelper;
 import io.mosip.kernel.keymanagerservice.helper.PrivateKeyDecryptorHelper;
 import io.mosip.kernel.keymanagerservice.helper.SessionKeyDecrytorHelper;
 import io.mosip.kernel.keymanagerservice.service.impl.KeymanagerServiceImpl;
 import io.mosip.kernel.keymanagerservice.util.KeymanagerUtil;
+import io.mosip.kernel.partnercertservice.controller.PartnerCertManagerController;
 import io.mosip.kernel.partnercertservice.helper.PartnerCertManagerDBHelper;
 import io.mosip.kernel.partnercertservice.service.impl.PartnerCertificateManagerServiceImpl;
 import io.mosip.kernel.pinvalidator.impl.PinValidatorImpl;
+import io.mosip.kernel.signature.controller.SignatureController;
 import io.mosip.kernel.signature.service.impl.SignatureServiceImpl;
 import io.mosip.kernel.templatemanager.velocity.builder.TemplateManagerBuilderImpl;
 import io.mosip.kernel.tokenidgenerator.generator.TokenIDGenerator;
@@ -98,6 +113,7 @@ import io.mosip.kernel.websub.api.config.publisher.RestTemplateHelper;
 		RestRequestFactory.class, AuditRequestFactory.class, AuditRequestFactory.class, NotificationManager.class,
 		NotificationServiceImpl.class, IdTemplateManager.class, TemplateManagerBuilderImpl.class, IdAuthExceptionHandler.class,
 		IdInfoFetcherImpl.class, OTPManager.class, MasterDataManager.class, IdInfoHelper.class, OTPAuthServiceImpl.class,
+		OTPServiceImpl.class, OTPRequestValidator.class,
 		AuditHelper.class, KeyManager.class, PinValidatorImpl.class, AuthRequestValidator.class, AuthFacadeImpl.class,
 		MatchInputBuilder.class, IdServiceImpl.class, DemoAuthServiceImpl.class, BioAuthServiceImpl.class, TokenIdManager.class,
 		SwaggerConfig.class, BioMatcherUtil.class, BioAPIFactory.class, BioProviderImpl_V_0_8.class, BioProviderImpl_V_0_9.class,
@@ -120,7 +136,23 @@ import io.mosip.kernel.websub.api.config.publisher.RestTemplateHelper;
 		PDFGeneratorImpl.class, RestTemplateHelper.class, LanguageUtil.class, IdentityAttributesForMatchTypeHelper.class
 , TypeForIdNameHelper.class
 		, ValidateOtpHelper.class, RequireOtpNotFrozenHelper.class, MatchIdentityDataHelper.class, MatchTypeHelper.class
-		, SeparatorHelper.class, ECKeyPairGenRequestValidator.class, SubjectAlternativeNamesHelper.class, SignatureServiceImpl.class, SignatureUtil.class})
+		, SeparatorHelper.class, ECKeyPairGenRequestValidator.class, SubjectAlternativeNamesHelper.class, SignatureServiceImpl.class, SignatureUtil.class,
+		// Added for internal-service controller merge (phase 2): CredentialIssueanceCallbackController,
+		// HotlistEventController, PartnerServiceCallbackController, InternalUpdateAuthTypeController dependency chain
+		IdChangeEventHandlerServiceImpl.class, CredentialStoreServiceImpl.class, RemoveIdStatusEventPublisher.class,
+		DataShareManager.class, CredentialStoreStatusEventPublisher.class, CredentialRequestManager.class,
+		HotlistEventInitializer.class, IdChangeEventsInitializer.class, PartnerServiceEventsInitializer.class,
+		AuthTypeStatusEventPublisher.class, AuthTypeStatusEventSubscriber.class,
+		// Added for internal-service controller merge (phase 2): InternalAuthController, InternalAuthTxnController,
+		// InternalOTPController dependency chain
+		AuthTxnServiceImpl.class,
+		// Added for internal-service controller merge (phase 2): kernel security/crypto controllers and their
+		// role-bean classes (fully-qualified since all 4 share the simple name AuthorizedRolesDTO)
+		KeymanagerController.class, PartnerCertManagerController.class, SignatureController.class, CryptomanagerController.class,
+		io.mosip.kernel.keymanagerservice.dto.AuthorizedRolesDTO.class,
+		io.mosip.kernel.partnercertservice.dto.AuthorizedRolesDTO.class,
+		io.mosip.kernel.signature.dto.AuthorizedRolesDTO.class,
+		io.mosip.kernel.cryptomanager.dto.AuthorizedRolesDTO.class})
 @ComponentScan(basePackages = { "io.mosip.authentication.service.*", "io.mosip.kernel.core.logger.config",
 		"io.mosip.authentication.common.service.config","io.mosip.authentication.common.service.util",
 		"io.mosip.kernel.websub.api.config",

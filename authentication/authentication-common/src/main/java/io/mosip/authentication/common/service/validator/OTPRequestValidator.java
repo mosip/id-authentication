@@ -4,6 +4,7 @@ import java.util.List;
 import java.util.Objects;
 import java.util.stream.Collectors;
 
+import org.springframework.context.annotation.Primary;
 import org.springframework.stereotype.Component;
 import org.springframework.validation.Errors;
 
@@ -17,11 +18,12 @@ import io.mosip.kernel.core.logger.spi.Logger;
 /**
  * {@code OTPRequestValidator} do constraint validate of {@link OtpRequestDTO}
  * and enum atribute "idType" validation.
- * 
+ *
  * @author Dinesh Karuppiah.T
  * @author Rakesh Roshan
  */
 @Component
+@Primary
 public class OTPRequestValidator extends IdAuthValidator {
 
 	private static final String OTP_CHANNEL = "otpChannel";

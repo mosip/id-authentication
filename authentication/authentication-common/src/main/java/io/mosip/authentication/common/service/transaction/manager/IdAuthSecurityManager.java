@@ -25,6 +25,7 @@ import org.apache.commons.codec.DecoderException;
 import org.apache.commons.codec.binary.Hex;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
+import org.springframework.context.annotation.Primary;
 import org.springframework.stereotype.Component;
 
 import io.mosip.kernel.cryptomanager.dto.JWTEncryptRequestDto;
@@ -85,6 +86,7 @@ import reactor.util.function.Tuples;
  * @author Manoj SP
  */
 @Component
+@Primary
 public class IdAuthSecurityManager {
 
     private static final String HASH_ALGORITHM_NAME = "SHA-256";

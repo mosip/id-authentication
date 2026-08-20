@@ -959,7 +959,7 @@ public class AuthFacadeImplTest {
 		.thenReturn(new ArrayList<AuthtypeStatus>());
 		
 		Mockito.doThrow(new IdAuthenticationFilterException(IdAuthenticationErrorConstants.UNABLE_TO_PROCESS))
-				.when(authFiltersValidator).validateAuthFilters(Mockito.any(), Mockito.any(), Mockito.any());
+				.when(authFiltersValidator).validateAuthFilters(Mockito.any(), Mockito.any(), Mockito.any(), Mockito.anyBoolean());
 		AuthResponseDTO authenticateIndividual = authFacadeImpl.authenticateIndividual(authRequestDTO, true, "123456", "12345", true,
 				new TestObjectWithMetadata());
 		
