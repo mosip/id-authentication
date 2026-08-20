@@ -24,6 +24,357 @@ DemoAuthNew:
       output: '{
   "authStatus": "true"
 }'
+  auth_DemoAuth_authToken_Based_On_Policy_UIN_Pos:
+      endPoint: /idauthentication/v1/auth/$partnerKeyURL$
+      uniqueIdentifier: TC_IDA_DemoAuth_75
+      description: IDA_TC_0450 - Verify authToken field in the authentication response based on policy
+      role: resident
+      restMethod: post
+      inputTemplate: ida/DemoAuth/DemoAuth
+      outputTemplate: ida/DemoAuth/DemoAuthResultWithAuthToken
+      input: '{
+        "requestTime": "$TIMESTAMP$",
+        "individualId": "$ID:AddIdentity_withValidParameters_smoke_Pos_UIN$",
+        "transactionId": "1234567890",
+        "individualIdType": "UIN",
+        "bio": false,
+        "demo": true,
+        "otp": false,
+        "identityRequest":{
+    "value": "1970/07/08",
+"key": "dob",
+    "identityRequestTemplate": "ida/DemoAuth/DemoIdentityEncrypt"
+    }
+    }'
+      output: '{
+  "authStatus": "true",
+  "authToken": "$REGEXP:^(?!null).+$"
+}'
+  auth_DemoAuth_authToken_PolicyToken_First_Call_sid_Pos:
+      endPoint: /idauthentication/v1/auth/$PolicyTokenPartnerKeyURL$
+      uniqueIdentifier: TC_IDA_DemoAuth_76
+      description: IDA_TC_0451 - Demo auth via a partner mapped to a policy with authTokenType policy, first call to capture the authToken
+      role: resident
+      restMethod: post
+      inputTemplate: ida/DemoAuth/DemoAuth
+      outputTemplate: ida/DemoAuth/DemoAuthResultWithAuthToken
+      input: '{
+        "requestTime": "$TIMESTAMP$",
+        "individualId": "$ID:AddIdentity_withValidParameters_smoke_Pos_UIN$",
+        "transactionId": "1234567890",
+        "individualIdType": "UIN",
+        "bio": false,
+        "demo": true,
+        "otp": false,
+        "identityRequest":{
+    "value": "1970/07/08",
+"key": "dob",
+    "identityRequestTemplate": "ida/DemoAuth/DemoIdentityEncrypt"
+    }
+    }'
+      output: '{
+  "authStatus": "true",
+  "authToken": "$REGEXP:^(?!null).+$"
+}'
+  auth_DemoAuth_authToken_PolicyToken_Matches_For_Same_UIN_Pos:
+      endPoint: /idauthentication/v1/auth/$PolicyTokenPartnerKeyURL$
+      uniqueIdentifier: TC_IDA_DemoAuth_77
+      description: IDA_TC_0451 - Verify authToken for a policy-type policy is derived from policyId and UIN, i.e. it is the same on a second demo auth call for the same UIN
+      role: resident
+      restMethod: post
+      additionalDependencies: TC_IDA_DemoAuth_76
+      inputTemplate: ida/DemoAuth/DemoAuth
+      outputTemplate: ida/DemoAuth/DemoAuthResultWithAuthToken
+      input: '{
+        "requestTime": "$TIMESTAMP$",
+        "individualId": "$ID:AddIdentity_withValidParameters_smoke_Pos_UIN$",
+        "transactionId": "1234567890",
+        "individualIdType": "UIN",
+        "bio": false,
+        "demo": true,
+        "otp": false,
+        "identityRequest":{
+    "value": "1970/07/08",
+"key": "dob",
+    "identityRequestTemplate": "ida/DemoAuth/DemoIdentityEncrypt"
+    }
+    }'
+      output: '{
+  "authStatus": "true",
+  "authToken": "$ID:DemoAuth_authToken_PolicyToken_First_Call_sid_Pos_authToken$"
+}'
+  auth_DemoAuth_authToken_PolicyToken_Matches_Across_Partners_Pos:
+      endPoint: /idauthentication/v1/auth/$PolicyToken2PartnerKeyURL$
+      uniqueIdentifier: TC_IDA_DemoAuth_78
+      description: IDA_TC_0452 - Verify authToken is the same for a demo auth done by a different partner mapped to the same policy with authTokenType policy
+      role: resident
+      restMethod: post
+      additionalDependencies: TC_IDA_DemoAuth_76
+      inputTemplate: ida/DemoAuth/DemoAuth
+      outputTemplate: ida/DemoAuth/DemoAuthResultWithAuthToken
+      input: '{
+        "requestTime": "$TIMESTAMP$",
+        "individualId": "$ID:AddIdentity_withValidParameters_smoke_Pos_UIN$",
+        "transactionId": "1234567890",
+        "individualIdType": "UIN",
+        "bio": false,
+        "demo": true,
+        "otp": false,
+        "identityRequest":{
+    "value": "1970/07/08",
+"key": "dob",
+    "identityRequestTemplate": "ida/DemoAuth/DemoIdentityEncrypt"
+    }
+    }'
+      output: '{
+  "authStatus": "true",
+  "authToken": "$ID:DemoAuth_authToken_PolicyToken_First_Call_sid_Pos_authToken$"
+}'
+  auth_DemoAuth_authToken_PolicyToken_Matches_Across_Multiple_Partners_Pos:
+      endPoint: /idauthentication/v1/auth/$PolicyToken3PartnerKeyURL$
+      uniqueIdentifier: TC_IDA_DemoAuth_79
+      description: IDA_TC_0453 - Verify authToken is the same for a demo auth done by multiple different partners mapped to the same policy with authTokenType policy
+      role: resident
+      restMethod: post
+      additionalDependencies: TC_IDA_DemoAuth_76
+      inputTemplate: ida/DemoAuth/DemoAuth
+      outputTemplate: ida/DemoAuth/DemoAuthResultWithAuthToken
+      input: '{
+        "requestTime": "$TIMESTAMP$",
+        "individualId": "$ID:AddIdentity_withValidParameters_smoke_Pos_UIN$",
+        "transactionId": "1234567890",
+        "individualIdType": "UIN",
+        "bio": false,
+        "demo": true,
+        "otp": false,
+        "identityRequest":{
+    "value": "1970/07/08",
+"key": "dob",
+    "identityRequestTemplate": "ida/DemoAuth/DemoIdentityEncrypt"
+    }
+    }'
+      output: '{
+  "authStatus": "true",
+  "authToken": "$ID:DemoAuth_authToken_PolicyToken_First_Call_sid_Pos_authToken$"
+}'
+  auth_DemoAuth_authToken_PartnerToken_First_Call_sid_Pos:
+      endPoint: /idauthentication/v1/auth/$partnerKeyURL$
+      uniqueIdentifier: TC_IDA_DemoAuth_80
+      description: IDA_TC_0454 - Demo auth via the default partner whose policy has authTokenType partner, first call to capture the authToken
+      role: resident
+      restMethod: post
+      inputTemplate: ida/DemoAuth/DemoAuth
+      outputTemplate: ida/DemoAuth/DemoAuthResultWithAuthToken
+      input: '{
+        "requestTime": "$TIMESTAMP$",
+        "individualId": "$ID:AddIdentity_withValidParameters_smoke_Pos_UIN$",
+        "transactionId": "1234567890",
+        "individualIdType": "UIN",
+        "bio": false,
+        "demo": true,
+        "otp": false,
+        "identityRequest":{
+    "value": "1970/07/08",
+"key": "dob",
+    "identityRequestTemplate": "ida/DemoAuth/DemoIdentityEncrypt"
+    }
+    }'
+      output: '{
+  "authStatus": "true",
+  "authToken": "$REGEXP:^(?!null).+$"
+}'
+  auth_DemoAuth_authToken_PartnerToken_Matches_For_Same_UIN_Pos:
+      endPoint: /idauthentication/v1/auth/$partnerKeyURL$
+      uniqueIdentifier: TC_IDA_DemoAuth_81
+      description: IDA_TC_0454 - Verify authToken for a partner-type policy is derived from partnerId and UIN, i.e. it is the same on a second demo auth call for the same UIN via the same partner
+      role: resident
+      restMethod: post
+      additionalDependencies: TC_IDA_DemoAuth_80
+      inputTemplate: ida/DemoAuth/DemoAuth
+      outputTemplate: ida/DemoAuth/DemoAuthResultWithAuthToken
+      input: '{
+        "requestTime": "$TIMESTAMP$",
+        "individualId": "$ID:AddIdentity_withValidParameters_smoke_Pos_UIN$",
+        "transactionId": "1234567890",
+        "individualIdType": "UIN",
+        "bio": false,
+        "demo": true,
+        "otp": false,
+        "identityRequest":{
+    "value": "1970/07/08",
+"key": "dob",
+    "identityRequestTemplate": "ida/DemoAuth/DemoIdentityEncrypt"
+    }
+    }'
+      output: '{
+  "authStatus": "true",
+  "authToken": "$ID:DemoAuth_authToken_PartnerToken_First_Call_sid_Pos_authToken$"
+}'
+  auth_DemoAuth_authToken_PartnerToken_Differs_Across_Partners_Pos:
+      endPoint: /idauthentication/v1/auth/$PartnerToken2KeyURL$
+      uniqueIdentifier: TC_IDA_DemoAuth_82
+      description: IDA_TC_0455 - Verify authToken differs for a demo auth done by a different partner mapped to the same policy with authTokenType partner, since the token is derived from partnerId and UIN, not the policy
+      role: resident
+      restMethod: post
+      additionalDependencies: TC_IDA_DemoAuth_80
+      inputTemplate: ida/DemoAuth/DemoAuth
+      outputTemplate: ida/DemoAuth/DemoAuthResultWithAuthToken
+      input: '{
+        "requestTime": "$TIMESTAMP$",
+        "individualId": "$ID:AddIdentity_withValidParameters_smoke_Pos_UIN$",
+        "transactionId": "1234567890",
+        "individualIdType": "UIN",
+        "bio": false,
+        "demo": true,
+        "otp": false,
+        "identityRequest":{
+    "value": "1970/07/08",
+"key": "dob",
+    "identityRequestTemplate": "ida/DemoAuth/DemoIdentityEncrypt"
+    }
+    }'
+      output: '{
+  "authStatus": "true",
+  "authToken": "$REGEXP:^((?!$ID:DemoAuth_authToken_PartnerToken_First_Call_sid_Pos_authToken$).+)$"
+}'
+  auth_DemoAuth_authToken_RandomToken_First_Call_sid_Pos:
+      endPoint: /idauthentication/v1/auth/$RandomTokenPartnerKeyURL$
+      uniqueIdentifier: TC_IDA_DemoAuth_83
+      description: IDA_TC_0456 - Demo auth via a partner mapped to a policy with authTokenType random, first call to capture the authToken
+      role: resident
+      restMethod: post
+      inputTemplate: ida/DemoAuth/DemoAuth
+      outputTemplate: ida/DemoAuth/DemoAuthResultWithAuthToken
+      input: '{
+        "requestTime": "$TIMESTAMP$",
+        "individualId": "$ID:AddIdentity_withValidParameters_smoke_Pos_UIN$",
+        "transactionId": "1234567890",
+        "individualIdType": "UIN",
+        "bio": false,
+        "demo": true,
+        "otp": false,
+        "identityRequest":{
+    "value": "1970/07/08",
+"key": "dob",
+    "identityRequestTemplate": "ida/DemoAuth/DemoIdentityEncrypt"
+    }
+    }'
+      output: '{
+  "authStatus": "true",
+  "authToken": "$REGEXP:^(?!null).+$"
+}'
+  auth_DemoAuth_authToken_RandomToken_Differs_On_Repeat_Call_Pos:
+      endPoint: /idauthentication/v1/auth/$RandomTokenPartnerKeyURL$
+      uniqueIdentifier: TC_IDA_DemoAuth_84
+      description: IDA_TC_0456 - Verify authToken for a random-type policy differs on every demo auth call for the same UIN via the same partner, since a new random token is generated each time
+      role: resident
+      restMethod: post
+      additionalDependencies: TC_IDA_DemoAuth_83
+      inputTemplate: ida/DemoAuth/DemoAuth
+      outputTemplate: ida/DemoAuth/DemoAuthResultWithAuthToken
+      input: '{
+        "requestTime": "$TIMESTAMP$",
+        "individualId": "$ID:AddIdentity_withValidParameters_smoke_Pos_UIN$",
+        "transactionId": "1234567890",
+        "individualIdType": "UIN",
+        "bio": false,
+        "demo": true,
+        "otp": false,
+        "identityRequest":{
+    "value": "1970/07/08",
+"key": "dob",
+    "identityRequestTemplate": "ida/DemoAuth/DemoIdentityEncrypt"
+    }
+    }'
+      output: '{
+  "authStatus": "true",
+  "authToken": "$REGEXP:^((?!$ID:DemoAuth_authToken_RandomToken_First_Call_sid_Pos_authToken$).+)$"
+}'
+  auth_DemoAuth_authToken_RandomToken_Differs_Across_Partners_Pos:
+      endPoint: /idauthentication/v1/auth/$RandomToken2PartnerKeyURL$
+      uniqueIdentifier: TC_IDA_DemoAuth_85
+      description: IDA_TC_0457 - Verify authToken differs for a demo auth done by a different partner mapped to the same policy with authTokenType random, since a new random token is generated each time regardless of partner
+      role: resident
+      restMethod: post
+      additionalDependencies: TC_IDA_DemoAuth_83
+      inputTemplate: ida/DemoAuth/DemoAuth
+      outputTemplate: ida/DemoAuth/DemoAuthResultWithAuthToken
+      input: '{
+        "requestTime": "$TIMESTAMP$",
+        "individualId": "$ID:AddIdentity_withValidParameters_smoke_Pos_UIN$",
+        "transactionId": "1234567890",
+        "individualIdType": "UIN",
+        "bio": false,
+        "demo": true,
+        "otp": false,
+        "identityRequest":{
+    "value": "1970/07/08",
+"key": "dob",
+    "identityRequestTemplate": "ida/DemoAuth/DemoIdentityEncrypt"
+    }
+    }'
+      output: '{
+  "authStatus": "true",
+  "authToken": "$REGEXP:^((?!$ID:DemoAuth_authToken_RandomToken_First_Call_sid_Pos_authToken$).+)$"
+}'
+  auth_DemoAuth_authToken_RandomToken_Differs_Across_Multiple_Partners_Pos:
+      endPoint: /idauthentication/v1/auth/$RandomToken3PartnerKeyURL$
+      uniqueIdentifier: TC_IDA_DemoAuth_86
+      description: IDA_TC_0457 - Verify authToken differs for a demo auth done by multiple different partners mapped to the same policy with authTokenType random
+      role: resident
+      restMethod: post
+      additionalDependencies: TC_IDA_DemoAuth_83
+      inputTemplate: ida/DemoAuth/DemoAuth
+      outputTemplate: ida/DemoAuth/DemoAuthResultWithAuthToken
+      input: '{
+        "requestTime": "$TIMESTAMP$",
+        "individualId": "$ID:AddIdentity_withValidParameters_smoke_Pos_UIN$",
+        "transactionId": "1234567890",
+        "individualIdType": "UIN",
+        "bio": false,
+        "demo": true,
+        "otp": false,
+        "identityRequest":{
+    "value": "1970/07/08",
+"key": "dob",
+    "identityRequestTemplate": "ida/DemoAuth/DemoIdentityEncrypt"
+    }
+    }'
+      output: '{
+  "authStatus": "true",
+  "authToken": "$REGEXP:^((?!$ID:DemoAuth_authToken_RandomToken_First_Call_sid_Pos_authToken$).+)$"
+}'
+  auth_DemoAuth_DOB_Invalid_Thumbprint_UIN_Neg:
+      endPoint: /idauthentication/v1/auth/$partnerKeyURL$
+      uniqueIdentifier: TC_IDA_DemoAuth_74
+      description: IDA_TC_0298 - Verify that demo authentication fails with a decryption error when an incorrect thumbprint is given in the IDA request
+      role: resident
+      restMethod: post
+      inputTemplate: ida/DemoAuth/DemoAuth
+      outputTemplate: ida/DemoAuth/error
+      input: '{
+        "requestTime": "$TIMESTAMP$",
+        "individualId": "$ID:AddIdentity_withValidParameters_smoke_Pos_UIN$",
+        "transactionId": "1234567890",
+        "individualIdType": "UIN",
+        "bio": false,
+        "demo": true,
+        "otp": false,
+        "invalidThumbprint": "1111111111111111111111111111111111111111111111111111111111111111",
+        "identityRequest":{
+    "value": "1970/07/08",
+"key": "dob",
+    "identityRequestTemplate": "ida/DemoAuth/DemoIdentityEncrypt"
+    }
+    }'
+      output: '{
+  "authStatus": "false",
+  "errors": [
+    {
+      "errorCode": "IDA-MPA-003"
+    }
+  ]
+}'
   auth_DemoAuth_DOB_InValid_UIN_Neg:
       endPoint: /idauthentication/v1/auth/$partnerKeyURL$
       uniqueIdentifier: TC_IDA_DemoAuth_02

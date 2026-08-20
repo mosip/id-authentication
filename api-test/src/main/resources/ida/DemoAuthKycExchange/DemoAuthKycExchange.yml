@@ -477,5 +477,32 @@ DemoAuthKycExchange:
         "respType": "JWE"
     }'
       output: '{
-  
+
+}'
+  auth_DemoAuthKycExchange_Without_KycAuth_Neg:
+      endPoint: /idauthentication/v1/kyc-exchange/delegated/$partialPartnerKeyUrl$/$ID:CreateOIDCClient_Delegated_Valid_Smoke_sid_clientId$
+      uniqueIdentifier: TC_IDA_DemoAuthKycExchange_23
+      description: IDA_TC_1638 - Verify kyc-exchange fails with an appropriate error when called with a kycToken that was never issued by a prior kyc-auth call
+      role: resident
+      restMethod: post
+      inputTemplate: ida/DemoAuthKycExchange/DemoAuthKycExchange
+      outputTemplate: ida/DemoAuthKycExchange/DemoAuthKycExchangeError
+      input: '{
+        "requestTime": "$TIMESTAMP$",
+        "individualId": "$ID:AddIdentity_withValidParameters_forDemoDelegated_Pos_UIN$",
+        "transactionID": "$TRANSACTIONID$",
+        "individualIdType": "UIN",
+        "id": "mosip.identity.kycexchange",
+        "version": "1.0",
+        "kycToken": "NeverIssuedByKycAuth_InvalidKycToken_123456789",
+        "consentObtained": [{consentObtainedValue: "gender"}, {consentObtainedValue: "birthdate"}],
+        "locales": [{localesValue: "eng"}],
+        "respType": "JWE"
+    }'
+      output: '{
+  "errors": [
+    {
+      "errorCode": "IDA-KYE-001"
+    }
+  ]
 }'
