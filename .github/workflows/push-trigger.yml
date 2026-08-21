@@ -53,12 +53,6 @@ jobs:
     strategy:
       matrix:
         include:
-          - SERVICE_LOCATION: 'authentication/authentication-otp-service'
-            SERVICE_NAME: 'authentication-otp-service'
-            BUILD_ARTIFACT: 'authentication'
-          - SERVICE_LOCATION: 'authentication/authentication-internal-service'
-            SERVICE_NAME: 'authentication-internal-service'
-            BUILD_ARTIFACT: 'authentication'
           - SERVICE_LOCATION: 'authentication/authentication-service'
             SERVICE_NAME: 'authentication-service'
             BUILD_ARTIFACT: 'authentication'

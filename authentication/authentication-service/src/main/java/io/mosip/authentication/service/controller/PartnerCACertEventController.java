@@ -55,6 +55,8 @@ public class PartnerCACertEventController {
 		// Evict the cache for the partner domain present in the event so that it will
 		// be re-cached with new certificates
 		partnerCACertEventService.evictCACertCache(eventModel);
+		//Store the ca cert
+		partnerCACertEventService.handleCACertEvent(eventModel);
 	}
 
 }

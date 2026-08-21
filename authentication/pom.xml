@@ -5,7 +5,7 @@
 
 	<groupId>io.mosip.authentication</groupId>
 	<artifactId>authentication-parent</artifactId>
-	<version>1.4.0-SNAPSHOT</version>
+	<version>1.4.0-1764-SNAPSHOT</version>
 	<packaging>pom</packaging>
 
 	<name>id-authentication</name>
@@ -77,8 +77,6 @@
 		<module>authentication-authtypelockfilter-impl</module>
 		<module>authentication-hotlistfilter-impl</module>
 		<module>authentication-service</module>
-		<module>authentication-internal-service</module>
-		<module>authentication-otp-service</module>
 	</modules>
 
 	<properties>

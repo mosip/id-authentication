@@ -200,7 +200,7 @@ public class AuthFacadeImpl implements AuthFacade {
 
 			LinkedHashMap<String, Object> properties = new LinkedHashMap<>(authRequestDTO.getMetadata());
 			properties.put(IdAuthCommonConstants.TOKEN, token);
-			authFiltersValidator.validateAuthFilters(authRequestDTO, idInfo, properties);
+			authFiltersValidator.validateAuthFilters(authRequestDTO, idInfo, properties, isExternalAuth);
 
 			List<AuthStatusInfo> authStatusList = processAuthType(authRequestDTO, idInfo, token, isExternalAuth, authTokenId,
 					partnerId, authTxnBuilder, idvidHash);

@@ -23,6 +23,7 @@ import javax.transaction.Transactional;
 import org.apache.commons.lang.exception.ExceptionUtils;
 import org.springframework.batch.item.Chunk;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Component;
 import org.springframework.util.Assert;
@@ -123,6 +124,7 @@ public class CredentialStoreServiceImpl implements CredentialStoreService {
 
 	/** The security manager. */
 	@Autowired
+	@Qualifier("internalAuthSecurityManager")
 	private IdAuthSecurityManager securityManager;
 
 	/** The max retry count. */
