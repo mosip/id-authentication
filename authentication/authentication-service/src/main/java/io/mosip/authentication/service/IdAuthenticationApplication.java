@@ -71,7 +71,7 @@ import io.mosip.kernel.keygenerator.bouncycastle.KeyGenerator;
 import io.mosip.kernel.keymanager.hsm.impl.KeyStoreImpl;
 import io.mosip.kernel.keymanagerservice.helper.KeymanagerDBHelper;
 import io.mosip.kernel.keymanagerservice.helper.PrivateKeyDecryptorHelper;
-import io.mosip.kernel.keymanagerservice.helper.SessionKeyDecryptorHelper;
+import io.mosip.kernel.keymanagerservice.helper.SessionKeyDecrytorHelper;
 import io.mosip.kernel.keymanagerservice.service.impl.KeymanagerServiceImpl;
 import io.mosip.kernel.keymanagerservice.util.KeymanagerUtil;
 import io.mosip.kernel.partnercertservice.helper.PartnerCertManagerDBHelper;
@@ -112,7 +112,7 @@ import io.mosip.kernel.websub.api.config.publisher.RestTemplateHelper;
 		AuthTransactionStatusEventPublisher.class, MasterDataCacheUpdateServiceImpl.class,
 		MasterDataUpdateEventInitializer.class, DemoNormalizer.class, DemoMatcherUtil.class,
 		IdAuthFraudAnalysisEventManager.class, IdAuthFraudAnalysisEventPublisher.class, AuthFiltersValidator.class,
-		AuthAnonymousProfileServiceImpl.class, AuthAnonymousEventPublisher.class, SessionKeyDecryptorHelper.class, ExternalRestHelperConfig.class, IdaRequestResponsConsumerUtil.class,
+		AuthAnonymousProfileServiceImpl.class, AuthAnonymousEventPublisher.class, SessionKeyDecrytorHelper.class, ExternalRestHelperConfig.class, IdaRequestResponsConsumerUtil.class,
 		PartnerCACertEventServiceImpl.class, PartnerCACertEventInitializer.class, EnvUtil.class, KeyBindedTokenMatcherUtil.class,
 		HSMHealthCheck.class, TokenValidationHelper.class, VCSchemaProviderUtil.class, PrivateKeyDecryptorHelper.class, 
 		PasswordAuthServiceImpl.class, PasswordComparator.class, AuthenticationErrorEventingPublisher.class,

@@ -84,7 +84,7 @@ import io.mosip.kernel.keymanagerservice.controller.KeymanagerController;
 import io.mosip.kernel.keymanagerservice.entity.CACertificateStore;
 import io.mosip.kernel.keymanagerservice.helper.KeymanagerDBHelper;
 import io.mosip.kernel.keymanagerservice.helper.PrivateKeyDecryptorHelper;
-import io.mosip.kernel.keymanagerservice.helper.SessionKeyDecryptorHelper;
+import io.mosip.kernel.keymanagerservice.helper.SessionKeyDecrytorHelper;
 import io.mosip.kernel.keymanagerservice.service.impl.KeymanagerServiceImpl;
 import io.mosip.kernel.keymanagerservice.util.KeymanagerUtil;
 import io.mosip.kernel.partnercertservice.controller.PartnerCertManagerController;
@@ -130,7 +130,7 @@ import org.springframework.data.jpa.repository.config.EnableJpaRepositories;
 		AuthTransactionHelper.class, CredentialStoreStatusEventPublisher.class, AuthTypeStatusEventPublisher.class, RemoveIdStatusEventPublisher.class,
 		AuthTransactionStatusEventPublisher.class, PartnerServiceEventsInitializer.class, CredentialRequestManager.class,
 		DemoNormalizer.class, DemoMatcherUtil.class, IdAuthFraudAnalysisEventManager.class,
-		IdAuthFraudAnalysisEventPublisher.class, AuthFiltersValidator.class, SessionKeyDecryptorHelper.class, InternalRestHelperConfig.class, IdaRequestResponsConsumerUtil.class,
+		IdAuthFraudAnalysisEventPublisher.class, AuthFiltersValidator.class, SessionKeyDecrytorHelper.class, InternalRestHelperConfig.class, IdaRequestResponsConsumerUtil.class,
 		io.mosip.kernel.cryptomanager.dto.AuthorizedRolesDTO.class,
 		io.mosip.kernel.keymanagerservice.dto.AuthorizedRolesDTO.class,
 		io.mosip.kernel.partnercertservice.dto.AuthorizedRolesDTO.class,
