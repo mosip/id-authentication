@@ -4,9 +4,9 @@
 	<parent>
 		<groupId>io.mosip.authentication</groupId>
 		<artifactId>authentication-parent</artifactId>
-		<version>1.2.2.0-SNAPSHOT</version>
+		<version>1.2.2.0</version>
 	</parent>
-	<version>1.2.2.0-SNAPSHOT</version>
+	<version>1.2.2.0</version>
 	<artifactId>authentication-hotlistfilter-impl</artifactId>
 	<name>authentication-hotlistfilter-impl</name>
 	<description>ID Authentication Filter Implementation for Hotlist validation</description>
@@ -217,7 +217,7 @@
 		<aspectjweaver.version>1.8.12</aspectjweaver.version>
 		<micrometer.core.version>1.4.2</micrometer.core.version>
 		<micrometer.registry.prometheus.version>1.4.2</micrometer.registry.prometheus.version>
-       <central.publishing.maven.plugin.version>0.7.0</central.publishing.maven.plugin.version>	</properties>
+       <central.publishing.maven.plugin.version>0.11.0</central.publishing.maven.plugin.version>	</properties>
 	<dependencies>
 		<dependency>
 			<groupId>org.projectlombok</groupId>
