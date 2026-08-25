@@ -92,6 +92,8 @@ jobs:
       SLACK_WEBHOOK_URL: ${{ secrets.SLACK_WEBHOOK }}
 
   build-maven-apitest-auth:
+    # Temporarily disabled: apitest-commons is a SNAPSHOT dependency and cannot be published to Central.
+    if: ${{ false }}
     uses: mosip/kattu/.github/workflows/maven-build.yml@master-java21
     with:
       SERVICE_LOCATION: ./api-test
