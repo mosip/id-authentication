@@ -203,3 +203,37 @@ OtpAuthDelegated:
         "sendOtpResTemplate":"ida/OtpAuth/sendOtpRes"
     }
 }'
+  auth_OtpAuthDelegated_OTP_Auth_forKycExchangeIndividualIdMismatch_Pos_Sid:
+      endPoint: /idauthentication/v1/kyc-auth/delegated/$partialPartnerKeyUrl$/$ID:CreateOIDCClient_Delegated_Valid_Smoke_sid_clientId$
+      uniqueIdentifier: TC_IDA_OtpAuthDelegated_07
+      description: Otp delegated auth dedicated token for kyc-exchange individualId mismatch negative test
+      role: resident
+      restMethod: post
+      checkErrorsOnlyInResponse: true
+      inputTemplate: ida/OtpAuthDelegated/OtpAuthDelegated
+      outputTemplate: ida/OtpAuthDelegated/OtpAuthDelegatedResult
+      input: '{
+        "otpChannel": "$ID:AddIdentity_withValidParameters_forOtpDelegated_Pos_EMAIL$",
+        "requestTime": "$TIMESTAMP$",
+        "individualId": "$ID:AddIdentity_withValidParameters_forOtpDelegated_Pos_UIN$",
+        "transactionId": "$TRANSACTIONID$",
+        "individualIdType": "UIN",
+        "bio": false,
+        "demo": false,
+        "otp": true,
+        "sendOtp":{
+    "transactionID": "$TRANSACTIONID$",
+    "requestTime": "$TIMESTAMP$",
+    "individualId": "$ID:AddIdentity_withValidParameters_forOtpDelegated_Pos_UIN$",
+    "individualIdType": "UIN",
+    "sendOtpReqTemplate": "ida/OtpAuth/sendOtp",
+    "sendOtpEndPoint": "/idauthentication/v1/otp/$partnerKeyURL$",
+    "otpIdentyEnryptRequestPath": "ida/OtpAuthDelegated/OtpIdentityEncrypt.json"
+    }
+    }'
+      output: '{
+  "kycStatus": "true",
+ "sendOtpResp":{
+        "sendOtpResTemplate":"ida/OtpAuth/sendOtpRes"
+    }
+}'

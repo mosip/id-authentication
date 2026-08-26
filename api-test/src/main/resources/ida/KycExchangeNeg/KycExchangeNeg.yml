@@ -1,0 +1,353 @@
+KycExchangeNeg:
+  auth_KycExchangeNeg_Missing_KycToken_Neg:
+      endPoint: /idauthentication/v1/kyc-exchange/delegated/$partialPartnerKeyUrl$/$ID:CreateOIDCClient_Delegated_Valid_Smoke_sid_clientId$
+      uniqueIdentifier: TC_IDA_KycExchangeNeg_01
+      description: Kyc exchange with missing kycToken
+      role: resident
+      restMethod: post
+      checkErrorsOnlyInResponse: true
+      inputTemplate: ida/BioAuthKycExchange/BioAuthKYCExchange
+      outputTemplate: ida/DelegateError
+      input: '{
+        "requestTime": "$TIMESTAMP$",
+        "individualId": "$ID:AddIdentity_withValidParameters_forDemoDelegated_Pos_UIN$",
+        "transactionID": "$TRANSACTIONID$",
+        "individualIdType": "UIN",
+        "id": "mosip.identity.kycexchange",
+        "version": "1.0",
+        "kycToken": "$REMOVE$",
+        "consentObtained": [{"consentObtainedValue": "gender"}],
+        "locales": [{localesValue: "eng"}],
+        "respType": "JWE"
+    }'
+      output: '{
+      "errors": [
+        {
+          "errorCode": "IDA-MLC-006"
+        }
+      ]
+}'
+  auth_KycExchangeNeg_Missing_TransactionID_Neg:
+      endPoint: /idauthentication/v1/kyc-exchange/delegated/$partialPartnerKeyUrl$/$ID:CreateOIDCClient_Delegated_Valid_Smoke_sid_clientId$
+      uniqueIdentifier: TC_IDA_KycExchangeNeg_02
+      description: Kyc exchange with missing transactionID
+      role: resident
+      restMethod: post
+      checkErrorsOnlyInResponse: true
+      inputTemplate: ida/BioAuthKycExchange/BioAuthKYCExchange
+      outputTemplate: ida/DelegateError
+      input: '{
+        "requestTime": "$TIMESTAMP$",
+        "individualId": "$ID:AddIdentity_withValidParameters_forDemoDelegated_Pos_UIN$",
+        "transactionID": "$REMOVE$",
+        "individualIdType": "UIN",
+        "id": "mosip.identity.kycexchange",
+        "version": "1.0",
+        "kycToken": "placeholderKycTokenNotUnderTest",
+        "consentObtained": [{"consentObtainedValue": "gender"}],
+        "locales": [{localesValue: "eng"}],
+        "respType": "JWE"
+    }'
+      output: '{
+      "errors": [
+        {
+          "errorCode": "IDA-MLC-006"
+        }
+      ]
+}'
+  auth_KycExchangeNeg_Missing_RequestTime_Neg:
+      endPoint: /idauthentication/v1/kyc-exchange/delegated/$partialPartnerKeyUrl$/$ID:CreateOIDCClient_Delegated_Valid_Smoke_sid_clientId$
+      uniqueIdentifier: TC_IDA_KycExchangeNeg_03
+      description: Kyc exchange with missing requestTime
+      role: resident
+      restMethod: post
+      checkErrorsOnlyInResponse: true
+      inputTemplate: ida/BioAuthKycExchange/BioAuthKYCExchange
+      outputTemplate: ida/DelegateError
+      input: '{
+        "requestTime": "$REMOVE$",
+        "individualId": "$ID:AddIdentity_withValidParameters_forDemoDelegated_Pos_UIN$",
+        "transactionID": "$TRANSACTIONID$",
+        "individualIdType": "UIN",
+        "id": "mosip.identity.kycexchange",
+        "version": "1.0",
+        "kycToken": "placeholderKycTokenNotUnderTest",
+        "consentObtained": [{"consentObtainedValue": "gender"}],
+        "locales": [{localesValue: "eng"}],
+        "respType": "JWE"
+    }'
+      output: '{
+      "errors": [
+        {
+          "errorCode": "IDA-MLC-006"
+        }
+      ]
+}'
+  auth_KycExchangeNeg_Missing_IndividualId_Neg:
+      endPoint: /idauthentication/v1/kyc-exchange/delegated/$partialPartnerKeyUrl$/$ID:CreateOIDCClient_Delegated_Valid_Smoke_sid_clientId$
+      uniqueIdentifier: TC_IDA_KycExchangeNeg_04
+      description: Kyc exchange with missing individualId - unverified, confirm error code before trusting
+      role: resident
+      restMethod: post
+      checkErrorsOnlyInResponse: true
+      inputTemplate: ida/BioAuthKycExchange/BioAuthKYCExchange
+      outputTemplate: ida/DelegateError
+      input: '{
+        "requestTime": "$TIMESTAMP$",
+        "individualId": "$REMOVE$",
+        "transactionID": "$TRANSACTIONID$",
+        "individualIdType": "UIN",
+        "id": "mosip.identity.kycexchange",
+        "version": "1.0",
+        "kycToken": "placeholderKycTokenNotUnderTest",
+        "consentObtained": [{"consentObtainedValue": "gender"}],
+        "locales": [{localesValue: "eng"}],
+        "respType": "JWE"
+    }'
+      output: '{
+      "errors": [
+        {
+          "errorCode": "IDA-MLC-006"
+        }
+      ]
+}'
+  auth_KycExchangeNeg_Malformed_TransactionID_Neg:
+      endPoint: /idauthentication/v1/kyc-exchange/delegated/$partialPartnerKeyUrl$/$ID:CreateOIDCClient_Delegated_Valid_Smoke_sid_clientId$
+      uniqueIdentifier: TC_IDA_KycExchangeNeg_05
+      description: Kyc exchange with transactionID not matching the 10-char alphanumeric format
+      role: resident
+      restMethod: post
+      checkErrorsOnlyInResponse: true
+      inputTemplate: ida/BioAuthKycExchange/BioAuthKYCExchange
+      outputTemplate: ida/DelegateError
+      input: '{
+        "requestTime": "$TIMESTAMP$",
+        "individualId": "$ID:AddIdentity_withValidParameters_forDemoDelegated_Pos_UIN$",
+        "transactionID": "abc",
+        "individualIdType": "UIN",
+        "id": "mosip.identity.kycexchange",
+        "version": "1.0",
+        "kycToken": "placeholderKycTokenNotUnderTest",
+        "consentObtained": [{"consentObtainedValue": "gender"}],
+        "locales": [{localesValue: "eng"}],
+        "respType": "JWE"
+    }'
+      output: '{
+      "errors": [
+        {
+          "errorCode": "IDA-MLC-009"
+        }
+      ]
+}'
+  auth_KycExchangeNeg_Malformed_RequestTime_Neg:
+      endPoint: /idauthentication/v1/kyc-exchange/delegated/$partialPartnerKeyUrl$/$ID:CreateOIDCClient_Delegated_Valid_Smoke_sid_clientId$
+      uniqueIdentifier: TC_IDA_KycExchangeNeg_06
+      description: Kyc exchange with an unparseable requestTime
+      role: resident
+      restMethod: post
+      checkErrorsOnlyInResponse: true
+      inputTemplate: ida/BioAuthKycExchange/BioAuthKYCExchange
+      outputTemplate: ida/DelegateError
+      input: '{
+        "requestTime": "not-a-valid-timestamp",
+        "individualId": "$ID:AddIdentity_withValidParameters_forDemoDelegated_Pos_UIN$",
+        "transactionID": "$TRANSACTIONID$",
+        "individualIdType": "UIN",
+        "id": "mosip.identity.kycexchange",
+        "version": "1.0",
+        "kycToken": "placeholderKycTokenNotUnderTest",
+        "consentObtained": [{"consentObtainedValue": "gender"}],
+        "locales": [{localesValue: "eng"}],
+        "respType": "JWE"
+    }'
+      output: '{
+      "errors": [
+        {
+          "errorCode": "IDA-MLC-001"
+        }
+      ]
+}'
+  auth_KycExchangeNeg_Invalid_UIN_Neg:
+      endPoint: /idauthentication/v1/kyc-exchange/delegated/$partialPartnerKeyUrl$/$ID:CreateOIDCClient_Delegated_Valid_Smoke_sid_clientId$
+      uniqueIdentifier: TC_IDA_KycExchangeNeg_07
+      description: Kyc exchange with an invalid UIN (fails checksum)
+      role: resident
+      restMethod: post
+      checkErrorsOnlyInResponse: true
+      inputTemplate: ida/BioAuthKycExchange/BioAuthKYCExchange
+      outputTemplate: ida/DelegateError
+      input: '{
+        "requestTime": "$TIMESTAMP$",
+        "individualId": "9999999999",
+        "transactionID": "$TRANSACTIONID$",
+        "individualIdType": "UIN",
+        "id": "mosip.identity.kycexchange",
+        "version": "1.0",
+        "kycToken": "placeholderKycTokenNotUnderTest",
+        "consentObtained": [{"consentObtainedValue": "gender"}],
+        "locales": [{localesValue: "eng"}],
+        "respType": "JWE"
+    }'
+      output: '{
+      "errors": [
+        {
+          "errorCode": "IDA-MLC-002"
+        }
+      ]
+}'
+  auth_KycExchangeNeg_Invalid_VID_Neg:
+      endPoint: /idauthentication/v1/kyc-exchange/delegated/$partialPartnerKeyUrl$/$ID:CreateOIDCClient_Delegated_Valid_Smoke_sid_clientId$
+      uniqueIdentifier: TC_IDA_KycExchangeNeg_08
+      description: Kyc exchange with an invalid VID (fails checksum)
+      role: resident
+      restMethod: post
+      checkErrorsOnlyInResponse: true
+      inputTemplate: ida/BioAuthKycExchange/BioAuthKYCExchange
+      outputTemplate: ida/DelegateError
+      input: '{
+        "requestTime": "$TIMESTAMP$",
+        "individualId": "999999999999999999",
+        "transactionID": "$TRANSACTIONID$",
+        "individualIdType": "VID",
+        "id": "mosip.identity.kycexchange",
+        "version": "1.0",
+        "kycToken": "placeholderKycTokenNotUnderTest",
+        "consentObtained": [{"consentObtainedValue": "gender"}],
+        "locales": [{localesValue: "eng"}],
+        "respType": "JWE"
+    }'
+      output: '{
+      "errors": [
+        {
+          "errorCode": "IDA-MLC-004"
+        }
+      ]
+}'
+  auth_KycExchangeNeg_Token_Not_Found_Neg:
+      endPoint: /idauthentication/v1/kyc-exchange/delegated/$partialPartnerKeyUrl$/$ID:CreateOIDCClient_Delegated_Valid_Smoke_sid_clientId$
+      uniqueIdentifier: TC_IDA_KycExchangeNeg_09
+      description: Kyc exchange with a well-formed but non-existent kycToken
+      role: resident
+      restMethod: post
+      checkErrorsOnlyInResponse: true
+      inputTemplate: ida/BioAuthKycExchange/BioAuthKYCExchange
+      outputTemplate: ida/DelegateError
+      input: '{
+        "requestTime": "$TIMESTAMP$",
+        "individualId": "$ID:AddIdentity_withValidParameters_forDemoDelegated_Pos_UIN$",
+        "transactionID": "$TRANSACTIONID$",
+        "individualIdType": "UIN",
+        "id": "mosip.identity.kycexchange",
+        "version": "1.0",
+        "kycToken": "00000000-0000-0000-0000-nonexistenttoken",
+        "consentObtained": [{"consentObtainedValue": "gender"}],
+        "locales": [{localesValue: "eng"}],
+        "respType": "JWE"
+    }'
+      output: '{
+      "errors": [
+        {
+          "errorCode": "IDA-KYE-001"
+        }
+      ]
+}'
+  auth_KycExchangeNeg_TransactionID_Mismatch_Neg:
+      endPoint: /idauthentication/v1/kyc-exchange/delegated/$partialPartnerKeyUrl$/$ID:CreateOIDCClient_Delegated_Valid_Smoke_sid_clientId$
+      uniqueIdentifier: TC_IDA_KycExchangeNeg_10
+      description: Kyc exchange with a transactionID different from the one used at kyc-auth time, using the dedicated single-use token
+      role: resident
+      restMethod: post
+      checkErrorsOnlyInResponse: true
+      inputTemplate: ida/BioAuthKycExchange/BioAuthKYCExchange
+      outputTemplate: ida/DelegateError
+      input: '{
+        "requestTime": "$TIMESTAMP$",
+        "individualId": "$ID:AddIdentity_withValidParameters_forDemoDelegated_Pos_UIN$",
+        "transactionID": "MISMATCH01",
+        "individualIdType": "UIN",
+        "id": "mosip.identity.kycexchange",
+        "version": "1.0",
+        "kycToken": "$ID:DemoAuthDelegated_DemoAuth_forKycExchangeTxnIdMismatch_Pos_Sid_kycToken$",
+        "consentObtained": [{"consentObtainedValue": "gender"}],
+        "locales": [{localesValue: "eng"}],
+        "respType": "JWE"
+    }'
+      output: '{
+      "errors": [
+        {
+          "errorCode": "IDA-KYE-005"
+        }
+      ]
+}'
+  auth_KycExchangeNeg_Empty_ConsentObtained_Pos:
+      endPoint: /idauthentication/v1/kyc-exchange/delegated/$partialPartnerKeyUrl$/$ID:CreateOIDCClient_Delegated_Valid_Smoke_sid_clientId$
+      uniqueIdentifier: TC_IDA_KycExchangeNeg_11
+      description: Kyc exchange with an empty consentObtained list still succeeds - server-side consent validation is deliberately disabled
+      role: resident
+      restMethod: post
+      checkErrorsOnlyInResponse: true
+      inputTemplate: ida/BioAuthKycExchange/BioAuthKYCExchange
+      outputTemplate: ida/BioAuthKycExchange/BioAuthKYCExchangeResult
+      input: '{
+        "requestTime": "$TIMESTAMP$",
+        "individualId": "$ID:AddIdentity_withValidParameters_forDemoDelegated_Pos_UIN$",
+        "transactionID": "$TRANSACTIONID$",
+        "individualIdType": "UIN",
+        "id": "mosip.identity.kycexchange",
+        "version": "1.0",
+        "kycToken": "$ID:DemoAuthDelegated_DemoAuth_forKycExchangeEmptyConsent_Pos_Sid_kycToken$",
+        "consentObtained": [],
+        "locales": [{localesValue: "eng"}],
+        "respType": "JWE"
+    }'
+      output: '{
+
+}'
+  auth_KycExchangeNeg_Empty_Locales_Pos:
+      endPoint: /idauthentication/v1/kyc-exchange/delegated/$partialPartnerKeyUrl$/$ID:CreateOIDCClient_Delegated_Valid_Smoke_sid_clientId$
+      uniqueIdentifier: TC_IDA_KycExchangeNeg_12
+      description: Kyc exchange with an empty locales list still succeeds - server defaults to the configured kyc-exchange default language
+      role: resident
+      restMethod: post
+      checkErrorsOnlyInResponse: true
+      inputTemplate: ida/BioAuthKycExchange/BioAuthKYCExchange
+      outputTemplate: ida/BioAuthKycExchange/BioAuthKYCExchangeResult
+      input: '{
+        "requestTime": "$TIMESTAMP$",
+        "individualId": "$ID:AddIdentity_withValidParameters_forDemoDelegated_Pos_UIN$",
+        "transactionID": "$TRANSACTIONID$",
+        "individualIdType": "UIN",
+        "id": "mosip.identity.kycexchange",
+        "version": "1.0",
+        "kycToken": "$ID:DemoAuthDelegated_DemoAuth_forKycExchangeEmptyLocales_Pos_Sid_kycToken$",
+        "consentObtained": [{"consentObtainedValue": "gender"}],
+        "locales": [],
+        "respType": "JWE"
+    }'
+      output: '{
+
+}'
+  auth_KycExchangeNeg_RespType_NonJWE_Pos:
+      endPoint: /idauthentication/v1/kyc-exchange/delegated/$partialPartnerKeyUrl$/$ID:CreateOIDCClient_Delegated_Valid_Smoke_sid_clientId$
+      uniqueIdentifier: TC_IDA_KycExchangeNeg_13
+      description: Kyc exchange with a non-JWE respType still succeeds, returning a signed but unencrypted payload
+      role: resident
+      restMethod: post
+      checkErrorsOnlyInResponse: true
+      inputTemplate: ida/BioAuthKycExchange/BioAuthKYCExchange
+      outputTemplate: ida/BioAuthKycExchange/BioAuthKYCExchangeResult
+      input: '{
+        "requestTime": "$TIMESTAMP$",
+        "individualId": "$ID:AddIdentity_withValidParameters_forDemoDelegated_Pos_UIN$",
+        "transactionID": "$TRANSACTIONID$",
+        "individualIdType": "UIN",
+        "id": "mosip.identity.kycexchange",
+        "version": "1.0",
+        "kycToken": "$ID:DemoAuthDelegated_DemoAuth_forKycExchangeRespTypeNonJwe_Pos_Sid_kycToken$",
+        "consentObtained": [{"consentObtainedValue": "gender"}],
+        "locales": [{localesValue: "eng"}],
+        "respType": "JWT"
+    }'
+      output: '{
+
+}'

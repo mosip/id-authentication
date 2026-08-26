@@ -667,3 +667,32 @@ BioAuthKycExchange:
         }
       ]
 }'
+  auth_BioAuthKycExchangeNeg_KycRequestDelegation_NotAllowed_Neg:
+      endPoint: /idauthentication/v1/kyc-exchange/delegated/$kycDelegationDisabledPartnerKeyUrl$/$ID:CreateOIDCClient_Delegated_Valid_Smoke_sid_clientId$
+      uniqueIdentifier: TC_IDA_BioAuthKycExchange_28
+      description: Kyc exchange with a MISP key whose policy disallows kyc delegation - verified live, app returns IDA-MPA-031 alongside a generic IDA-MLC-007
+      role: resident
+      restMethod: post
+      checkErrorsOnlyInResponse: true
+      allowedErrorCodes: IDA-MPA-031
+      inputTemplate: ida/BioAuthKycExchange/BioAuthKYCExchange
+      outputTemplate: ida/DelegateError
+      input: '{
+        "requestTime": "$TIMESTAMP$",
+        "individualId": "$ID:AddIdentity_For_Kyc_Delegated_Bio_Auth_Smoke_Pos_UIN$",
+        "transactionID": "$TRANSACTIONID$",
+        "individualIdType": "UIN",
+        "id": "mosip.identity.kycexchange",
+        "version": "1.0",
+        "kycToken": "placeholderKycTokenNotUnderTest",
+        "consentObtained": [{"consentObtainedValue": "gender"}, {"consentObtainedValue": "birthdate"}],
+        "locales": [{localesValue: "eng"}],
+        "respType": "JWE"
+    }'
+      output: '{
+      "errors": [
+        {
+          "errorCode": "IDA-MPA-031"
+        }
+      ]
+}'

@@ -1241,14 +1241,14 @@ DemoAuthDelegatedNeg:
         }
       ]
 }'
-  auth_DemoAuthDelegatedNeg_with_age_below_calculated_value_Neg:
+  auth_DemoAuthDelegatedNeg_with_age_below_calculated_value_Pos:
       endPoint: /idauthentication/v1/kyc-auth/delegated/$partialPartnerKeyUrl$/$ID:CreateOIDCClient_Delegated_Valid_Smoke_sid_clientId$
       uniqueIdentifier: TC_IDA_DemoAuthDelegatedNeg_42
-      description: Demo auth kyc delegated with age below the calculated value
+      description: Demo auth kyc delegated succeeds when the asserted age is below the calculated value (age match is a minimum-age threshold check, not exact match)
       role: resident
       restMethod: post
       inputTemplate: ida/DemoAuthDelegatedNeg/DemoAuthDelegated
-      outputTemplate: ida/DelegateError
+      outputTemplate: ida/DemoAuthDelegated/DemoAuthDelegatedResult
       input: '{
         "requestTime": "$TIMESTAMP$",
         "individualId": "$ID:AddIdentity_with_age_below_calculated_value_Pos_UIN$",
@@ -1264,11 +1264,7 @@ DemoAuthDelegatedNeg:
     }
     }'
       output: '{
-      "errors": [
-        {
-          "errorCode": "IDA-DEA-001"
-        }
-      ]
+  "kycStatus": "true"
 }'
   auth_DemoAuthDelegatedNeg_with_wrongPartnerKeyUrl_Neg:
       endPoint: /idauthentication/v1/kyc-auth/delegated/Z0kPjifb7xsv8oEsv0B5YDZqChr7TuBtToVbgARGkO8Jy6U0/auth_pid17424601504/959765

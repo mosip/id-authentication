@@ -559,3 +559,133 @@ DemoAuthDelegated:
       output: '{
   "kycStatus": "true"
 }'
+  auth_DemoAuthDelegated_DemoAuth_forKycExchangeIndividualIdMismatch_Pos_Sid:
+      endPoint: /idauthentication/v1/kyc-auth/delegated/$partialPartnerKeyUrl$/$ID:CreateOIDCClient_Delegated_Valid_Smoke_sid_clientId$
+      uniqueIdentifier: TC_IDA_DemoAuthDelegated_23
+      description: Demo auth kyc delegated dedicated token for kyc-exchange individualId mismatch negative test
+      role: resident
+      restMethod: post
+      checkErrorsOnlyInResponse: true
+      inputTemplate: ida/DemoAuthDelegated/DemoAuthDelegated
+      outputTemplate: ida/DemoAuthDelegated/DemoAuthDelegatedResult
+      input: '{
+        "requestTime": "$TIMESTAMP$",
+        "individualId": "$ID:AddIdentity_withValidParameters_forDemoDelegated_Pos_UIN$",
+        "transactionId": "$TRANSACTIONID$",
+        "individualIdType": "UIN",
+        "bio": false,
+        "demo": true,
+        "otp": false,
+        "identityRequest":{
+    "value": "1990/09/28",
+"key": "dob",
+    "identityRequestTemplate": "ida/DemoAuthDelegated/DemoIdentityEncrypt"
+    }
+    }'
+      output: '{
+  "kycStatus": "true"
+}'
+  auth_DemoAuthDelegated_DemoAuth_forKycExchangeTxnIdMismatch_Pos_Sid:
+      endPoint: /idauthentication/v1/kyc-auth/delegated/$partialPartnerKeyUrl$/$ID:CreateOIDCClient_Delegated_Valid_Smoke_sid_clientId$
+      uniqueIdentifier: TC_IDA_DemoAuthDelegated_24
+      description: Demo auth kyc delegated dedicated token for kyc-exchange transactionID mismatch negative test
+      role: resident
+      restMethod: post
+      checkErrorsOnlyInResponse: true
+      inputTemplate: ida/DemoAuthDelegated/DemoAuthDelegated
+      outputTemplate: ida/DemoAuthDelegated/DemoAuthDelegatedResult
+      input: '{
+        "requestTime": "$TIMESTAMP$",
+        "individualId": "$ID:AddIdentity_withValidParameters_forDemoDelegated_Pos_UIN$",
+        "transactionId": "$TRANSACTIONID$",
+        "individualIdType": "UIN",
+        "bio": false,
+        "demo": true,
+        "otp": false,
+        "identityRequest":{
+    "value": "1990/09/28",
+"key": "dob",
+    "identityRequestTemplate": "ida/DemoAuthDelegated/DemoIdentityEncrypt"
+    }
+    }'
+      output: '{
+  "kycStatus": "true"
+}'
+  auth_DemoAuthDelegated_DemoAuth_forKycExchangeEmptyConsent_Pos_Sid:
+      endPoint: /idauthentication/v1/kyc-auth/delegated/$partialPartnerKeyUrl$/$ID:CreateOIDCClient_Delegated_Valid_Smoke_sid_clientId$
+      uniqueIdentifier: TC_IDA_DemoAuthDelegated_25
+      description: Demo auth kyc delegated dedicated token for kyc-exchange empty consentObtained positive test
+      role: resident
+      restMethod: post
+      checkErrorsOnlyInResponse: true
+      inputTemplate: ida/DemoAuthDelegated/DemoAuthDelegated
+      outputTemplate: ida/DemoAuthDelegated/DemoAuthDelegatedResult
+      input: '{
+        "requestTime": "$TIMESTAMP$",
+        "individualId": "$ID:AddIdentity_withValidParameters_forDemoDelegated_Pos_UIN$",
+        "transactionId": "$TRANSACTIONID$",
+        "individualIdType": "UIN",
+        "bio": false,
+        "demo": true,
+        "otp": false,
+        "identityRequest":{
+    "value": "1990/09/28",
+"key": "dob",
+    "identityRequestTemplate": "ida/DemoAuthDelegated/DemoIdentityEncrypt"
+    }
+    }'
+      output: '{
+  "kycStatus": "true"
+}'
+  auth_DemoAuthDelegated_DemoAuth_forKycExchangeEmptyLocales_Pos_Sid:
+      endPoint: /idauthentication/v1/kyc-auth/delegated/$partialPartnerKeyUrl$/$ID:CreateOIDCClient_Delegated_Valid_Smoke_sid_clientId$
+      uniqueIdentifier: TC_IDA_DemoAuthDelegated_26
+      description: Demo auth kyc delegated dedicated token for kyc-exchange empty locales positive test
+      role: resident
+      restMethod: post
+      checkErrorsOnlyInResponse: true
+      inputTemplate: ida/DemoAuthDelegated/DemoAuthDelegated
+      outputTemplate: ida/DemoAuthDelegated/DemoAuthDelegatedResult
+      input: '{
+        "requestTime": "$TIMESTAMP$",
+        "individualId": "$ID:AddIdentity_withValidParameters_forDemoDelegated_Pos_UIN$",
+        "transactionId": "$TRANSACTIONID$",
+        "individualIdType": "UIN",
+        "bio": false,
+        "demo": true,
+        "otp": false,
+        "identityRequest":{
+    "value": "1990/09/28",
+"key": "dob",
+    "identityRequestTemplate": "ida/DemoAuthDelegated/DemoIdentityEncrypt"
+    }
+    }'
+      output: '{
+  "kycStatus": "true"
+}'
+  auth_DemoAuthDelegated_DemoAuth_forKycExchangeRespTypeNonJwe_Pos_Sid:
+      endPoint: /idauthentication/v1/kyc-auth/delegated/$partialPartnerKeyUrl$/$ID:CreateOIDCClient_Delegated_Valid_Smoke_sid_clientId$
+      uniqueIdentifier: TC_IDA_DemoAuthDelegated_27
+      description: Demo auth kyc delegated dedicated token for kyc-exchange non-JWE respType positive test
+      role: resident
+      restMethod: post
+      checkErrorsOnlyInResponse: true
+      inputTemplate: ida/DemoAuthDelegated/DemoAuthDelegated
+      outputTemplate: ida/DemoAuthDelegated/DemoAuthDelegatedResult
+      input: '{
+        "requestTime": "$TIMESTAMP$",
+        "individualId": "$ID:AddIdentity_withValidParameters_forDemoDelegated_Pos_UIN$",
+        "transactionId": "$TRANSACTIONID$",
+        "individualIdType": "UIN",
+        "bio": false,
+        "demo": true,
+        "otp": false,
+        "identityRequest":{
+    "value": "1990/09/28",
+"key": "dob",
+    "identityRequestTemplate": "ida/DemoAuthDelegated/DemoIdentityEncrypt"
+    }
+    }'
+      output: '{
+  "kycStatus": "true"
+}'

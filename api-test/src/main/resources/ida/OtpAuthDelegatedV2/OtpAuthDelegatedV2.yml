@@ -1,0 +1,73 @@
+OtpAuthDelegatedV2:
+  auth_OtpAuthDelegatedV2_OTP_Auth_With_Valid_UIN_Smoke_Pos_Sid:
+      endPoint: /idauthentication/v1/kyc-auth/v2/delegated/$partialPartnerKeyUrl$/$ID:CreateOIDCClient_Delegated_Valid_Smoke_sid_clientId$
+      uniqueIdentifier: TC_IDA_OtpAuthDelegatedV2_01
+      description: Validate the delegated V2 OTP authentication for a valid UIN in a smoke positive scenario
+      role: resident
+      restMethod: post
+      inputTemplate: ida/OtpAuthDelegatedV2/OtpAuthDelegatedV2
+      outputTemplate: ida/OtpAuthDelegatedV2/OtpAuthDelegatedV2Result
+      input: '{
+        "otpChannel": "$ID:AddIdentity_withValidParameters_forOtpDelegated_Pos_EMAIL$",
+        "requestTime": "$TIMESTAMP$",
+        "individualId": "$ID:AddIdentity_withValidParameters_forOtpDelegated_Pos_UIN$",
+        "transactionId": "$TRANSACTIONID$",
+        "individualIdType": "UIN",
+        "claimsMetadataRequired": false,
+        "bio": false,
+        "demo": false,
+        "otp": true,
+        "sendOtp":{
+    "transactionID": "$TRANSACTIONID$",
+    "requestTime": "$TIMESTAMP$",
+    "individualId": "$ID:AddIdentity_withValidParameters_forOtpDelegated_Pos_UIN$",
+    "individualIdType": "UIN",
+    "sendOtpReqTemplate": "ida/OtpAuth/sendOtp",
+    "sendOtpEndPoint": "/idauthentication/v1/otp/$partnerKeyURL$",
+    "otpIdentyEnryptRequestPath": "ida/OtpAuthDelegated/OtpIdentityEncrypt.json"
+    }
+    }'
+      output: '{
+  "kycStatus": "true",
+ "sendOtpResp":{
+        "sendOtpResTemplate":"ida/OtpAuth/sendOtpRes"
+    }
+}'
+  auth_OtpAuthDelegatedV2Neg_Invalid_OtpChannel_Neg:
+      endPoint: /idauthentication/v1/kyc-auth/v2/delegated/$partialPartnerKeyUrl$/$ID:CreateOIDCClient_Delegated_Valid_Smoke_sid_clientId$
+      uniqueIdentifier: TC_IDA_OtpAuthDelegatedV2Neg_01
+      description: Kyc auth V2 OTP auth with an invalid otpChannel
+      role: resident
+      restMethod: post
+      inputTemplate: ida/OtpAuthDelegatedV2/OtpAuthDelegatedV2
+      outputTemplate: ida/DelegateError
+      input: '{
+        "otpChannel": "26363633",
+        "requestTime": "$TIMESTAMP$",
+        "individualId": "$ID:AddIdentity_withValidParameters_forOtpDelegated_Pos_UIN$",
+        "transactionId": "$TRANSACTIONID$",
+        "individualIdType": "UIN",
+        "claimsMetadataRequired": false,
+        "bio": false,
+        "demo": false,
+        "otp": true,
+        "sendOtp":{
+    "transactionID": "$TRANSACTIONID$",
+    "requestTime": "$TIMESTAMP$",
+    "individualId": "$ID:AddIdentity_withValidParameters_forOtpDelegated_Pos_UIN$",
+    "individualIdType": "UIN",
+    "sendOtpReqTemplate": "ida/OtpAuth/sendOtp",
+    "sendOtpEndPoint": "/idauthentication/v1/otp/$partnerKeyURL$",
+    "otpIdentyEnryptRequestPath": "ida/OtpAuthDelegated/OtpIdentityEncrypt.json"
+    }
+    }'
+      output: '{
+      "errors": [
+        {
+          "errorCode": "IDA-OTA-004"
+        }
+      ],
+ "sendOtpResp":{
+        "sendOtpResTemplate":"ida/OtpAuth/sendOtpRes"
+    }
+}'

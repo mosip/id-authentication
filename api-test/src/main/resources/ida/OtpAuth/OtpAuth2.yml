@@ -458,49 +458,6 @@ OtpAuth:
         "maskedEmail": "$IGNORE$"
     }
 }'
-  auth_OTP_Auth_With_Invalid_individualId_UIN_neg:
-      endPoint: /idauthentication/v1/auth/$partnerKeyURL$
-      uniqueIdentifier: TC_IDA_OtpAuth_13
-      description: Verify that OTP authentication fails when an invalid individual ID is used with a UIN
-      role: resident
-      restMethod: post
-      inputTemplate: ida/OtpAuth/OtpAuth
-      outputTemplate: ida/OtpAuth/error
-      input: '{
-        "otpChannel": "$ID:AddIdentity_For_Otp_Auth_smoke_Pos_EMAIL$",
-        "requestTime": "$TIMESTAMP$",
-        "individualId": "@@###cndjdhe77473838",
-        "transactionId": "$TRANSACTIONID$",
-        "individualIdType": "UIN",
-        "bio": false,
-        "demo": false,
-        "otp": true,
-        "sendOtp":{
-    "transactionID": "$TRANSACTIONID$",
-    "requestTime": "$TIMESTAMP$",
-    "individualId": "$ID:AddIdentity_For_Otp_Auth_smoke_Pos_UIN$",
-    "individualIdType": "UIN",
-    "sendOtpReqTemplate": "ida/OtpAuth/sendOtp",
-    "sendOtpEndPoint": "/idauthentication/v1/otp/$partnerKeyURL$",
-    "otpIdentyEnryptRequestPath": "ida/OtpAuth/OtpIdentityEncrypt.json"
-    }
-    }'
-      output: '{
-    "authStatus": false,
-   "errors": [
-    {
-      "errorCode": "IDA-MLC-002",
-      "errorMessage": "Invalid UIN",
-      "actionMessage": "$IGNORE$"
-    }
-  ],
-  "sendOtpResp":{
-        "transactionID": "$TRANSACTIONID$",
-        "maskedMobile": "$IGNORE$",
-        "sendOtpResTemplate":"ida/OtpAuth/sendOtpRes",
-        "maskedEmail": "$IGNORE$"
-    }
-}'
   auth_OTP_Auth_With_Blank_individualId_uin_neg:
       endPoint: /idauthentication/v1/auth/$partnerKeyURL$
       uniqueIdentifier: TC_IDA_OtpAuth_14

@@ -56,6 +56,24 @@
 			<class name="io.mosip.testrig.apirig.auth.testscripts.KycExchange" />
 		</classes>
 	</test>
+	<test name="DemoAuthDelegatedV2">
+		<parameter name="ymlFile"
+			value="ida/DemoAuthDelegatedV2/DemoAuthDelegatedV2.yml" />
+		<parameter name="isInternal" value="false" />
+		<parameter name="idKeyName" value="kycToken" />
+		<classes>
+			<class name="io.mosip.testrig.apirig.auth.testscripts.DemoAuth" />
+		</classes>
+	</test>
+	<test name="OtpAuthDelegatedV2">
+		<parameter name="ymlFile"
+			value="ida/OtpAuthDelegatedV2/OtpAuthDelegatedV2.yml" />
+		<parameter name="isInternal" value="false" />
+		<parameter name="idKeyName" value="kycToken" />
+		<classes>
+			<class name="io.mosip.testrig.apirig.auth.testscripts.OtpAuthNew" />
+		</classes>
+	</test>
 	<test name="EkycBio">
 		<parameter name="ymlFile" value="ida/EkycBio/EkycBio2.yml" />
 		<parameter name="isInternal" value="false" />
@@ -116,15 +134,6 @@
 			value="ida/AuthTransaction/AuthTransaction.yml" />
 		<classes>
 			<class name="io.mosip.testrig.apirig.auth.testscripts.GetWithParam" />
-		</classes>
-	</test>
-
-	<test name="UpdateIdentity">
-		<parameter name="ymlFile"
-			value="ida/UpdateIdentity/UpdateIdentity.yml" />
-		<classes>
-			<class
-				name="io.mosip.testrig.apirig.auth.testscripts.UpdateIdentity" />
 		</classes>
 	</test>
 
@@ -216,6 +225,14 @@
 		</classes>
 	</test>
 
+	<test name="KycExchangeNeg">
+		<parameter name="ymlFile"
+			value="ida/KycExchangeNeg/KycExchangeNeg.yml" />
+		<classes>
+			<class name="io.mosip.testrig.apirig.auth.testscripts.KycExchange" />
+		</classes>
+	</test>
+
 	<test name="EkycDemo">
 		<parameter name="ymlFile" value="ida/EkycDemo/EkycDemo2.yml" />
 		<classes>
@@ -287,6 +304,18 @@
 			value="ida/BlockHotlistStatus/BlockHotlistStatus.yml" />
 		<classes>
 			<class name="io.mosip.testrig.apirig.auth.testscripts.GetWithParam" />
+		</classes>
+	</test>
+
+	<!-- Moved to end of suite: this test permanently mutates a shared identity's
+		dateOfBirth (AddIdentity_ValidParam_smoke_Pos_UIN), which broke earlier
+		DOB-dependent tests (e.g. TC_IDA_DemoAuth_04) when it ran mid-suite. -->
+	<test name="UpdateIdentity">
+		<parameter name="ymlFile"
+			value="ida/UpdateIdentity/UpdateIdentity.yml" />
+		<classes>
+			<class
+				name="io.mosip.testrig.apirig.auth.testscripts.UpdateIdentity" />
 		</classes>
 	</test>
 

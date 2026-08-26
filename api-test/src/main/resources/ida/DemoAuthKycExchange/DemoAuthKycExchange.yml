@@ -479,14 +479,15 @@ DemoAuthKycExchange:
       output: '{
 
 }'
-  auth_DemoAuthKycExchange_Without_KycAuth_Neg:
+  auth_DemoAuthKycExchange_DemoAuth_with_already_used_kyc_Token_Neg:
       endPoint: /idauthentication/v1/kyc-exchange/delegated/$partialPartnerKeyUrl$/$ID:CreateOIDCClient_Delegated_Valid_Smoke_sid_clientId$
       uniqueIdentifier: TC_IDA_DemoAuthKycExchange_23
-      description: IDA_TC_1638 - Verify kyc-exchange fails with an appropriate error when called with a kycToken that was never issued by a prior kyc-auth call
+      description: Demo auth kyc exchange with already used token
       role: resident
       restMethod: post
+      checkErrorsOnlyInResponse: true
       inputTemplate: ida/DemoAuthKycExchange/DemoAuthKycExchange
-      outputTemplate: ida/DemoAuthKycExchange/DemoAuthKycExchangeError
+      outputTemplate: ida/DelegateError
       input: '{
         "requestTime": "$TIMESTAMP$",
         "individualId": "$ID:AddIdentity_withValidParameters_forDemoDelegated_Pos_UIN$",
@@ -494,15 +495,43 @@ DemoAuthKycExchange:
         "individualIdType": "UIN",
         "id": "mosip.identity.kycexchange",
         "version": "1.0",
-        "kycToken": "NeverIssuedByKycAuth_InvalidKycToken_123456789",
+        "kycToken": "$ID:DemoAuthDelegated_DemoAuth_with_phone_Sid_kycToken$",
         "consentObtained": [{consentObtainedValue: "gender"}, {consentObtainedValue: "birthdate"}],
         "locales": [{localesValue: "eng"}],
         "respType": "JWE"
     }'
       output: '{
-  "errors": [
-    {
-      "errorCode": "IDA-KYE-001"
-    }
-  ]
+      "errors": [
+        {
+          "errorCode": "IDA-KYE-003"
+        }
+      ]
+}'
+  auth_DemoAuthKycExchange_DemoAuth_using_different_individualId_Neg:
+      endPoint: /idauthentication/v1/kyc-exchange/delegated/$partialPartnerKeyUrl$/$ID:CreateOIDCClient_Delegated_Valid_Smoke_sid_clientId$
+      uniqueIdentifier: TC_IDA_DemoAuthKycExchange_24
+      description: Demo auth kyc exchange with different individualId than the one used for kyc-auth
+      role: resident
+      restMethod: post
+      checkErrorsOnlyInResponse: true
+      inputTemplate: ida/DemoAuthKycExchange/DemoAuthKycExchange
+      outputTemplate: ida/DelegateError
+      input: '{
+        "requestTime": "$TIMESTAMP$",
+        "individualId": "$ID:AddIdentity_EkycDemo_Auth_smoke_Pos_UIN$",
+        "transactionID": "$TRANSACTIONID$",
+        "individualIdType": "UIN",
+        "id": "mosip.identity.kycexchange",
+        "version": "1.0",
+        "kycToken": "$ID:DemoAuthDelegated_DemoAuth_forKycExchangeIndividualIdMismatch_Pos_Sid_kycToken$",
+        "consentObtained": [{consentObtainedValue: "gender"}, {consentObtainedValue: "birthdate"}],
+        "locales": [{localesValue: "eng"}],
+        "respType": "JWE"
+    }'
+      output: '{
+      "errors": [
+        {
+          "errorCode": "IDA-KYE-007"
+        }
+      ]
 }'
