@@ -2,7 +2,7 @@ DemoAuthDelegatedV2:
   auth_DemoAuthDelegatedV2_DemoAuth_DOB_Valid_Smoke_UIN_Pos_Sid:
       endPoint: /idauthentication/v1/kyc-auth/v2/delegated/$partialPartnerKeyUrl$/$ID:CreateOIDCClient_Delegated_Valid_Smoke_sid_clientId$
       uniqueIdentifier: TC_IDA_DemoAuthDelegatedV2_01
-      description: Validate the delegated V2 demographic (dob) authentication for a valid UIN in a smoke positive scenario
+      description: Validate the delegated V2 demographic (dob) authentication for a valid UIN in a smoke positive scenario - expected to succeed
       role: resident
       restMethod: post
       inputTemplate: ida/DemoAuthDelegatedV2/DemoAuthDelegatedV2
@@ -28,7 +28,7 @@ DemoAuthDelegatedV2:
   auth_DemoAuthDelegatedV2Neg_Invalid_DOB_Neg:
       endPoint: /idauthentication/v1/kyc-auth/v2/delegated/$partialPartnerKeyUrl$/$ID:CreateOIDCClient_Delegated_Valid_Smoke_sid_clientId$
       uniqueIdentifier: TC_IDA_DemoAuthDelegatedV2Neg_01
-      description: Kyc auth V2 demographic auth with a DOB that does not match the identity
+      description: Kyc auth V2 demographic auth with a DOB that does not match the identity - expected to fail
       role: resident
       restMethod: post
       inputTemplate: ida/DemoAuthDelegatedV2/DemoAuthDelegatedV2

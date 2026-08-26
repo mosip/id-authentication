@@ -1,8 +1,8 @@
 BioAuthDelegatedV2:
   auth_BioAuthDelegatedV2_Biometric_Face_With_Valid_uin_Smoke_Pos_Sid:
-      endPoint: /idauthentication/v1/kyc-auth/v2/delegated/$partialPartnerKeyUrl$​/$ID:CreateOIDCClient_Delegated_Valid_Smoke_sid_clientId$
+      endPoint: /idauthentication/v1/kyc-auth/v2/delegated/$partialPartnerKeyUrl$/$ID:CreateOIDCClient_Delegated_Valid_Smoke_sid_clientId$
       uniqueIdentifier: TC_IDA_BioAuthDelegatedV2_01
-      description: Validate the delegated V2 biometric face authentication for a valid UIN in a smoke positive scenario using SID
+      description: Validate the delegated V2 biometric face authentication for a valid UIN in a smoke positive scenario using SID - expected to succeed
       role: resident
       restMethod: post
       inputTemplate: ida/BioAuthDelegatedV2/BioAuthDelegatedV2
@@ -41,9 +41,9 @@ BioAuthDelegatedV2:
   "kycStatus": "true"
 }'
   auth_BioAuthDelegatedV2_claimsMetadataRequired_true_Pos:
-      endPoint: /idauthentication/v1/kyc-auth/v2/delegated/$partialPartnerKeyUrl$​/$ID:CreateOIDCClient_Delegated_Valid_Smoke_sid_clientId$
+      endPoint: /idauthentication/v1/kyc-auth/v2/delegated/$partialPartnerKeyUrl$/$ID:CreateOIDCClient_Delegated_Valid_Smoke_sid_clientId$
       uniqueIdentifier: TC_IDA_BioAuthDelegatedV2_02
-      description: Kyc auth V2 with claimsMetadataRequired true - response must carry a non-empty verifiedClaimsMetadata
+      description: Kyc auth V2 with claimsMetadataRequired true - response must carry a non-empty verifiedClaimsMetadata - expected to succeed
       role: resident
       restMethod: post
       inputTemplate: ida/BioAuthDelegatedV2/BioAuthDelegatedV2
@@ -83,7 +83,7 @@ BioAuthDelegatedV2:
   "verifiedClaimsMetadata": "$IGNORE$"
 }'
   auth_BioAuthDelegatedV2_claimsMetadataRequired_false_Pos:
-      endPoint: /idauthentication/v1/kyc-auth/v2/delegated/$partialPartnerKeyUrl$​/$ID:CreateOIDCClient_Delegated_Valid_Smoke_sid_clientId$
+      endPoint: /idauthentication/v1/kyc-auth/v2/delegated/$partialPartnerKeyUrl$/$ID:CreateOIDCClient_Delegated_Valid_Smoke_sid_clientId$
       uniqueIdentifier: TC_IDA_BioAuthDelegatedV2_03
       description: Kyc auth V2 with claimsMetadataRequired omitted, defaults to false - still succeeds
       role: resident
@@ -95,7 +95,7 @@ BioAuthDelegatedV2:
         "individualId": "$ID:AddIdentity_For_Kyc_Delegated_Bio_Auth_Smoke_Pos_UIN$",
         "transactionId": "$TRANSACTIONID$",
         "individualIdType": "UIN",
-        "claimsMetadataRequired": false,
+        "claimsMetadataRequired": "$REMOVE$",
         "bio": true,
         "demo": false,
         "otp": false,
@@ -124,9 +124,9 @@ BioAuthDelegatedV2:
   "kycStatus": "true"
 }'
   auth_BioAuthDelegatedV2Neg_Invalid_BioValue_Neg:
-      endPoint: /idauthentication/v1/kyc-auth/v2/delegated/$partialPartnerKeyUrl$​/$ID:CreateOIDCClient_Delegated_Valid_Smoke_sid_clientId$
+      endPoint: /idauthentication/v1/kyc-auth/v2/delegated/$partialPartnerKeyUrl$/$ID:CreateOIDCClient_Delegated_Valid_Smoke_sid_clientId$
       uniqueIdentifier: TC_IDA_BioAuthDelegatedV2Neg_01
-      description: Kyc auth V2 with invalid bioValue
+      description: Kyc auth V2 with invalid bioValue - expected to fail
       role: resident
       restMethod: post
       inputTemplate: ida/BioAuthDelegatedV2/BioAuthDelegatedV2
@@ -172,9 +172,9 @@ BioAuthDelegatedV2:
       }
 }'
   auth_BioAuthDelegatedV2Neg_Invalid_DigitalId_Type_Neg:
-      endPoint: /idauthentication/v1/kyc-auth/v2/delegated/$partialPartnerKeyUrl$​/$ID:CreateOIDCClient_Delegated_Valid_Smoke_sid_clientId$
+      endPoint: /idauthentication/v1/kyc-auth/v2/delegated/$partialPartnerKeyUrl$/$ID:CreateOIDCClient_Delegated_Valid_Smoke_sid_clientId$
       uniqueIdentifier: TC_IDA_BioAuthDelegatedV2Neg_02
-      description: Kyc auth V2 with an invalid digitalId type
+      description: Kyc auth V2 with an invalid digitalId type - expected to fail
       role: resident
       restMethod: post
       inputTemplate: ida/BioAuthDelegatedV2/BioAuthDelegatedV2
@@ -223,9 +223,9 @@ BioAuthDelegatedV2:
       }
 }'
   auth_BioAuthDelegatedV2Neg_Dummy_PartnerKey_Neg:
-      endPoint: /idauthentication/v1/kyc-auth/v2/delegated/$a2673y3g3grURL$​/$ID:CreateOIDCClient_Delegated_Valid_Smoke_sid_clientId$
+      endPoint: /idauthentication/v1/kyc-auth/v2/delegated/$a2673y3g3grURL$/$ID:CreateOIDCClient_Delegated_Valid_Smoke_sid_clientId$
       uniqueIdentifier: TC_IDA_BioAuthDelegatedV2Neg_03
-      description: Kyc auth V2 with a dummy/unregistered partner key
+      description: Kyc auth V2 with a dummy/unregistered partner key - expected to fail
       role: resident
       restMethod: post
       inputTemplate: ida/BioAuthDelegatedV2/BioAuthDelegatedV2
@@ -274,9 +274,9 @@ BioAuthDelegatedV2:
       }
 }'
   auth_BioAuthDelegatedV2Neg_Malformed_RequestTime_Neg:
-      endPoint: /idauthentication/v1/kyc-auth/v2/delegated/$partialPartnerKeyUrl$​/$ID:CreateOIDCClient_Delegated_Valid_Smoke_sid_clientId$
+      endPoint: /idauthentication/v1/kyc-auth/v2/delegated/$partialPartnerKeyUrl$/$ID:CreateOIDCClient_Delegated_Valid_Smoke_sid_clientId$
       uniqueIdentifier: TC_IDA_BioAuthDelegatedV2Neg_04
-      description: Kyc auth V2 with an unparseable requestTime
+      description: Kyc auth V2 with an unparseable requestTime - expected to fail
       role: resident
       restMethod: post
       inputTemplate: ida/BioAuthDelegatedV2/BioAuthDelegatedV2
@@ -322,7 +322,7 @@ BioAuthDelegatedV2:
       }
 }'
   auth_BioAuthDelegatedV2Neg_Invalid_UIN_Neg:
-      endPoint: /idauthentication/v1/kyc-auth/v2/delegated/$partialPartnerKeyUrl$​/$ID:CreateOIDCClient_Delegated_Valid_Smoke_sid_clientId$
+      endPoint: /idauthentication/v1/kyc-auth/v2/delegated/$partialPartnerKeyUrl$/$ID:CreateOIDCClient_Delegated_Valid_Smoke_sid_clientId$
       uniqueIdentifier: TC_IDA_BioAuthDelegatedV2Neg_05
       description: Kyc auth V2 with an invalid UIN (fails checksum)
       role: resident
@@ -370,7 +370,7 @@ BioAuthDelegatedV2:
       }
 }'
   auth_BioAuthDelegatedV2Neg_Invalid_VID_Neg:
-      endPoint: /idauthentication/v1/kyc-auth/v2/delegated/$partialPartnerKeyUrl$​/$ID:CreateOIDCClient_Delegated_Valid_Smoke_sid_clientId$
+      endPoint: /idauthentication/v1/kyc-auth/v2/delegated/$partialPartnerKeyUrl$/$ID:CreateOIDCClient_Delegated_Valid_Smoke_sid_clientId$
       uniqueIdentifier: TC_IDA_BioAuthDelegatedV2Neg_06
       description: Kyc auth V2 with an invalid VID (fails checksum)
       role: resident
@@ -418,9 +418,9 @@ BioAuthDelegatedV2:
       }
 }'
   auth_BioAuthDelegatedV2Neg_Missing_RequestTime_Neg:
-      endPoint: /idauthentication/v1/kyc-auth/v2/delegated/$partialPartnerKeyUrl$​/$ID:CreateOIDCClient_Delegated_Valid_Smoke_sid_clientId$
+      endPoint: /idauthentication/v1/kyc-auth/v2/delegated/$partialPartnerKeyUrl$/$ID:CreateOIDCClient_Delegated_Valid_Smoke_sid_clientId$
       uniqueIdentifier: TC_IDA_BioAuthDelegatedV2Neg_07
-      description: Kyc auth V2 with missing requestTime
+      description: Kyc auth V2 with missing requestTime - expected to fail
       role: resident
       restMethod: post
       inputTemplate: ida/BioAuthDelegatedV2/BioAuthDelegatedV2
@@ -466,7 +466,7 @@ BioAuthDelegatedV2:
       }
 }'
   auth_BioAuthDelegatedV2Neg_Malformed_TransactionID_Neg:
-      endPoint: /idauthentication/v1/kyc-auth/v2/delegated/$partialPartnerKeyUrl$​/$ID:CreateOIDCClient_Delegated_Valid_Smoke_sid_clientId$
+      endPoint: /idauthentication/v1/kyc-auth/v2/delegated/$partialPartnerKeyUrl$/$ID:CreateOIDCClient_Delegated_Valid_Smoke_sid_clientId$
       uniqueIdentifier: TC_IDA_BioAuthDelegatedV2Neg_08
       description: Kyc auth V2 with transactionId not matching v1's 10-char alphanumeric format - v2 rejects it same as v1 (see TC_IDA_BioAuthDelegatedV2Neg_09 for the v2-specific upper bound instead)
       role: resident
@@ -514,9 +514,9 @@ BioAuthDelegatedV2:
       }
 }'
   auth_BioAuthDelegatedV2Neg_TransactionID_TooLong_Neg:
-      endPoint: /idauthentication/v1/kyc-auth/v2/delegated/$partialPartnerKeyUrl$​/$ID:CreateOIDCClient_Delegated_Valid_Smoke_sid_clientId$
+      endPoint: /idauthentication/v1/kyc-auth/v2/delegated/$partialPartnerKeyUrl$/$ID:CreateOIDCClient_Delegated_Valid_Smoke_sid_clientId$
       uniqueIdentifier: TC_IDA_BioAuthDelegatedV2Neg_09
-      description: Kyc auth V2 with transactionID exceeding the v2 schema's 50 char upper bound
+      description: Kyc auth V2 with transactionID exceeding the v2 schema's 50 char upper bound - expected to fail
       role: resident
       restMethod: post
       inputTemplate: ida/BioAuthDelegatedV2/BioAuthDelegatedV2
@@ -562,9 +562,9 @@ BioAuthDelegatedV2:
       }
 }'
   auth_BioAuthDelegatedV2Neg_Invalid_BioType_Neg:
-      endPoint: /idauthentication/v1/kyc-auth/v2/delegated/$partialPartnerKeyUrl$​/$ID:CreateOIDCClient_Delegated_Valid_Smoke_sid_clientId$
+      endPoint: /idauthentication/v1/kyc-auth/v2/delegated/$partialPartnerKeyUrl$/$ID:CreateOIDCClient_Delegated_Valid_Smoke_sid_clientId$
       uniqueIdentifier: TC_IDA_BioAuthDelegatedV2Neg_10
-      description: Kyc auth V2 with an unsupported bioType value
+      description: Kyc auth V2 with an unsupported bioType value - expected to fail
       role: resident
       restMethod: post
       inputTemplate: ida/BioAuthDelegatedV2/BioAuthDelegatedV2
@@ -610,9 +610,9 @@ BioAuthDelegatedV2:
       }
 }'
   auth_BioAuthDelegatedV2Neg_Revoked_VID_Neg:
-      endPoint: /idauthentication/v1/kyc-auth/v2/delegated/$partialPartnerKeyUrl$​/$ID:CreateOIDCClient_Delegated_Valid_Smoke_sid_clientId$
+      endPoint: /idauthentication/v1/kyc-auth/v2/delegated/$partialPartnerKeyUrl$/$ID:CreateOIDCClient_Delegated_Valid_Smoke_sid_clientId$
       uniqueIdentifier: TC_IDA_BioAuthDelegatedV2Neg_11
-      description: Kyc auth V2 with a revoked VID
+      description: Kyc auth V2 with a revoked VID - expected to fail
       role: resident
       restMethod: post
       inputTemplate: ida/BioAuthDelegatedV2/BioAuthDelegatedV2
@@ -658,9 +658,9 @@ BioAuthDelegatedV2:
       }
 }'
   auth_BioAuthDelegatedV2Neg_Permanently_Locked_UIN_Neg:
-      endPoint: /idauthentication/v1/kyc-auth/v2/delegated/$partialPartnerKeyUrl$​/$ID:CreateOIDCClient_Delegated_Valid_Smoke_sid_clientId$
+      endPoint: /idauthentication/v1/kyc-auth/v2/delegated/$partialPartnerKeyUrl$/$ID:CreateOIDCClient_Delegated_Valid_Smoke_sid_clientId$
       uniqueIdentifier: TC_IDA_BioAuthDelegatedV2Neg_12
-      description: Kyc auth V2 with a permanently locked UIN
+      description: Kyc auth V2 with a permanently locked UIN - expected to fail
       role: resident
       restMethod: post
       inputTemplate: ida/BioAuthDelegatedV2/BioAuthDelegatedV2
@@ -706,9 +706,9 @@ BioAuthDelegatedV2:
       }
 }'
   auth_BioAuthDelegatedV2Neg_IndividualId_TooShort_Neg:
-      endPoint: /idauthentication/v1/kyc-auth/v2/delegated/$partialPartnerKeyUrl$​/$ID:CreateOIDCClient_Delegated_Valid_Smoke_sid_clientId$
+      endPoint: /idauthentication/v1/kyc-auth/v2/delegated/$partialPartnerKeyUrl$/$ID:CreateOIDCClient_Delegated_Valid_Smoke_sid_clientId$
       uniqueIdentifier: TC_IDA_BioAuthDelegatedV2Neg_13
-      description: Kyc auth V2 with individualId shorter than the schema's 12 char lower bound
+      description: Kyc auth V2 with individualId shorter than the schema's 12 char lower bound - expected to fail
       role: resident
       restMethod: post
       inputTemplate: ida/BioAuthDelegatedV2/BioAuthDelegatedV2
@@ -754,9 +754,9 @@ BioAuthDelegatedV2:
       }
 }'
   auth_BioAuthDelegatedV2Neg_IndividualId_TooLong_Neg:
-      endPoint: /idauthentication/v1/kyc-auth/v2/delegated/$partialPartnerKeyUrl$​/$ID:CreateOIDCClient_Delegated_Valid_Smoke_sid_clientId$
+      endPoint: /idauthentication/v1/kyc-auth/v2/delegated/$partialPartnerKeyUrl$/$ID:CreateOIDCClient_Delegated_Valid_Smoke_sid_clientId$
       uniqueIdentifier: TC_IDA_BioAuthDelegatedV2Neg_14
-      description: Kyc auth V2 with individualId longer than the schema's 28 char upper bound
+      description: Kyc auth V2 with individualId longer than the schema's 28 char upper bound - expected to fail
       role: resident
       restMethod: post
       inputTemplate: ida/BioAuthDelegatedV2/BioAuthDelegatedV2
@@ -802,9 +802,9 @@ BioAuthDelegatedV2:
       }
 }'
   auth_BioAuthDelegatedV2_forKycExchangeV2IndividualIdMismatch_Pos_Sid:
-      endPoint: /idauthentication/v1/kyc-auth/v2/delegated/$partialPartnerKeyUrl$​/$ID:CreateOIDCClient_Delegated_Valid_Smoke_sid_clientId$
+      endPoint: /idauthentication/v1/kyc-auth/v2/delegated/$partialPartnerKeyUrl$/$ID:CreateOIDCClient_Delegated_Valid_Smoke_sid_clientId$
       uniqueIdentifier: TC_IDA_BioAuthDelegatedV2_04
-      description: Kyc auth V2 dedicated token for kyc-exchange V2 individualId mismatch negative test
+      description: Kyc auth V2 dedicated token for kyc-exchange V2 individualId mismatch negative test - expected to succeed
       role: resident
       restMethod: post
       inputTemplate: ida/BioAuthDelegatedV2/BioAuthDelegatedV2
@@ -843,9 +843,9 @@ BioAuthDelegatedV2:
   "kycStatus": "true"
 }'
   auth_BioAuthDelegatedV2_forKycExchangeV2DuplicateClaims_Pos_Sid:
-      endPoint: /idauthentication/v1/kyc-auth/v2/delegated/$partialPartnerKeyUrl$​/$ID:CreateOIDCClient_Delegated_Valid_Smoke_sid_clientId$
+      endPoint: /idauthentication/v1/kyc-auth/v2/delegated/$partialPartnerKeyUrl$/$ID:CreateOIDCClient_Delegated_Valid_Smoke_sid_clientId$
       uniqueIdentifier: TC_IDA_BioAuthDelegatedV2_05
-      description: Kyc auth V2 dedicated token for kyc-exchange V2 duplicate verified/unverified claims negative test
+      description: Kyc auth V2 dedicated token for kyc-exchange V2 duplicate verified/unverified claims negative test - expected to succeed
       role: resident
       restMethod: post
       inputTemplate: ida/BioAuthDelegatedV2/BioAuthDelegatedV2
@@ -884,9 +884,9 @@ BioAuthDelegatedV2:
   "kycStatus": "true"
 }'
   auth_BioAuthDelegatedV2_forKycExchangeV2MissingTxnId_Pos_Sid:
-      endPoint: /idauthentication/v1/kyc-auth/v2/delegated/$partialPartnerKeyUrl$​/$ID:CreateOIDCClient_Delegated_Valid_Smoke_sid_clientId$
+      endPoint: /idauthentication/v1/kyc-auth/v2/delegated/$partialPartnerKeyUrl$/$ID:CreateOIDCClient_Delegated_Valid_Smoke_sid_clientId$
       uniqueIdentifier: TC_IDA_BioAuthDelegatedV2_06
-      description: Kyc auth V2 dedicated token for kyc-exchange V2 missing/null transactionID negative test
+      description: Kyc auth V2 dedicated token for kyc-exchange V2 missing/null transactionID negative test - expected to succeed
       role: resident
       restMethod: post
       inputTemplate: ida/BioAuthDelegatedV2/BioAuthDelegatedV2
@@ -925,9 +925,9 @@ BioAuthDelegatedV2:
   "kycStatus": "true"
 }'
   auth_BioAuthDelegatedV2_forKycExchangeV2VerifiedOnly_Pos_Sid:
-      endPoint: /idauthentication/v1/kyc-auth/v2/delegated/$partialPartnerKeyUrl$​/$ID:CreateOIDCClient_Delegated_Valid_Smoke_sid_clientId$
+      endPoint: /idauthentication/v1/kyc-auth/v2/delegated/$partialPartnerKeyUrl$/$ID:CreateOIDCClient_Delegated_Valid_Smoke_sid_clientId$
       uniqueIdentifier: TC_IDA_BioAuthDelegatedV2_07
-      description: Kyc auth V2 dedicated token for kyc-exchange V2 verified-claims-only positive test
+      description: Kyc auth V2 dedicated token for kyc-exchange V2 verified-claims-only positive test - expected to succeed
       role: resident
       restMethod: post
       inputTemplate: ida/BioAuthDelegatedV2/BioAuthDelegatedV2
@@ -966,9 +966,9 @@ BioAuthDelegatedV2:
   "kycStatus": "true"
 }'
   auth_BioAuthDelegatedV2_forKycExchangeV2UnverifiedOnly_Pos_Sid:
-      endPoint: /idauthentication/v1/kyc-auth/v2/delegated/$partialPartnerKeyUrl$​/$ID:CreateOIDCClient_Delegated_Valid_Smoke_sid_clientId$
+      endPoint: /idauthentication/v1/kyc-auth/v2/delegated/$partialPartnerKeyUrl$/$ID:CreateOIDCClient_Delegated_Valid_Smoke_sid_clientId$
       uniqueIdentifier: TC_IDA_BioAuthDelegatedV2_08
-      description: Kyc auth V2 dedicated token for kyc-exchange V2 unverified-claims-only positive test
+      description: Kyc auth V2 dedicated token for kyc-exchange V2 unverified-claims-only positive test - expected to succeed
       role: resident
       restMethod: post
       inputTemplate: ida/BioAuthDelegatedV2/BioAuthDelegatedV2
@@ -1007,9 +1007,9 @@ BioAuthDelegatedV2:
   "kycStatus": "true"
 }'
   auth_BioAuthDelegatedV2_forKycExchangeV2MultiVerification_Pos_Sid:
-      endPoint: /idauthentication/v1/kyc-auth/v2/delegated/$partialPartnerKeyUrl$​/$ID:CreateOIDCClient_Delegated_Valid_Smoke_sid_clientId$
+      endPoint: /idauthentication/v1/kyc-auth/v2/delegated/$partialPartnerKeyUrl$/$ID:CreateOIDCClient_Delegated_Valid_Smoke_sid_clientId$
       uniqueIdentifier: TC_IDA_BioAuthDelegatedV2_09
-      description: Kyc auth V2 dedicated token for kyc-exchange V2 multiple verification blocks positive test
+      description: Kyc auth V2 dedicated token for kyc-exchange V2 multiple verification blocks positive test - expected to succeed
       role: resident
       restMethod: post
       inputTemplate: ida/BioAuthDelegatedV2/BioAuthDelegatedV2
@@ -1048,9 +1048,9 @@ BioAuthDelegatedV2:
   "kycStatus": "true"
 }'
   auth_BioAuthDelegatedV2_forKycExchangeV2RespTypeNonJwe_Pos_Sid:
-      endPoint: /idauthentication/v1/kyc-auth/v2/delegated/$partialPartnerKeyUrl$​/$ID:CreateOIDCClient_Delegated_Valid_Smoke_sid_clientId$
+      endPoint: /idauthentication/v1/kyc-auth/v2/delegated/$partialPartnerKeyUrl$/$ID:CreateOIDCClient_Delegated_Valid_Smoke_sid_clientId$
       uniqueIdentifier: TC_IDA_BioAuthDelegatedV2_10
-      description: Kyc auth V2 dedicated token for kyc-exchange V2 non-JWE respType positive test
+      description: Kyc auth V2 dedicated token for kyc-exchange V2 non-JWE respType positive test - expected to succeed
       role: resident
       restMethod: post
       inputTemplate: ida/BioAuthDelegatedV2/BioAuthDelegatedV2

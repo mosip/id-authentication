@@ -2,7 +2,7 @@ OtpAuthDelegatedV2:
   auth_OtpAuthDelegatedV2_OTP_Auth_With_Valid_UIN_Smoke_Pos_Sid:
       endPoint: /idauthentication/v1/kyc-auth/v2/delegated/$partialPartnerKeyUrl$/$ID:CreateOIDCClient_Delegated_Valid_Smoke_sid_clientId$
       uniqueIdentifier: TC_IDA_OtpAuthDelegatedV2_01
-      description: Validate the delegated V2 OTP authentication for a valid UIN in a smoke positive scenario
+      description: Validate the delegated V2 OTP authentication for a valid UIN in a smoke positive scenario - expected to succeed
       role: resident
       restMethod: post
       inputTemplate: ida/OtpAuthDelegatedV2/OtpAuthDelegatedV2
@@ -36,7 +36,7 @@ OtpAuthDelegatedV2:
   auth_OtpAuthDelegatedV2Neg_Invalid_OtpChannel_Neg:
       endPoint: /idauthentication/v1/kyc-auth/v2/delegated/$partialPartnerKeyUrl$/$ID:CreateOIDCClient_Delegated_Valid_Smoke_sid_clientId$
       uniqueIdentifier: TC_IDA_OtpAuthDelegatedV2Neg_01
-      description: Kyc auth V2 OTP auth with an invalid otpChannel
+      description: Kyc auth V2 OTP auth with an invalid otpChannel - expected to fail
       role: resident
       restMethod: post
       inputTemplate: ida/OtpAuthDelegatedV2/OtpAuthDelegatedV2

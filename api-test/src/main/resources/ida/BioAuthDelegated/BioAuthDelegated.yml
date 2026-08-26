@@ -42,7 +42,7 @@ BioAuthDelegated:
   auth_BioAuthDelegated_Biometric_Face_With_Valid_VID_Smoke_Pos_Sid:
       endPoint: /idauthentication/v1/kyc-auth/delegated/$partialPartnerKeyUrl$/$ID:CreateOIDCClient_Delegated_Valid_Smoke_sid_clientId$
       uniqueIdentifier: TC_IDA_BioAuthDelegated_02
-      description: Biometric face KYC delegated auth with valid VID
+      description: Biometric face KYC delegated auth with valid VID - expected to succeed
       role: resident
       restMethod: post
       inputTemplate: ida/BioAuthDelegated/BioAuthDelegated
@@ -82,7 +82,7 @@ BioAuthDelegated:
   auth_BioAuthDelegated_Biometric_LeftIris_With_Valid_UIN_Smoke_Pos_Sid:
       endPoint: /idauthentication/v1/kyc-auth/delegated/$partialPartnerKeyUrl$/$ID:CreateOIDCClient_Delegated_Valid_Smoke_sid_clientId$
       uniqueIdentifier: TC_IDA_BioAuthDelegated_03
-      description: Biometric left iris KYC delegated auth with valid UIN
+      description: Biometric left iris KYC delegated auth with valid UIN - expected to succeed
       role: resident
       restMethod: post
       inputTemplate: ida/BioAuthDelegated/BioAuthDelegated
@@ -122,7 +122,7 @@ BioAuthDelegated:
   auth_BioAuthDelegated_Biometric_LeftIris_With_Valid_VID_Smoke_Pos_Sid:
       endPoint: /idauthentication/v1/kyc-auth/delegated/$partialPartnerKeyUrl$/$ID:CreateOIDCClient_Delegated_Valid_Smoke_sid_clientId$
       uniqueIdentifier: TC_IDA_BioAuthDelegated_04
-      description: Biometric left iris KYC delegated auth with valid VID
+      description: Biometric left iris KYC delegated auth with valid VID - expected to succeed
       role: resident
       restMethod: post
       inputTemplate: ida/BioAuthDelegated/BioAuthDelegated
@@ -162,7 +162,7 @@ BioAuthDelegated:
   auth_BioAuthDelegated_Biometric_RightIris_With_Valid_UIN_Smoke_Pos_Sid:
       endPoint: /idauthentication/v1/kyc-auth/delegated/$partialPartnerKeyUrl$/$ID:CreateOIDCClient_Delegated_Valid_Smoke_sid_clientId$
       uniqueIdentifier: TC_IDA_BioAuthDelegated_05
-      description: Biometric Right iris KYC delegated auth with valid UIN
+      description: Biometric Right iris KYC delegated auth with valid UIN - expected to succeed
       role: resident
       restMethod: post
       inputTemplate: ida/BioAuthDelegated/BioAuthDelegated
@@ -202,7 +202,7 @@ BioAuthDelegated:
   auth_BioAuthDelegated_Biometric_RightIris_With_Valid_VID_Smoke_Pos_Sid:
       endPoint: /idauthentication/v1/kyc-auth/delegated/$partialPartnerKeyUrl$/$ID:CreateOIDCClient_Delegated_Valid_Smoke_sid_clientId$
       uniqueIdentifier: TC_IDA_BioAuthDelegated_06
-      description: Biometric Right iris KYC delegated auth with valid VID
+      description: Biometric Right iris KYC delegated auth with valid VID - expected to succeed
       role: resident
       restMethod: post
       inputTemplate: ida/BioAuthDelegated/BioAuthDelegated
@@ -242,7 +242,7 @@ BioAuthDelegated:
   auth_BioAuthDelegated_Biometric_LeftIndexFinger_With_Valid_UIN_Smoke_Pos_Sid:
       endPoint: /idauthentication/v1/kyc-auth/delegated/$partialPartnerKeyUrl$/$ID:CreateOIDCClient_Delegated_Valid_Smoke_sid_clientId$
       uniqueIdentifier: TC_IDA_BioAuthDelegated_07
-      description: Biometric LeftIndexFinger KYC delegated auth with valid UIN
+      description: Biometric LeftIndexFinger KYC delegated auth with valid UIN - expected to succeed
       role: resident
       restMethod: post
       inputTemplate: ida/BioAuthDelegated/BioAuthDelegated
@@ -282,7 +282,7 @@ BioAuthDelegated:
   auth_BioAuthDelegated_Biometric_LeftIndexFinger_With_Valid_VID_Smoke_Pos_Sid:
       endPoint: /idauthentication/v1/kyc-auth/delegated/$partialPartnerKeyUrl$/$ID:CreateOIDCClient_Delegated_Valid_Smoke_sid_clientId$
       uniqueIdentifier: TC_IDA_BioAuthDelegated_08
-      description: Biometric LeftIndexFinger KYC delegated auth with valid VID
+      description: Biometric LeftIndexFinger KYC delegated auth with valid VID - expected to succeed
       role: resident
       restMethod: post
       inputTemplate: ida/BioAuthDelegated/BioAuthDelegated
@@ -322,7 +322,7 @@ BioAuthDelegated:
   auth_BioAuthDelegated_Biometric_RightIndexFinger_With_Valid_UIN_Smoke_Pos_Sid:
       endPoint: /idauthentication/v1/kyc-auth/delegated/$partialPartnerKeyUrl$/$ID:CreateOIDCClient_Delegated_Valid_Smoke_sid_clientId$
       uniqueIdentifier: TC_IDA_BioAuthDelegated_09
-      description: Biometric RightIndexFinger KYC delegated auth with valid UIN
+      description: Biometric RightIndexFinger KYC delegated auth with valid UIN - expected to succeed
       role: resident
       restMethod: post
       inputTemplate: ida/BioAuthDelegated/BioAuthDelegated
@@ -362,7 +362,7 @@ BioAuthDelegated:
   auth_BioAuthDelegated_Biometric_RightIndexFinger_With_Valid_VID_Smoke_Pos_Sid:
       endPoint: /idauthentication/v1/kyc-auth/delegated/$partialPartnerKeyUrl$/$ID:CreateOIDCClient_Delegated_Valid_Smoke_sid_clientId$
       uniqueIdentifier: TC_IDA_BioAuthDelegated_10
-      description: Biometric RightIndexFinger KYC delegated auth with valid VID
+      description: Biometric RightIndexFinger KYC delegated auth with valid VID - expected to succeed
       role: resident
       restMethod: post
       inputTemplate: ida/BioAuthDelegated/BioAuthDelegated
@@ -402,7 +402,7 @@ BioAuthDelegated:
   auth_BioAuthDelegated_Biometric_RightMiddleFinger_With_Valid_UIN_Smoke_Pos_Sid:
       endPoint: /idauthentication/v1/kyc-auth/delegated/$partialPartnerKeyUrl$/$ID:CreateOIDCClient_Delegated_Valid_Smoke_sid_clientId$
       uniqueIdentifier: TC_IDA_BioAuthDelegated_11
-      description: Biometric RightMiddleFinger KYC delegated auth with valid UIN
+      description: Biometric RightMiddleFinger KYC delegated auth with valid UIN - expected to succeed
       role: resident
       restMethod: post
       inputTemplate: ida/BioAuthDelegated/BioAuthDelegated
@@ -442,7 +442,7 @@ BioAuthDelegated:
   auth_BioAuthDelegated_Biometric_RightMiddleFinger_With_Valid_VID_Smoke_Pos_Sid:
       endPoint: /idauthentication/v1/kyc-auth/delegated/$partialPartnerKeyUrl$/$ID:CreateOIDCClient_Delegated_Valid_Smoke_sid_clientId$
       uniqueIdentifier: TC_IDA_BioAuthDelegated_12
-      description: Biometric RightMiddleFinger KYC delegated auth with valid VID
+      description: Biometric RightMiddleFinger KYC delegated auth with valid VID - expected to succeed
       role: resident
       restMethod: post
       inputTemplate: ida/BioAuthDelegated/BioAuthDelegated
@@ -482,7 +482,7 @@ BioAuthDelegated:
   auth_BioAuthDelegated_Biometric_LeftMiddleFinger_With_Valid_UIN_Smoke_Pos_Sid:
       endPoint: /idauthentication/v1/kyc-auth/delegated/$partialPartnerKeyUrl$/$ID:CreateOIDCClient_Delegated_Valid_Smoke_sid_clientId$
       uniqueIdentifier: TC_IDA_BioAuthDelegated_13
-      description: Biometric LeftMiddleFinger KYC delegated auth with valid UIN
+      description: Biometric LeftMiddleFinger KYC delegated auth with valid UIN - expected to succeed
       role: resident
       restMethod: post
       inputTemplate: ida/BioAuthDelegated/BioAuthDelegated
@@ -522,7 +522,7 @@ BioAuthDelegated:
   auth_BioAuthDelegated_Biometric_LeftMiddleFinger_With_Valid_VID_Smoke_Pos_Sid:
       endPoint: /idauthentication/v1/kyc-auth/delegated/$partialPartnerKeyUrl$/$ID:CreateOIDCClient_Delegated_Valid_Smoke_sid_clientId$
       uniqueIdentifier: TC_IDA_BioAuthDelegated_14
-      description: Biometric LeftMiddleFinger KYC delegated auth with valid VID
+      description: Biometric LeftMiddleFinger KYC delegated auth with valid VID - expected to succeed
       role: resident
       restMethod: post
       inputTemplate: ida/BioAuthDelegated/BioAuthDelegated
@@ -562,7 +562,7 @@ BioAuthDelegated:
   auth_BioAuthDelegated_Biometric_RightLittleFinger_With_Valid_UIN_Smoke_Pos_Sid:
       endPoint: /idauthentication/v1/kyc-auth/delegated/$partialPartnerKeyUrl$/$ID:CreateOIDCClient_Delegated_Valid_Smoke_sid_clientId$
       uniqueIdentifier: TC_IDA_BioAuthDelegated_15
-      description: Biometric RightLittleFinger KYC delegated auth with valid UIN
+      description: Biometric RightLittleFinger KYC delegated auth with valid UIN - expected to succeed
       role: resident
       restMethod: post
       inputTemplate: ida/BioAuthDelegated/BioAuthDelegated
@@ -602,7 +602,7 @@ BioAuthDelegated:
   auth_BioAuthDelegated_Biometric_RightLittleFinger_With_Valid_VID_Smoke_Pos_Sid:
       endPoint: /idauthentication/v1/kyc-auth/delegated/$partialPartnerKeyUrl$/$ID:CreateOIDCClient_Delegated_Valid_Smoke_sid_clientId$
       uniqueIdentifier: TC_IDA_BioAuthDelegated_16
-      description: Biometric RightLittleFinger KYC delegated auth with valid VID
+      description: Biometric RightLittleFinger KYC delegated auth with valid VID - expected to succeed
       role: resident
       restMethod: post
       inputTemplate: ida/BioAuthDelegated/BioAuthDelegated
@@ -642,7 +642,7 @@ BioAuthDelegated:
   auth_BioAuthDelegated_Biometric_LeftLittleFinger_With_Valid_UIN_Smoke_Pos_Sid:
       endPoint: /idauthentication/v1/kyc-auth/delegated/$partialPartnerKeyUrl$/$ID:CreateOIDCClient_Delegated_Valid_Smoke_sid_clientId$
       uniqueIdentifier: TC_IDA_BioAuthDelegated_17
-      description: Biometric LeftLittleFinger KYC delegated auth with valid UIN
+      description: Biometric LeftLittleFinger KYC delegated auth with valid UIN - expected to succeed
       role: resident
       restMethod: post
       inputTemplate: ida/BioAuthDelegated/BioAuthDelegated
@@ -682,7 +682,7 @@ BioAuthDelegated:
   auth_BioAuthDelegated_Biometric_LeftLittleFinger_With_Valid_VID_Smoke_Pos_Sid:
       endPoint: /idauthentication/v1/kyc-auth/delegated/$partialPartnerKeyUrl$/$ID:CreateOIDCClient_Delegated_Valid_Smoke_sid_clientId$
       uniqueIdentifier: TC_IDA_BioAuthDelegated_18
-      description: Biometric LeftLittleFinger KYC delegated auth with valid VID
+      description: Biometric LeftLittleFinger KYC delegated auth with valid VID - expected to succeed
       role: resident
       restMethod: post
       inputTemplate: ida/BioAuthDelegated/BioAuthDelegated
@@ -722,7 +722,7 @@ BioAuthDelegated:
   auth_BioAuthDelegated_Biometric_RightThumb_With_Valid_UIN_Smoke_Pos_Sid:
       endPoint: /idauthentication/v1/kyc-auth/delegated/$partialPartnerKeyUrl$/$ID:CreateOIDCClient_Delegated_Valid_Smoke_sid_clientId$
       uniqueIdentifier: TC_IDA_BioAuthDelegated_19
-      description: Biometric RightThumb KYC delegated auth with valid UIN
+      description: Biometric RightThumb KYC delegated auth with valid UIN - expected to succeed
       role: resident
       restMethod: post
       inputTemplate: ida/BioAuthDelegated/BioAuthDelegated
@@ -762,7 +762,7 @@ BioAuthDelegated:
   auth_BioAuthDelegated_Biometric_RightThumb_With_Valid_VID_Smoke_Pos_Sid:
       endPoint: /idauthentication/v1/kyc-auth/delegated/$partialPartnerKeyUrl$/$ID:CreateOIDCClient_Delegated_Valid_Smoke_sid_clientId$
       uniqueIdentifier: TC_IDA_BioAuthDelegated_20
-      description: Biometric RightThumb KYC delegated auth with valid VID
+      description: Biometric RightThumb KYC delegated auth with valid VID - expected to succeed
       role: resident
       restMethod: post
       inputTemplate: ida/BioAuthDelegated/BioAuthDelegated
@@ -802,7 +802,7 @@ BioAuthDelegated:
   auth_BioAuthDelegated_Biometric_LeftThumb_With_Valid_UIN_Smoke_Pos_Sid:
       endPoint: /idauthentication/v1/kyc-auth/delegated/$partialPartnerKeyUrl$/$ID:CreateOIDCClient_Delegated_Valid_Smoke_sid_clientId$
       uniqueIdentifier: TC_IDA_BioAuthDelegated_21
-      description: Biometric LeftThumb KYC delegated auth with valid UIN
+      description: Biometric LeftThumb KYC delegated auth with valid UIN - expected to succeed
       role: resident
       restMethod: post
       inputTemplate: ida/BioAuthDelegated/BioAuthDelegated
@@ -842,7 +842,7 @@ BioAuthDelegated:
   auth_BioAuthDelegated_Biometric_LeftThumb_With_Valid_VID_Smoke_Pos_Sid:
       endPoint: /idauthentication/v1/kyc-auth/delegated/$partialPartnerKeyUrl$/$ID:CreateOIDCClient_Delegated_Valid_Smoke_sid_clientId$
       uniqueIdentifier: TC_IDA_BioAuthDelegated_22
-      description: Biometric LeftThumb KYC delegated auth with valid VID
+      description: Biometric LeftThumb KYC delegated auth with valid VID - expected to succeed
       role: resident
       restMethod: post
       inputTemplate: ida/BioAuthDelegated/BioAuthDelegated
@@ -882,7 +882,7 @@ BioAuthDelegated:
   auth_BioAuthDelegated_Biometric_differentIdTypeForKycExchange_Sid:
       endPoint: /idauthentication/v1/kyc-auth/delegated/$partialPartnerKeyUrl$/$ID:CreateOIDCClient_Delegated_Valid_Smoke_sid_clientId$
       uniqueIdentifier: TC_IDA_BioAuthDelegated_23
-      description: KYC delegated auth with UIN where identity registered with a different idType for KYC exchange
+      description: KYC delegated auth with UIN where identity registered with a different idType for KYC exchange - expected to succeed
       role: resident
       restMethod: post
       inputTemplate: ida/BioAuthDelegated/BioAuthDelegated
@@ -922,7 +922,7 @@ BioAuthDelegated:
   auth_BioAuthDelegated_Biometric_forkYCexchangeWithRandomUIN_Pos_Sid:
       endPoint: /idauthentication/v1/kyc-auth/delegated/$partialPartnerKeyUrl$/$ID:CreateOIDCClient_Delegated_Valid_Smoke_sid_clientId$
       uniqueIdentifier: TC_IDA_BioAuthDelegated_24
-      description: KYC delegated auth with valid UIN
+      description: KYC delegated auth with valid UIN - expected to succeed
       role: resident
       restMethod: post
       inputTemplate: ida/BioAuthDelegated/BioAuthDelegated
@@ -962,7 +962,7 @@ BioAuthDelegated:
   auth_BioAuthDelegated_Biometric_forkYCexchangeWithRandomVID_Pos_Sid:
       endPoint: /idauthentication/v1/kyc-auth/delegated/$partialPartnerKeyUrl$/$ID:CreateOIDCClient_Delegated_Valid_Smoke_sid_clientId$
       uniqueIdentifier: TC_IDA_BioAuthDelegated_25
-      description: KYC delegated auth with valid VID
+      description: KYC delegated auth with valid VID - expected to succeed
       role: resident
       restMethod: post
       inputTemplate: ida/BioAuthDelegated/BioAuthDelegated
@@ -1002,7 +1002,7 @@ BioAuthDelegated:
   auth_BioAuthDelegatedNeg_KycRequestDelegation_NotAllowed_Neg:
       endPoint: /idauthentication/v1/kyc-auth/delegated/$kycDelegationDisabledPartnerKeyUrl$/$ID:CreateOIDCClient_Delegated_Valid_Smoke_sid_clientId$
       uniqueIdentifier: TC_IDA_BioAuthDelegated_26
-      description: Kyc auth with a MISP key whose policy disallows kyc delegation - verified live, app returns IDA-MPA-030 alongside a generic IDA-MLC-007
+      description: Kyc auth with a MISP key whose policy disallows kyc delegation - verified live, app returns IDA-MPA-030 alongside a generic IDA-MLC-007 - expected to fail
       role: resident
       restMethod: post
       inputTemplate: ida/BioAuthDelegated/BioAuthDelegated

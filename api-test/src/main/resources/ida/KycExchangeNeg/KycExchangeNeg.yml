@@ -2,10 +2,9 @@ KycExchangeNeg:
   auth_KycExchangeNeg_Missing_KycToken_Neg:
       endPoint: /idauthentication/v1/kyc-exchange/delegated/$partialPartnerKeyUrl$/$ID:CreateOIDCClient_Delegated_Valid_Smoke_sid_clientId$
       uniqueIdentifier: TC_IDA_KycExchangeNeg_01
-      description: Kyc exchange with missing kycToken
+      description: Kyc exchange with missing kycToken - expected to fail
       role: resident
       restMethod: post
-      checkErrorsOnlyInResponse: true
       inputTemplate: ida/BioAuthKycExchange/BioAuthKYCExchange
       outputTemplate: ida/DelegateError
       input: '{
@@ -30,10 +29,9 @@ KycExchangeNeg:
   auth_KycExchangeNeg_Missing_TransactionID_Neg:
       endPoint: /idauthentication/v1/kyc-exchange/delegated/$partialPartnerKeyUrl$/$ID:CreateOIDCClient_Delegated_Valid_Smoke_sid_clientId$
       uniqueIdentifier: TC_IDA_KycExchangeNeg_02
-      description: Kyc exchange with missing transactionID
+      description: Kyc exchange with missing transactionID - expected to fail
       role: resident
       restMethod: post
-      checkErrorsOnlyInResponse: true
       inputTemplate: ida/BioAuthKycExchange/BioAuthKYCExchange
       outputTemplate: ida/DelegateError
       input: '{
@@ -58,10 +56,9 @@ KycExchangeNeg:
   auth_KycExchangeNeg_Missing_RequestTime_Neg:
       endPoint: /idauthentication/v1/kyc-exchange/delegated/$partialPartnerKeyUrl$/$ID:CreateOIDCClient_Delegated_Valid_Smoke_sid_clientId$
       uniqueIdentifier: TC_IDA_KycExchangeNeg_03
-      description: Kyc exchange with missing requestTime
+      description: Kyc exchange with missing requestTime - expected to fail
       role: resident
       restMethod: post
-      checkErrorsOnlyInResponse: true
       inputTemplate: ida/BioAuthKycExchange/BioAuthKYCExchange
       outputTemplate: ida/DelegateError
       input: '{
@@ -89,7 +86,6 @@ KycExchangeNeg:
       description: Kyc exchange with missing individualId - unverified, confirm error code before trusting
       role: resident
       restMethod: post
-      checkErrorsOnlyInResponse: true
       inputTemplate: ida/BioAuthKycExchange/BioAuthKYCExchange
       outputTemplate: ida/DelegateError
       input: '{
@@ -114,10 +110,9 @@ KycExchangeNeg:
   auth_KycExchangeNeg_Malformed_TransactionID_Neg:
       endPoint: /idauthentication/v1/kyc-exchange/delegated/$partialPartnerKeyUrl$/$ID:CreateOIDCClient_Delegated_Valid_Smoke_sid_clientId$
       uniqueIdentifier: TC_IDA_KycExchangeNeg_05
-      description: Kyc exchange with transactionID not matching the 10-char alphanumeric format
+      description: Kyc exchange with transactionID not matching the 10-char alphanumeric format - expected to fail
       role: resident
       restMethod: post
-      checkErrorsOnlyInResponse: true
       inputTemplate: ida/BioAuthKycExchange/BioAuthKYCExchange
       outputTemplate: ida/DelegateError
       input: '{
@@ -142,10 +137,9 @@ KycExchangeNeg:
   auth_KycExchangeNeg_Malformed_RequestTime_Neg:
       endPoint: /idauthentication/v1/kyc-exchange/delegated/$partialPartnerKeyUrl$/$ID:CreateOIDCClient_Delegated_Valid_Smoke_sid_clientId$
       uniqueIdentifier: TC_IDA_KycExchangeNeg_06
-      description: Kyc exchange with an unparseable requestTime
+      description: Kyc exchange with an unparseable requestTime - expected to fail
       role: resident
       restMethod: post
-      checkErrorsOnlyInResponse: true
       inputTemplate: ida/BioAuthKycExchange/BioAuthKYCExchange
       outputTemplate: ida/DelegateError
       input: '{
@@ -173,7 +167,6 @@ KycExchangeNeg:
       description: Kyc exchange with an invalid UIN (fails checksum)
       role: resident
       restMethod: post
-      checkErrorsOnlyInResponse: true
       inputTemplate: ida/BioAuthKycExchange/BioAuthKYCExchange
       outputTemplate: ida/DelegateError
       input: '{
@@ -201,7 +194,6 @@ KycExchangeNeg:
       description: Kyc exchange with an invalid VID (fails checksum)
       role: resident
       restMethod: post
-      checkErrorsOnlyInResponse: true
       inputTemplate: ida/BioAuthKycExchange/BioAuthKYCExchange
       outputTemplate: ida/DelegateError
       input: '{
@@ -226,10 +218,9 @@ KycExchangeNeg:
   auth_KycExchangeNeg_Token_Not_Found_Neg:
       endPoint: /idauthentication/v1/kyc-exchange/delegated/$partialPartnerKeyUrl$/$ID:CreateOIDCClient_Delegated_Valid_Smoke_sid_clientId$
       uniqueIdentifier: TC_IDA_KycExchangeNeg_09
-      description: Kyc exchange with a well-formed but non-existent kycToken
+      description: Kyc exchange with a well-formed but non-existent kycToken - expected to fail
       role: resident
       restMethod: post
-      checkErrorsOnlyInResponse: true
       inputTemplate: ida/BioAuthKycExchange/BioAuthKYCExchange
       outputTemplate: ida/DelegateError
       input: '{
@@ -254,10 +245,9 @@ KycExchangeNeg:
   auth_KycExchangeNeg_TransactionID_Mismatch_Neg:
       endPoint: /idauthentication/v1/kyc-exchange/delegated/$partialPartnerKeyUrl$/$ID:CreateOIDCClient_Delegated_Valid_Smoke_sid_clientId$
       uniqueIdentifier: TC_IDA_KycExchangeNeg_10
-      description: Kyc exchange with a transactionID different from the one used at kyc-auth time, using the dedicated single-use token
+      description: Kyc exchange with a transactionID different from the one used at kyc-auth time, using the dedicated single-use token - expected to fail
       role: resident
       restMethod: post
-      checkErrorsOnlyInResponse: true
       inputTemplate: ida/BioAuthKycExchange/BioAuthKYCExchange
       outputTemplate: ida/DelegateError
       input: '{
@@ -285,9 +275,9 @@ KycExchangeNeg:
       description: Kyc exchange with an empty consentObtained list still succeeds - server-side consent validation is deliberately disabled
       role: resident
       restMethod: post
-      checkErrorsOnlyInResponse: true
       inputTemplate: ida/BioAuthKycExchange/BioAuthKYCExchange
       outputTemplate: ida/BioAuthKycExchange/BioAuthKYCExchangeResult
+      checkErrorsOnlyInResponse: true
       input: '{
         "requestTime": "$TIMESTAMP$",
         "individualId": "$ID:AddIdentity_withValidParameters_forDemoDelegated_Pos_UIN$",
@@ -309,9 +299,9 @@ KycExchangeNeg:
       description: Kyc exchange with an empty locales list still succeeds - server defaults to the configured kyc-exchange default language
       role: resident
       restMethod: post
-      checkErrorsOnlyInResponse: true
       inputTemplate: ida/BioAuthKycExchange/BioAuthKYCExchange
       outputTemplate: ida/BioAuthKycExchange/BioAuthKYCExchangeResult
+      checkErrorsOnlyInResponse: true
       input: '{
         "requestTime": "$TIMESTAMP$",
         "individualId": "$ID:AddIdentity_withValidParameters_forDemoDelegated_Pos_UIN$",
@@ -333,9 +323,9 @@ KycExchangeNeg:
       description: Kyc exchange with a non-JWE respType still succeeds, returning a signed but unencrypted payload
       role: resident
       restMethod: post
-      checkErrorsOnlyInResponse: true
       inputTemplate: ida/BioAuthKycExchange/BioAuthKYCExchange
       outputTemplate: ida/BioAuthKycExchange/BioAuthKYCExchangeResult
+      checkErrorsOnlyInResponse: true
       input: '{
         "requestTime": "$TIMESTAMP$",
         "individualId": "$ID:AddIdentity_withValidParameters_forDemoDelegated_Pos_UIN$",

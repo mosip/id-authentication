@@ -2,10 +2,9 @@ DemoAuthDelegated:
   auth_DemoAuthDelegated_DemoAuth_DOB_Valid_Smoke_UIN_Sid:
       endPoint: /idauthentication/v1/kyc-auth/delegated/$partialPartnerKeyUrl$/$ID:CreateOIDCClient_Delegated_Valid_Smoke_sid_clientId$
       uniqueIdentifier: TC_IDA_DemoAuthDelegated_01
-      description: Demo auth kyc delegated using valid dob and valid UIN
+      description: Demo auth kyc delegated using valid dob and valid UIN - expected to succeed
       role: resident
       restMethod: post
-      checkErrorsOnlyInResponse: true
       inputTemplate: ida/DemoAuthDelegated/DemoAuthDelegated
       outputTemplate: ida/DemoAuthDelegated/DemoAuthDelegatedResult
       input: '{
@@ -28,10 +27,9 @@ DemoAuthDelegated:
   auth_DemoAuthDelegated_DemoAuth_DOB_Valid_Smoke_VID_Pos_Sid:
       endPoint: /idauthentication/v1/kyc-auth/delegated/$partialPartnerKeyUrl$/$ID:CreateOIDCClient_Delegated_Valid_Smoke_sid_clientId$
       uniqueIdentifier: TC_IDA_DemoAuthDelegated_02
-      description: Demo auth kyc delegated using valid dob with valid perpetual VID
+      description: Demo auth kyc delegated using valid dob with valid perpetual VID - expected to succeed
       role: resident
       restMethod: post
-      checkErrorsOnlyInResponse: true
       inputTemplate: ida/DemoAuthDelegated/DemoAuthDelegated
       outputTemplate: ida/DemoAuthDelegated/DemoAuthDelegatedResult
       input: '{
@@ -54,10 +52,9 @@ DemoAuthDelegated:
   auth_DemoAuthDelegated_DemoAuth_DOB_Valid_Smoke_Infant_Uin_Pos_Sid:
       endPoint: /idauthentication/v1/kyc-auth/delegated/$partialPartnerKeyUrl$/$ID:CreateOIDCClient_Delegated_Valid_Smoke_sid_clientId$
       uniqueIdentifier: TC_IDA_DemoAuthDelegated_03
-      description: Demo auth kyc delegated using dob with infant UIN
+      description: Demo auth kyc delegated using dob with infant UIN - expected to succeed
       role: resident
       restMethod: post
-      checkErrorsOnlyInResponse: true
       inputTemplate: ida/DemoAuthDelegated/DemoAuthDelegated
       outputTemplate: ida/DemoAuthDelegated/DemoAuthDelegatedResult
       input: '{
@@ -80,10 +77,9 @@ DemoAuthDelegated:
   auth_DemoAuthDelegated_DemoAuth_Email_Valid_Smoke_Pos_VID_Sid:
       endPoint: /idauthentication/v1/kyc-auth/delegated/$partialPartnerKeyUrl$/$ID:CreateOIDCClient_Delegated_Valid_Smoke_sid_clientId$
       uniqueIdentifier: TC_IDA_DemoAuthDelegated_04
-      description: Demo auth kyc delegated using email with valid VID
+      description: Demo auth kyc delegated using email with valid VID - expected to succeed
       role: resident
       restMethod: post
-      checkErrorsOnlyInResponse: true
       inputTemplate: ida/DemoAuthDelegated/DemoAuthDelegated
       outputTemplate: ida/DemoAuthDelegated/DemoAuthDelegatedResult
       input: '{
@@ -106,10 +102,9 @@ DemoAuthDelegated:
   auth_DemoAuthDelegated_DemoAuth_Email_Valid_Smoke_Poss_VID_Sid:
       endPoint: /idauthentication/v1/kyc-auth/delegated/$partialPartnerKeyUrl$/$ID:CreateOIDCClient_Delegated_Valid_Smoke_sid_clientId$
       uniqueIdentifier: TC_IDA_DemoAuthDelegated_05
-      description: Demo auth kyc delegated with email using valid VID
+      description: Demo auth kyc delegated with email using valid VID - expected to succeed
       role: resident
       restMethod: post
-      checkErrorsOnlyInResponse: true
       inputTemplate: ida/DemoAuthDelegated/DemoAuthDelegated
       outputTemplate: ida/DemoAuthDelegated/DemoAuthDelegatedResult
       input: '{
@@ -132,10 +127,9 @@ DemoAuthDelegated:
   auth_DemoAuthDelegated_DemoAuth_gender_Valid_uin_Smoke_Pos_Sid:
       endPoint: /idauthentication/v1/kyc-auth/delegated/$partialPartnerKeyUrl$/$ID:CreateOIDCClient_Delegated_Valid_Smoke_sid_clientId$
       uniqueIdentifier: TC_IDA_DemoAuthDelegated_06
-      description: Demo auth kyc delegated using valid gender and valid UIN
+      description: Demo auth kyc delegated using valid gender and valid UIN - expected to succeed
       role: resident
       restMethod: post
-      checkErrorsOnlyInResponse: true
       inputTemplate: ida/DemoAuthDelegated/DemoAuthDelegated
       outputTemplate: ida/DemoAuthDelegated/DemoAuthDelegatedResult
       input: '{
@@ -162,10 +156,9 @@ DemoAuthDelegated:
   auth_DemoAuthDelegated_DemoAuth_gender_Valid_Smoke_Pos_VID_Sid:
       endPoint: /idauthentication/v1/kyc-auth/delegated/$partialPartnerKeyUrl$/$ID:CreateOIDCClient_Delegated_Valid_Smoke_sid_clientId$
       uniqueIdentifier: TC_IDA_DemoAuthDelegated_07
-      description: Demo auth kyc delegated using valid gender and valid perpetual VID
+      description: Demo auth kyc delegated using valid gender and valid perpetual VID - expected to succeed
       role: resident
       restMethod: post
-      checkErrorsOnlyInResponse: true
       inputTemplate: ida/DemoAuthDelegated/DemoAuthDelegated
       outputTemplate: ida/DemoAuthDelegated/DemoAuthDelegatedResult
       input: '{
@@ -192,10 +185,9 @@ DemoAuthDelegated:
   auth_DemoAuthDelegated_DemoAuth_gender_Valid_Smoke_Pos_VID_with_RS_DOB_Sid:
       endPoint: /idauthentication/v1/kyc-auth/delegated/$partialPartnerKeyUrl$/$ID:CreateOIDCClient_Delegated_Valid_Smoke_sid_clientId$
       uniqueIdentifier: TC_IDA_DemoAuthDelegated_08
-      description: Demo auth kyc delegated using valid dob and valid perpetual VID
+      description: Demo auth kyc delegated using valid dob and valid perpetual VID - expected to succeed
       role: resident
       restMethod: post
-      checkErrorsOnlyInResponse: true
       inputTemplate: ida/DemoAuthDelegated/DemoAuthDelegated
       outputTemplate: ida/DemoAuthDelegated/DemoAuthDelegatedResult
       input: '{
@@ -221,7 +213,6 @@ DemoAuthDelegated:
       description: Demo auth kyc delegated using valid name and valid UIN and auth has to get success
       role: resident
       restMethod: post
-      checkErrorsOnlyInResponse: true
       inputTemplate: ida/DemoAuthDelegated/DemoAuthDelegated
       outputTemplate: ida/DemoAuthDelegated/DemoAuthDelegatedResult
       input: '{
@@ -248,10 +239,9 @@ DemoAuthDelegated:
   auth_DemoAuthDelegated_DemoAuth_same_Name2_Valid_titleFromAdmin_uin_Smoke_Pos_Sid:
       endPoint: /idauthentication/v1/kyc-auth/delegated/$partialPartnerKeyUrl$/$ID:CreateOIDCClient_Delegated_Valid_Smoke_sid_clientId$
       uniqueIdentifier: TC_IDA_DemoAuthDelegated_11
-      description: Demo auth kyc delegated using valid name with title and valid UIN
+      description: Demo auth kyc delegated using valid name with title and valid UIN - expected to succeed
       role: resident
       restMethod: post
-      checkErrorsOnlyInResponse: true
       inputTemplate: ida/DemoAuthDelegated/DemoAuthDelegated
       outputTemplate: ida/DemoAuthDelegated/DemoAuthDelegatedResult
       input: '{
@@ -278,10 +268,9 @@ DemoAuthDelegated:
   auth_DemoAuthDelegated_DemoAuth_same_Name3_Valid_titleFromAdmin_uin_Smoke_Pos_Sid:
       endPoint: /idauthentication/v1/kyc-auth/delegated/$partialPartnerKeyUrl$/$ID:CreateOIDCClient_Delegated_Valid_Smoke_sid_clientId$
       uniqueIdentifier: TC_IDA_DemoAuthDelegated_12
-      description: Demo auth kyc delegated using valid name with title and valid UIN
+      description: Demo auth kyc delegated using valid name with title and valid UIN - expected to succeed
       role: resident
       restMethod: post
-      checkErrorsOnlyInResponse: true
       inputTemplate: ida/DemoAuthDelegated/DemoAuthDelegated
       outputTemplate: ida/DemoAuthDelegated/DemoAuthDelegatedResult
       input: '{
@@ -308,10 +297,9 @@ DemoAuthDelegated:
   auth_DemoAuthDelegated_DemoAuth_same_Name4_Valid_uin_Smoke_Pos_Sid:
       endPoint: /idauthentication/v1/kyc-auth/delegated/$partialPartnerKeyUrl$/$ID:CreateOIDCClient_Delegated_Valid_Smoke_sid_clientId$
       uniqueIdentifier: TC_IDA_DemoAuthDelegated_13
-      description: Demo auth kyc delegated using name and valid UIN
+      description: Demo auth kyc delegated using name and valid UIN - expected to succeed
       role: resident
       restMethod: post
-      checkErrorsOnlyInResponse: true
       inputTemplate: ida/DemoAuthDelegated/DemoAuthDelegated
       outputTemplate: ida/DemoAuthDelegated/DemoAuthDelegatedResult
       input: '{
@@ -338,10 +326,9 @@ DemoAuthDelegated:
   auth_DemoAuthDelegated_DemoAuth_same_Name5_Valid_titleFromAdmin_uin_Smoke_Pos_Sid:
       endPoint: /idauthentication/v1/kyc-auth/delegated/$partialPartnerKeyUrl$/$ID:CreateOIDCClient_Delegated_Valid_Smoke_sid_clientId$
       uniqueIdentifier: TC_IDA_DemoAuthDelegated_14
-      description: Demo auth kyc delegated using name with title and valid UIN
+      description: Demo auth kyc delegated using name with title and valid UIN - expected to succeed
       role: resident
       restMethod: post
-      checkErrorsOnlyInResponse: true
       inputTemplate: ida/DemoAuthDelegated/DemoAuthDelegated
       outputTemplate: ida/DemoAuthDelegated/DemoAuthDelegatedResult
       input: '{
@@ -368,10 +355,9 @@ DemoAuthDelegated:
   auth_DemoAuthDelegated_DemoAuth_same_Name6_Valid_titleFromAdmin_uin_Smoke_Pos_Sid:
       endPoint: /idauthentication/v1/kyc-auth/delegated/$partialPartnerKeyUrl$/$ID:CreateOIDCClient_Delegated_Valid_Smoke_sid_clientId$
       uniqueIdentifier: TC_IDA_DemoAuthDelegated_15
-      description: Demo auth kyc delegated using valid name with title and UIN
+      description: Demo auth kyc delegated using valid name with title and UIN - expected to succeed
       role: resident
       restMethod: post
-      checkErrorsOnlyInResponse: true
       inputTemplate: ida/DemoAuthDelegated/DemoAuthDelegated
       outputTemplate: ida/DemoAuthDelegated/DemoAuthDelegatedResult
       input: '{
@@ -398,10 +384,9 @@ DemoAuthDelegated:
   auth_DemoAuthDelegated_DemoAuth_same_Name7_Valid_titleFromAdmin_uin_Smoke_Pos_Sid:
       endPoint: /idauthentication/v1/kyc-auth/delegated/$partialPartnerKeyUrl$/$ID:CreateOIDCClient_Delegated_Valid_Smoke_sid_clientId$
       uniqueIdentifier: TC_IDA_DemoAuthDelegated_16
-      description: Demo auth kyc delegated using name with title and valid UIN
+      description: Demo auth kyc delegated using name with title and valid UIN - expected to succeed
       role: resident
       restMethod: post
-      checkErrorsOnlyInResponse: true
       inputTemplate: ida/DemoAuthDelegated/DemoAuthDelegated
       outputTemplate: ida/DemoAuthDelegated/DemoAuthDelegatedResult
       input: '{
@@ -428,10 +413,9 @@ DemoAuthDelegated:
   auth_DemoAuthDelegated_DemoAuth_Name_Valid_Smoke_VID_Pos_Sid:
       endPoint: /idauthentication/v1/kyc-auth/delegated/$partialPartnerKeyUrl$/$ID:CreateOIDCClient_Delegated_Valid_Smoke_sid_clientId$
       uniqueIdentifier: TC_IDA_DemoAuthDelegated_17
-      description: Demo auth kyc delegated using valid name and valid perpetual VID
+      description: Demo auth kyc delegated using valid name and valid perpetual VID - expected to succeed
       role: resident
       restMethod: post
-      checkErrorsOnlyInResponse: true
       inputTemplate: ida/DemoAuthDelegated/DemoAuthDelegated
       outputTemplate: ida/DemoAuthDelegated/DemoAuthDelegatedResult
       input: '{
@@ -458,10 +442,9 @@ DemoAuthDelegated:
   auth_DemoAuthDelegated_DemoAuth_age_Valid_Smoke_VID_Pos_Sid:
       endPoint: /idauthentication/v1/kyc-auth/delegated/$partialPartnerKeyUrl$/$ID:CreateOIDCClient_Delegated_Valid_Smoke_sid_clientId$
       uniqueIdentifier: TC_IDA_DemoAuthDelegated_19
-      description: Demo auth kyc delegated using valid age and valid perpetual VID
+      description: Demo auth kyc delegated using valid age and valid perpetual VID - expected to succeed
       role: resident
       restMethod: post
-      checkErrorsOnlyInResponse: true
       inputTemplate: ida/DemoAuthDelegated/DemoAuthDelegated
       outputTemplate: ida/DemoAuthDelegated/DemoAuthDelegatedResult
       input: '{
@@ -484,10 +467,9 @@ DemoAuthDelegated:
   auth_DemoAuthDelegated_DemoAuth_PhoneNumber_Valid_VID_Smoke_Pos_Sid:
       endPoint: /idauthentication/v1/kyc-auth/delegated/$partialPartnerKeyUrl$/$ID:CreateOIDCClient_Delegated_Valid_Smoke_sid_clientId$
       uniqueIdentifier: TC_IDA_DemoAuthDelegated_20
-      description: Demo auth kyc delegated using valid phone number and valid perpetual VID
+      description: Demo auth kyc delegated using valid phone number and valid perpetual VID - expected to succeed
       role: resident
       restMethod: post
-      checkErrorsOnlyInResponse: true
       inputTemplate: ida/DemoAuthDelegated/DemoAuthDelegated
       outputTemplate: ida/DemoAuthDelegated/DemoAuthDelegatedResult
       input: '{
@@ -510,10 +492,9 @@ DemoAuthDelegated:
   auth_DemoAuthDelegated_DemoAuth_DOB_Valid_Smoke_with_Draft_audit_UIN_Pos_Sid:
       endPoint: /idauthentication/v1/kyc-auth/delegated/$partialPartnerKeyUrl$/$ID:CreateOIDCClient_Delegated_Valid_Smoke_sid_clientId$
       uniqueIdentifier: TC_IDA_DemoAuthDelegated_21
-      description: Demo auth kyc delegated using dob with drafted UIN
+      description: Demo auth kyc delegated using dob with drafted UIN - expected to succeed
       role: resident
       restMethod: post
-      checkErrorsOnlyInResponse: true
       inputTemplate: ida/DemoAuthDelegated/DemoAuthDelegated
       outputTemplate: ida/DemoAuthDelegated/DemoAuthDelegatedResult
       input: '{
@@ -536,10 +517,9 @@ DemoAuthDelegated:
   auth_DemoAuthDelegated_DemoAuth_with_phone_Sid:
       endPoint: /idauthentication/v1/kyc-auth/delegated/$partialPartnerKeyUrl$/$ID:CreateOIDCClient_Delegated_Valid_Smoke_sid_clientId$
       uniqueIdentifier: TC_IDA_DemoAuthDelegated_22
-      description: Demo auth kyc delegated using valid phone and valid UIN
+      description: Demo auth kyc delegated using valid phone and valid UIN - expected to succeed
       role: resident
       restMethod: post
-      checkErrorsOnlyInResponse: true
       inputTemplate: ida/DemoAuthDelegated/DemoAuthDelegated
       outputTemplate: ida/DemoAuthDelegated/DemoAuthDelegatedResult
       input: '{
@@ -562,10 +542,9 @@ DemoAuthDelegated:
   auth_DemoAuthDelegated_DemoAuth_forKycExchangeIndividualIdMismatch_Pos_Sid:
       endPoint: /idauthentication/v1/kyc-auth/delegated/$partialPartnerKeyUrl$/$ID:CreateOIDCClient_Delegated_Valid_Smoke_sid_clientId$
       uniqueIdentifier: TC_IDA_DemoAuthDelegated_23
-      description: Demo auth kyc delegated dedicated token for kyc-exchange individualId mismatch negative test
+      description: Demo auth kyc delegated dedicated token for kyc-exchange individualId mismatch negative test - expected to succeed
       role: resident
       restMethod: post
-      checkErrorsOnlyInResponse: true
       inputTemplate: ida/DemoAuthDelegated/DemoAuthDelegated
       outputTemplate: ida/DemoAuthDelegated/DemoAuthDelegatedResult
       input: '{
@@ -588,10 +567,9 @@ DemoAuthDelegated:
   auth_DemoAuthDelegated_DemoAuth_forKycExchangeTxnIdMismatch_Pos_Sid:
       endPoint: /idauthentication/v1/kyc-auth/delegated/$partialPartnerKeyUrl$/$ID:CreateOIDCClient_Delegated_Valid_Smoke_sid_clientId$
       uniqueIdentifier: TC_IDA_DemoAuthDelegated_24
-      description: Demo auth kyc delegated dedicated token for kyc-exchange transactionID mismatch negative test
+      description: Demo auth kyc delegated dedicated token for kyc-exchange transactionID mismatch negative test - expected to succeed
       role: resident
       restMethod: post
-      checkErrorsOnlyInResponse: true
       inputTemplate: ida/DemoAuthDelegated/DemoAuthDelegated
       outputTemplate: ida/DemoAuthDelegated/DemoAuthDelegatedResult
       input: '{
@@ -614,10 +592,9 @@ DemoAuthDelegated:
   auth_DemoAuthDelegated_DemoAuth_forKycExchangeEmptyConsent_Pos_Sid:
       endPoint: /idauthentication/v1/kyc-auth/delegated/$partialPartnerKeyUrl$/$ID:CreateOIDCClient_Delegated_Valid_Smoke_sid_clientId$
       uniqueIdentifier: TC_IDA_DemoAuthDelegated_25
-      description: Demo auth kyc delegated dedicated token for kyc-exchange empty consentObtained positive test
+      description: Demo auth kyc delegated dedicated token for kyc-exchange empty consentObtained positive test - expected to succeed
       role: resident
       restMethod: post
-      checkErrorsOnlyInResponse: true
       inputTemplate: ida/DemoAuthDelegated/DemoAuthDelegated
       outputTemplate: ida/DemoAuthDelegated/DemoAuthDelegatedResult
       input: '{
@@ -640,10 +617,9 @@ DemoAuthDelegated:
   auth_DemoAuthDelegated_DemoAuth_forKycExchangeEmptyLocales_Pos_Sid:
       endPoint: /idauthentication/v1/kyc-auth/delegated/$partialPartnerKeyUrl$/$ID:CreateOIDCClient_Delegated_Valid_Smoke_sid_clientId$
       uniqueIdentifier: TC_IDA_DemoAuthDelegated_26
-      description: Demo auth kyc delegated dedicated token for kyc-exchange empty locales positive test
+      description: Demo auth kyc delegated dedicated token for kyc-exchange empty locales positive test - expected to succeed
       role: resident
       restMethod: post
-      checkErrorsOnlyInResponse: true
       inputTemplate: ida/DemoAuthDelegated/DemoAuthDelegated
       outputTemplate: ida/DemoAuthDelegated/DemoAuthDelegatedResult
       input: '{
@@ -666,10 +642,9 @@ DemoAuthDelegated:
   auth_DemoAuthDelegated_DemoAuth_forKycExchangeRespTypeNonJwe_Pos_Sid:
       endPoint: /idauthentication/v1/kyc-auth/delegated/$partialPartnerKeyUrl$/$ID:CreateOIDCClient_Delegated_Valid_Smoke_sid_clientId$
       uniqueIdentifier: TC_IDA_DemoAuthDelegated_27
-      description: Demo auth kyc delegated dedicated token for kyc-exchange non-JWE respType positive test
+      description: Demo auth kyc delegated dedicated token for kyc-exchange non-JWE respType positive test - expected to succeed
       role: resident
       restMethod: post
-      checkErrorsOnlyInResponse: true
       inputTemplate: ida/DemoAuthDelegated/DemoAuthDelegated
       outputTemplate: ida/DemoAuthDelegated/DemoAuthDelegatedResult
       input: '{
