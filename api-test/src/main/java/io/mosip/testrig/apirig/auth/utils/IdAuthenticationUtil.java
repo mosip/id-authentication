@@ -83,19 +83,15 @@ public class IdAuthenticationUtil extends AdminTestUtil {
 						|| testCaseName.contains("_EkycDemo_"))
 				&& (!isElementPresent(globalRequiredFields, individualBiometrics))) {
 			throw new SkipException(GlobalConstants.FEATURE_NOT_SUPPORTED_MESSAGE);
-		} else if (testCaseName.startsWith("auth_") && testCaseName.contains("_DemoAuthDelegated_") || testCaseName.contains("_DemoAuthKycExchange")) {
-			// Intentional skip: app rejects DEMO on delegated flow - "DEMO Authentication usage not allowed as per client AMR configuration" (OIDC client AMR restriction, not a code gap).
-			// Narrowed to "_DemoAuthDelegated_" (trailing underscore) so this doesn't also catch
-			// DemoAuthDelegatedV2/DemoAuthDelegatedNeg test names, which were never covered by
-			// the AMR verification above and should get a chance to run.
+		} else if (testCaseName.startsWith("auth_") && testCaseName.contains("_DemoAuthDelegated") || testCaseName.contains("_DemoAuthKycExchange")) {
+			// Intentional skip: app rejects DEMO on delegated flow per client AMR config (confirmed on qa11new for base/Neg/V2/V2Neg alike via IDA-MPA-029), not a code gap.
 			throw new SkipException(GlobalConstants.FEATURE_NOT_SUPPORTED_MESSAGE);
 		} else if (testCaseDTO.getUniqueIdentifier() != null
 				&& (testCaseDTO.getUniqueIdentifier().equals("TC_IDA_KycExchangeNeg_10")
 						|| testCaseDTO.getUniqueIdentifier().equals("TC_IDA_KycExchangeNeg_11")
 						|| testCaseDTO.getUniqueIdentifier().equals("TC_IDA_KycExchangeNeg_12")
 						|| testCaseDTO.getUniqueIdentifier().equals("TC_IDA_KycExchangeNeg_13"))) {
-			// These consume a kycToken minted by DemoAuthDelegated (skipped above, see comment), so
-			// skip cleanly here instead of failing on the downstream dependency-resolution SkipException.
+			// These consume a kycToken minted by DemoAuthDelegated (skipped above), so skip cleanly instead of failing on the downstream dependency-resolution error.
 			throw new SkipException(GlobalConstants.FEATURE_NOT_SUPPORTED_MESSAGE);
 		} else if (testCaseName.startsWith("auth_")
 				&& ((testCaseName.contains("_DeactivateUINs_")) || (testCaseName.contains("PublishDraft_")))
@@ -221,10 +217,7 @@ public class IdAuthenticationUtil extends AdminTestUtil {
 	private static final String KYC_DELEGATION_DISABLED_POLICY_NAME = "mosip misp no deleg policy "
 			+ AdminTestUtil.timeStamp;
 
-	// fails fast with the response body instead of a raw JSONException when "response" is
-	// missing/null or present but lacks "id" (e.g. a partner-management error payload).
-	// Scope this to policy/partner-setup responses only - never reuse it for authentication
-	// responses, whose body can carry UIN, VID, OTP, or token values that must not be logged.
+	// Fails fast with the response body when "response" is missing/null or lacks "id"; scope to policy/partner-setup responses only, never authentication responses.
 	private static String extractIdOrFail(Response response, String step) {
 		String body = response.getBody().asString();
 		org.json.JSONObject json = new org.json.JSONObject(body);
@@ -235,10 +228,7 @@ public class IdAuthenticationUtil extends AdminTestUtil {
 		return json.getJSONObject(GlobalConstants.RESPONSE).getString("id");
 	}
 
-	// Cached terminal failure from a prior createKycDelegationDisabledPartner() attempt. The
-	// policy group/policy/partner names above are fixed per JVM run, so retrying after a
-	// mid-flow failure would resend the same names and fail on a duplicate-name error instead
-	// of surfacing the real cause - rethrow the original failure instead.
+	// Cached terminal failure so a retry rethrows the original cause instead of resending fixed names and hitting a duplicate-name error.
 	private static RuntimeException kycDelegationDisabledSetupFailure = null;
 
 	public static synchronized String generateAndGetKycDelegationDisabledPartnerKeyUrl() {
@@ -335,9 +325,7 @@ public class IdAuthenticationUtil extends AdminTestUtil {
 		RestClient.postRequestWithCookie(partnersUrl, partnerBody, MediaType.APPLICATION_JSON,
 				MediaType.APPLICATION_JSON, GlobalConstants.AUTHORIZATION, token);
 
-		// MispPartnerAndLicenseKeyGeneration.getCertificates() hardcodes keyFileNameByPartnerName=false,
-		// which reuses the first partner's cached cert files - go straight to AuthTestsUtil with true so
-		// the cert chain (and its Organization field) is unique to this partner id
+		// MispPartnerAndLicenseKeyGeneration.getCertificates() hardcodes keyFileNameByPartnerName=false (reuses the first partner's cached certs), so go straight to AuthTestsUtil with true for a cert chain unique to this partner id
 		io.mosip.testrig.apirig.dto.CertificateChainResponseDto certChain;
 		try {
 			certChain = new io.mosip.testrig.apirig.utils.AuthTestsUtil().generatePartnerKeys(
@@ -350,8 +338,7 @@ public class IdAuthenticationUtil extends AdminTestUtil {
 		MispPartnerAndLicenseKeyGeneration.uploadIntermediateCertificate(certChain.getInterCertificate(), "Auth");
 		org.json.JSONObject signedCertificateValue = MispPartnerAndLicenseKeyGeneration.uploadPartnerCertificate(
 				certChain.getPartnerCertificate(), "Auth", KYC_DELEGATION_DISABLED_PARTNER_ID);
-		// MispPartnerAndLicenseKeyGeneration.uploadSignedCertificate() hardcodes partnerName=null/keyFileNameByPartnerName=false,
-		// which would update the wrong (generic) key file - call AuthTestsUtil directly with the same params used above
+		// MispPartnerAndLicenseKeyGeneration.uploadSignedCertificate() hardcodes partnerName=null/keyFileNameByPartnerName=false (would update the wrong generic key file), so call AuthTestsUtil directly with the same params used above
 		HashMap<String, String> signedCertRequest = new HashMap<>();
 		signedCertRequest.put("certData", signedCertificateValue.getString("signedCertificateData"));
 		try {

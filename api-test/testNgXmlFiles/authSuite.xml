@@ -192,6 +192,7 @@
 
 	<test name="DemoAuth">
 		<parameter name="ymlFile" value="ida/DemoAuth/DemoAuth2.yml" />
+		<parameter name="idKeyName" value="authToken" />
 		<classes>
 			<class name="io.mosip.testrig.apirig.auth.testscripts.DemoAuth" />
 		</classes>
