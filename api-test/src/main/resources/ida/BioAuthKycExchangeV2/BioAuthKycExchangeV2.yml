@@ -5,6 +5,7 @@ BioAuthKycExchangeV2:
       description: Validate the BioAuth KYC Exchange V2 biometric face authentication for a valid UIN in a smoke positive scenario - expected to succeed
       role: resident
       restMethod: post
+      checkErrorsOnlyInResponse: true
       inputTemplate: ida/BioAuthKycExchangeV2/BioAuthKYCExchangeV2
       outputTemplate: ida/BioAuthKycExchangeV2/BioAuthKYCExchangeResult
       input: '{
@@ -18,7 +19,6 @@ BioAuthKycExchangeV2:
         "locales": [{localesValue: "eng"}],
         "respType": "JWE"
     }'
-      checkErrorsOnlyInResponse: true
       output: '{
 
 }'
@@ -280,6 +280,7 @@ BioAuthKycExchangeV2:
       description: Kyc exchange V2 with only verifiedConsentedClaims populated and unVerifiedConsentedClaims empty - expected to succeed
       role: resident
       restMethod: post
+      checkErrorsOnlyInResponse: true
       inputTemplate: ida/BioAuthKycExchangeV2/BioAuthKYCExchangeV2Custom
       outputTemplate: ida/BioAuthKycExchangeV2/BioAuthKYCExchangeResult
       input: '{
@@ -295,7 +296,6 @@ BioAuthKycExchangeV2:
         "verificationBlocks": [{trustFramework: "mosip_trust_framework", maxAge: "3600", verifiedClaims: ["given_name", "family_name"]}],
         "unVerifiedClaims": []
     }'
-      checkErrorsOnlyInResponse: true
       output: '{
 
 }'
@@ -305,6 +305,7 @@ BioAuthKycExchangeV2:
       description: Kyc exchange V2 with only unVerifiedConsentedClaims populated and verifiedConsentedClaims empty - expected to succeed
       role: resident
       restMethod: post
+      checkErrorsOnlyInResponse: true
       inputTemplate: ida/BioAuthKycExchangeV2/BioAuthKYCExchangeV2Custom
       outputTemplate: ida/BioAuthKycExchangeV2/BioAuthKYCExchangeResult
       input: '{
@@ -320,7 +321,6 @@ BioAuthKycExchangeV2:
         "verificationBlocks": [],
         "unVerifiedClaims": ["email", "phone_number"]
     }'
-      checkErrorsOnlyInResponse: true
       output: '{
 
 }'
@@ -330,6 +330,7 @@ BioAuthKycExchangeV2:
       description: Kyc exchange V2 with two verification blocks carrying different trust_framework values, per the OIDC4IDA multiple-objects shape documented on KycExchangeRequestDTOV2 - expected to succeed
       role: resident
       restMethod: post
+      checkErrorsOnlyInResponse: true
       inputTemplate: ida/BioAuthKycExchangeV2/BioAuthKYCExchangeV2Custom
       outputTemplate: ida/BioAuthKycExchangeV2/BioAuthKYCExchangeResult
       input: '{
@@ -348,7 +349,6 @@ BioAuthKycExchangeV2:
         ],
         "unVerifiedClaims": []
     }'
-      checkErrorsOnlyInResponse: true
       output: '{
 
 }'
@@ -358,6 +358,7 @@ BioAuthKycExchangeV2:
       description: Kyc exchange V2 with a non-JWE respType still succeeds, returning a signed but unencrypted payload
       role: resident
       restMethod: post
+      checkErrorsOnlyInResponse: true
       inputTemplate: ida/BioAuthKycExchangeV2/BioAuthKYCExchangeV2Custom
       outputTemplate: ida/BioAuthKycExchangeV2/BioAuthKYCExchangeResult
       input: '{
@@ -373,7 +374,6 @@ BioAuthKycExchangeV2:
         "verificationBlocks": [{trustFramework: "mosip_trust_framework", maxAge: "3600", verifiedClaims: ["given_name"]}],
         "unVerifiedClaims": ["email"]
     }'
-      checkErrorsOnlyInResponse: true
       output: '{
 
 }'

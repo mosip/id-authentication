@@ -5,9 +5,9 @@ BioAuthKycExchange:
       description: Biometric face auth KYC Exchange with valid UIN and auth to get success response
       role: resident
       restMethod: post
+      checkErrorsOnlyInResponse: true
       inputTemplate: ida/BioAuthKycExchange/BioAuthKYCExchange
       outputTemplate: ida/BioAuthKycExchange/BioAuthKYCExchangeResult
-      checkErrorsOnlyInResponse: true
       input: '{
         "requestTime": "$TIMESTAMP$",
         "individualId": "$ID:AddIdentity_For_Kyc_Delegated_Bio_Auth_Smoke_Pos_UIN$",
@@ -29,9 +29,9 @@ BioAuthKycExchange:
       description: Biometric face KYC exchange auth with valid VID - expected to succeed
       role: resident
       restMethod: post
+      checkErrorsOnlyInResponse: true
       inputTemplate: ida/BioAuthKycExchange/BioAuthKYCExchange
       outputTemplate: ida/BioAuthKycExchange/BioAuthKYCExchangeResult
-      checkErrorsOnlyInResponse: true
       input: '{
         "requestTime": "$TIMESTAMP$",
         "individualId": "$ID:GenerateVID_for_kycDelegated_bio_sid_vid$",
@@ -53,9 +53,9 @@ BioAuthKycExchange:
       description: Biometric left iris KYC exchange auth with valid UIN - expected to succeed
       role: resident
       restMethod: post
+      checkErrorsOnlyInResponse: true
       inputTemplate: ida/BioAuthKycExchange/BioAuthKYCExchange
       outputTemplate: ida/BioAuthKycExchange/BioAuthKYCExchangeResult
-      checkErrorsOnlyInResponse: true
       input: '{
         "requestTime": "$TIMESTAMP$",
         "individualId": "$ID:AddIdentity_For_Kyc_Delegated_leftIris_Auth_UIN_smoke_Pos_UIN$",
@@ -77,9 +77,9 @@ BioAuthKycExchange:
       description: Biometric left iris KYC exchange auth with valid VID - expected to succeed
       role: resident
       restMethod: post
+      checkErrorsOnlyInResponse: true
       inputTemplate: ida/BioAuthKycExchange/BioAuthKYCExchange
       outputTemplate: ida/BioAuthKycExchange/BioAuthKYCExchangeResult
-      checkErrorsOnlyInResponse: true
       input: '{
         "requestTime": "$TIMESTAMP$",
         "individualId": "$ID:GenerateVID_for_kycDelegated_bio_sid_vid$",
@@ -101,9 +101,9 @@ BioAuthKycExchange:
       description: Biometric Right Iris KYC exchange auth with valid UIN - expected to succeed
       role: resident
       restMethod: post
+      checkErrorsOnlyInResponse: true
       inputTemplate: ida/BioAuthKycExchange/BioAuthKYCExchange
       outputTemplate: ida/BioAuthKycExchange/BioAuthKYCExchangeResult
-      checkErrorsOnlyInResponse: true
       input: '{
         "requestTime": "$TIMESTAMP$",
         "individualId": "$ID:AddIdentity_For_Kyc_Delegated_rightIris_Auth_UIN_smoke_Pos_UIN$",
@@ -125,9 +125,9 @@ BioAuthKycExchange:
       description: Biometric Right Iris KYC exchange auth with valid VID - expected to succeed
       role: resident
       restMethod: post
+      checkErrorsOnlyInResponse: true
       inputTemplate: ida/BioAuthKycExchange/BioAuthKYCExchange
       outputTemplate: ida/BioAuthKycExchange/BioAuthKYCExchangeResult
-      checkErrorsOnlyInResponse: true
       input: '{
         "requestTime": "$TIMESTAMP$",
         "individualId": "$ID:GenerateVID_for_kycDelegated_bio_rightIris_sid_vid$",
@@ -149,9 +149,9 @@ BioAuthKycExchange:
       description: Biometric LeftIndexFinger KYC exchange auth with valid UIN - expected to succeed
       role: resident
       restMethod: post
+      checkErrorsOnlyInResponse: true
       inputTemplate: ida/BioAuthKycExchange/BioAuthKYCExchange
       outputTemplate: ida/BioAuthKycExchange/BioAuthKYCExchangeResult
-      checkErrorsOnlyInResponse: true
       input: '{
         "requestTime": "$TIMESTAMP$",
         "individualId": "$ID:AddIdentity_For_Kyc_Delegated_Bio_Auth_Smoke_Pos_UIN$",
@@ -173,9 +173,9 @@ BioAuthKycExchange:
       description: Biometric LeftIndexFinger KYC exchange auth with valid VID - expected to succeed
       role: resident
       restMethod: post
+      checkErrorsOnlyInResponse: true
       inputTemplate: ida/BioAuthKycExchange/BioAuthKYCExchange
       outputTemplate: ida/BioAuthKycExchange/BioAuthKYCExchangeResult
-      checkErrorsOnlyInResponse: true
       input: '{
         "requestTime": "$TIMESTAMP$",
         "individualId": "$ID:GenerateVID_for_kycDelegated_bio_sid_vid$",
@@ -197,9 +197,9 @@ BioAuthKycExchange:
       description: Biometric RightIndexFinger KYC exchange auth with valid UIN - expected to succeed
       role: resident
       restMethod: post
+      checkErrorsOnlyInResponse: true
       inputTemplate: ida/BioAuthKycExchange/BioAuthKYCExchange
       outputTemplate: ida/BioAuthKycExchange/BioAuthKYCExchangeResult
-      checkErrorsOnlyInResponse: true
       input: '{
         "requestTime": "$TIMESTAMP$",
         "individualId": "$ID:AddIdentity_For_Kyc_Delegated_Bio_Auth_Smoke_Pos_UIN$",
@@ -221,9 +221,9 @@ BioAuthKycExchange:
       description: Biometric RightIndexFinger KYC exchange auth with valid VID - expected to succeed
       role: resident
       restMethod: post
+      checkErrorsOnlyInResponse: true
       inputTemplate: ida/BioAuthKycExchange/BioAuthKYCExchange
       outputTemplate: ida/BioAuthKycExchange/BioAuthKYCExchangeResult
-      checkErrorsOnlyInResponse: true
       input: '{
         "requestTime": "$TIMESTAMP$",
         "individualId": "$ID:GenerateVID_for_kycDelegated_bio_sid_vid$",
@@ -245,9 +245,9 @@ BioAuthKycExchange:
       description: Biometric RightMiddleFinger KYC exchange auth with valid UIN - expected to succeed
       role: resident
       restMethod: post
+      checkErrorsOnlyInResponse: true
       inputTemplate: ida/BioAuthKycExchange/BioAuthKYCExchange
       outputTemplate: ida/BioAuthKycExchange/BioAuthKYCExchangeResult
-      checkErrorsOnlyInResponse: true
       input: '{
         "requestTime": "$TIMESTAMP$",
         "individualId": "$ID:AddIdentity_For_Kyc_Delegated_Bio_Auth_Smoke_Pos_UIN$",
@@ -269,9 +269,9 @@ BioAuthKycExchange:
       description: Biometric RightMiddleFinger KYC exchange auth with valid VID - expected to succeed
       role: resident
       restMethod: post
+      checkErrorsOnlyInResponse: true
       inputTemplate: ida/BioAuthKycExchange/BioAuthKYCExchange
       outputTemplate: ida/BioAuthKycExchange/BioAuthKYCExchangeResult
-      checkErrorsOnlyInResponse: true
       input: '{
         "requestTime": "$TIMESTAMP$",
         "individualId": "$ID:GenerateVID_for_kycDelegated_bio_sid_vid$",
@@ -293,9 +293,9 @@ BioAuthKycExchange:
       description: Biometric LeftMiddleFinger KYC exchange auth with valid UIN - expected to succeed
       role: resident
       restMethod: post
+      checkErrorsOnlyInResponse: true
       inputTemplate: ida/BioAuthKycExchange/BioAuthKYCExchange
       outputTemplate: ida/BioAuthKycExchange/BioAuthKYCExchangeResult
-      checkErrorsOnlyInResponse: true
       input: '{
         "requestTime": "$TIMESTAMP$",
         "individualId": "$ID:AddIdentity_For_Kyc_Delegated_Bio_Auth_Smoke_Pos_UIN$",
@@ -317,9 +317,9 @@ BioAuthKycExchange:
       description: Biometric LeftMiddleFinger KYC exchange auth with valid VID - expected to succeed
       role: resident
       restMethod: post
+      checkErrorsOnlyInResponse: true
       inputTemplate: ida/BioAuthKycExchange/BioAuthKYCExchange
       outputTemplate: ida/BioAuthKycExchange/BioAuthKYCExchangeResult
-      checkErrorsOnlyInResponse: true
       input: '{
         "requestTime": "$TIMESTAMP$",
         "individualId": "$ID:GenerateVID_for_kycDelegated_bio_sid_vid$",
@@ -341,9 +341,9 @@ BioAuthKycExchange:
       description: Biometric RightLittleFinger KYC exchange auth with valid UIN - expected to succeed
       role: resident
       restMethod: post
+      checkErrorsOnlyInResponse: true
       inputTemplate: ida/BioAuthKycExchange/BioAuthKYCExchange
       outputTemplate: ida/BioAuthKycExchange/BioAuthKYCExchangeResult
-      checkErrorsOnlyInResponse: true
       input: '{
         "requestTime": "$TIMESTAMP$",
         "individualId": "$ID:AddIdentity_For_Kyc_Delegated_Bio_Auth_Smoke_Pos_UIN$",
@@ -365,9 +365,9 @@ BioAuthKycExchange:
       description: Biometric RightLittleFinger KYC exchange auth with valid VID - expected to succeed
       role: resident
       restMethod: post
+      checkErrorsOnlyInResponse: true
       inputTemplate: ida/BioAuthKycExchange/BioAuthKYCExchange
       outputTemplate: ida/BioAuthKycExchange/BioAuthKYCExchangeResult
-      checkErrorsOnlyInResponse: true
       input: '{
         "requestTime": "$TIMESTAMP$",
         "individualId": "$ID:GenerateVID_for_kycDelegated_bio_sid_vid$",
@@ -389,9 +389,9 @@ BioAuthKycExchange:
       description: Biometric LeftLittleFinger KYC exchange auth with valid UIN - expected to succeed
       role: resident
       restMethod: post
+      checkErrorsOnlyInResponse: true
       inputTemplate: ida/BioAuthKycExchange/BioAuthKYCExchange
       outputTemplate: ida/BioAuthKycExchange/BioAuthKYCExchangeResult
-      checkErrorsOnlyInResponse: true
       input: '{
         "requestTime": "$TIMESTAMP$",
         "individualId": "$ID:AddIdentity_For_Kyc_Delegated_Bio_Auth_Smoke_Pos_UIN$",
@@ -413,9 +413,9 @@ BioAuthKycExchange:
       description: Biometric LeftLittleFinger KYC exchange auth with valid VID - expected to succeed
       role: resident
       restMethod: post
+      checkErrorsOnlyInResponse: true
       inputTemplate: ida/BioAuthKycExchange/BioAuthKYCExchange
       outputTemplate: ida/BioAuthKycExchange/BioAuthKYCExchangeResult
-      checkErrorsOnlyInResponse: true
       input: '{
         "requestTime": "$TIMESTAMP$",
         "individualId": "$ID:GenerateVID_for_kycDelegated_bio_sid_vid$",
@@ -437,9 +437,9 @@ BioAuthKycExchange:
       description: Biometric RightThumb KYC exchange auth with valid UIN - expected to succeed
       role: resident
       restMethod: post
+      checkErrorsOnlyInResponse: true
       inputTemplate: ida/BioAuthKycExchange/BioAuthKYCExchange
       outputTemplate: ida/BioAuthKycExchange/BioAuthKYCExchangeResult
-      checkErrorsOnlyInResponse: true
       input: '{
         "requestTime": "$TIMESTAMP$",
         "individualId": "$ID:AddIdentity_For_Kyc_Delegated_Bio_Auth_Smoke_Pos_UIN$",
@@ -461,9 +461,9 @@ BioAuthKycExchange:
       description: Biometric RightThumb KYC exchange auth with valid VID - expected to succeed
       role: resident
       restMethod: post
+      checkErrorsOnlyInResponse: true
       inputTemplate: ida/BioAuthKycExchange/BioAuthKYCExchange
       outputTemplate: ida/BioAuthKycExchange/BioAuthKYCExchangeResult
-      checkErrorsOnlyInResponse: true
       input: '{
         "requestTime": "$TIMESTAMP$",
         "individualId": "$ID:GenerateVID_for_kycDelegated_bio_sid_vid$",
@@ -485,9 +485,9 @@ BioAuthKycExchange:
       description: Biometric LeftThumb KYC exchange auth with valid UIN - expected to succeed
       role: resident
       restMethod: post
+      checkErrorsOnlyInResponse: true
       inputTemplate: ida/BioAuthKycExchange/BioAuthKYCExchange
       outputTemplate: ida/BioAuthKycExchange/BioAuthKYCExchangeResult
-      checkErrorsOnlyInResponse: true
       input: '{
         "requestTime": "$TIMESTAMP$",
         "individualId": "$ID:AddIdentity_For_Kyc_Delegated_Bio_Auth_Smoke_Pos_UIN$",
@@ -509,9 +509,9 @@ BioAuthKycExchange:
       description: Biometric LeftThumb KYC exchange auth with valid VID - expected to succeed
       role: resident
       restMethod: post
+      checkErrorsOnlyInResponse: true
       inputTemplate: ida/BioAuthKycExchange/BioAuthKYCExchange
       outputTemplate: ida/BioAuthKycExchange/BioAuthKYCExchangeResult
-      checkErrorsOnlyInResponse: true
       input: '{
         "requestTime": "$TIMESTAMP$",
         "individualId": "$ID:GenerateVID_for_kycDelegated_bio_sid_vid$",

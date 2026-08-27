@@ -5,9 +5,9 @@ DemoAuthKycExchange:
       description: Demo auth kyc exchange using valid dob and valid UIN and auth to get success response
       role: resident
       restMethod: post
+      checkErrorsOnlyInResponse: true
       inputTemplate: ida/DemoAuthKycExchange/DemoAuthKycExchange
       outputTemplate: ida/DemoAuthKycExchange/DemoAuthKycExchangeResult
-      checkErrorsOnlyInResponse: true
       input: '{
         "requestTime": "$TIMESTAMP$",
         "individualId": "$ID:AddIdentity_withValidParameters_forDemoDelegated_Pos_UIN$",
@@ -29,9 +29,9 @@ DemoAuthKycExchange:
       description: Demo auth kyc exchange using valid dob with valid perpetual VID - expected to succeed
       role: resident
       restMethod: post
+      checkErrorsOnlyInResponse: true
       inputTemplate: ida/DemoAuthKycExchange/DemoAuthKycExchange
       outputTemplate: ida/DemoAuthKycExchange/DemoAuthKycExchangeResult
-      checkErrorsOnlyInResponse: true
       input: '{
         "requestTime": "$TIMESTAMP$",
         "individualId": "$ID:GenerateVID_for_EkycDemo_Dob_sid_vid$",
@@ -53,9 +53,9 @@ DemoAuthKycExchange:
       description: Demo auth kyc exchange using dob with infant UIN - expected to succeed
       role: resident
       restMethod: post
+      checkErrorsOnlyInResponse: true
       inputTemplate: ida/DemoAuthKycExchange/DemoAuthKycExchange
       outputTemplate: ida/DemoAuthKycExchange/DemoAuthKycExchangeResult
-      checkErrorsOnlyInResponse: true
       input: '{
         "requestTime": "$TIMESTAMP$",
         "individualId": "$ID:AddIdentity_withValidParameters_Infant_smoke_Pos_UIN$",
@@ -77,9 +77,9 @@ DemoAuthKycExchange:
       description: Demo auth kyc exchange using email with valid VID - expected to succeed
       role: resident
       restMethod: post
+      checkErrorsOnlyInResponse: true
       inputTemplate: ida/DemoAuthKycExchange/DemoAuthKycExchange
       outputTemplate: ida/DemoAuthKycExchange/DemoAuthKycExchangeResult
-      checkErrorsOnlyInResponse: true
       input: '{
         "requestTime": "$TIMESTAMP$",
         "individualId": "$ID:GenerateVID_All_Valid_Smoke_Perpetual_sid_vid$",
@@ -101,9 +101,9 @@ DemoAuthKycExchange:
       description: Demo auth kyc exchange with email using valid VID - expected to succeed
       role: resident
       restMethod: post
+      checkErrorsOnlyInResponse: true
       inputTemplate: ida/DemoAuthKycExchange/DemoAuthKycExchange
       outputTemplate: ida/DemoAuthKycExchange/DemoAuthKycExchangeResult
-      checkErrorsOnlyInResponse: true
       input: '{
         "requestTime": "$TIMESTAMP$",
         "individualId": "$ID:GenerateVID_All_Valid_Smoke_Perpetual_sid_vid$",
@@ -125,9 +125,9 @@ DemoAuthKycExchange:
       description: Demo auth kyc exchange using valid gender and valid UIN - expected to succeed
       role: resident
       restMethod: post
+      checkErrorsOnlyInResponse: true
       inputTemplate: ida/DemoAuthKycExchange/DemoAuthKycExchange
       outputTemplate: ida/DemoAuthKycExchange/DemoAuthKycExchangeResult
-      checkErrorsOnlyInResponse: true
       input: '{
         "requestTime": "$TIMESTAMP$",
         "individualId": "$ID:AddIdentity_withValidParameters_forDemoDelegated_Pos_UIN$",
@@ -149,9 +149,9 @@ DemoAuthKycExchange:
       description: Demo auth kyc exchange using valid gender and valid perpetual VID - expected to succeed
       role: resident
       restMethod: post
+      checkErrorsOnlyInResponse: true
       inputTemplate: ida/DemoAuthKycExchange/DemoAuthKycExchange
       outputTemplate: ida/DemoAuthKycExchange/DemoAuthKycExchangeResult
-      checkErrorsOnlyInResponse: true
       input: '{
         "requestTime": "$TIMESTAMP$",
         "individualId": "$ID:GenerateVID_All_Valid_Smoke_Perpetual_sid_vid$",
@@ -173,9 +173,9 @@ DemoAuthKycExchange:
       description: Demo auth kyc exchange using valid dob and valid perpetual VID - expected to succeed
       role: resident
       restMethod: post
+      checkErrorsOnlyInResponse: true
       inputTemplate: ida/DemoAuthKycExchange/DemoAuthKycExchange
       outputTemplate: ida/DemoAuthKycExchange/DemoAuthKycExchangeResult
-      checkErrorsOnlyInResponse: true
       input: '{
         "requestTime": "$TIMESTAMP$",
         "individualId": "$ID:GenerateVID_for_EkycDemo_Dob_sid_vid$",
@@ -197,9 +197,9 @@ DemoAuthKycExchange:
       description: Demo auth kyc exchange using valid name and valid UIN - expected to succeed
       role: resident
       restMethod: post
+      checkErrorsOnlyInResponse: true
       inputTemplate: ida/DemoAuthKycExchange/DemoAuthKycExchange
       outputTemplate: ida/DemoAuthKycExchange/DemoAuthKycExchangeResult
-      checkErrorsOnlyInResponse: true
       input: '{
         "requestTime": "$TIMESTAMP$",
         "individualId": "$ID:AddIdentity_withValidParameters_forDemoDelegated_Pos_UIN$",
@@ -221,9 +221,9 @@ DemoAuthKycExchange:
       description: Demo auth kyc exchange using valid name with title and valid UIN - expected to succeed
       role: resident
       restMethod: post
+      checkErrorsOnlyInResponse: true
       inputTemplate: ida/DemoAuthKycExchange/DemoAuthKycExchange
       outputTemplate: ida/DemoAuthKycExchange/DemoAuthKycExchangeResult
-      checkErrorsOnlyInResponse: true
       input: '{
         "requestTime": "$TIMESTAMP$",
         "individualId": "$ID:AddIdentity_withValidParameters_forDemoDelegated_Pos_UIN$",
@@ -245,9 +245,9 @@ DemoAuthKycExchange:
       description: Demo auth kyc exchange using valid name with title and valid UIN - expected to succeed
       role: resident
       restMethod: post
+      checkErrorsOnlyInResponse: true
       inputTemplate: ida/DemoAuthKycExchange/DemoAuthKycExchange
       outputTemplate: ida/DemoAuthKycExchange/DemoAuthKycExchangeResult
-      checkErrorsOnlyInResponse: true
       input: '{
         "requestTime": "$TIMESTAMP$",
         "individualId": "$ID:AddIdentity_withValidParameters_forDemoDelegated_Pos_UIN$",
@@ -269,9 +269,9 @@ DemoAuthKycExchange:
       description: Demo auth kyc exchange using name and valid UIN - expected to succeed
       role: resident
       restMethod: post
+      checkErrorsOnlyInResponse: true
       inputTemplate: ida/DemoAuthKycExchange/DemoAuthKycExchange
       outputTemplate: ida/DemoAuthKycExchange/DemoAuthKycExchangeResult
-      checkErrorsOnlyInResponse: true
       input: '{
         "requestTime": "$TIMESTAMP$",
         "individualId": "$ID:AddIdentity_withValidParameters_forDemoDelegated_Pos_UIN$",
@@ -293,9 +293,9 @@ DemoAuthKycExchange:
       description: Demo auth kyc exchange using name with title and valid UIN - expected to succeed
       role: resident
       restMethod: post
+      checkErrorsOnlyInResponse: true
       inputTemplate: ida/DemoAuthKycExchange/DemoAuthKycExchange
       outputTemplate: ida/DemoAuthKycExchange/DemoAuthKycExchangeResult
-      checkErrorsOnlyInResponse: true
       input: '{
         "requestTime": "$TIMESTAMP$",
         "individualId": "$ID:AddIdentity_withValidParameters_forDemoDelegated_Pos_UIN$",
@@ -317,9 +317,9 @@ DemoAuthKycExchange:
       description: Demo auth kyc exchange using valid name with title and UIN - expected to succeed
       role: resident
       restMethod: post
+      checkErrorsOnlyInResponse: true
       inputTemplate: ida/DemoAuthKycExchange/DemoAuthKycExchange
       outputTemplate: ida/DemoAuthKycExchange/DemoAuthKycExchangeResult
-      checkErrorsOnlyInResponse: true
       input: '{
         "requestTime": "$TIMESTAMP$",
         "individualId": "$ID:AddIdentity_withValidParameters_forDemoDelegated_Pos_UIN$",
@@ -341,9 +341,9 @@ DemoAuthKycExchange:
       description: Demo auth kyc exchange using name with title and valid UIN - expected to succeed
       role: resident
       restMethod: post
+      checkErrorsOnlyInResponse: true
       inputTemplate: ida/DemoAuthKycExchange/DemoAuthKycExchange
       outputTemplate: ida/DemoAuthKycExchange/DemoAuthKycExchangeResult
-      checkErrorsOnlyInResponse: true
       input: '{
         "requestTime": "$TIMESTAMP$",
         "individualId": "$ID:AddIdentity_withValidParameters_forDemoDelegated_Pos_UIN$",
@@ -365,9 +365,9 @@ DemoAuthKycExchange:
       description: Demo auth kyc exchange using valid name and valid perpetual VID - expected to succeed
       role: resident
       restMethod: post
+      checkErrorsOnlyInResponse: true
       inputTemplate: ida/DemoAuthKycExchange/DemoAuthKycExchange
       outputTemplate: ida/DemoAuthKycExchange/DemoAuthKycExchangeResult
-      checkErrorsOnlyInResponse: true
       input: '{
         "requestTime": "$TIMESTAMP$",
         "individualId": "$ID:GenerateVID_All_Valid_Smoke_Perpetual_sid_vid$",
@@ -389,9 +389,9 @@ DemoAuthKycExchange:
       description: Demo auth kyc exchange using valid age and valid perpetual VID - expected to succeed
       role: resident
       restMethod: post
+      checkErrorsOnlyInResponse: true
       inputTemplate: ida/DemoAuthKycExchange/DemoAuthKycExchange
       outputTemplate: ida/DemoAuthKycExchange/DemoAuthKycExchangeResult
-      checkErrorsOnlyInResponse: true
       input: '{
         "requestTime": "$TIMESTAMP$",
         "individualId": "$ID:GenerateVID_All_Valid_Smoke_Perpetual_sid_vid$",
@@ -413,9 +413,9 @@ DemoAuthKycExchange:
       description: Demo auth kyc exchange using valid phone number and valid perpetual VID - expected to succeed
       role: resident
       restMethod: post
+      checkErrorsOnlyInResponse: true
       inputTemplate: ida/DemoAuthKycExchange/DemoAuthKycExchange
       outputTemplate: ida/DemoAuthKycExchange/DemoAuthKycExchangeResult
-      checkErrorsOnlyInResponse: true
       input: '{
         "requestTime": "$TIMESTAMP$",
         "individualId": "$ID:GenerateVID_All_Valid_Smoke_Perpetual_sid_vid$",
@@ -437,9 +437,9 @@ DemoAuthKycExchange:
       description: Demo auth kyc exchange using dob with drafted UIN - expected to succeed
       role: resident
       restMethod: post
+      checkErrorsOnlyInResponse: true
       inputTemplate: ida/DemoAuthKycExchange/DemoAuthKycExchange
       outputTemplate: ida/DemoAuthKycExchange/DemoAuthKycExchangeResult
-      checkErrorsOnlyInResponse: true
       input: '{
         "requestTime": "$TIMESTAMP$",
         "individualId": "$ID:GetDraft_all_valid_smoke_sid_UIN$",
@@ -461,9 +461,9 @@ DemoAuthKycExchange:
       description: Demo auth kyc exchange using valid phone and valid UIN - expected to succeed
       role: resident
       restMethod: post
+      checkErrorsOnlyInResponse: true
       inputTemplate: ida/DemoAuthKycExchange/DemoAuthKycExchange
       outputTemplate: ida/DemoAuthKycExchange/DemoAuthKycExchangeResult
-      checkErrorsOnlyInResponse: true
       input: '{
         "requestTime": "$TIMESTAMP$",
         "individualId": "$ID:AddIdentity_withValidParameters_forDemoDelegated_Pos_UIN$",

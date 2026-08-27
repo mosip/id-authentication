@@ -275,9 +275,9 @@ KycExchangeNeg:
       description: Kyc exchange with an empty consentObtained list still succeeds - server-side consent validation is deliberately disabled
       role: resident
       restMethod: post
+      checkErrorsOnlyInResponse: true
       inputTemplate: ida/BioAuthKycExchange/BioAuthKYCExchange
       outputTemplate: ida/BioAuthKycExchange/BioAuthKYCExchangeResult
-      checkErrorsOnlyInResponse: true
       input: '{
         "requestTime": "$TIMESTAMP$",
         "individualId": "$ID:AddIdentity_withValidParameters_forDemoDelegated_Pos_UIN$",
@@ -299,9 +299,9 @@ KycExchangeNeg:
       description: Kyc exchange with an empty locales list still succeeds - server defaults to the configured kyc-exchange default language
       role: resident
       restMethod: post
+      checkErrorsOnlyInResponse: true
       inputTemplate: ida/BioAuthKycExchange/BioAuthKYCExchange
       outputTemplate: ida/BioAuthKycExchange/BioAuthKYCExchangeResult
-      checkErrorsOnlyInResponse: true
       input: '{
         "requestTime": "$TIMESTAMP$",
         "individualId": "$ID:AddIdentity_withValidParameters_forDemoDelegated_Pos_UIN$",
@@ -323,9 +323,9 @@ KycExchangeNeg:
       description: Kyc exchange with a non-JWE respType still succeeds, returning a signed but unencrypted payload
       role: resident
       restMethod: post
+      checkErrorsOnlyInResponse: true
       inputTemplate: ida/BioAuthKycExchange/BioAuthKYCExchange
       outputTemplate: ida/BioAuthKycExchange/BioAuthKYCExchangeResult
-      checkErrorsOnlyInResponse: true
       input: '{
         "requestTime": "$TIMESTAMP$",
         "individualId": "$ID:AddIdentity_withValidParameters_forDemoDelegated_Pos_UIN$",
