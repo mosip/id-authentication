@@ -131,7 +131,7 @@
 		<powermock.version>2.0.9</powermock.version>
 		<maven.surefire.plugin.version>2.22.0</maven.surefire.plugin.version>
 		<jacoco.maven.plugin.version>0.8.11</jacoco.maven.plugin.version>
-		<central.publishing.maven.plugin.version>0.7.0</central.publishing.maven.plugin.version>
+		<central.publishing.maven.plugin.version>0.11.0</central.publishing.maven.plugin.version>
 
 		<!-- Test & Logging -->
 		<junit.version>4.13.2</junit.version>
@@ -143,7 +143,6 @@
 		<hibernate.validator.version>6.0.12.Final</hibernate.validator.version>
 		<postgresql.version>42.2.2</postgresql.version>
 		<spring-boot-maven-plugin.version>3.2.3</spring-boot-maven-plugin.version>
-		<central.publishing.maven.plugin.version>0.7.0</central.publishing.maven.plugin.version>
 		<!-- Commons -->
 		<commons.lang.version>3.7</commons.lang.version>
 		<commons.codec.version>1.11</commons.codec.version>
