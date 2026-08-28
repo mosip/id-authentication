@@ -88,14 +88,13 @@ BioAuthDelegatedV2:
       description: Kyc auth V2 with claimsMetadataRequired omitted, defaults to false - still succeeds
       role: resident
       restMethod: post
-      inputTemplate: ida/BioAuthDelegatedV2/BioAuthDelegatedV2
+      inputTemplate: ida/BioAuthDelegatedV2/BioAuthDelegatedV2ClaimsOmitted
       outputTemplate: ida/BioAuthDelegatedV2/BioKYCAuthDelegatedResult
       input: '{
         "requestTime": "$TIMESTAMP$",
         "individualId": "$ID:AddIdentity_For_Kyc_Delegated_Bio_Auth_Smoke_Pos_UIN$",
         "transactionId": "$TRANSACTIONID$",
         "individualIdType": "UIN",
-        "claimsMetadataRequired": "$REMOVE$",
         "bio": true,
         "demo": false,
         "otp": false,
@@ -675,9 +674,9 @@ BioAuthDelegatedV2:
         "demo": false,
         "otp": false,
         "identityRequest":{
-          "bioSubType": "UNKNOWN",
-          "bioType": "FACE",
-          "bioValue": "$FACE$",
+          "bioSubType": "Right",
+          "bioType": "Iris",
+          "bioValue": "$RIGHTIRIS$",
           "deviceCode": "bc0b6848-6d45-46d1-a9bd-b334410bf823",
           "dateTime": "$DATETIME$",
           "deviceProviderID": "1873299273",
@@ -685,11 +684,11 @@ BioAuthDelegatedV2:
           "deviceServiceVersion": "SB.WIN.001",
           "deviceProvider": "SYNCBYTE",
           "deviceProviderId": "SYNCBYTE.LTC165",
-          "deviceSubType": "Full face",
+          "deviceSubType": "Slap",
           "make": "Logitech",
           "model": "4d36e96c-e325-11ce-bfc1-08002be10318",
           "serialNo": "78467171",
-          "type": "Face",
+          "type": "Iris",
     "transactionId": "$TRANSACTIONID$",
     "identityRequestTemplate": "ida/BioAuthDelegatedV2/BioAuthIdentityEncrypt",
     "identityRequestEncUrl": "/idauthentication/v1/internal/encrypt"
