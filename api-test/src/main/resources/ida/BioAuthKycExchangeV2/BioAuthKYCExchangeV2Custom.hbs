@@ -1,0 +1,40 @@
+{
+  "id": "{{id}}",
+  "version": "{{version}}",
+  "individualId": "{{individualId}}",
+  "individualIdType": "{{individualIdType}}",
+  "transactionID": "{{transactionID}}",
+  "requestTime": "{{requestTime}}",
+  "kycToken": "{{kycToken}}",
+  "locales": [
+      {{#each locales}}
+            "{{localesValue}}"
+          {{#unless @last}},{{/unless}}
+      	{{/each}}
+      ],
+  "respType": "{{respType}}",
+  "metadata": {},
+  "verifiedConsentedClaims": [
+      {{#each verificationBlocks}}
+      {
+        "verification": {
+          "trust_framework": { "value": "{{trustFramework}}" },
+          "time": { "max_age": "{{maxAge}}" }
+        },
+        "claims": {
+            {{#each verifiedClaims}}
+            "{{this}}": null
+            {{#unless @last}},{{/unless}}
+            {{/each}}
+        }
+      }
+      {{#unless @last}},{{/unless}}
+      {{/each}}
+    ],
+  "unVerifiedConsentedClaims": {
+      {{#each unVerifiedClaims}}
+      "{{this}}": null
+      {{#unless @last}},{{/unless}}
+      {{/each}}
+  }
+}
