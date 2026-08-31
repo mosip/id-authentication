@@ -76,13 +76,10 @@ function installing_ida() {
   helm -n $NS install ida-keygen mosip/keygen $IDA_KEYGEN_HELM_ARGS --wait --wait-for-jobs  --version $CHART_VERSION
 
   echo Installing ida auth
+  # As of Issue #1764, ida-auth is the single consolidated ID Authentication Service
+  # deployment - it also serves what used to be the separate ida-internal and ida-otp
+  # charts/services. Those charts have been removed.
   helm -n $NS install ida-auth mosip/ida-auth $IDA_HELM_ARGS --version $CHART_VERSION $ENABLE_INSECURE
-
-  echo Installing ida internal
-  helm -n $NS install ida-internal mosip/ida-internal $IDA_HELM_ARGS --version $CHART_VERSION $ENABLE_INSECURE
-
-  echo Installing ida otp
-  helm -n $NS install ida-otp mosip/ida-otp $IDA_HELM_ARGS --version $CHART_VERSION $ENABLE_INSECURE
 
   kubectl -n $NS  get deploy -o name |  xargs -n1 -t  kubectl -n $NS rollout status
 
