@@ -34,7 +34,7 @@ AuthLock:
 }'
    auth_AuthLock_Valid_UIN_locked_All:
       endPoint: /resident/v1/req/auth-lock
-      uniqueIdentifier: TC_IDA_AuthLock_01
+      uniqueIdentifier: TC_IDA_AuthLock_10
       description: Validate the behavior of the authentication lock service when a valid UIN that is already locked is processed
       role: resident
       checkErrorsOnlyInResponse: true

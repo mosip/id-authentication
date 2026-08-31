@@ -2,7 +2,7 @@ BioAuthKycExchangeV2:
   auth_BioAuthKycExchangeV2_Biometric_Face_With_Valid_uin_Smoke_Pos:
       endPoint: /idauthentication/v1/kyc-exchange/v2/delegated/$partialPartnerKeyUrl$/$ID:CreateOIDCClient_Delegated_Valid_Smoke_sid_clientId$
       uniqueIdentifier: TC_IDA_BioAuthKycExchangeV2_01
-      description: Validate the BioAuth KYC Exchange V2 biometric face authentication for a valid UIN in a smoke positive scenario
+      description: Validate the BioAuth KYC Exchange V2 biometric face authentication for a valid UIN in a smoke positive scenario - expected to succeed
       role: resident
       restMethod: post
       checkErrorsOnlyInResponse: true
@@ -20,5 +20,360 @@ BioAuthKycExchangeV2:
         "respType": "JWE"
     }'
       output: '{
-  
+
+}'
+  auth_BioAuthKycExchangeV2Neg_Missing_KycToken_Neg:
+      endPoint: /idauthentication/v1/kyc-exchange/v2/delegated/$partialPartnerKeyUrl$/$ID:CreateOIDCClient_Delegated_Valid_Smoke_sid_clientId$
+      uniqueIdentifier: TC_IDA_BioAuthKycExchangeV2Neg_01
+      description: Kyc exchange V2 with missing kycToken - no custom validator bound for V2, likely a raw Hibernate code not IDA-MLC-006 - unverified - expected to fail
+      role: resident
+      restMethod: post
+      inputTemplate: ida/BioAuthKycExchangeV2/BioAuthKYCExchangeV2Custom
+      outputTemplate: ida/DelegateError
+      input: '{
+        "requestTime": "$TIMESTAMP$",
+        "individualId": "$ID:AddIdentity_For_Kyc_Delegated_Bio_Auth_Smoke_Pos_UIN$",
+        "transactionID": "$TRANSACTIONID$",
+        "individualIdType": "UIN",
+        "id": "mosip.identity.kycexchange",
+        "version": "1.0",
+        "kycToken": "$REMOVE$",
+        "locales": [{localesValue: "eng"}],
+        "respType": "JWE",
+        "verificationBlocks": [{trustFramework: "mosip_trust_framework", maxAge: "3600", verifiedClaims: ["given_name"]}],
+        "unVerifiedClaims": ["email"]
+    }'
+      output: '{
+      "errors": [
+        {
+          "errorCode": "NotNull"
+        }
+      ]
+}'
+  auth_BioAuthKycExchangeV2Neg_Missing_IndividualId_Neg:
+      endPoint: /idauthentication/v1/kyc-exchange/v2/delegated/$partialPartnerKeyUrl$/$ID:CreateOIDCClient_Delegated_Valid_Smoke_sid_clientId$
+      uniqueIdentifier: TC_IDA_BioAuthKycExchangeV2Neg_02
+      description: Kyc exchange V2 with missing individualId - still goes through kycExchangeValidator.validateIdvId which is called explicitly in the V2 controller regardless of binder wiring - expected to fail
+      role: resident
+      restMethod: post
+      inputTemplate: ida/BioAuthKycExchangeV2/BioAuthKYCExchangeV2Custom
+      outputTemplate: ida/DelegateError
+      input: '{
+        "requestTime": "$TIMESTAMP$",
+        "individualId": "$REMOVE$",
+        "transactionID": "$TRANSACTIONID$",
+        "individualIdType": "UIN",
+        "id": "mosip.identity.kycexchange",
+        "version": "1.0",
+        "kycToken": "placeholderKycTokenNotUnderTest",
+        "locales": [{localesValue: "eng"}],
+        "respType": "JWE",
+        "verificationBlocks": [{trustFramework: "mosip_trust_framework", maxAge: "3600", verifiedClaims: ["given_name"]}],
+        "unVerifiedClaims": ["email"]
+    }'
+      output: '{
+      "errors": [
+        {
+          "errorCode": "IDA-MLC-006"
+        }
+      ]
+}'
+  auth_BioAuthKycExchangeV2Neg_Invalid_UIN_Neg:
+      endPoint: /idauthentication/v1/kyc-exchange/v2/delegated/$partialPartnerKeyUrl$/$ID:CreateOIDCClient_Delegated_Valid_Smoke_sid_clientId$
+      uniqueIdentifier: TC_IDA_BioAuthKycExchangeV2Neg_03
+      description: Kyc exchange V2 with an invalid UIN (fails checksum)
+      role: resident
+      restMethod: post
+      inputTemplate: ida/BioAuthKycExchangeV2/BioAuthKYCExchangeV2Custom
+      outputTemplate: ida/DelegateError
+      input: '{
+        "requestTime": "$TIMESTAMP$",
+        "individualId": "9999999999",
+        "transactionID": "$TRANSACTIONID$",
+        "individualIdType": "UIN",
+        "id": "mosip.identity.kycexchange",
+        "version": "1.0",
+        "kycToken": "00000000-0000-0000-0000-nonexistenttokenv2",
+        "locales": [{localesValue: "eng"}],
+        "respType": "JWE",
+        "verificationBlocks": [{trustFramework: "mosip_trust_framework", maxAge: "3600", verifiedClaims: ["given_name"]}],
+        "unVerifiedClaims": ["email"]
+    }'
+      output: '{
+      "errors": [
+        {
+          "errorCode": "IDA-MLC-002"
+        }
+      ]
+}'
+  auth_BioAuthKycExchangeV2Neg_Invalid_VID_Neg:
+      endPoint: /idauthentication/v1/kyc-exchange/v2/delegated/$partialPartnerKeyUrl$/$ID:CreateOIDCClient_Delegated_Valid_Smoke_sid_clientId$
+      uniqueIdentifier: TC_IDA_BioAuthKycExchangeV2Neg_04
+      description: Kyc exchange V2 with an invalid VID (fails checksum)
+      role: resident
+      restMethod: post
+      inputTemplate: ida/BioAuthKycExchangeV2/BioAuthKYCExchangeV2Custom
+      outputTemplate: ida/DelegateError
+      input: '{
+        "requestTime": "$TIMESTAMP$",
+        "individualId": "999999999999999999",
+        "transactionID": "$TRANSACTIONID$",
+        "individualIdType": "VID",
+        "id": "mosip.identity.kycexchange",
+        "version": "1.0",
+        "kycToken": "00000000-0000-0000-0000-nonexistenttokenv2",
+        "locales": [{localesValue: "eng"}],
+        "respType": "JWE",
+        "verificationBlocks": [{trustFramework: "mosip_trust_framework", maxAge: "3600", verifiedClaims: ["given_name"]}],
+        "unVerifiedClaims": ["email"]
+    }'
+      output: '{
+      "errors": [
+        {
+          "errorCode": "IDA-MLC-004"
+        }
+      ]
+}'
+  auth_BioAuthKycExchangeV2Neg_Missing_TransactionID_Neg:
+      endPoint: /idauthentication/v1/kyc-exchange/v2/delegated/$partialPartnerKeyUrl$/$ID:CreateOIDCClient_Delegated_Valid_Smoke_sid_clientId$
+      uniqueIdentifier: TC_IDA_BioAuthKycExchangeV2Neg_05
+      description: Kyc exchange V2 with missing transactionID - likely resolves as IDA-KYE-005 mismatch, not a missing-field error - unverified
+      role: resident
+      restMethod: post
+      inputTemplate: ida/BioAuthKycExchangeV2/BioAuthKYCExchangeV2Custom
+      outputTemplate: ida/DelegateError
+      input: '{
+        "requestTime": "$TIMESTAMP$",
+        "individualId": "$ID:AddIdentity_For_Kyc_Delegated_Bio_Auth_Smoke_Pos_UIN$",
+        "transactionID": "$REMOVE$",
+        "individualIdType": "UIN",
+        "id": "mosip.identity.kycexchange",
+        "version": "1.0",
+        "kycToken": "$ID:BioAuthDelegatedV2_forKycExchangeV2MissingTxnId_Pos_Sid_kycToken$",
+        "locales": [{localesValue: "eng"}],
+        "respType": "JWE",
+        "verificationBlocks": [{trustFramework: "mosip_trust_framework", maxAge: "3600", verifiedClaims: ["given_name"]}],
+        "unVerifiedClaims": ["email"]
+    }'
+      output: '{
+      "errors": [
+        {
+          "errorCode": "IDA-KYE-005"
+        }
+      ]
+}'
+  auth_BioAuthKycExchangeV2Neg_Token_Not_Found_Neg:
+      endPoint: /idauthentication/v1/kyc-exchange/v2/delegated/$partialPartnerKeyUrl$/$ID:CreateOIDCClient_Delegated_Valid_Smoke_sid_clientId$
+      uniqueIdentifier: TC_IDA_BioAuthKycExchangeV2Neg_06
+      description: Kyc exchange V2 with a well-formed but non-existent kycToken - expected to fail
+      role: resident
+      restMethod: post
+      inputTemplate: ida/BioAuthKycExchangeV2/BioAuthKYCExchangeV2Custom
+      outputTemplate: ida/DelegateError
+      input: '{
+        "requestTime": "$TIMESTAMP$",
+        "individualId": "$ID:AddIdentity_For_Kyc_Delegated_Bio_Auth_Smoke_Pos_UIN$",
+        "transactionID": "$TRANSACTIONID$",
+        "individualIdType": "UIN",
+        "id": "mosip.identity.kycexchange",
+        "version": "1.0",
+        "kycToken": "00000000-0000-0000-0000-nonexistenttokenv2",
+        "locales": [{localesValue: "eng"}],
+        "respType": "JWE",
+        "verificationBlocks": [{trustFramework: "mosip_trust_framework", maxAge: "3600", verifiedClaims: ["given_name"]}],
+        "unVerifiedClaims": ["email"]
+    }'
+      output: '{
+      "errors": [
+        {
+          "errorCode": "IDA-KYE-001"
+        }
+      ]
+}'
+  auth_BioAuthKycExchangeV2Neg_Already_Used_Token_Neg:
+      endPoint: /idauthentication/v1/kyc-exchange/v2/delegated/$partialPartnerKeyUrl$/$ID:CreateOIDCClient_Delegated_Valid_Smoke_sid_clientId$
+      uniqueIdentifier: TC_IDA_BioAuthKycExchangeV2Neg_07
+      description: Kyc exchange V2 with a token already consumed by TC_IDA_BioAuthKycExchangeV2_01. Depends on that positive case having run first in suite order. - expected to fail
+      role: resident
+      restMethod: post
+      inputTemplate: ida/BioAuthKycExchangeV2/BioAuthKYCExchangeV2Custom
+      outputTemplate: ida/DelegateError
+      input: '{
+        "requestTime": "$TIMESTAMP$",
+        "individualId": "$ID:AddIdentity_For_Kyc_Delegated_Bio_Auth_Smoke_Pos_UIN$",
+        "transactionID": "$TRANSACTIONID$",
+        "individualIdType": "UIN",
+        "id": "mosip.identity.kycexchange",
+        "version": "1.0",
+        "kycToken": "$ID:BioAuthDelegatedV2_Biometric_Face_With_Valid_uin_Smoke_Pos_Sid_kycToken$",
+        "locales": [{localesValue: "eng"}],
+        "respType": "JWE",
+        "verificationBlocks": [{trustFramework: "mosip_trust_framework", maxAge: "3600", verifiedClaims: ["given_name"]}],
+        "unVerifiedClaims": ["email"]
+    }'
+      output: '{
+      "errors": [
+        {
+          "errorCode": "IDA-KYE-003"
+        }
+      ]
+}'
+  auth_BioAuthKycExchangeV2Neg_IndividualId_Mismatch_Neg:
+      endPoint: /idauthentication/v1/kyc-exchange/v2/delegated/$partialPartnerKeyUrl$/$ID:CreateOIDCClient_Delegated_Valid_Smoke_sid_clientId$
+      uniqueIdentifier: TC_IDA_BioAuthKycExchangeV2Neg_08
+      description: Kyc exchange V2 with an individualId different from the one bound to the token - expected to fail
+      role: resident
+      restMethod: post
+      inputTemplate: ida/BioAuthKycExchangeV2/BioAuthKYCExchangeV2Custom
+      outputTemplate: ida/DelegateError
+      input: '{
+        "requestTime": "$TIMESTAMP$",
+        "individualId": "$ID:AddIdentity_EkycDemo_Auth_smoke_Pos_UIN$",
+        "transactionID": "$TRANSACTIONID$",
+        "individualIdType": "UIN",
+        "id": "mosip.identity.kycexchange",
+        "version": "1.0",
+        "kycToken": "$ID:BioAuthDelegatedV2_forKycExchangeV2IndividualIdMismatch_Pos_Sid_kycToken$",
+        "locales": [{localesValue: "eng"}],
+        "respType": "JWE",
+        "verificationBlocks": [{trustFramework: "mosip_trust_framework", maxAge: "3600", verifiedClaims: ["given_name"]}],
+        "unVerifiedClaims": ["email"]
+    }'
+      output: '{
+      "errors": [
+        {
+          "errorCode": "IDA-KYE-007"
+        }
+      ]
+}'
+  auth_BioAuthKycExchangeV2Neg_Duplicate_Claims_Neg:
+      endPoint: /idauthentication/v1/kyc-exchange/v2/delegated/$partialPartnerKeyUrl$/$ID:CreateOIDCClient_Delegated_Valid_Smoke_sid_clientId$
+      uniqueIdentifier: TC_IDA_BioAuthKycExchangeV2Neg_09
+      description: Kyc exchange V2 with the same claim key (given_name) requested in both verifiedConsentedClaims and unVerifiedConsentedClaims - expected to fail
+      role: resident
+      restMethod: post
+      inputTemplate: ida/BioAuthKycExchangeV2/BioAuthKYCExchangeV2Custom
+      outputTemplate: ida/DelegateError
+      input: '{
+        "requestTime": "$TIMESTAMP$",
+        "individualId": "$ID:AddIdentity_For_Kyc_Delegated_Bio_Auth_Smoke_Pos_UIN$",
+        "transactionID": "$TRANSACTIONID$",
+        "individualIdType": "UIN",
+        "id": "mosip.identity.kycexchange",
+        "version": "1.0",
+        "kycToken": "$ID:BioAuthDelegatedV2_forKycExchangeV2DuplicateClaims_Pos_Sid_kycToken$",
+        "locales": [{localesValue: "eng"}],
+        "respType": "JWE",
+        "verificationBlocks": [{trustFramework: "mosip_trust_framework", maxAge: "3600", verifiedClaims: ["given_name", "family_name"]}],
+        "unVerifiedClaims": ["given_name", "email"]
+    }'
+      output: '{
+      "errors": [
+        {
+          "errorCode": "IDA-KYE-008"
+        }
+      ]
+}'
+  auth_BioAuthKycExchangeV2_VerifiedClaimsOnly_Pos:
+      endPoint: /idauthentication/v1/kyc-exchange/v2/delegated/$partialPartnerKeyUrl$/$ID:CreateOIDCClient_Delegated_Valid_Smoke_sid_clientId$
+      uniqueIdentifier: TC_IDA_BioAuthKycExchangeV2_02
+      description: Kyc exchange V2 with only verifiedConsentedClaims populated and unVerifiedConsentedClaims empty - expected to succeed
+      role: resident
+      restMethod: post
+      checkErrorsOnlyInResponse: true
+      inputTemplate: ida/BioAuthKycExchangeV2/BioAuthKYCExchangeV2Custom
+      outputTemplate: ida/BioAuthKycExchangeV2/BioAuthKYCExchangeResult
+      input: '{
+        "requestTime": "$TIMESTAMP$",
+        "individualId": "$ID:AddIdentity_For_Kyc_Delegated_Bio_Auth_Smoke_Pos_UIN$",
+        "transactionID": "$TRANSACTIONID$",
+        "individualIdType": "UIN",
+        "id": "mosip.identity.kycexchange",
+        "version": "1.0",
+        "kycToken": "$ID:BioAuthDelegatedV2_forKycExchangeV2VerifiedOnly_Pos_Sid_kycToken$",
+        "locales": [{localesValue: "eng"}],
+        "respType": "JWE",
+        "verificationBlocks": [{trustFramework: "mosip_trust_framework", maxAge: "3600", verifiedClaims: ["given_name", "family_name"]}],
+        "unVerifiedClaims": []
+    }'
+      output: '{
+
+}'
+  auth_BioAuthKycExchangeV2_UnverifiedClaimsOnly_Pos:
+      endPoint: /idauthentication/v1/kyc-exchange/v2/delegated/$partialPartnerKeyUrl$/$ID:CreateOIDCClient_Delegated_Valid_Smoke_sid_clientId$
+      uniqueIdentifier: TC_IDA_BioAuthKycExchangeV2_03
+      description: Kyc exchange V2 with only unVerifiedConsentedClaims populated and verifiedConsentedClaims empty - expected to succeed
+      role: resident
+      restMethod: post
+      checkErrorsOnlyInResponse: true
+      inputTemplate: ida/BioAuthKycExchangeV2/BioAuthKYCExchangeV2Custom
+      outputTemplate: ida/BioAuthKycExchangeV2/BioAuthKYCExchangeResult
+      input: '{
+        "requestTime": "$TIMESTAMP$",
+        "individualId": "$ID:AddIdentity_For_Kyc_Delegated_Bio_Auth_Smoke_Pos_UIN$",
+        "transactionID": "$TRANSACTIONID$",
+        "individualIdType": "UIN",
+        "id": "mosip.identity.kycexchange",
+        "version": "1.0",
+        "kycToken": "$ID:BioAuthDelegatedV2_forKycExchangeV2UnverifiedOnly_Pos_Sid_kycToken$",
+        "locales": [{localesValue: "eng"}],
+        "respType": "JWE",
+        "verificationBlocks": [],
+        "unVerifiedClaims": ["email", "phone_number"]
+    }'
+      output: '{
+
+}'
+  auth_BioAuthKycExchangeV2_MultiVerificationBlocks_Pos:
+      endPoint: /idauthentication/v1/kyc-exchange/v2/delegated/$partialPartnerKeyUrl$/$ID:CreateOIDCClient_Delegated_Valid_Smoke_sid_clientId$
+      uniqueIdentifier: TC_IDA_BioAuthKycExchangeV2_04
+      description: Kyc exchange V2 with two verification blocks carrying different trust_framework values, per the OIDC4IDA multiple-objects shape documented on KycExchangeRequestDTOV2 - expected to succeed
+      role: resident
+      restMethod: post
+      checkErrorsOnlyInResponse: true
+      inputTemplate: ida/BioAuthKycExchangeV2/BioAuthKYCExchangeV2Custom
+      outputTemplate: ida/BioAuthKycExchangeV2/BioAuthKYCExchangeResult
+      input: '{
+        "requestTime": "$TIMESTAMP$",
+        "individualId": "$ID:AddIdentity_For_Kyc_Delegated_Bio_Auth_Smoke_Pos_UIN$",
+        "transactionID": "$TRANSACTIONID$",
+        "individualIdType": "UIN",
+        "id": "mosip.identity.kycexchange",
+        "version": "1.0",
+        "kycToken": "$ID:BioAuthDelegatedV2_forKycExchangeV2MultiVerification_Pos_Sid_kycToken$",
+        "locales": [{localesValue: "eng"}],
+        "respType": "JWE",
+        "verificationBlocks": [
+          {trustFramework: "mosip_trust_framework", maxAge: "3600", verifiedClaims: ["given_name"]},
+          {trustFramework: "another_trust_framework", maxAge: "1933", verifiedClaims: ["birthdate"]}
+        ],
+        "unVerifiedClaims": []
+    }'
+      output: '{
+
+}'
+  auth_BioAuthKycExchangeV2_RespTypeNonJwe_Pos:
+      endPoint: /idauthentication/v1/kyc-exchange/v2/delegated/$partialPartnerKeyUrl$/$ID:CreateOIDCClient_Delegated_Valid_Smoke_sid_clientId$
+      uniqueIdentifier: TC_IDA_BioAuthKycExchangeV2_05
+      description: Kyc exchange V2 with a non-JWE respType still succeeds, returning a signed but unencrypted payload
+      role: resident
+      restMethod: post
+      checkErrorsOnlyInResponse: true
+      inputTemplate: ida/BioAuthKycExchangeV2/BioAuthKYCExchangeV2Custom
+      outputTemplate: ida/BioAuthKycExchangeV2/BioAuthKYCExchangeResult
+      input: '{
+        "requestTime": "$TIMESTAMP$",
+        "individualId": "$ID:AddIdentity_For_Kyc_Delegated_Bio_Auth_Smoke_Pos_UIN$",
+        "transactionID": "$TRANSACTIONID$",
+        "individualIdType": "UIN",
+        "id": "mosip.identity.kycexchange",
+        "version": "1.0",
+        "kycToken": "$ID:BioAuthDelegatedV2_forKycExchangeV2RespTypeNonJwe_Pos_Sid_kycToken$",
+        "locales": [{localesValue: "eng"}],
+        "respType": "JWT",
+        "verificationBlocks": [{trustFramework: "mosip_trust_framework", maxAge: "3600", verifiedClaims: ["given_name"]}],
+        "unVerifiedClaims": ["email"]
+    }'
+      output: '{
+
 }'
