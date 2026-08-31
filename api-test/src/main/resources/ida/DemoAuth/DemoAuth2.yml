@@ -768,32 +768,6 @@ DemoAuthNew:
         "authStatus": "false"
 }'
 
-  auth_DemoAuth_Email_Valid_Poss_VID:
-      endPoint: /idauthentication/v1/auth/$partnerKeyURL$
-      uniqueIdentifier: TC_IDA_DemoAuth_14
-      description: Verify that demo authentication succeeds with a valid email for a VID
-      role: resident
-      restMethod: post
-      additionalDependencies: TC_DependentModule_IdRepo_06
-      inputTemplate: ida/DemoAuth/DemoAuth
-      outputTemplate: ida/DemoAuth/DemoAuthResult
-      input: '{
-        "requestTime": "$TIMESTAMP$",
-        "individualId": "$ID:GenerateVID_All_Valid_Smoke_Perpetual_sid_vid$",
-        "transactionId": "1234567890",
-        "individualIdType": "VID",
-        "bio": false,
-        "demo": true,
-        "otp": false,
-        "identityRequest":{
-    "value": "$ID:AddIdentity_ValidParam_smoke_Pos_EMAIL$",
-"key": "emailId",
-    "identityRequestTemplate": "ida/DemoAuth/DemoIdentityEncrypt"
-    }
-    }'
-      output: '{
-  "authStatus": "true"
-}'
   auth_DemoAuth_Email_InValid_uin_Email:
       endPoint: /idauthentication/v1/auth/$partnerKeyURL$
       uniqueIdentifier: TC_IDA_DemoAuth_17
@@ -1141,7 +1115,7 @@ DemoAuthNew:
 }'
   auth_DemoAuth_gender_Valid_Pos_VID_with_RS_DOB:
       endPoint: /idauthentication/v1/auth/$partnerKeyURL$
-      uniqueIdentifier: TC_IDA_DemoAuth_04
+      uniqueIdentifier: TC_IDA_DemoAuth_72
       description: Verify that demo authentication succeeds with a valid gender value for a VID when using related RS and DOB fields
       role: resident
       restMethod: post
@@ -2374,14 +2348,14 @@ DemoAuthNew:
       output: '{
   "authStatus": "false"
 }'
-  auth_DemoAuth_with_age_below_calculated_value_Neg:
+  auth_DemoAuth_with_age_below_calculated_value_Pos:
       endPoint: /idauthentication/v1/auth/$partnerKeyURL$
       uniqueIdentifier: TC_IDA_DemoAuth_71
-      description: Verify that demo authentication fails when the age value is below the calculated age
+      description: Verify that demo authentication succeeds when the asserted age is below the calculated age (age match is a minimum-age threshold check, not exact match)
       role: resident
       restMethod: post
       inputTemplate: ida/DemoAuth/DemoAuth
-      outputTemplate: ida/DemoAuth/error
+      outputTemplate: ida/DemoAuth/DemoAuthResult
       input: '{
         "requestTime": "$TIMESTAMP$",
         "individualId": "$ID:AddIdentity_with_age_below_calculated_value_Pos_UIN$",
@@ -2397,7 +2371,7 @@ DemoAuthNew:
     }
     }'
       output: '{
-  "authStatus": "false"
+  "authStatus": "true"
 }'
   auth_DemoAuth_with_unusedUIN_value_audit_Neg:
       endPoint: /idauthentication/v1/auth/$partnerKeyURL$

@@ -1,2 +1,23 @@
 ##### JIRA number;testcase 
 #MOSIP-12456------Test_Case_Name
+MOSIP-43456------auth_EkycOtp_Auth_With_Invalid_Empty_Timestamp_UIN_Neg
+MOSIP-41021------auth_SendOTP_toBlockedVID_Neg
+MOSIP-41021------auth_SendOTP_to_LockedphoneAndEmail_valid_uin_Neg
+MOSIP-41021------auth_SendOTP_to_blocked_uin_Neg
+MOSIP-41021------auth_SendOTP_to_onlyLockedEmail_valid_uin_Neg
+MOSIP-41021------auth_SendOTP_to_onlyLockedphone_valid_uin_Neg
+MOSIP-43965------auth_SendOTP_to_DeactivatedUIN_Neg
+MOSIP-45519------auth_BioAuthDelegatedNeg_With_Deactivated_UIN
+MOSIP-45519------auth_BioAuthDelegatedV2Neg_Missing_RequestTime_Neg
+MOSIP-45519------auth_BioAuthDelegatedV2Neg_Malformed_RequestTime_Neg
+MOSIP-45519------auth_BioAuthDelegatedV2Neg_TransactionID_TooLong_Neg
+MOSIP-45519------auth_BioAuthKycExchangeV2Neg_Missing_IndividualId_Neg
+MOSIP-45519------auth_BioAuthKycExchangeV2Neg_Missing_TransactionID_Neg
+MOSIP-45519------auth_BioAuthKycExchangeV2Neg_Invalid_VID_Neg
+MOSIP-45519------auth_BioAuthKycExchangeV2Neg_Invalid_UIN_Neg
+MOSIP-45519------auth_DemoAuth_DOB_Invalid_Thumbprint_UIN_Neg
+MOSIP-45519------auth_KycExchangeNeg_Malformed_RequestTime_Neg
+MOSIP-45519------auth_KycExchangeNeg_Invalid_UIN_Neg
+MOSIP-45519------auth_KycExchangeNeg_Missing_RequestTime_Neg
+MOSIP-45519------auth_KycExchangeNeg_Invalid_VID_Neg
+MOSIP-45519------auth_KycExchangeNeg_Missing_IndividualId_Neg

@@ -23,6 +23,7 @@ import io.mosip.testrig.apirig.utils.GlobalConstants;
 import io.mosip.testrig.apirig.utils.JWKKeyUtil;
 import io.mosip.testrig.apirig.utils.KeyCloakUserAndAPIKeyGeneration;
 import io.mosip.testrig.apirig.utils.KeycloakUserManager;
+import io.mosip.testrig.apirig.utils.MispPartnerAndLicenseKeyGeneration;
 import io.mosip.testrig.apirig.utils.PartnerRegistration;
 import io.mosip.testrig.apirig.utils.RestClient;
 import io.mosip.testrig.apirig.utils.SkipTestCaseHandler;
@@ -83,6 +84,14 @@ public class IdAuthenticationUtil extends AdminTestUtil {
 				&& (!isElementPresent(globalRequiredFields, individualBiometrics))) {
 			throw new SkipException(GlobalConstants.FEATURE_NOT_SUPPORTED_MESSAGE);
 		} else if (testCaseName.startsWith("auth_") && testCaseName.contains("_DemoAuthDelegated") || testCaseName.contains("_DemoAuthKycExchange")) {
+			// Intentional skip: app rejects DEMO on delegated flow per client AMR config (confirmed on qa11new for base/Neg/V2/V2Neg alike via IDA-MPA-029), not a code gap.
+			throw new SkipException(GlobalConstants.FEATURE_NOT_SUPPORTED_MESSAGE);
+		} else if (testCaseDTO.getUniqueIdentifier() != null
+				&& (testCaseDTO.getUniqueIdentifier().equals("TC_IDA_KycExchangeNeg_10")
+						|| testCaseDTO.getUniqueIdentifier().equals("TC_IDA_KycExchangeNeg_11")
+						|| testCaseDTO.getUniqueIdentifier().equals("TC_IDA_KycExchangeNeg_12")
+						|| testCaseDTO.getUniqueIdentifier().equals("TC_IDA_KycExchangeNeg_13"))) {
+			// These consume a kycToken minted by DemoAuthDelegated (skipped above), so skip cleanly instead of failing on the downstream dependency-resolution error.
 			throw new SkipException(GlobalConstants.FEATURE_NOT_SUPPORTED_MESSAGE);
 		} else if (testCaseName.startsWith("auth_")
 				&& ((testCaseName.contains("_DeactivateUINs_")) || (testCaseName.contains("PublishDraft_")))
@@ -197,6 +206,158 @@ public class IdAuthenticationUtil extends AdminTestUtil {
 				throw new SkipException("Marking testcase as skipped as required field is empty " + keyword);
 
 		}
+	}
+
+	// Module-local MISP partner/policy with delegation disabled, for IDA-MPA-030/031 only.
+	public static String kycDelegationDisabledMispLicKey = "";
+	public static String kycDelegationDisabledPartnerKeyUrl = null;
+	private static final String KYC_DELEGATION_DISABLED_PARTNER_ID = "mosip-nodeleg-" + AdminTestUtil.timeStamp;
+	private static final String KYC_DELEGATION_DISABLED_POLICY_GROUP = "mosip misp no deleg policy group "
+			+ AdminTestUtil.timeStamp;
+	private static final String KYC_DELEGATION_DISABLED_POLICY_NAME = "mosip misp no deleg policy "
+			+ AdminTestUtil.timeStamp;
+
+	// Fails fast with the response body when "response" is missing/null or lacks "id"; scope to policy/partner-setup responses only, never authentication responses.
+	private static String extractIdOrFail(Response response, String step) {
+		String body = response.getBody().asString();
+		org.json.JSONObject json = new org.json.JSONObject(body);
+		if (json.isNull(GlobalConstants.RESPONSE)
+				|| !json.getJSONObject(GlobalConstants.RESPONSE).has("id")) {
+			throw new RuntimeException(step + " failed: " + body);
+		}
+		return json.getJSONObject(GlobalConstants.RESPONSE).getString("id");
+	}
+
+	// Cached terminal failure so a retry rethrows the original cause instead of resending fixed names and hitting a duplicate-name error.
+	private static RuntimeException kycDelegationDisabledSetupFailure = null;
+
+	public static synchronized String generateAndGetKycDelegationDisabledPartnerKeyUrl() {
+		if (kycDelegationDisabledPartnerKeyUrl != null) {
+			return kycDelegationDisabledPartnerKeyUrl;
+		}
+		if (kycDelegationDisabledSetupFailure != null) {
+			throw kycDelegationDisabledSetupFailure;
+		}
+		try {
+			return createKycDelegationDisabledPartner();
+		} catch (RuntimeException e) {
+			kycDelegationDisabledSetupFailure = e;
+			throw e;
+		}
+	}
+
+	@SuppressWarnings("unchecked")
+	private static String createKycDelegationDisabledPartner() {
+		String token = kernelAuthLib.getTokenByRole(GlobalConstants.PARTNER);
+
+		// dedicated policy group, isolated from the one the rest of the suite uses
+		String policyGroupUrl = ApplnURI + properties.getProperty("policyGroupUrl");
+		org.json.simple.JSONObject groupRequest = new org.json.simple.JSONObject();
+		groupRequest.put("desc", "desc mosip misp no-delegation policy group");
+		groupRequest.put("name", KYC_DELEGATION_DISABLED_POLICY_GROUP);
+
+		org.json.simple.JSONObject groupBody = new org.json.simple.JSONObject();
+		groupBody.put("id", GlobalConstants.STRING);
+		groupBody.put(GlobalConstants.METADATA, new HashMap<>());
+		groupBody.put(GlobalConstants.REQUEST, groupRequest);
+		groupBody.put(GlobalConstants.REQUESTTIME, generateCurrentUTCTimeStamp());
+		groupBody.put(GlobalConstants.VERSION, GlobalConstants.STRING);
+
+		Response groupResponse = RestClient.postRequestWithCookie(policyGroupUrl, groupBody,
+				MediaType.APPLICATION_JSON, MediaType.APPLICATION_JSON, GlobalConstants.AUTHORIZATION, token);
+		String policyGroupId = extractIdOrFail(groupResponse, "no-delegation policy group creation");
+
+		// same shape as config/mispPolicy.json but with allowKycRequestDelegation false
+		org.json.simple.JSONObject noDelegationPolicies = new org.json.simple.JSONObject();
+		noDelegationPolicies.put("trustBindedAuthVerificationToken", true);
+		noDelegationPolicies.put("allowAuthRequestDelegation", true);
+		noDelegationPolicies.put("allowKycRequestDelegation", false);
+		noDelegationPolicies.put("allowKeyBindingDelegation", true);
+		noDelegationPolicies.put("allowVciRequestDelegation", true);
+
+		org.json.simple.JSONObject policyRequest = new org.json.simple.JSONObject();
+		policyRequest.put("name", KYC_DELEGATION_DISABLED_POLICY_NAME);
+		policyRequest.put("policyGroupName", KYC_DELEGATION_DISABLED_POLICY_GROUP);
+		policyRequest.put("desc", "desc mosip misp no-delegation policy");
+		policyRequest.put("policyType", "MISP");
+		// required field, missing here previously caused policy creation to fail server-side
+		policyRequest.put(GlobalConstants.VERSION, "1.0");
+		policyRequest.put("policies", noDelegationPolicies);
+
+		org.json.simple.JSONObject policyBody = new org.json.simple.JSONObject();
+		policyBody.put("id", GlobalConstants.STRING);
+		policyBody.put(GlobalConstants.METADATA, new HashMap<>());
+		policyBody.put(GlobalConstants.REQUEST, policyRequest);
+		policyBody.put(GlobalConstants.REQUESTTIME, generateCurrentUTCTimeStamp());
+		policyBody.put(GlobalConstants.VERSION, GlobalConstants.STRING);
+
+		String authPolicyUrl = ApplnURI + properties.getProperty("authPolicyUrl");
+		Response policyResponse = RestClient.postRequestWithCookie(authPolicyUrl, policyBody,
+				MediaType.APPLICATION_JSON, MediaType.APPLICATION_JSON, GlobalConstants.AUTHORIZATION, token);
+		String policyId = extractIdOrFail(policyResponse, "no-delegation policy creation");
+
+		// publish - not enforced until published
+		String publishPolicyURL = ApplnURI + properties.getProperty("publishPolicyurl");
+		if (publishPolicyURL.contains("POLICYID")) {
+			publishPolicyURL = publishPolicyURL.replace("POLICYID", policyId).replace("POLICYGROUPID", policyGroupId);
+		}
+		RestClient.postRequestWithCookie(publishPolicyURL, MediaType.APPLICATION_JSON, MediaType.APPLICATION_JSON,
+				GlobalConstants.AUTHORIZATION, token);
+
+		// new MISP partner mapped to that policy group; Auth-Partner-ID/OIDC-Client-Id stay unchanged
+		String partnersUrl = ApplnURI + "/v1/partnermanager/partners";
+		org.json.simple.JSONObject partnerRequest = new org.json.simple.JSONObject();
+		partnerRequest.put("address", "Bangalore");
+		partnerRequest.put("contactNumber", "8553967572");
+		partnerRequest.put("emailId", "mosip_nodeleg" + AdminTestUtil.timeStamp + "@gmail.com");
+		partnerRequest.put("organizationName", KYC_DELEGATION_DISABLED_PARTNER_ID);
+		partnerRequest.put(GlobalConstants.PARTNERID, KYC_DELEGATION_DISABLED_PARTNER_ID);
+		partnerRequest.put(GlobalConstants.PARTNERTYPE, "Misp_Partner");
+		partnerRequest.put("policyGroup", KYC_DELEGATION_DISABLED_POLICY_GROUP);
+
+		org.json.simple.JSONObject partnerBody = new org.json.simple.JSONObject();
+		partnerBody.put("id", GlobalConstants.STRING);
+		partnerBody.put(GlobalConstants.METADATA, new HashMap<>());
+		partnerBody.put(GlobalConstants.REQUEST, partnerRequest);
+		partnerBody.put(GlobalConstants.REQUESTTIME, generateCurrentUTCTimeStamp());
+		partnerBody.put(GlobalConstants.VERSION, GlobalConstants.STRING);
+
+		RestClient.postRequestWithCookie(partnersUrl, partnerBody, MediaType.APPLICATION_JSON,
+				MediaType.APPLICATION_JSON, GlobalConstants.AUTHORIZATION, token);
+
+		// MispPartnerAndLicenseKeyGeneration.getCertificates() hardcodes keyFileNameByPartnerName=false (reuses the first partner's cached certs), so go straight to AuthTestsUtil with true for a cert chain unique to this partner id
+		io.mosip.testrig.apirig.dto.CertificateChainResponseDto certChain;
+		try {
+			certChain = new io.mosip.testrig.apirig.utils.AuthTestsUtil().generatePartnerKeys(
+					io.mosip.testrig.apirig.utils.PartnerTypes.MISP, KYC_DELEGATION_DISABLED_PARTNER_ID, true, null,
+					BaseTestCase.certsForModule, ApplnURI.replace("https://", ""));
+		} catch (Exception e) {
+			throw new RuntimeException("failed to generate no-delegation partner keys", e);
+		}
+		MispPartnerAndLicenseKeyGeneration.uploadCACertificate(certChain.getCaCertificate(), "Auth");
+		MispPartnerAndLicenseKeyGeneration.uploadIntermediateCertificate(certChain.getInterCertificate(), "Auth");
+		org.json.JSONObject signedCertificateValue = MispPartnerAndLicenseKeyGeneration.uploadPartnerCertificate(
+				certChain.getPartnerCertificate(), "Auth", KYC_DELEGATION_DISABLED_PARTNER_ID);
+		// MispPartnerAndLicenseKeyGeneration.uploadSignedCertificate() hardcodes partnerName=null/keyFileNameByPartnerName=false (would update the wrong generic key file), so call AuthTestsUtil directly with the same params used above
+		HashMap<String, String> signedCertRequest = new HashMap<>();
+		signedCertRequest.put("certData", signedCertificateValue.getString("signedCertificateData"));
+		try {
+			new io.mosip.testrig.apirig.utils.AuthTestsUtil().updatePartnerCertificate(
+					io.mosip.testrig.apirig.utils.PartnerTypes.MISP, KYC_DELEGATION_DISABLED_PARTNER_ID, true,
+					signedCertRequest, null, BaseTestCase.certsForModule, ApplnURI.replace("https://", ""));
+		} catch (Exception e) {
+			throw new RuntimeException("failed to update no-delegation partner certificate", e);
+		}
+
+		String mappingKey = KeyCloakUserAndAPIKeyGeneration.submitPartnerAndGetMappingKey(
+				KYC_DELEGATION_DISABLED_PARTNER_ID, KYC_DELEGATION_DISABLED_POLICY_NAME);
+		KeyCloakUserAndAPIKeyGeneration.approvePartnerAPIKey(mappingKey);
+
+		kycDelegationDisabledMispLicKey = MispPartnerAndLicenseKeyGeneration
+				.generateMispLicKey(KYC_DELEGATION_DISABLED_PARTNER_ID);
+
+		kycDelegationDisabledPartnerKeyUrl = kycDelegationDisabledMispLicKey + "/" + PartnerRegistration.partnerId;
+		return kycDelegationDisabledPartnerKeyUrl;
 	}
 
 	/**

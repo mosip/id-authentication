@@ -199,7 +199,7 @@ AuthInternalLock:
 
   auth_AuthInternal_Permanent_Lock_DemoAuthDelegate_Valid_Smoke_Pos:
       endPoint: /idrepository/v1/identity/authtypes/status
-      uniqueIdentifier: TC_IDA_AuthInternalLock_07
+      uniqueIdentifier: TC_IDA_AuthInternalLock_11
       description: lock Demo authType Permanently for UIN and demo auth shoud fail with the same UIN
       role: idrepo
       restMethod: post
