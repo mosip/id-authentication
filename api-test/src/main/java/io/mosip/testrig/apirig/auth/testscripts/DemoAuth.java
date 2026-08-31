@@ -198,7 +198,7 @@ public class DemoAuth extends IdAuthenticationUtil implements ITest {
 		testCaseDTO.setInput(authRequest);
 		
 				
-		logger.info("******Post request Json to EndPointUrl: " + ApplnURI + testCaseDTO.getEndPoint() + " *******");		
+		logger.info("Posting demo authentication request");
 		
 		response = postRequestWithCookieAuthHeaderAndSignature(ApplnURI + testCaseDTO.getEndPoint(), authRequest, COOKIENAME, testCaseDTO.getRole(), testCaseDTO.getTestCaseName());
 		

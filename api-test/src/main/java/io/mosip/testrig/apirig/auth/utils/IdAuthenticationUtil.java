@@ -301,8 +301,9 @@ public class IdAuthenticationUtil extends AdminTestUtil {
 		if (publishPolicyURL.contains("POLICYID")) {
 			publishPolicyURL = publishPolicyURL.replace("POLICYID", policyId).replace("POLICYGROUPID", policyGroupId);
 		}
-		RestClient.postRequestWithCookie(publishPolicyURL, MediaType.APPLICATION_JSON, MediaType.APPLICATION_JSON,
-				GlobalConstants.AUTHORIZATION, token);
+		Response publishResponse = RestClient.postRequestWithCookie(publishPolicyURL, MediaType.APPLICATION_JSON,
+				MediaType.APPLICATION_JSON, GlobalConstants.AUTHORIZATION, token);
+		assertSuccessStatusCode(publishResponse, "Failed to publish no-delegation policy");
 
 		// new MISP partner mapped to that policy group; Auth-Partner-ID/OIDC-Client-Id stay unchanged
 		String partnersUrl = ApplnURI + "/v1/partnermanager/partners";
@@ -322,8 +323,9 @@ public class IdAuthenticationUtil extends AdminTestUtil {
 		partnerBody.put(GlobalConstants.REQUESTTIME, generateCurrentUTCTimeStamp());
 		partnerBody.put(GlobalConstants.VERSION, GlobalConstants.STRING);
 
-		RestClient.postRequestWithCookie(partnersUrl, partnerBody, MediaType.APPLICATION_JSON,
-				MediaType.APPLICATION_JSON, GlobalConstants.AUTHORIZATION, token);
+		Response partnerResponse = RestClient.postRequestWithCookie(partnersUrl, partnerBody,
+				MediaType.APPLICATION_JSON, MediaType.APPLICATION_JSON, GlobalConstants.AUTHORIZATION, token);
+		assertSuccessStatusCode(partnerResponse, "Failed to register no-delegation partner");
 
 		// MispPartnerAndLicenseKeyGeneration.getCertificates() hardcodes keyFileNameByPartnerName=false (reuses the first partner's cached certs), so go straight to AuthTestsUtil with true for a cert chain unique to this partner id
 		io.mosip.testrig.apirig.dto.CertificateChainResponseDto certChain;
@@ -356,7 +358,7 @@ public class IdAuthenticationUtil extends AdminTestUtil {
 		kycDelegationDisabledMispLicKey = MispPartnerAndLicenseKeyGeneration
 				.generateMispLicKey(KYC_DELEGATION_DISABLED_PARTNER_ID);
 
-		kycDelegationDisabledPartnerKeyUrl = kycDelegationDisabledMispLicKey + "/" + PartnerRegistration.partnerId;
+		kycDelegationDisabledPartnerKeyUrl = kycDelegationDisabledMispLicKey + "/" + KYC_DELEGATION_DISABLED_PARTNER_ID;
 		return kycDelegationDisabledPartnerKeyUrl;
 	}
 

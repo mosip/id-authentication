@@ -8,7 +8,7 @@
 	"requestTime": "{{requestTime}}",
 	"filters": [
     {{#each filters}}
-       "{{type}}": {{bio}}
+       { "{{type}}": {{bio}} }
        {{#unless @last}},{{/unless}}
       	{{/each}}
     ],
