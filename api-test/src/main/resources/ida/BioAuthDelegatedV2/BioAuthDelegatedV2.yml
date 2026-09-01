@@ -80,6 +80,8 @@ BioAuthDelegatedV2:
     }'
       output: '{
   "kycStatus": "true",
+  "kycToken": "$REGEXP:^(?!null).+$",
+  "authToken": "$REGEXP:^(?!null).+$",
   "verifiedClaimsMetadata": "$IGNORE$"
 }'
   auth_BioAuthDelegatedV2_claimsMetadataRequired_false_Pos:
