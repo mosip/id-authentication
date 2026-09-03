@@ -98,7 +98,7 @@ public class InternalAuthTxnController {
 	 */
 	//@PreAuthorize("hasAnyRole('RESIDENT')")
 	@PreAuthorize("hasAnyRole(@authorizedRoles.getGetauthtransactionsindividualid())")
-	@GetMapping(path = "/authTransactions/individualId/{ID}", produces = MediaType.APPLICATION_JSON_VALUE)
+	@GetMapping(path = "/internal/authTransactions/individualId/{ID}", produces = MediaType.APPLICATION_JSON_VALUE)
 	@Operation(summary = "Auth Transaction Request", description = "Auth Transaction Request", tags = { "internal-auth-txn-controller" })
 	
 	@ApiResponses(value = {

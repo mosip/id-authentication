@@ -36,7 +36,7 @@ public class HotlistEventController {
 	@Autowired
 	private HotlistService hotlistService;
 
-	@PostMapping(value = "/callback/hotlist", consumes = "application/json")
+	@PostMapping(value = "/internal/callback/hotlist", consumes = "application/json")
 	@Operation(summary = "handleHotlisting", description = "handleHotlisting", tags = { "hotlist-event-controller" })
 	
 	@ApiResponses(value = {

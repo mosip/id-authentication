@@ -53,7 +53,7 @@ public class InternalUpdateAuthTypeController {
 	@Autowired
 	private ObjectMapper mapper;
 
-	@PostMapping(value = "/callback/authTypeCallback/{partnerId}", consumes = "application/json")
+	@PostMapping(value = "/internal/callback/authTypeCallback/{partnerId}", consumes = "application/json")
 	@Operation(summary = "updateAuthtypeStatus", description = "updateAuthtypeStatus", tags = { "internal-update-auth-type-controller" })
 	
 	@ApiResponses(value = {

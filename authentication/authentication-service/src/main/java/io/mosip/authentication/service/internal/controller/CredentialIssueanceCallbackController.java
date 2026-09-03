@@ -68,7 +68,7 @@ public class CredentialIssueanceCallbackController {
 	 * @return the response entity
 	 * @throws IdAuthenticationBusinessException the id authentication business exception
 	 */
-	@PostMapping(path = "/callback/idchange/credential_issued/{partnerId}", consumes = MediaType.APPLICATION_JSON_VALUE, produces = MediaType.APPLICATION_JSON_VALUE)
+	@PostMapping(path = "/internal/callback/idchange/credential_issued/{partnerId}", consumes = MediaType.APPLICATION_JSON_VALUE, produces = MediaType.APPLICATION_JSON_VALUE)
 	@Operation(summary = "Event Notification Callback API", description = "Event Notification Callback API", tags = { "credential-issueance-callback-controller" })
 	
 	@ApiResponses(value = {
@@ -93,7 +93,7 @@ public class CredentialIssueanceCallbackController {
 	 * @return the response entity
 	 * @throws IdAuthenticationBusinessException the id authentication business exception
 	 */
-	@PostMapping(path = "/callback/idchange/remove_id/{partnerId}", consumes = MediaType.APPLICATION_JSON_VALUE, produces = MediaType.APPLICATION_JSON_VALUE)
+	@PostMapping(path = "/internal/callback/idchange/remove_id/{partnerId}", consumes = MediaType.APPLICATION_JSON_VALUE, produces = MediaType.APPLICATION_JSON_VALUE)
 	@Operation(summary = "Event Notification Callback API", description = "Event Notification Callback API", tags = { "credential-issueance-callback-controller" })
 	
 	@ApiResponses(value = {
@@ -118,7 +118,7 @@ public class CredentialIssueanceCallbackController {
 	 * @return the response entity
 	 * @throws IdAuthenticationBusinessException the id authentication business exception
 	 */
-	@PostMapping(path = "/callback/idchange/deactivate_id/{partnerId}", consumes = MediaType.APPLICATION_JSON_VALUE, produces = MediaType.APPLICATION_JSON_VALUE)
+	@PostMapping(path = "/internal/callback/idchange/deactivate_id/{partnerId}", consumes = MediaType.APPLICATION_JSON_VALUE, produces = MediaType.APPLICATION_JSON_VALUE)
 	@Operation(summary = "Event Notification Callback API", description = "Event Notification Callback API", tags = { "credential-issueance-callback-controller" })
 	
 	@ApiResponses(value = {
@@ -144,7 +144,7 @@ public class CredentialIssueanceCallbackController {
 	 * @return the response entity
 	 * @throws IdAuthenticationBusinessException the id authentication business exception
 	 */
-	@PostMapping(path = "/callback/idchange/activate_id/{partnerId}", consumes = MediaType.APPLICATION_JSON_VALUE, produces = MediaType.APPLICATION_JSON_VALUE)
+	@PostMapping(path = "/internal/callback/idchange/activate_id/{partnerId}", consumes = MediaType.APPLICATION_JSON_VALUE, produces = MediaType.APPLICATION_JSON_VALUE)
 	@Operation(summary = "Event Notification Callback API", description = "Event Notification Callback API", tags = { "credential-issueance-callback-controller" })
 	
 	@ApiResponses(value = {

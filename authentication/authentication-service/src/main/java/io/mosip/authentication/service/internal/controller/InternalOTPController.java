@@ -105,7 +105,7 @@ public class InternalOTPController {
 	 */
 	//@PreAuthorize("hasAnyRole('RESIDENT')")
 	@PreAuthorize("hasAnyRole(@authorizedRoles.getPostotp())")
-	@PostMapping(path = "/otp", consumes = MediaType.APPLICATION_JSON_VALUE, produces = MediaType.APPLICATION_JSON_VALUE)
+	@PostMapping(path = "/internal/otp", consumes = MediaType.APPLICATION_JSON_VALUE, produces = MediaType.APPLICATION_JSON_VALUE)
 	@Operation(summary = "generateOTP", description = "generateOTP", tags = { "internal-otp-controller" })
 	@SecurityRequirement(name = "Authorization")
 	@ApiResponses(value = {

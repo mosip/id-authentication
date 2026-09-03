@@ -30,7 +30,7 @@ public class InternalAuthFilterConfig {
 	public FilterRegistrationBean<InternalAuthFilter> getInternalAuthFilter() {
 		FilterRegistrationBean<InternalAuthFilter> registrationBean = new FilterRegistrationBean<>();
 		registrationBean.setFilter(new InternalAuthFilter());
-		registrationBean.addUrlPatterns("/auth");
+		registrationBean.addUrlPatterns("/internal/auth");
 		return registrationBean;
 	}
 	
@@ -38,7 +38,7 @@ public class InternalAuthFilterConfig {
 	public FilterRegistrationBean<InternalAuthenticationFilter> getInternalAuthenticationFilter() {
 		FilterRegistrationBean<InternalAuthenticationFilter> registrationBean = new FilterRegistrationBean<>();
 		registrationBean.setFilter(new InternalAuthenticationFilter());
-		registrationBean.addUrlPatterns("/verifyidentity");
+		registrationBean.addUrlPatterns("/internal/verifyidentity");
 		return registrationBean;
 	}
 
@@ -46,7 +46,7 @@ public class InternalAuthFilterConfig {
 	public FilterRegistrationBean<InternalOtpFilter> getInternalOTPFilter() {
 		FilterRegistrationBean<InternalOtpFilter> otpBean = new FilterRegistrationBean<>();
 		otpBean.setFilter(new InternalOtpFilter());
-		otpBean.addUrlPatterns("/otp");
+		otpBean.addUrlPatterns("/internal/otp");
 		return otpBean;
 	}
 
@@ -54,7 +54,7 @@ public class InternalAuthFilterConfig {
 	public FilterRegistrationBean<DefaultInternalFilter> getDefaultInternalFilter() {
 		FilterRegistrationBean<DefaultInternalFilter> registrationBean = new FilterRegistrationBean<>();
 		registrationBean.setFilter(new DefaultInternalFilter());
-		registrationBean.addUrlPatterns("/" + AUTH_TRANSACTIONS + "/*");
+		registrationBean.addUrlPatterns("/internal/" + AUTH_TRANSACTIONS + "/*");
 		registrationBean.addInitParameter("IDType", "IDType");
 		registrationBean.addInitParameter("ID", "ID");
 		registrationBean.addInitParameter("pageStart", "pageStart");
