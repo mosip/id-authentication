@@ -29,7 +29,7 @@ public class InternalAuthFilterConfigTest {
 		assertTrue("Filter should be instance of InternalAuthFilter", 
 			bean.getFilter() instanceof InternalAuthFilter);
 		assertEquals("Should have correct URL pattern", 1, bean.getUrlPatterns().size());
-		assertTrue("Should match /auth pattern", bean.getUrlPatterns().contains("/auth"));
+		assertTrue("Should match /internal/auth pattern", bean.getUrlPatterns().contains("/internal/auth"));
 	}
 	
 	@Test
@@ -42,7 +42,7 @@ public class InternalAuthFilterConfigTest {
 		assertTrue("Filter should be instance of InternalAuthenticationFilter", 
 			bean.getFilter() instanceof InternalAuthenticationFilter);
 		assertEquals("Should have correct URL pattern", 1, bean.getUrlPatterns().size());
-		assertTrue("Should match /verifyidentity pattern", bean.getUrlPatterns().contains("/verifyidentity"));
+		assertTrue("Should match /internal/verifyidentity pattern", bean.getUrlPatterns().contains("/internal/verifyidentity"));
 	}
 	
 	@Test
@@ -54,7 +54,7 @@ public class InternalAuthFilterConfigTest {
 		assertTrue("Filter should be instance of InternalOtpFilter", 
 			bean.getFilter() instanceof InternalOtpFilter);
 		assertEquals("Should have correct URL pattern", 1, bean.getUrlPatterns().size());
-		assertTrue("Should match /otp pattern", bean.getUrlPatterns().contains("/otp"));
+		assertTrue("Should match /internal/otp pattern", bean.getUrlPatterns().contains("/internal/otp"));
 	}
 	
 	@Test
