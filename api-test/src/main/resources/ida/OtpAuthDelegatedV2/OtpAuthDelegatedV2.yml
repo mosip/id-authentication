@@ -372,7 +372,10 @@ OtpAuthDelegatedV2:
         {
           "errorCode": "IDA-MLC-006"
         }
-      ]
+      ],
+      "sendOtpResp":{
+        "sendOtpResTemplate":"ida/OtpAuth/sendOtpRes"
+      }
 }'
   auth_OtpAuthDelegatedV2Neg_Missing_Version_Neg:
       endPoint: /idauthentication/v1/kyc-auth/v2/delegated/$partialPartnerKeyUrl$/$ID:CreateOIDCClient_Delegated_Valid_Smoke_sid_clientId$
@@ -407,7 +410,10 @@ OtpAuthDelegatedV2:
         {
           "errorCode": "IDA-MLC-006"
         }
-      ]
+      ],
+      "sendOtpResp":{
+        "sendOtpResTemplate":"ida/OtpAuth/sendOtpRes"
+      }
 }'
   auth_OtpAuthDelegatedV2Neg_Missing_SpecVersion_Neg:
       endPoint: /idauthentication/v1/kyc-auth/v2/delegated/$partialPartnerKeyUrl$/$ID:CreateOIDCClient_Delegated_Valid_Smoke_sid_clientId$
@@ -438,7 +444,12 @@ OtpAuthDelegatedV2:
     "otpIdentyEnryptRequestPath": "ida/OtpAuthDelegated/OtpIdentityEncrypt.json"
     }
     }'
-      output: '{}'
+      output: '{
+      "kycStatus": "true",
+      "sendOtpResp":{
+        "sendOtpResTemplate":"ida/OtpAuth/sendOtpRes"
+      }
+}'
   auth_OtpAuthDelegatedV2Neg_ConsentNotObtained_Neg:
       endPoint: /idauthentication/v1/kyc-auth/v2/delegated/$partialPartnerKeyUrl$/$ID:CreateOIDCClient_Delegated_Valid_Smoke_sid_clientId$
       uniqueIdentifier: TC_IDA_OtpAuthDelegatedV2Neg_11
@@ -475,5 +486,8 @@ OtpAuthDelegatedV2:
       ],
       "response": {
         "authStatus": false
+      },
+      "sendOtpResp":{
+        "sendOtpResTemplate":"ida/OtpAuth/sendOtpRes"
       }
 }'
