@@ -1462,7 +1462,7 @@ BioAuthDelegatedV2:
     }
     }'
       output: '{
-  "kycStatus": "$IGNORE$"
+  "kycStatus": "true"
 }'
   auth_BioAuthDelegatedV2Neg_ConsentNotObtained_Neg:
       endPoint: /idauthentication/v1/kyc-auth/v2/delegated/$partialPartnerKeyUrl$/$ID:CreateOIDCClient_Delegated_Valid_Smoke_sid_clientId$
@@ -1753,7 +1753,7 @@ BioAuthDelegatedV2:
     }
     }'
       output: '{
-  "kycStatus": "$IGNORE$"
+  "kycStatus": "true"
 }'
   auth_BioAuthDelegatedV2_forKycExchangeV2TxnIdMismatch_Pos_Sid:
       endPoint: /idauthentication/v1/kyc-auth/v2/delegated/$partialPartnerKeyUrl$/$ID:CreateOIDCClient_Delegated_Valid_Smoke_sid_clientId$
