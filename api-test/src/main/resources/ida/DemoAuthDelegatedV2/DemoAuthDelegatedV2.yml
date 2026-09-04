@@ -23,7 +23,9 @@ DemoAuthDelegatedV2:
     }
     }'
       output: '{
-  "kycStatus": "true"
+  "kycStatus": "true",
+  "kycToken": "$REGEXP:^(?!null).+$",
+  "authToken": "$REGEXP:^(?!null).+$"
 }'
   auth_DemoAuthDelegatedV2Neg_Invalid_DOB_Neg:
       endPoint: /idauthentication/v1/kyc-auth/v2/delegated/$partialPartnerKeyUrl$/$ID:CreateOIDCClient_Delegated_Valid_Smoke_sid_clientId$
@@ -52,6 +54,570 @@ DemoAuthDelegatedV2:
       "errors": [
         {
           "errorCode": "IDA-DEA-001"
+        }
+      ]
+}'
+  auth_DemoAuthDelegatedV2Neg_Missing_IndividualId_Neg:
+      endPoint: /idauthentication/v1/kyc-auth/v2/delegated/$partialPartnerKeyUrl$/$ID:CreateOIDCClient_Delegated_Valid_Smoke_sid_clientId$
+      uniqueIdentifier: TC_IDA_DemoAuthDelegatedV2Neg_02
+      description: Kyc auth V2 demographic auth with missing individualId - expected to fail
+      role: resident
+      restMethod: post
+      inputTemplate: ida/DemoAuthDelegatedV2/DemoAuthDelegatedV2
+      outputTemplate: ida/DelegateError
+      input: '{
+        "requestTime": "$TIMESTAMP$",
+        "individualId": "$REMOVE$",
+        "transactionId": "$TRANSACTIONID$",
+        "individualIdType": "UIN",
+        "claimsMetadataRequired": false,
+        "bio": false,
+        "demo": true,
+        "otp": false,
+        "identityRequest":{
+    "value": "1990/09/28",
+"key": "dob",
+    "identityRequestTemplate": "ida/DemoAuthDelegated/DemoIdentityEncrypt"
+    }
+    }'
+      output: '{
+      "errors": [
+        {
+          "errorCode": "IDA-MLC-006"
+        }
+      ]
+}'
+  auth_DemoAuthDelegatedV2Neg_Missing_IndividualIdType_Neg:
+      endPoint: /idauthentication/v1/kyc-auth/v2/delegated/$partialPartnerKeyUrl$/$ID:CreateOIDCClient_Delegated_Valid_Smoke_sid_clientId$
+      uniqueIdentifier: TC_IDA_DemoAuthDelegatedV2Neg_03
+      description: Kyc auth V2 demographic auth with missing individualIdType - expected to fail
+      role: resident
+      restMethod: post
+      inputTemplate: ida/DemoAuthDelegatedV2/DemoAuthDelegatedV2
+      outputTemplate: ida/DelegateError
+      input: '{
+        "requestTime": "$TIMESTAMP$",
+        "individualId": "$ID:AddIdentity_withValidParameters_forDemoDelegated_Pos_UIN$",
+        "transactionId": "$TRANSACTIONID$",
+        "individualIdType": "$REMOVE$",
+        "claimsMetadataRequired": false,
+        "bio": false,
+        "demo": true,
+        "otp": false,
+        "identityRequest":{
+    "value": "1990/09/28",
+"key": "dob",
+    "identityRequestTemplate": "ida/DemoAuthDelegated/DemoIdentityEncrypt"
+    }
+    }'
+      output: '{
+      "errors": [
+        {
+          "errorCode": "IDA-MLC-006"
+        }
+      ]
+}'
+  auth_DemoAuthDelegatedV2Neg_Missing_TransactionId_Neg:
+      endPoint: /idauthentication/v1/kyc-auth/v2/delegated/$partialPartnerKeyUrl$/$ID:CreateOIDCClient_Delegated_Valid_Smoke_sid_clientId$
+      uniqueIdentifier: TC_IDA_DemoAuthDelegatedV2Neg_04
+      description: Kyc auth V2 demographic auth with missing transactionId - expected to fail
+      role: resident
+      restMethod: post
+      inputTemplate: ida/DemoAuthDelegatedV2/DemoAuthDelegatedV2
+      outputTemplate: ida/DelegateError
+      input: '{
+        "requestTime": "$TIMESTAMP$",
+        "individualId": "$ID:AddIdentity_withValidParameters_forDemoDelegated_Pos_UIN$",
+        "transactionId": "$REMOVE$",
+        "individualIdType": "UIN",
+        "claimsMetadataRequired": false,
+        "bio": false,
+        "demo": true,
+        "otp": false,
+        "identityRequest":{
+    "value": "1990/09/28",
+"key": "dob",
+    "identityRequestTemplate": "ida/DemoAuthDelegated/DemoIdentityEncrypt"
+    }
+    }'
+      output: '{
+      "errors": [
+        {
+          "errorCode": "IDA-MLC-006"
+        }
+      ]
+}'
+  auth_DemoAuthDelegatedV2Neg_Missing_RequestTime_Neg:
+      endPoint: /idauthentication/v1/kyc-auth/v2/delegated/$partialPartnerKeyUrl$/$ID:CreateOIDCClient_Delegated_Valid_Smoke_sid_clientId$
+      uniqueIdentifier: TC_IDA_DemoAuthDelegatedV2Neg_05
+      description: Kyc auth V2 demographic auth with missing requestTime - expected to fail
+      role: resident
+      restMethod: post
+      inputTemplate: ida/DemoAuthDelegatedV2/DemoAuthDelegatedV2
+      outputTemplate: ida/DelegateError
+      input: '{
+        "requestTime": "$REMOVE$",
+        "individualId": "$ID:AddIdentity_withValidParameters_forDemoDelegated_Pos_UIN$",
+        "transactionId": "$TRANSACTIONID$",
+        "individualIdType": "UIN",
+        "claimsMetadataRequired": false,
+        "bio": false,
+        "demo": true,
+        "otp": false,
+        "identityRequest":{
+    "value": "1990/09/28",
+"key": "dob",
+    "identityRequestTemplate": "ida/DemoAuthDelegated/DemoIdentityEncrypt"
+    }
+    }'
+      output: '{
+      "errors": [
+        {
+          "errorCode": "IDA-MLC-006"
+        }
+      ]
+}'
+  auth_DemoAuthDelegatedV2_claimsMetadataRequired_true_PerpetualVID_Pos:
+      endPoint: /idauthentication/v1/kyc-auth/v2/delegated/$partialPartnerKeyUrl$/$ID:CreateOIDCClient_Delegated_Valid_Smoke_sid_clientId$
+      uniqueIdentifier: TC_IDA_DemoAuthDelegatedV2_02
+      description: Kyc auth V2 demographic (dob) authentication using a perpetual VID with claimsMetadataRequired true - response must carry kycToken, authToken and kycStatus - expected to succeed
+      role: resident
+      restMethod: post
+      inputTemplate: ida/DemoAuthDelegatedV2/DemoAuthDelegatedV2
+      outputTemplate: ida/DemoAuthDelegatedV2/DemoAuthDelegatedV2ResultWithClaimsMeta
+      input: '{
+        "requestTime": "$TIMESTAMP$",
+        "individualId": "$ID:GenerateVID_All_Valid_Smoke_Perpetual_sid_vid$",
+        "transactionId": "$TRANSACTIONID$",
+        "individualIdType": "VID",
+        "claimsMetadataRequired": true,
+        "bio": false,
+        "demo": true,
+        "otp": false,
+        "identityRequest":{
+    "value": "1970/07/08",
+"key": "dob",
+    "identityRequestTemplate": "ida/DemoAuthDelegated/DemoIdentityEncrypt"
+    }
+    }'
+      output: '{
+  "kycStatus": "true",
+  "kycToken": "$REGEXP:^(?!null).+$",
+  "authToken": "$REGEXP:^(?!null).+$",
+  "verifiedClaimsMetadata": "$IGNORE$"
+}'
+  auth_DemoAuthDelegatedV2_claimsMetadataRequired_true_TemporaryVID_Pos:
+      endPoint: /idauthentication/v1/kyc-auth/v2/delegated/$partialPartnerKeyUrl$/$ID:CreateOIDCClient_Delegated_Valid_Smoke_sid_clientId$
+      uniqueIdentifier: TC_IDA_DemoAuthDelegatedV2_03
+      description: Kyc auth V2 demographic (dob) authentication using a temporary VID with claimsMetadataRequired true - response must carry kycToken, authToken and kycStatus - expected to succeed
+      role: resident
+      restMethod: post
+      inputTemplate: ida/DemoAuthDelegatedV2/DemoAuthDelegatedV2
+      outputTemplate: ida/DemoAuthDelegatedV2/DemoAuthDelegatedV2ResultWithClaimsMeta
+      input: '{
+        "requestTime": "$TIMESTAMP$",
+        "individualId": "$ID:GenerateVID_All_Valid_Smoke_Temp_VID_sid_vid$",
+        "transactionId": "$TRANSACTIONID$",
+        "individualIdType": "VID",
+        "claimsMetadataRequired": true,
+        "bio": false,
+        "demo": true,
+        "otp": false,
+        "identityRequest":{
+    "value": "1970/07/08",
+"key": "dob",
+    "identityRequestTemplate": "ida/DemoAuthDelegated/DemoIdentityEncrypt"
+    }
+    }'
+      output: '{
+  "kycStatus": "true",
+  "kycToken": "$REGEXP:^(?!null).+$",
+  "authToken": "$REGEXP:^(?!null).+$",
+  "verifiedClaimsMetadata": "$IGNORE$"
+}'
+  auth_DemoAuthDelegatedV2Neg_Expired_RequestTime_Neg:
+      endPoint: /idauthentication/v1/kyc-auth/v2/delegated/$partialPartnerKeyUrl$/$ID:CreateOIDCClient_Delegated_Valid_Smoke_sid_clientId$
+      uniqueIdentifier: TC_IDA_DemoAuthDelegatedV2Neg_06
+      description: Kyc auth V2 demographic auth with a requestTime far outside the allowed received-time window - expected to fail
+      role: resident
+      restMethod: post
+      inputTemplate: ida/DemoAuthDelegatedV2/DemoAuthDelegatedV2
+      outputTemplate: ida/DelegateError
+      input: '{
+        "requestTime": "2020-01-01T00:00:00.000Z",
+        "individualId": "$ID:AddIdentity_withValidParameters_forDemoDelegated_Pos_UIN$",
+        "transactionId": "$TRANSACTIONID$",
+        "individualIdType": "UIN",
+        "claimsMetadataRequired": false,
+        "bio": false,
+        "demo": true,
+        "otp": false,
+        "identityRequest":{
+    "value": "1990/09/28",
+"key": "dob",
+    "identityRequestTemplate": "ida/DemoAuthDelegated/DemoIdentityEncrypt"
+    }
+    }'
+      output: '{
+      "errors": [
+        {
+          "errorCode": "IDA-MLC-001"
+        }
+      ]
+}'
+  auth_DemoAuthDelegatedV2Neg_Malformed_TransactionId_Neg:
+      endPoint: /idauthentication/v1/kyc-auth/v2/delegated/$partialPartnerKeyUrl$/$ID:CreateOIDCClient_Delegated_Valid_Smoke_sid_clientId$
+      uniqueIdentifier: TC_IDA_DemoAuthDelegatedV2Neg_07
+      description: Kyc auth V2 demographic auth with transactionId not matching the expected alphanumeric format - expected to fail
+      role: resident
+      restMethod: post
+      inputTemplate: ida/DemoAuthDelegatedV2/DemoAuthDelegatedV2
+      outputTemplate: ida/DelegateError
+      input: '{
+        "requestTime": "$TIMESTAMP$",
+        "individualId": "$ID:AddIdentity_withValidParameters_forDemoDelegated_Pos_UIN$",
+        "transactionId": "txn-id-with-hyphens-15",
+        "individualIdType": "UIN",
+        "claimsMetadataRequired": false,
+        "bio": false,
+        "demo": true,
+        "otp": false,
+        "identityRequest":{
+    "value": "1990/09/28",
+"key": "dob",
+    "identityRequestTemplate": "ida/DemoAuthDelegated/DemoIdentityEncrypt"
+    }
+    }'
+      output: '{
+      "errors": [
+        {
+          "errorCode": "IDA-MLC-009"
+        }
+      ]
+}'
+  auth_DemoAuthDelegatedV2_claimsMetadataRequired_true_UIN_Pos:
+      endPoint: /idauthentication/v1/kyc-auth/v2/delegated/$partialPartnerKeyUrl$/$ID:CreateOIDCClient_Delegated_Valid_Smoke_sid_clientId$
+      uniqueIdentifier: TC_IDA_DemoAuthDelegatedV2_04
+      description: Kyc auth V2 demographic (dob) authentication for a valid UIN with claimsMetadataRequired true - response must carry kycToken, authToken and kycStatus - expected to succeed
+      role: resident
+      restMethod: post
+      inputTemplate: ida/DemoAuthDelegatedV2/DemoAuthDelegatedV2
+      outputTemplate: ida/DemoAuthDelegatedV2/DemoAuthDelegatedV2ResultWithClaimsMeta
+      input: '{
+        "requestTime": "$TIMESTAMP$",
+        "individualId": "$ID:AddIdentity_withValidParameters_forDemoDelegated_Pos_UIN$",
+        "transactionId": "$TRANSACTIONID$",
+        "individualIdType": "UIN",
+        "claimsMetadataRequired": true,
+        "bio": false,
+        "demo": true,
+        "otp": false,
+        "identityRequest":{
+    "value": "1990/09/28",
+"key": "dob",
+    "identityRequestTemplate": "ida/DemoAuthDelegated/DemoIdentityEncrypt"
+    }
+    }'
+      output: '{
+  "kycStatus": "true",
+  "kycToken": "$REGEXP:^(?!null).+$",
+  "authToken": "$REGEXP:^(?!null).+$",
+  "verifiedClaimsMetadata": "$IGNORE$"
+}'
+  auth_DemoAuthDelegatedV2_claimsMetadataRequired_omitted_UIN_Pos:
+      endPoint: /idauthentication/v1/kyc-auth/v2/delegated/$partialPartnerKeyUrl$/$ID:CreateOIDCClient_Delegated_Valid_Smoke_sid_clientId$
+      uniqueIdentifier: TC_IDA_DemoAuthDelegatedV2_05
+      description: Kyc auth V2 demographic (dob) authentication for a valid UIN with claimsMetadataRequired omitted, defaults to false - response must carry kycToken, authToken and kycStatus - expected to succeed
+      role: resident
+      restMethod: post
+      inputTemplate: ida/DemoAuthDelegatedV2/DemoAuthDelegatedV2ClaimsOmitted
+      outputTemplate: ida/DemoAuthDelegatedV2/DemoAuthDelegatedV2Result
+      input: '{
+        "requestTime": "$TIMESTAMP$",
+        "individualId": "$ID:AddIdentity_withValidParameters_forDemoDelegated_Pos_UIN$",
+        "transactionId": "$TRANSACTIONID$",
+        "individualIdType": "UIN",
+        "bio": false,
+        "demo": true,
+        "otp": false,
+        "identityRequest":{
+    "value": "1990/09/28",
+"key": "dob",
+    "identityRequestTemplate": "ida/DemoAuthDelegated/DemoIdentityEncrypt"
+    }
+    }'
+      output: '{
+  "kycStatus": "true",
+  "kycToken": "$REGEXP:^(?!null).+$",
+  "authToken": "$REGEXP:^(?!null).+$"
+}'
+  auth_DemoAuthDelegatedV2Neg_Missing_Id_Neg:
+      endPoint: /idauthentication/v1/kyc-auth/v2/delegated/$partialPartnerKeyUrl$/$ID:CreateOIDCClient_Delegated_Valid_Smoke_sid_clientId$
+      uniqueIdentifier: TC_IDA_DemoAuthDelegatedV2Neg_08
+      description: Kyc auth V2 demographic auth with the top-level id envelope field omitted - rejected by the request filter before reaching business validation - expected to fail
+      role: resident
+      restMethod: post
+      inputTemplate: ida/DemoAuthDelegatedV2/DemoAuthDelegatedV2WithoutId
+      outputTemplate: ida/DelegateError
+      input: '{
+        "requestTime": "$TIMESTAMP$",
+        "individualId": "$ID:AddIdentity_withValidParameters_forDemoDelegated_Pos_UIN$",
+        "transactionId": "$TRANSACTIONID$",
+        "individualIdType": "UIN",
+        "claimsMetadataRequired": false,
+        "bio": false,
+        "demo": true,
+        "otp": false,
+        "identityRequest":{
+    "value": "1990/09/28",
+"key": "dob",
+    "identityRequestTemplate": "ida/DemoAuthDelegated/DemoIdentityEncrypt"
+    }
+    }'
+      output: '{
+      "errors": [
+        {
+          "errorCode": "IDA-MLC-006"
+        }
+      ]
+}'
+  auth_DemoAuthDelegatedV2Neg_Missing_Version_Neg:
+      endPoint: /idauthentication/v1/kyc-auth/v2/delegated/$partialPartnerKeyUrl$/$ID:CreateOIDCClient_Delegated_Valid_Smoke_sid_clientId$
+      uniqueIdentifier: TC_IDA_DemoAuthDelegatedV2Neg_09
+      description: Kyc auth V2 demographic auth with the top-level version envelope field omitted - rejected by the request filter before reaching business validation - expected to fail
+      role: resident
+      restMethod: post
+      inputTemplate: ida/DemoAuthDelegatedV2/DemoAuthDelegatedV2WithoutVersion
+      outputTemplate: ida/DelegateError
+      input: '{
+        "requestTime": "$TIMESTAMP$",
+        "individualId": "$ID:AddIdentity_withValidParameters_forDemoDelegated_Pos_UIN$",
+        "transactionId": "$TRANSACTIONID$",
+        "individualIdType": "UIN",
+        "claimsMetadataRequired": false,
+        "bio": false,
+        "demo": true,
+        "otp": false,
+        "identityRequest":{
+    "value": "1990/09/28",
+"key": "dob",
+    "identityRequestTemplate": "ida/DemoAuthDelegated/DemoIdentityEncrypt"
+    }
+    }'
+      output: '{
+      "errors": [
+        {
+          "errorCode": "IDA-MLC-006"
+        }
+      ]
+}'
+  auth_DemoAuthDelegatedV2Neg_Missing_SpecVersion_Neg:
+      endPoint: /idauthentication/v1/kyc-auth/v2/delegated/$partialPartnerKeyUrl$/$ID:CreateOIDCClient_Delegated_Valid_Smoke_sid_clientId$
+      uniqueIdentifier: TC_IDA_DemoAuthDelegatedV2Neg_10
+      description: Kyc auth V2 demographic auth with the specVersion envelope field omitted - unverified whether this is validated at all, confirm on a live run - currently expected to succeed since no validator anywhere in the backend source references specVersion (same finding as the bio equivalent, TC_IDA_BioAuthDelegatedV2Neg_27)
+      role: resident
+      restMethod: post
+      checkErrorsOnlyInResponse: true
+      inputTemplate: ida/DemoAuthDelegatedV2/DemoAuthDelegatedV2WithoutSpecVersion
+      outputTemplate: ida/DemoAuthDelegatedV2/DemoAuthDelegatedV2Result
+      input: '{
+        "requestTime": "$TIMESTAMP$",
+        "individualId": "$ID:AddIdentity_withValidParameters_forDemoDelegated_Pos_UIN$",
+        "transactionId": "$TRANSACTIONID$",
+        "individualIdType": "UIN",
+        "claimsMetadataRequired": false,
+        "bio": false,
+        "demo": true,
+        "otp": false,
+        "identityRequest":{
+    "value": "1990/09/28",
+"key": "dob",
+    "identityRequestTemplate": "ida/DemoAuthDelegated/DemoIdentityEncrypt"
+    }
+    }'
+      output: '{}'
+  auth_DemoAuthDelegatedV2Neg_ConsentNotObtained_Neg:
+      endPoint: /idauthentication/v1/kyc-auth/v2/delegated/$partialPartnerKeyUrl$/$ID:CreateOIDCClient_Delegated_Valid_Smoke_sid_clientId$
+      uniqueIdentifier: TC_IDA_DemoAuthDelegatedV2Neg_11
+      description: Kyc auth V2 demographic auth with consentObtained false - individual consent required, expected to fail
+      role: resident
+      restMethod: post
+      inputTemplate: ida/DemoAuthDelegatedV2/DemoAuthDelegatedV2ConsentNotObtained
+      outputTemplate: ida/DemoAuthDelegatedV2/error
+      input: '{
+        "requestTime": "$TIMESTAMP$",
+        "individualId": "$ID:AddIdentity_withValidParameters_forDemoDelegated_Pos_UIN$",
+        "transactionId": "$TRANSACTIONID$",
+        "individualIdType": "UIN",
+        "claimsMetadataRequired": false,
+        "bio": false,
+        "demo": true,
+        "otp": false,
+        "identityRequest":{
+    "value": "1990/09/28",
+"key": "dob",
+    "identityRequestTemplate": "ida/DemoAuthDelegated/DemoIdentityEncrypt"
+    }
+    }'
+      output: '{
+      "errors": [
+        {
+          "errorCode": "IDA-MLC-012"
+        }
+      ],
+      "response": {
+        "authStatus": false
+      }
+}'
+  auth_DemoAuthDelegatedV2_OneTimeUseVID_FirstUse_Pos:
+      endPoint: /idauthentication/v1/kyc-auth/v2/delegated/$partialPartnerKeyUrl$/$ID:CreateOIDCClient_Delegated_Valid_Smoke_sid_clientId$
+      uniqueIdentifier: TC_IDA_DemoAuthDelegatedV2_06
+      description: Kyc auth V2 demographic (dob) authentication using a one-time-use VID (first use) with claimsMetadataRequired true - vidType onetimeuse confirmed as a real, live-configured VID policy type (see GenerateVID_All_Valid_Smoke_Onetimeuse_sid) - response must carry kycToken, authToken and kycStatus on this first, unconsumed use - expected to succeed. Must run before OneTimeUseVID_Reuse_Neg below (same VID, consumed by this call)
+      role: resident
+      restMethod: post
+      inputTemplate: ida/DemoAuthDelegatedV2/DemoAuthDelegatedV2
+      outputTemplate: ida/DemoAuthDelegatedV2/DemoAuthDelegatedV2ResultWithClaimsMeta
+      input: '{
+        "requestTime": "$TIMESTAMP$",
+        "individualId": "$ID:GenerateVID_All_Valid_Smoke_Onetimeuse_sid_vid$",
+        "transactionId": "$TRANSACTIONID$",
+        "individualIdType": "VID",
+        "claimsMetadataRequired": true,
+        "bio": false,
+        "demo": true,
+        "otp": false,
+        "identityRequest":{
+    "value": "1970/07/08",
+"key": "dob",
+    "identityRequestTemplate": "ida/DemoAuthDelegated/DemoIdentityEncrypt"
+    }
+    }'
+      output: '{
+  "kycStatus": "true",
+  "kycToken": "$REGEXP:^(?!null).+$",
+  "authToken": "$REGEXP:^(?!null).+$",
+  "verifiedClaimsMetadata": "$IGNORE$"
+}'
+  auth_DemoAuthDelegatedV2_OneTimeUseVID_Reuse_Neg:
+      endPoint: /idauthentication/v1/kyc-auth/v2/delegated/$partialPartnerKeyUrl$/$ID:CreateOIDCClient_Delegated_Valid_Smoke_sid_clientId$
+      uniqueIdentifier: TC_IDA_DemoAuthDelegatedV2Neg_12
+      description: Kyc auth V2 demographic (dob) authentication reusing the SAME one-time-use VID immediately after OneTimeUseVID_FirstUse_Pos consumed it - confirmed via source (IdServiceImpl.updateVIDstatus, IDA-side transactionLimit decrement-to-zero deletes the identity cache row for that VID) that a one-time-use VID becomes unusable after its first successful auth - exact resulting errorCode is unverified (needs a live run to confirm; asserting only that some error is returned, via errorCode $IGNORE$, rather than guessing the specific code) - expected to fail
+      role: resident
+      restMethod: post
+      inputTemplate: ida/DemoAuthDelegatedV2/DemoAuthDelegatedV2
+      outputTemplate: ida/DelegateError
+      input: '{
+        "requestTime": "$TIMESTAMP$",
+        "individualId": "$ID:GenerateVID_All_Valid_Smoke_Onetimeuse_sid_vid$",
+        "transactionId": "$TRANSACTIONID$",
+        "individualIdType": "VID",
+        "claimsMetadataRequired": true,
+        "bio": false,
+        "demo": true,
+        "otp": false,
+        "identityRequest":{
+    "value": "1970/07/08",
+"key": "dob",
+    "identityRequestTemplate": "ida/DemoAuthDelegated/DemoIdentityEncrypt"
+    }
+    }'
+      output: '{
+      "errors": [
+        {
+          "errorCode": "$IGNORE$"
+        }
+      ]
+}'
+  auth_DemoAuthDelegatedV2Neg_InvalidThumbprint_Neg:
+      endPoint: /idauthentication/v1/kyc-auth/v2/delegated/$partialPartnerKeyUrl$/$ID:CreateOIDCClient_Delegated_Valid_Smoke_sid_clientId$
+      uniqueIdentifier: TC_IDA_DemoAuthDelegatedV2Neg_13
+      description: Kyc auth V2 demographic auth with a corrupted (non-hex-pattern) thumbprint value - fresh, differently-named rebuild of the V1 equivalent (auth_DemoAuth_DOB_Invalid_Thumbprint_UIN_Neg, TC_IDA_DemoAuth_74), which is currently in testCaseSkippedList.txt under MOSIP-45519 and contributes zero real coverage. Confirmed via that same V1 test's own established assertion that this fails as IDA-MPA-003 (Unable to decrypt Request) - the previous NA finding for this row (TC_28) only checked BioAuth.java, which genuinely has no override hook; DemoAuth.java has one (invalidThumbprint), just not previously noticed for this specific row - expected to fail
+      role: resident
+      restMethod: post
+      inputTemplate: ida/DemoAuthDelegatedV2/DemoAuthDelegatedV2
+      outputTemplate: ida/DelegateError
+      input: '{
+        "requestTime": "$TIMESTAMP$",
+        "individualId": "$ID:AddIdentity_withValidParameters_forDemoDelegated_Pos_UIN$",
+        "transactionId": "$TRANSACTIONID$",
+        "individualIdType": "UIN",
+        "claimsMetadataRequired": false,
+        "bio": false,
+        "demo": true,
+        "otp": false,
+        "invalidThumbprint": "1111111111111111111111111111111111111111111111111111111111111111",
+        "identityRequest":{
+    "value": "1990/09/28",
+"key": "dob",
+    "identityRequestTemplate": "ida/DemoAuthDelegated/DemoIdentityEncrypt"
+    }
+    }'
+      output: '{
+      "errors": [
+        {
+          "errorCode": "IDA-MPA-003"
+        }
+      ]
+}'
+  auth_DemoAuthDelegatedV2Neg_InvalidRequestHMAC_Neg:
+      endPoint: /idauthentication/v1/kyc-auth/v2/delegated/$partialPartnerKeyUrl$/$ID:CreateOIDCClient_Delegated_Valid_Smoke_sid_clientId$
+      uniqueIdentifier: TC_IDA_DemoAuthDelegatedV2Neg_14
+      description: Kyc auth V2 demographic auth with a corrupted requestHMAC value - new override hook added to DemoAuth.java (invalidRequestHMAC, mirroring the existing invalidThumbprint pattern exactly - mapping.properties' #ModifyBioAuth maps demoAuthTempMap's hmac key to requestHMAC) since no such hook existed before for this field. True field omission isn't achievable (the underlying PropertyUtils.setProperty mechanism can only replace an existing value, not delete a key), so this uses a corrupted value as the closest achievable equivalent to the row's 'omit requestHMAC' wording. Expected error code (IDA-MPA-003, same decryption-failure path as the confirmed thumbprint case) is unverified - needs a live run to confirm this specific field produces the same code - expected to fail
+      role: resident
+      restMethod: post
+      inputTemplate: ida/DemoAuthDelegatedV2/DemoAuthDelegatedV2
+      outputTemplate: ida/DelegateError
+      input: '{
+        "requestTime": "$TIMESTAMP$",
+        "individualId": "$ID:AddIdentity_withValidParameters_forDemoDelegated_Pos_UIN$",
+        "transactionId": "$TRANSACTIONID$",
+        "individualIdType": "UIN",
+        "claimsMetadataRequired": false,
+        "bio": false,
+        "demo": true,
+        "otp": false,
+        "invalidRequestHMAC": "invalid-hmac-value",
+        "identityRequest":{
+    "value": "1990/09/28",
+"key": "dob",
+    "identityRequestTemplate": "ida/DemoAuthDelegated/DemoIdentityEncrypt"
+    }
+    }'
+      output: '{
+      "errors": [
+        {
+          "errorCode": "IDA-MPA-003"
+        }
+      ]
+}'
+  auth_DemoAuthDelegatedV2Neg_InvalidRequestSessionKey_Neg:
+      endPoint: /idauthentication/v1/kyc-auth/v2/delegated/$partialPartnerKeyUrl$/$ID:CreateOIDCClient_Delegated_Valid_Smoke_sid_clientId$
+      uniqueIdentifier: TC_IDA_DemoAuthDelegatedV2Neg_15
+      description: Kyc auth V2 demographic auth with a corrupted requestSessionKey value - new override hook added to DemoAuth.java (invalidRequestSessionKey, mirroring the existing invalidThumbprint pattern exactly - mapping.properties' #ModifyBioAuth maps demoAuthTempMap's key key to requestSessionKey) since no such hook existed before for this field. True field omission isn't achievable (same PropertyUtils.setProperty limitation as requestHMAC above), so this uses a corrupted value as the closest achievable equivalent to the row's 'omit requestSessionKey' wording. Expected error code (IDA-MPA-003, same decryption-failure path as the confirmed thumbprint case) is unverified - needs a live run to confirm this specific field produces the same code - expected to fail
+      role: resident
+      restMethod: post
+      inputTemplate: ida/DemoAuthDelegatedV2/DemoAuthDelegatedV2
+      outputTemplate: ida/DelegateError
+      input: '{
+        "requestTime": "$TIMESTAMP$",
+        "individualId": "$ID:AddIdentity_withValidParameters_forDemoDelegated_Pos_UIN$",
+        "transactionId": "$TRANSACTIONID$",
+        "individualIdType": "UIN",
+        "claimsMetadataRequired": false,
+        "bio": false,
+        "demo": true,
+        "otp": false,
+        "invalidRequestSessionKey": "invalid-session-key-value",
+        "identityRequest":{
+    "value": "1990/09/28",
+"key": "dob",
+    "identityRequestTemplate": "ida/DemoAuthDelegated/DemoIdentityEncrypt"
+    }
+    }'
+      output: '{
+      "errors": [
+        {
+          "errorCode": "IDA-MPA-003"
         }
       ]
 }'
