@@ -167,13 +167,22 @@ public class BioAuth extends IdAuthenticationUtil implements ITest {
 		String authRequest = getJsonFromTemplate(request.toString(), testCaseDTO.getInputTemplate());
 		logger.info("************* Modification of bio auth request ******************");
 		Reporter.log("<b><u>Modification of bio auth request</u></b>");
-		
+
 		logger.info("authRequest is = " + authRequest);
 		logger.info("bioAuthTempMap is = " + bioAuthTempMap);
+		// modifyRequest unconditionally rewrites requestTime to the current
+		// timestamp (see OtpAuthNew's identical save/restore), which silently
+		// clobbers a YAML-hardcoded expired/malformed value - save it here and
+		// restore it below so Expired/Malformed RequestTime negative tests still
+		// send what the YAML actually specifies.
+		String originalRequestTime = new JSONObject(authRequest).optString("requestTime", null);
 		authRequest = modifyRequest(authRequest, bioAuthTempMap,
 				getResourcePath() + props.getProperty("idaMappingPath"));
 		logger.info("authRequestTemp is = " + authRequest);
 		JSONObject authRequestTemp = new JSONObject(authRequest);
+		if (originalRequestTime != null) {
+			authRequestTemp.put("requestTime", originalRequestTime);
+		}
 		authRequestTemp.remove("env");
 		authRequestTemp.put("env", invalidEnv != null ? invalidEnv : "Staging");
 		authRequest = authRequestTemp.toString();
