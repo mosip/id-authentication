@@ -140,6 +140,20 @@ public class DemoAuth extends IdAuthenticationUtil implements ITest {
 			invalidThumbprint = request.getString("invalidThumbprint");
 			request.remove("invalidThumbprint");
 		}
+		// Same override mechanism as invalidThumbprint above, applied to the other two
+		// fields #ModifyBioAuth normally forces a freshly-computed real value into
+		// (mapping.properties: hmac->requestHMAC, key->requestSessionKey) - no
+		// equivalent hook existed for these two before.
+		String invalidRequestHMAC = null;
+		if (request.has("invalidRequestHMAC")) {
+			invalidRequestHMAC = request.getString("invalidRequestHMAC");
+			request.remove("invalidRequestHMAC");
+		}
+		String invalidRequestSessionKey = null;
+		if (request.has("invalidRequestSessionKey")) {
+			invalidRequestSessionKey = request.getString("invalidRequestSessionKey");
+			request.remove("invalidRequestSessionKey");
+		}
 		
 		if (identityRequest.contains("$PRIMARYLANG$"))
 			identityRequest = identityRequest.replace("$PRIMARYLANG$", BaseTestCase.languageList.get(0));
@@ -169,9 +183,17 @@ public class DemoAuth extends IdAuthenticationUtil implements ITest {
 		 identityRequest = inputJsonKeyWordHandeler(identityRequest, testCaseName);
 		identityRequest = JsonPrecondtion.parseAndReturnJsonContent(identityRequest, generateCurrentUTCTimeStamp(), "timestamp");
 		Map<String, String> demoAuthTempMap = encryptDecryptUtil.getEncryptSessionKeyValue(identityRequest);
-		if (invalidThumbprint != null) {
+		if (invalidThumbprint != null || invalidRequestHMAC != null || invalidRequestSessionKey != null) {
 			demoAuthTempMap = new HashMap<>(demoAuthTempMap);
-			demoAuthTempMap.put("thumbprint", invalidThumbprint);
+			if (invalidThumbprint != null) {
+				demoAuthTempMap.put("thumbprint", invalidThumbprint);
+			}
+			if (invalidRequestHMAC != null) {
+				demoAuthTempMap.put("hmac", invalidRequestHMAC);
+			}
+			if (invalidRequestSessionKey != null) {
+				demoAuthTempMap.put("key", invalidRequestSessionKey);
+			}
 		}
 		String authRequest = getJsonFromTemplate(request.toString(), testCaseDTO.getInputTemplate());
 		logger.info("************* Modification of demo auth request ******************");

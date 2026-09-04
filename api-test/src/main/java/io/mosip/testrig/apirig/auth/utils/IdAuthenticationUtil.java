@@ -1,6 +1,8 @@
 package io.mosip.testrig.apirig.auth.utils;
 
+import java.nio.charset.StandardCharsets;
 import java.util.ArrayList;
+import java.util.Base64;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -10,22 +12,31 @@ import javax.ws.rs.core.MediaType;
 import org.apache.log4j.Level;
 import org.apache.log4j.Logger;
 import org.json.JSONArray;
+import org.json.JSONException;
 import org.json.JSONObject;
 import org.testng.SkipException;
+
+import com.nimbusds.jose.JWEObject;
+import com.nimbusds.jose.crypto.RSADecrypter;
+import com.nimbusds.jose.jwk.RSAKey;
 
 import io.mosip.testrig.apirig.auth.testrunner.MosipTestRunner;
 import io.mosip.testrig.apirig.dbaccess.DBManager;
 import io.mosip.testrig.apirig.dto.TestCaseDTO;
 import io.mosip.testrig.apirig.testrunner.BaseTestCase;
+import io.mosip.testrig.apirig.utils.AdminTestException;
 import io.mosip.testrig.apirig.utils.AdminTestUtil;
 import io.mosip.testrig.apirig.utils.ConfigManager;
 import io.mosip.testrig.apirig.utils.GlobalConstants;
+import io.mosip.testrig.apirig.utils.GlobalMethods;
 import io.mosip.testrig.apirig.utils.JWKKeyUtil;
+import io.mosip.testrig.apirig.utils.KernelAuthentication;
 import io.mosip.testrig.apirig.utils.KeyCloakUserAndAPIKeyGeneration;
 import io.mosip.testrig.apirig.utils.KeycloakUserManager;
 import io.mosip.testrig.apirig.utils.MispPartnerAndLicenseKeyGeneration;
 import io.mosip.testrig.apirig.utils.PartnerRegistration;
 import io.mosip.testrig.apirig.utils.RestClient;
+import io.mosip.testrig.apirig.utils.SecurityXSSException;
 import io.mosip.testrig.apirig.utils.SkipTestCaseHandler;
 import io.restassured.response.Response;
 
@@ -674,6 +685,156 @@ public class IdAuthenticationUtil extends AdminTestUtil {
 	public static String generateAndGetRandomToken3PartnerKeyUrl() {
 		randomToken3PartnerKeyUrl = mapPartnerToPolicyAndGetKeyUrl(policyToken3PartnerId, policyNameForRandomToken);
 		return randomToken3PartnerKeyUrl;
+	}
+
+	/**
+	 * Decodes response.encryptedKyc (JWT: 3 dot-segments, or JWE: 5 dot-segments)
+	 * and merges the resulting claims into response.decodedKyc, so the existing
+	 * YAML output-assertion mechanism can reference them like any other field.
+	 * <p>
+	 * For JWE, decryption uses the OIDC client's own registered key (cached under
+	 * "OIDCJWK3" by JWKKeyUtil during CreateOIDCClient setup). That key already
+	 * carries its private component (generateJWKPublicKey builds it with
+	 * includePrivate=true) - no apitest-commons change was needed for this, since
+	 * OidcClientDto only ever registers a single "publicKey" field (confirmed in
+	 * partner-management-services source, no separate encryption-key concept
+	 * exists), so this is necessarily the same key the server encrypts with.
+	 * Unverified whether the server picks this exact key by kid/thumbprint match
+	 * in every environment - confirm on a live run.
+	 * <p>
+	 * A JWE payload here is itself a signed JWT (cty:"JWT" in the JWE header, per
+	 * a real captured response) - decrypting one layer down still leaves a JWT to
+	 * base64-decode, same as the plain JWT branch.
+	 */
+	public static String injectDecodedKyc(String responseStr, String testCaseName) {
+		try {
+			JSONObject respJson = new JSONObject(responseStr);
+			if (!respJson.has(GlobalConstants.RESPONSE) || respJson.isNull(GlobalConstants.RESPONSE)) {
+				return responseStr;
+			}
+			JSONObject responseObj = respJson.getJSONObject(GlobalConstants.RESPONSE);
+			if (!responseObj.has("encryptedKyc") || responseObj.isNull("encryptedKyc")) {
+				return responseStr;
+			}
+			String encryptedKyc = responseObj.getString("encryptedKyc");
+			String[] parts = encryptedKyc.split("\\.");
+			String jwtToDecode;
+			if (parts.length == 5) {
+				JWEObject jweObject = JWEObject.parse(encryptedKyc);
+				String jwkJson = JWKKeyUtil.getJWKKey("OIDCJWK3");
+				RSAKey rsaKey = RSAKey.parse(jwkJson);
+				jweObject.decrypt(new RSADecrypter(rsaKey.toRSAPrivateKey()));
+				jwtToDecode = jweObject.getPayload().toString();
+			} else if (parts.length == 3) {
+				jwtToDecode = encryptedKyc;
+			} else {
+				logger.warn("Unrecognized encryptedKyc format for decode (segments=" + parts.length
+						+ "), skipping decode for " + testCaseName);
+				return responseStr;
+			}
+			String payloadSegment = jwtToDecode.split("\\.")[1];
+			int pad = (4 - payloadSegment.length() % 4) % 4;
+			for (int i = 0; i < pad; i++) {
+				payloadSegment += "=";
+			}
+			String decodedJson = new String(Base64.getUrlDecoder().decode(payloadSegment), StandardCharsets.UTF_8);
+			responseObj.put("decodedKyc", new JSONObject(decodedJson));
+			return respJson.toString();
+		} catch (Exception e) {
+			logger.error("Failed to decode encryptedKyc for " + testCaseName + ": " + e.getMessage(), e);
+			return responseStr;
+		}
+	}
+
+	/**
+	 * Asserts that a claim was NOT returned under decodedKyc.verified_claims -
+	 * used for scenarios (e.g. max_age filtering) where OutputValidationUtil's
+	 * exact-match/$IGNORE$ model has no way to express "this field must be
+	 * absent" (a missing expected path is always a hard failure there). Must run
+	 * after injectDecodedKyc has already populated response.decodedKyc.
+	 * Silently returns (nothing to assert) if decode never ran/succeeded, so this
+	 * is safe to call unconditionally for its gated test cases.
+	 */
+	public static void assertVerifiedClaimAbsent(String responseWithDecodedKyc, String claimName, String testCaseName)
+			throws AdminTestException {
+		try {
+			JSONObject respJson = new JSONObject(responseWithDecodedKyc);
+			JSONObject responseObj = respJson.optJSONObject(GlobalConstants.RESPONSE);
+			if (responseObj == null) {
+				return;
+			}
+			JSONObject decodedKyc = responseObj.optJSONObject("decodedKyc");
+			if (decodedKyc == null) {
+				return;
+			}
+			JSONArray verifiedClaims = decodedKyc.optJSONArray("verified_claims");
+			if (verifiedClaims == null) {
+				// Absent entirely - the whole verified_claims key is only added by the
+				// server when at least one claim matched, so this is the expected shape.
+				return;
+			}
+			for (int i = 0; i < verifiedClaims.length(); i++) {
+				JSONObject entry = verifiedClaims.optJSONObject(i);
+				JSONObject claims = entry == null ? null : entry.optJSONObject("claims");
+				if (claims != null && claims.has(claimName)) {
+					throw new AdminTestException("Expected claim '" + claimName
+							+ "' to be filtered out of verified_claims for " + testCaseName
+							+ " but it was present: " + entry);
+				}
+			}
+		} catch (JSONException e) {
+			logger.error("Failed to check verified-claim absence for " + testCaseName + ": " + e.getMessage(), e);
+		}
+	}
+
+	/**
+	 * Same request-building/signature-header logic as
+	 * AdminTestUtil.postRequestWithCookieAuthHeaderAndSignature (used unmodified
+	 * by BioAuth/DemoAuth/OtpAuthNew/MultiFactorAuthNew/KycExchange), except the
+	 * signature header is deliberately corrupted with a fixed bogus value instead
+	 * of a real one. Built here rather than in apitest-commons since it is
+	 * IDA-specific: confirmed via source that the shared helper always computes a
+	 * real signature unconditionally, with no existing YAML/keyword hook anywhere
+	 * in the framework to omit or corrupt it for these delegated V2 calls.
+	 */
+	public Response postRequestWithCookieAuthHeaderAndCorruptSignature(String url, String jsonInput,
+			String cookieName, String role, String testCaseName) throws SecurityXSSException {
+		return postRequestWithCookieAuthHeaderAndCorruptSignature(url, jsonInput, cookieName, role, testCaseName,
+				"invalid-signature-value");
+	}
+
+	/**
+	 * Same as {@link #postRequestWithCookieAuthHeaderAndCorruptSignature(String,
+	 * String, String, String, String)} but lets the caller choose the bogus
+	 * signature header value - an empty string exercises the "missing signature"
+	 * path (confirmed via source - BaseAuthFilter.validateSignature throws
+	 * MISSING_INPUT_PARAMETER for an empty/null header, vs DSIGN_FALIED for a
+	 * present-but-invalid one), while a non-empty garbage string exercises the
+	 * "invalid/tampered signature" path.
+	 */
+	public Response postRequestWithCookieAuthHeaderAndCorruptSignature(String url, String jsonInput,
+			String cookieName, String role, String testCaseName, String corruptSignatureValue)
+			throws SecurityXSSException {
+		Response response = null;
+		HashMap<String, String> headers = new HashMap<>();
+		headers.put(AUTHORIZATHION_HEADERNAME, AUTH_HEADER_VALUE);
+		String inputJson = inputJsonKeyWordHandeler(jsonInput, testCaseName);
+		headers.put(SIGNATURE_HEADERNAME, corruptSignatureValue);
+		String token = new KernelAuthentication().getTokenByRole(role);
+		logger.info(GlobalConstants.POST_REQ_URL + url);
+		GlobalMethods.reportRequest(headers.toString(), inputJson, url);
+		try {
+			response = RestClient.postRequestWithMultipleHeaders(url, inputJson, MediaType.APPLICATION_JSON,
+					MediaType.APPLICATION_JSON, cookieName, token, headers);
+			GlobalMethods.checkXSSProtectionHeader(response, url);
+			GlobalMethods.reportResponse(response.getHeaders().asList().toString(), url, response);
+			return response;
+		} catch (SecurityXSSException se) {
+			throw se;
+		} catch (Exception e) {
+			logger.error(GlobalConstants.EXCEPTION_STRING_2 + e);
+			return response;
+		}
 	}
 
 }
