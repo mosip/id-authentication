@@ -721,7 +721,7 @@ public class IdAuthenticationUtil extends AdminTestUtil {
 			String jwtToDecode;
 			if (parts.length == 5) {
 				JWEObject jweObject = JWEObject.parse(encryptedKyc);
-				String jwkJson = JWKKeyUtil.getJWKKey("OIDCJWK3");
+				String jwkJson = JWKKeyUtil.getJWKKey(OIDCJWK3);
 				RSAKey rsaKey = RSAKey.parse(jwkJson);
 				jweObject.decrypt(new RSADecrypter(rsaKey.toRSAPrivateKey()));
 				jwtToDecode = jweObject.getPayload().toString();
