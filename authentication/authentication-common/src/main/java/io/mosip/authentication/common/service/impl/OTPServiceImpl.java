@@ -108,6 +108,10 @@ public class OTPServiceImpl implements OTPService {
 	
 	@Autowired
 	private IdAuthSecurityManager securityManager;
+
+	@Autowired
+	@Qualifier("internalAuthSecurityManager")
+	private IdAuthSecurityManager internalSecurityManager;
 	
 	@Autowired
 	private PartnerService partnerService;
@@ -309,7 +313,7 @@ public class OTPServiceImpl implements OTPService {
 				.withToken(token)
 				.withPartner(partner)
 				.withInternal(isInternal)
-				.build(env,uinHashSaltRepo,securityManager);
+				.build(env, uinHashSaltRepo, isInternal ? internalSecurityManager : securityManager);
 		fraudEventManager.analyseEvent(authTxn);
 		if(requestWithMetadata != null) {
 			requestWithMetadata.setMetadata(Map.of(AutnTxn.class.getSimpleName(), authTxn));	
