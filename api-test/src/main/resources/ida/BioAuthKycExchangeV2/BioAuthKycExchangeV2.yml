@@ -981,7 +981,7 @@ BioAuthKycExchangeV2:
   auth_BioAuthKycExchangeV2_Decode_MultiContext_Pos:
       endPoint: /idauthentication/v1/kyc-exchange/v2/delegated/$partialPartnerKeyUrl$/$ID:CreateOIDCClient_Delegated_Valid_Smoke_sid_clientId$
       uniqueIdentifier: TC_IDA_BioAuthKycExchangeV2_17
-      description: Kyc exchange V2 with multiple @context entries, decodes and validates the id_token - expected to succeed
+      description: Kyc exchange V2 requesting email under uk_tfida and phone under de_aml in one call, decodes the id_token and confirms both trust frameworks are returned - expected to succeed
       role: resident
       restMethod: post
       inputTemplate: ida/BioAuthKycExchangeV2/BioAuthKYCExchangeV2Custom
