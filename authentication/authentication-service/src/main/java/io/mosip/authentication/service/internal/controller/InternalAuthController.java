@@ -118,7 +118,7 @@ public class InternalAuthController {
 	 */
 	//@PreAuthorize("hasAnyRole('REGISTRATION_PROCESSOR','REGISTRATION_ADMIN','REGISTRATION_OFFICER','REGISTRATION_SUPERVISOR','RESIDENT')")
 	@PreAuthorize("hasAnyRole(@authorizedRoles.getPostauth())")
-	@PostMapping(path = "/auth", consumes = MediaType.APPLICATION_JSON_VALUE, produces = MediaType.APPLICATION_JSON_VALUE)
+	@PostMapping(path = "/internal/auth", consumes = MediaType.APPLICATION_JSON_VALUE, produces = MediaType.APPLICATION_JSON_VALUE)
 	@Operation(summary = "Authenticate Internal Request", description = "Authenticate Internal Request", tags = { "internal-auth-controller" })
 	@SecurityRequirement(name = "Authorization")
 	@ApiResponses(value = {
@@ -196,7 +196,7 @@ public class InternalAuthController {
 	 */
 	//@PreAuthorize("hasAnyRole('REGISTRATION_PROCESSOR','REGISTRATION_ADMIN','REGISTRATION_OFFICER','REGISTRATION_SUPERVISOR','RESIDENT')")
 	@PreAuthorize("hasAnyRole(@authorizedRoles.getPostverifyidentity())")
-	@PostMapping(path = "/verifyidentity", consumes = MediaType.APPLICATION_JSON_VALUE, produces = MediaType.APPLICATION_JSON_VALUE)
+	@PostMapping(path = "/internal/verifyidentity", consumes = MediaType.APPLICATION_JSON_VALUE, produces = MediaType.APPLICATION_JSON_VALUE)
 	@Operation(summary = "Authenticate Internal Request", description = "Authenticate Internal Request", tags = { "internal-auth-controller" })
 	@SecurityRequirement(name = "Authorization")
 	@ApiResponses(value = {

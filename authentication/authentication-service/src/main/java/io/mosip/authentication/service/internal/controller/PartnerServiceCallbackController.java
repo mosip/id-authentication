@@ -58,7 +58,7 @@ public class PartnerServiceCallbackController {
 	@Qualifier("internalAuthSecurityManager")
 	private IdAuthSecurityManager securityManager;
 
-	@PostMapping(value = "/callback/partnermanagement/" + APIKEY_APPROVED, consumes = "application/json")
+	@PostMapping(value = "/internal/callback/partnermanagement/" + APIKEY_APPROVED, consumes = "application/json")
 	@Operation(summary = "handleApiKeyApprovedEvent", description = "handleApiKeyApprovedEvent", tags = { "partner-service-callback-controller" })
 	
 	@ApiResponses(value = {
@@ -80,7 +80,7 @@ public class PartnerServiceCallbackController {
 		}
 	}
 
-	@PostMapping(value = "/callback/partnermanagement/" + PARTNER_UPDATED_EVENT_NAME, consumes = "application/json")
+	@PostMapping(value = "/internal/callback/partnermanagement/" + PARTNER_UPDATED_EVENT_NAME, consumes = "application/json")
 	@Operation(summary = "handlePartnerApiKeyUpdated", description = "handlePartnerApiKeyUpdated", tags = { "partner-service-callback-controller" })
 	
 	@ApiResponses(value = {
@@ -102,7 +102,7 @@ public class PartnerServiceCallbackController {
 		}
 	}
 
-	@PostMapping(value = "/callback/partnermanagement/" + POLICY_UPDATED_EVENT_NAME, consumes = "application/json")
+	@PostMapping(value = "/internal/callback/partnermanagement/" + POLICY_UPDATED_EVENT_NAME, consumes = "application/json")
 	@Operation(summary = "handlePolicyUpdated", description = "handlePolicyUpdated", tags = { "partner-service-callback-controller" })
 	@ApiResponses(value = {
 			@ApiResponse(responseCode = "200", description = "OK"),
@@ -123,7 +123,7 @@ public class PartnerServiceCallbackController {
 		}
 	}
 
-	@PostMapping(value = "/callback/partnermanagement/" + PARTNER_API_KEY_UPDATED_EVENT_NAME, consumes = "application/json")
+	@PostMapping(value = "/internal/callback/partnermanagement/" + PARTNER_API_KEY_UPDATED_EVENT_NAME, consumes = "application/json")
 	@Operation(summary = "handlePartnerApiKeyUpdated", description = "handlePartnerApiKeyUpdated", tags = { "partner-service-callback-controller" })
 	
 	@ApiResponses(value = {
@@ -145,7 +145,7 @@ public class PartnerServiceCallbackController {
 		}
 	}
 
-	@PostMapping(value = "/callback/partnermanagement/" + MISP_LICENSE_GENERATED, consumes = "application/json")
+	@PostMapping(value = "/internal/callback/partnermanagement/" + MISP_LICENSE_GENERATED, consumes = "application/json")
 	@Operation(summary = "handleMispLicenseGeneratedEvent", description = "handleMispLicenseGeneratedEvent", tags = { "partner-service-callback-controller" })
 	
 	@ApiResponses(value = {
@@ -167,7 +167,7 @@ public class PartnerServiceCallbackController {
 		}
 	}
 
-	@PostMapping(value = "/callback/partnermanagement/" + MISP_LICENSE_UPDATED, consumes = "application/json")
+	@PostMapping(value = "/internal/callback/partnermanagement/" + MISP_LICENSE_UPDATED, consumes = "application/json")
 	@Operation(summary = "handleMispUpdatedEvent", description = "handleMispUpdatedEvent", tags = { "partner-service-callback-controller" })
 	
 	@ApiResponses(value = {
@@ -190,7 +190,7 @@ public class PartnerServiceCallbackController {
 	}
 
 
-	@PostMapping(value = "/callback/partnermanagement/" + OIDC_CLIENT_CREATED, consumes = "application/json")
+	@PostMapping(value = "/internal/callback/partnermanagement/" + OIDC_CLIENT_CREATED, consumes = "application/json")
 	@Operation(summary = "handleOIDCClientCreatedEvent", description = "TO Handle OIDC Client Created Event", tags = { "partner-service-callback-controller" })
 	@ApiResponses(value = {
 			@ApiResponse(responseCode = "200", description = "OK"),
@@ -212,7 +212,7 @@ public class PartnerServiceCallbackController {
 	}
 
 
-	@PostMapping(value = "/callback/partnermanagement/" + OIDC_CLIENT_UPDATED, consumes = "application/json")
+	@PostMapping(value = "/internal/callback/partnermanagement/" + OIDC_CLIENT_UPDATED, consumes = "application/json")
 	@Operation(summary = "handleOIDCClientUpdatedEvent", description = "TO Handle OIDC Client Updated Event", tags = { "partner-service-callback-controller" })
 	@ApiResponses(value = {
 			@ApiResponse(responseCode = "200", description = "OK"),
