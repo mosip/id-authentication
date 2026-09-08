@@ -1,6 +1,8 @@
 package io.mosip.testrig.apirig.auth.utils;
 
 import java.nio.charset.StandardCharsets;
+import java.security.KeyStore.PrivateKeyEntry;
+import java.security.interfaces.RSAPrivateKey;
 import java.util.ArrayList;
 import java.util.Base64;
 import java.util.HashMap;
@@ -18,7 +20,6 @@ import org.testng.SkipException;
 
 import com.nimbusds.jose.JWEObject;
 import com.nimbusds.jose.crypto.RSADecrypter;
-import com.nimbusds.jose.jwk.RSAKey;
 
 import io.mosip.testrig.apirig.auth.testrunner.MosipTestRunner;
 import io.mosip.testrig.apirig.dbaccess.DBManager;
@@ -27,14 +28,17 @@ import io.mosip.testrig.apirig.testrunner.BaseTestCase;
 import io.mosip.testrig.apirig.utils.AdminTestException;
 import io.mosip.testrig.apirig.utils.AdminTestUtil;
 import io.mosip.testrig.apirig.utils.ConfigManager;
+import io.mosip.testrig.apirig.utils.CryptoCoreUtil;
 import io.mosip.testrig.apirig.utils.GlobalConstants;
 import io.mosip.testrig.apirig.utils.GlobalMethods;
 import io.mosip.testrig.apirig.utils.JWKKeyUtil;
 import io.mosip.testrig.apirig.utils.KernelAuthentication;
 import io.mosip.testrig.apirig.utils.KeyCloakUserAndAPIKeyGeneration;
+import io.mosip.testrig.apirig.utils.KeyMgrUtility;
 import io.mosip.testrig.apirig.utils.KeycloakUserManager;
 import io.mosip.testrig.apirig.utils.MispPartnerAndLicenseKeyGeneration;
 import io.mosip.testrig.apirig.utils.PartnerRegistration;
+import io.mosip.testrig.apirig.utils.PartnerTypes;
 import io.mosip.testrig.apirig.utils.RestClient;
 import io.mosip.testrig.apirig.utils.SecurityXSSException;
 import io.mosip.testrig.apirig.utils.SkipTestCaseHandler;
@@ -54,7 +58,7 @@ public class IdAuthenticationUtil extends AdminTestUtil {
 		else
 			logger.setLevel(Level.ERROR);
 	}
-	
+
 	public static String isTestCaseValidForExecution(TestCaseDTO testCaseDTO) {
 		String testCaseName = testCaseDTO.getTestCaseName();
 		currentTestCaseName = testCaseName;
@@ -688,23 +692,10 @@ public class IdAuthenticationUtil extends AdminTestUtil {
 	}
 
 	/**
-	 * Decodes response.encryptedKyc (JWT: 3 dot-segments, or JWE: 5 dot-segments)
-	 * and merges the resulting claims into response.decodedKyc, so the existing
-	 * YAML output-assertion mechanism can reference them like any other field.
-	 * <p>
-	 * For JWE, decryption uses the OIDC client's own registered key (cached under
-	 * "OIDCJWK3" by JWKKeyUtil during CreateOIDCClient setup). That key already
-	 * carries its private component (generateJWKPublicKey builds it with
-	 * includePrivate=true) - no apitest-commons change was needed for this, since
-	 * OidcClientDto only ever registers a single "publicKey" field (confirmed in
-	 * partner-management-services source, no separate encryption-key concept
-	 * exists), so this is necessarily the same key the server encrypts with.
-	 * Unverified whether the server picks this exact key by kid/thumbprint match
-	 * in every environment - confirm on a live run.
-	 * <p>
-	 * A JWE payload here is itself a signed JWT (cty:"JWT" in the JWE header, per
-	 * a real captured response) - decrypting one layer down still leaves a JWT to
-	 * base64-decode, same as the plain JWT branch.
+	 * Decodes response.encryptedKyc (JWT: 3 segments, or JWE: 5 segments) into
+	 * response.decodedKyc. JWE is decrypted with the relying-party's own
+	 * keystore (same key BioDataUtility signs bio requests with) - the server
+	 * encrypts with the partner cert, not the OIDC client's key.
 	 */
 	public static String injectDecodedKyc(String responseStr, String testCaseName) {
 		try {
@@ -721,9 +712,17 @@ public class IdAuthenticationUtil extends AdminTestUtil {
 			String jwtToDecode;
 			if (parts.length == 5) {
 				JWEObject jweObject = JWEObject.parse(encryptedKyc);
-				String jwkJson = JWKKeyUtil.getJWKKey(OIDCJWK3);
-				RSAKey rsaKey = RSAKey.parse(jwkJson);
-				jweObject.decrypt(new RSADecrypter(rsaKey.toRSAPrivateKey()));
+				KeyMgrUtility keyMgrUtil = new KeyMgrUtility(new CryptoCoreUtil());
+				String dirPath = keyMgrUtil.getKeysDirPath("", certsForModule, ApplnURI.replace("https://", ""));
+				// File is "rp-<organizationName>-partner.p12", not "rp-partner.p12".
+				PrivateKeyEntry keyEntry = keyMgrUtil.getKeyEntry(dirPath, PartnerTypes.RELYING_PARTY,
+						PartnerRegistration.organizationName, true);
+				if (keyEntry == null) {
+					logger.warn("No relying-party partner keystore found under " + dirPath
+							+ " to decrypt encryptedKyc for " + testCaseName);
+					return responseStr;
+				}
+				jweObject.decrypt(new RSADecrypter((RSAPrivateKey) keyEntry.getPrivateKey()));
 				jwtToDecode = jweObject.getPayload().toString();
 			} else if (parts.length == 3) {
 				jwtToDecode = encryptedKyc;
