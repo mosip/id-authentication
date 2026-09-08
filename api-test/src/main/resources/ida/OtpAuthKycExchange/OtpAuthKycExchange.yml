@@ -26,7 +26,7 @@ OtpAuthKycExchange:
   auth_OtpAuthKycExchange_OtpAuth_With_Valid_VID_Smoke_Pos:
       endPoint: /idauthentication/v1/kyc-exchange/delegated/$partialPartnerKeyUrl$/$ID:CreateOIDCClient_Delegated_Valid_Smoke_sid_clientId$
       uniqueIdentifier: TC_IDA_OtpAuthKycExchange_02
-      description: Otp auth kyc exchange with valid perpetual VID
+      description: Otp auth kyc exchange with valid perpetual VID - expected to succeed
       role: resident
       restMethod: post
       checkErrorsOnlyInResponse: true
@@ -50,7 +50,7 @@ OtpAuthKycExchange:
   auth_OtpAuthKycExchange_OtpAuth_With_Optional_individualIdType_VID:
       endPoint: /idauthentication/v1/kyc-exchange/delegated/$partialPartnerKeyUrl$/$ID:CreateOIDCClient_Delegated_Valid_Smoke_sid_clientId$
       uniqueIdentifier: TC_IDA_OtpAuthKycExchange_03
-      description: OTP auth kyc exchange with optional individualIdType using VID
+      description: OTP auth kyc exchange with optional individualIdType using VID - expected to succeed
       role: resident
       restMethod: post
       checkErrorsOnlyInResponse: true
@@ -74,7 +74,7 @@ OtpAuthKycExchange:
   auth_OtpAuthKycExchange_OtpAuth_With_Missing_Optional_Field_individualIdType_VID:
       endPoint: /idauthentication/v1/kyc-exchange/delegated/$partialPartnerKeyUrl$/$ID:CreateOIDCClient_Delegated_Valid_Smoke_sid_clientId$
       uniqueIdentifier: TC_IDA_OtpAuthKycExchange_04
-      description: Otp auth kyc exchange with missing optional field individualIdType using VID
+      description: Otp auth kyc exchange with missing optional field individualIdType using VID - expected to succeed
       role: resident
       restMethod: post
       checkErrorsOnlyInResponse: true
@@ -98,7 +98,7 @@ OtpAuthKycExchange:
   auth_OtpAuthKycExchange_OtpAuth_With_locked_email_Smoke_Pos:
       endPoint: /idauthentication/v1/kyc-exchange/delegated/$partialPartnerKeyUrl$/$ID:CreateOIDCClient_Delegated_Valid_Smoke_sid_clientId$
       uniqueIdentifier: TC_IDA_OtpAuthKycExchange_05
-      description: Otp auth kyc exchange with locked email using valid UIN
+      description: Otp auth kyc exchange with locked email using valid UIN - expected to succeed
       role: resident
       restMethod: post
       checkErrorsOnlyInResponse: true
@@ -122,7 +122,7 @@ OtpAuthKycExchange:
   auth_OtpAuthKycExchange_OtpAuth_With_locked_phone_Smoke_Pos:
       endPoint: /idauthentication/v1/kyc-exchange/delegated/$partialPartnerKeyUrl$/$ID:CreateOIDCClient_Delegated_Valid_Smoke_sid_clientId$
       uniqueIdentifier: TC_IDA_OtpAuthKycExchange_06
-      description: Otp auth kyc exchange with locked phone using valid UIN
+      description: Otp auth kyc exchange with locked phone using valid UIN - expected to succeed
       role: resident
       restMethod: post
       checkErrorsOnlyInResponse: true
@@ -141,5 +141,59 @@ OtpAuthKycExchange:
         "respType": "JWE"
     }'
       output: '{
-  
+
+}'
+  auth_OtpAuthKycExchange_OtpAuth_with_already_used_kyc_Token_Neg:
+      endPoint: /idauthentication/v1/kyc-exchange/delegated/$partialPartnerKeyUrl$/$ID:CreateOIDCClient_Delegated_Valid_Smoke_sid_clientId$
+      uniqueIdentifier: TC_IDA_OtpAuthKycExchange_07
+      description: Otp auth kyc exchange with already used token - expected to fail
+      role: resident
+      restMethod: post
+      inputTemplate: ida/OtpAuthKycExchange/OtpAuthKycExchange
+      outputTemplate: ida/DelegateError
+      input: '{
+        "requestTime": "$TIMESTAMP$",
+        "individualId": "$ID:AddIdentity_ValidParameters_toLock_phone_Pos_UIN$",
+        "transactionID": "$TRANSACTIONID$",
+        "individualIdType": "UIN",
+        "id": "mosip.identity.kycexchange",
+        "version": "1.0",
+        "kycToken": "$ID:OtpAuthDelegated_OTP_Auth_With_locked_phone_Smoke_Pos_Sid_kycToken$",
+        "consentObtained": [{"consentObtainedValue": "gender"}, {"consentObtainedValue": "birthdate"}],
+        "locales": [{localesValue: "eng"}],
+        "respType": "JWE"
+    }'
+      output: '{
+      "errors": [
+        {
+          "errorCode": "IDA-KYE-003"
+        }
+      ]
+}'
+  auth_OtpAuthKycExchange_OtpAuth_using_different_individualId_Neg:
+      endPoint: /idauthentication/v1/kyc-exchange/delegated/$partialPartnerKeyUrl$/$ID:CreateOIDCClient_Delegated_Valid_Smoke_sid_clientId$
+      uniqueIdentifier: TC_IDA_OtpAuthKycExchange_08
+      description: Otp auth kyc exchange with different individualId than the one used for kyc-auth - expected to fail
+      role: resident
+      restMethod: post
+      inputTemplate: ida/OtpAuthKycExchange/OtpAuthKycExchange
+      outputTemplate: ida/DelegateError
+      input: '{
+        "requestTime": "$TIMESTAMP$",
+        "individualId": "$ID:AddIdentity_EkycDemo_Auth_smoke_Pos_UIN$",
+        "transactionID": "$TRANSACTIONID$",
+        "individualIdType": "UIN",
+        "id": "mosip.identity.kycexchange",
+        "version": "1.0",
+        "kycToken": "$ID:OtpAuthDelegated_OTP_Auth_forKycExchangeIndividualIdMismatch_Pos_Sid_kycToken$",
+        "consentObtained": [{"consentObtainedValue": "gender"}, {"consentObtainedValue": "birthdate"}],
+        "locales": [{localesValue: "eng"}],
+        "respType": "JWE"
+    }'
+      output: '{
+      "errors": [
+        {
+          "errorCode": "IDA-KYE-007"
+        }
+      ]
 }'

@@ -1,0 +1,490 @@
+OtpAuthDelegatedV2:
+  auth_OtpAuthDelegatedV2_OTP_Auth_With_Valid_UIN_Smoke_Pos_Sid:
+      endPoint: /idauthentication/v1/kyc-auth/v2/delegated/$partialPartnerKeyUrl$/$ID:CreateOIDCClient_Delegated_Valid_Smoke_sid_clientId$
+      uniqueIdentifier: TC_IDA_OtpAuthDelegatedV2_01
+      description: Otp auth V2 with a valid OTP against a UIN - expected to succeed
+      role: resident
+      restMethod: post
+      inputTemplate: ida/OtpAuthDelegatedV2/OtpAuthDelegatedV2
+      outputTemplate: ida/OtpAuthDelegatedV2/OtpAuthDelegatedV2Result
+      input: '{
+        "otpChannel": "$ID:AddIdentity_withValidParameters_forOtpDelegated_Pos_EMAIL$",
+        "requestTime": "$TIMESTAMP$",
+        "individualId": "$ID:AddIdentity_withValidParameters_forOtpDelegated_Pos_UIN$",
+        "transactionId": "$TRANSACTIONID$",
+        "individualIdType": "UIN",
+        "claimsMetadataRequired": false,
+        "bio": false,
+        "demo": false,
+        "otp": true,
+        "sendOtp":{
+    "transactionID": "$TRANSACTIONID$",
+    "requestTime": "$TIMESTAMP$",
+    "individualId": "$ID:AddIdentity_withValidParameters_forOtpDelegated_Pos_UIN$",
+    "individualIdType": "UIN",
+    "sendOtpReqTemplate": "ida/OtpAuth/sendOtp",
+    "sendOtpEndPoint": "/idauthentication/v1/otp/$partnerKeyURL$",
+    "otpIdentyEnryptRequestPath": "ida/OtpAuthDelegated/OtpIdentityEncrypt.json"
+    }
+    }'
+      output: '{
+  "kycStatus": "true",
+ "sendOtpResp":{
+        "sendOtpResTemplate":"ida/OtpAuth/sendOtpRes"
+    }
+}'
+  auth_OtpAuthDelegatedV2Neg_Invalid_OtpChannel_Neg:
+      endPoint: /idauthentication/v1/kyc-auth/v2/delegated/$partialPartnerKeyUrl$/$ID:CreateOIDCClient_Delegated_Valid_Smoke_sid_clientId$
+      uniqueIdentifier: TC_IDA_OtpAuthDelegatedV2Neg_01
+      description: Kyc auth V2 OTP auth with an invalid otpChannel - expected to fail
+      role: resident
+      restMethod: post
+      inputTemplate: ida/OtpAuthDelegatedV2/OtpAuthDelegatedV2
+      outputTemplate: ida/DelegateError
+      input: '{
+        "otpChannel": "26363633",
+        "requestTime": "$TIMESTAMP$",
+        "individualId": "$ID:AddIdentity_withValidParameters_forOtpDelegated_Pos_UIN$",
+        "transactionId": "$TRANSACTIONID$",
+        "individualIdType": "UIN",
+        "claimsMetadataRequired": false,
+        "bio": false,
+        "demo": false,
+        "otp": true,
+        "sendOtp":{
+    "transactionID": "$TRANSACTIONID$",
+    "requestTime": "$TIMESTAMP$",
+    "individualId": "$ID:AddIdentity_withValidParameters_forOtpDelegated_Pos_UIN$",
+    "individualIdType": "UIN",
+    "sendOtpReqTemplate": "ida/OtpAuth/sendOtp",
+    "sendOtpEndPoint": "/idauthentication/v1/otp/$partnerKeyURL$",
+    "otpIdentyEnryptRequestPath": "ida/OtpAuthDelegated/OtpIdentityEncrypt.json"
+    }
+    }'
+      output: '{
+      "errors": [
+        {
+          "errorCode": "IDA-OTA-004"
+        }
+      ],
+ "sendOtpResp":{
+        "sendOtpResTemplate":"ida/OtpAuth/sendOtpRes"
+    }
+}'
+  auth_OtpAuthDelegatedV2_claimsMetadataRequired_true_Pos:
+      endPoint: /idauthentication/v1/kyc-auth/v2/delegated/$partialPartnerKeyUrl$/$ID:CreateOIDCClient_Delegated_Valid_Smoke_sid_clientId$
+      uniqueIdentifier: TC_IDA_OtpAuthDelegatedV2_02
+      description: Otp auth V2 with claimsMetadataRequired true - expected to succeed
+      role: resident
+      restMethod: post
+      inputTemplate: ida/OtpAuthDelegatedV2/OtpAuthDelegatedV2
+      outputTemplate: ida/OtpAuthDelegatedV2/OtpAuthDelegatedV2ResultWithClaimsMeta
+      input: '{
+        "otpChannel": "$ID:AddIdentity_withValidParameters_forOtpDelegated_Pos_EMAIL$",
+        "requestTime": "$TIMESTAMP$",
+        "individualId": "$ID:AddIdentity_withValidParameters_forOtpDelegated_Pos_UIN$",
+        "transactionId": "$TRANSACTIONID$",
+        "individualIdType": "UIN",
+        "claimsMetadataRequired": true,
+        "bio": false,
+        "demo": false,
+        "otp": true,
+        "sendOtp":{
+    "transactionID": "$TRANSACTIONID$",
+    "requestTime": "$TIMESTAMP$",
+    "individualId": "$ID:AddIdentity_withValidParameters_forOtpDelegated_Pos_UIN$",
+    "individualIdType": "UIN",
+    "sendOtpReqTemplate": "ida/OtpAuth/sendOtp",
+    "sendOtpEndPoint": "/idauthentication/v1/otp/$partnerKeyURL$",
+    "otpIdentyEnryptRequestPath": "ida/OtpAuthDelegated/OtpIdentityEncrypt.json"
+    }
+    }'
+      output: '{
+  "kycStatus": "true",
+  "kycToken": "$REGEXP:^(?!null).+$",
+  "authToken": "$REGEXP:^(?!null).+$",
+  "verifiedClaimsMetadata": "$IGNORE$",
+ "sendOtpResp":{
+        "sendOtpResTemplate":"ida/OtpAuth/sendOtpRes"
+    }
+}'
+  auth_OtpAuthDelegatedV2Neg_Missing_IndividualId_Neg:
+      endPoint: /idauthentication/v1/kyc-auth/v2/delegated/$partialPartnerKeyUrl$/$ID:CreateOIDCClient_Delegated_Valid_Smoke_sid_clientId$
+      uniqueIdentifier: TC_IDA_OtpAuthDelegatedV2Neg_02
+      description: Kyc auth V2 OTP auth with missing individualId - expected to fail
+      role: resident
+      restMethod: post
+      inputTemplate: ida/OtpAuthDelegatedV2/OtpAuthDelegatedV2
+      outputTemplate: ida/DelegateError
+      input: '{
+        "otpChannel": "$ID:AddIdentity_withValidParameters_forOtpDelegated_Pos_EMAIL$",
+        "requestTime": "$TIMESTAMP$",
+        "individualId": "$REMOVE$",
+        "transactionId": "$TRANSACTIONID$",
+        "individualIdType": "UIN",
+        "claimsMetadataRequired": false,
+        "bio": false,
+        "demo": false,
+        "otp": true,
+        "sendOtp":{
+    "transactionID": "$TRANSACTIONID$",
+    "requestTime": "$TIMESTAMP$",
+    "individualId": "$ID:AddIdentity_withValidParameters_forOtpDelegated_Pos_UIN$",
+    "individualIdType": "UIN",
+    "sendOtpReqTemplate": "ida/OtpAuth/sendOtp",
+    "sendOtpEndPoint": "/idauthentication/v1/otp/$partnerKeyURL$",
+    "otpIdentyEnryptRequestPath": "ida/OtpAuthDelegated/OtpIdentityEncrypt.json"
+    }
+    }'
+      output: '{
+      "errors": [
+        {
+          "errorCode": "IDA-MLC-006"
+        }
+      ],
+ "sendOtpResp":{
+        "sendOtpResTemplate":"ida/OtpAuth/sendOtpRes"
+    }
+}'
+  auth_OtpAuthDelegatedV2Neg_Missing_IndividualIdType_Neg:
+      endPoint: /idauthentication/v1/kyc-auth/v2/delegated/$partialPartnerKeyUrl$/$ID:CreateOIDCClient_Delegated_Valid_Smoke_sid_clientId$
+      uniqueIdentifier: TC_IDA_OtpAuthDelegatedV2Neg_03
+      description: Kyc auth V2 OTP auth with missing individualIdType - expected to fail
+      role: resident
+      restMethod: post
+      inputTemplate: ida/OtpAuthDelegatedV2/OtpAuthDelegatedV2
+      outputTemplate: ida/DelegateError
+      input: '{
+        "otpChannel": "$ID:AddIdentity_withValidParameters_forOtpDelegated_Pos_EMAIL$",
+        "requestTime": "$TIMESTAMP$",
+        "individualId": "$ID:AddIdentity_withValidParameters_forOtpDelegated_Pos_UIN$",
+        "transactionId": "$TRANSACTIONID$",
+        "individualIdType": "$REMOVE$",
+        "claimsMetadataRequired": false,
+        "bio": false,
+        "demo": false,
+        "otp": true,
+        "sendOtp":{
+    "transactionID": "$TRANSACTIONID$",
+    "requestTime": "$TIMESTAMP$",
+    "individualId": "$ID:AddIdentity_withValidParameters_forOtpDelegated_Pos_UIN$",
+    "individualIdType": "UIN",
+    "sendOtpReqTemplate": "ida/OtpAuth/sendOtp",
+    "sendOtpEndPoint": "/idauthentication/v1/otp/$partnerKeyURL$",
+    "otpIdentyEnryptRequestPath": "ida/OtpAuthDelegated/OtpIdentityEncrypt.json"
+    }
+    }'
+      output: '{
+      "errors": [
+        {
+          "errorCode": "IDA-MLC-006"
+        }
+      ],
+ "sendOtpResp":{
+        "sendOtpResTemplate":"ida/OtpAuth/sendOtpRes"
+    }
+}'
+  auth_OtpAuthDelegatedV2Neg_Missing_TransactionId_Neg:
+      endPoint: /idauthentication/v1/kyc-auth/v2/delegated/$partialPartnerKeyUrl$/$ID:CreateOIDCClient_Delegated_Valid_Smoke_sid_clientId$
+      uniqueIdentifier: TC_IDA_OtpAuthDelegatedV2Neg_04
+      description: Kyc auth V2 OTP auth with missing transactionId - expected to fail
+      role: resident
+      restMethod: post
+      inputTemplate: ida/OtpAuthDelegatedV2/OtpAuthDelegatedV2
+      outputTemplate: ida/DelegateError
+      input: '{
+        "otpChannel": "$ID:AddIdentity_withValidParameters_forOtpDelegated_Pos_EMAIL$",
+        "requestTime": "$TIMESTAMP$",
+        "individualId": "$ID:AddIdentity_withValidParameters_forOtpDelegated_Pos_UIN$",
+        "transactionId": "$REMOVE$",
+        "individualIdType": "UIN",
+        "claimsMetadataRequired": false,
+        "bio": false,
+        "demo": false,
+        "otp": true,
+        "sendOtp":{
+    "transactionID": "$TRANSACTIONID$",
+    "requestTime": "$TIMESTAMP$",
+    "individualId": "$ID:AddIdentity_withValidParameters_forOtpDelegated_Pos_UIN$",
+    "individualIdType": "UIN",
+    "sendOtpReqTemplate": "ida/OtpAuth/sendOtp",
+    "sendOtpEndPoint": "/idauthentication/v1/otp/$partnerKeyURL$",
+    "otpIdentyEnryptRequestPath": "ida/OtpAuthDelegated/OtpIdentityEncrypt.json"
+    }
+    }'
+      output: '{
+      "errors": [
+        {
+          "errorCode": "IDA-MLC-006"
+        }
+      ],
+ "sendOtpResp":{
+        "sendOtpResTemplate":"ida/OtpAuth/sendOtpRes"
+    }
+}'
+  auth_OtpAuthDelegatedV2Neg_Missing_RequestTime_Neg:
+      endPoint: /idauthentication/v1/kyc-auth/v2/delegated/$partialPartnerKeyUrl$/$ID:CreateOIDCClient_Delegated_Valid_Smoke_sid_clientId$
+      uniqueIdentifier: TC_IDA_OtpAuthDelegatedV2Neg_05
+      description: Otp auth V2 with the requestTime field omitted - expected to fail
+      role: resident
+      restMethod: post
+      inputTemplate: ida/OtpAuthDelegatedV2/OtpAuthDelegatedV2
+      outputTemplate: ida/DelegateError
+      input: '{
+        "otpChannel": "$ID:AddIdentity_withValidParameters_forOtpDelegated_Pos_EMAIL$",
+        "requestTime": "$REMOVE$",
+        "individualId": "$ID:AddIdentity_withValidParameters_forOtpDelegated_Pos_UIN$",
+        "transactionId": "$TRANSACTIONID$",
+        "individualIdType": "UIN",
+        "claimsMetadataRequired": false,
+        "bio": false,
+        "demo": false,
+        "otp": true,
+        "sendOtp":{
+    "transactionID": "$TRANSACTIONID$",
+    "requestTime": "$TIMESTAMP$",
+    "individualId": "$ID:AddIdentity_withValidParameters_forOtpDelegated_Pos_UIN$",
+    "individualIdType": "UIN",
+    "sendOtpReqTemplate": "ida/OtpAuth/sendOtp",
+    "sendOtpEndPoint": "/idauthentication/v1/otp/$partnerKeyURL$",
+    "otpIdentyEnryptRequestPath": "ida/OtpAuthDelegated/OtpIdentityEncrypt.json"
+    }
+    }'
+      output: '{
+      "errors": [
+        {
+          "errorCode": "IDA-MLC-006"
+        }
+      ],
+ "sendOtpResp":{
+        "sendOtpResTemplate":"ida/OtpAuth/sendOtpRes"
+    }
+}'
+  auth_OtpAuthDelegatedV2Neg_Expired_RequestTime_Neg:
+      endPoint: /idauthentication/v1/kyc-auth/v2/delegated/$partialPartnerKeyUrl$/$ID:CreateOIDCClient_Delegated_Valid_Smoke_sid_clientId$
+      uniqueIdentifier: TC_IDA_OtpAuthDelegatedV2Neg_06
+      description: Otp auth V2 with an expired requestTime - expected to fail
+      role: resident
+      restMethod: post
+      inputTemplate: ida/OtpAuthDelegatedV2/OtpAuthDelegatedV2
+      outputTemplate: ida/DelegateError
+      input: '{
+        "otpChannel": "$ID:AddIdentity_withValidParameters_forOtpDelegated_Pos_EMAIL$",
+        "requestTime": "2020-01-01T00:00:00.000Z",
+        "individualId": "$ID:AddIdentity_withValidParameters_forOtpDelegated_Pos_UIN$",
+        "transactionId": "$TRANSACTIONID$",
+        "individualIdType": "UIN",
+        "claimsMetadataRequired": false,
+        "bio": false,
+        "demo": false,
+        "otp": true,
+        "sendOtp":{
+    "transactionID": "$TRANSACTIONID$",
+    "requestTime": "$TIMESTAMP$",
+    "individualId": "$ID:AddIdentity_withValidParameters_forOtpDelegated_Pos_UIN$",
+    "individualIdType": "UIN",
+    "sendOtpReqTemplate": "ida/OtpAuth/sendOtp",
+    "sendOtpEndPoint": "/idauthentication/v1/otp/$partnerKeyURL$",
+    "otpIdentyEnryptRequestPath": "ida/OtpAuthDelegated/OtpIdentityEncrypt.json"
+    }
+    }'
+      output: '{
+      "errors": [
+        {
+          "errorCode": "IDA-MLC-001"
+        }
+      ],
+ "sendOtpResp":{
+        "sendOtpResTemplate":"ida/OtpAuth/sendOtpRes"
+    }
+}'
+  auth_OtpAuthDelegatedV2Neg_Malformed_TransactionId_Neg:
+      endPoint: /idauthentication/v1/kyc-auth/v2/delegated/$partialPartnerKeyUrl$/$ID:CreateOIDCClient_Delegated_Valid_Smoke_sid_clientId$
+      uniqueIdentifier: TC_IDA_OtpAuthDelegatedV2Neg_07
+      description: Otp auth V2 with a malformed transactionID - expected to fail
+      role: resident
+      restMethod: post
+      inputTemplate: ida/OtpAuthDelegatedV2/OtpAuthDelegatedV2
+      outputTemplate: ida/DelegateError
+      input: '{
+        "otpChannel": "$ID:AddIdentity_withValidParameters_forOtpDelegated_Pos_EMAIL$",
+        "requestTime": "$TIMESTAMP$",
+        "individualId": "$ID:AddIdentity_withValidParameters_forOtpDelegated_Pos_UIN$",
+        "transactionId": "txn-id-with-hyphens-15",
+        "individualIdType": "UIN",
+        "claimsMetadataRequired": false,
+        "bio": false,
+        "demo": false,
+        "otp": true,
+        "sendOtp":{
+    "transactionID": "$TRANSACTIONID$",
+    "requestTime": "$TIMESTAMP$",
+    "individualId": "$ID:AddIdentity_withValidParameters_forOtpDelegated_Pos_UIN$",
+    "individualIdType": "UIN",
+    "sendOtpReqTemplate": "ida/OtpAuth/sendOtp",
+    "sendOtpEndPoint": "/idauthentication/v1/otp/$partnerKeyURL$",
+    "otpIdentyEnryptRequestPath": "ida/OtpAuthDelegated/OtpIdentityEncrypt.json"
+    }
+    }'
+      output: '{
+      "errors": [
+        {
+          "errorCode": "IDA-MLC-009"
+        }
+      ],
+ "sendOtpResp":{
+        "sendOtpResTemplate":"ida/OtpAuth/sendOtpRes"
+    }
+}'
+  auth_OtpAuthDelegatedV2Neg_Missing_Id_Neg:
+      endPoint: /idauthentication/v1/kyc-auth/v2/delegated/$partialPartnerKeyUrl$/$ID:CreateOIDCClient_Delegated_Valid_Smoke_sid_clientId$
+      uniqueIdentifier: TC_IDA_OtpAuthDelegatedV2Neg_08
+      description: Otp auth V2 with the top-level id field omitted - expected to fail
+      role: resident
+      restMethod: post
+      inputTemplate: ida/OtpAuthDelegatedV2/OtpAuthDelegatedV2WithoutId
+      outputTemplate: ida/DelegateError
+      input: '{
+        "otpChannel": "$ID:AddIdentity_withValidParameters_forOtpDelegated_Pos_EMAIL$",
+        "requestTime": "$TIMESTAMP$",
+        "individualId": "$ID:AddIdentity_withValidParameters_forOtpDelegated_Pos_UIN$",
+        "transactionId": "$TRANSACTIONID$",
+        "individualIdType": "UIN",
+        "claimsMetadataRequired": false,
+        "bio": false,
+        "demo": false,
+        "otp": true,
+        "sendOtp":{
+    "transactionID": "$TRANSACTIONID$",
+    "requestTime": "$TIMESTAMP$",
+    "individualId": "$ID:AddIdentity_withValidParameters_forOtpDelegated_Pos_UIN$",
+    "individualIdType": "UIN",
+    "sendOtpReqTemplate": "ida/OtpAuth/sendOtp",
+    "sendOtpEndPoint": "/idauthentication/v1/otp/$partnerKeyURL$",
+    "otpIdentyEnryptRequestPath": "ida/OtpAuthDelegated/OtpIdentityEncrypt.json"
+    }
+    }'
+      output: '{
+      "errors": [
+        {
+          "errorCode": "IDA-MLC-006"
+        }
+      ],
+      "sendOtpResp":{
+        "sendOtpResTemplate":"ida/OtpAuth/sendOtpRes"
+      }
+}'
+  auth_OtpAuthDelegatedV2Neg_Missing_Version_Neg:
+      endPoint: /idauthentication/v1/kyc-auth/v2/delegated/$partialPartnerKeyUrl$/$ID:CreateOIDCClient_Delegated_Valid_Smoke_sid_clientId$
+      uniqueIdentifier: TC_IDA_OtpAuthDelegatedV2Neg_09
+      description: Otp auth V2 with the top-level version field omitted - expected to fail
+      role: resident
+      restMethod: post
+      inputTemplate: ida/OtpAuthDelegatedV2/OtpAuthDelegatedV2WithoutVersion
+      outputTemplate: ida/DelegateError
+      input: '{
+        "otpChannel": "$ID:AddIdentity_withValidParameters_forOtpDelegated_Pos_EMAIL$",
+        "requestTime": "$TIMESTAMP$",
+        "individualId": "$ID:AddIdentity_withValidParameters_forOtpDelegated_Pos_UIN$",
+        "transactionId": "$TRANSACTIONID$",
+        "individualIdType": "UIN",
+        "claimsMetadataRequired": false,
+        "bio": false,
+        "demo": false,
+        "otp": true,
+        "sendOtp":{
+    "transactionID": "$TRANSACTIONID$",
+    "requestTime": "$TIMESTAMP$",
+    "individualId": "$ID:AddIdentity_withValidParameters_forOtpDelegated_Pos_UIN$",
+    "individualIdType": "UIN",
+    "sendOtpReqTemplate": "ida/OtpAuth/sendOtp",
+    "sendOtpEndPoint": "/idauthentication/v1/otp/$partnerKeyURL$",
+    "otpIdentyEnryptRequestPath": "ida/OtpAuthDelegated/OtpIdentityEncrypt.json"
+    }
+    }'
+      output: '{
+      "errors": [
+        {
+          "errorCode": "IDA-MLC-006"
+        }
+      ],
+      "sendOtpResp":{
+        "sendOtpResTemplate":"ida/OtpAuth/sendOtpRes"
+      }
+}'
+  auth_OtpAuthDelegatedV2Neg_Missing_SpecVersion_Neg:
+      endPoint: /idauthentication/v1/kyc-auth/v2/delegated/$partialPartnerKeyUrl$/$ID:CreateOIDCClient_Delegated_Valid_Smoke_sid_clientId$
+      uniqueIdentifier: TC_IDA_OtpAuthDelegatedV2Neg_10
+      description: Otp auth V2 with the specVersion field omitted - expected to succeed (not validated server-side)
+      role: resident
+      restMethod: post
+      checkErrorsOnlyInResponse: true
+      inputTemplate: ida/OtpAuthDelegatedV2/OtpAuthDelegatedV2WithoutSpecVersion
+      outputTemplate: ida/OtpAuthDelegatedV2/OtpAuthDelegatedV2Result
+      input: '{
+        "otpChannel": "$ID:AddIdentity_withValidParameters_forOtpDelegated_Pos_EMAIL$",
+        "requestTime": "$TIMESTAMP$",
+        "individualId": "$ID:AddIdentity_withValidParameters_forOtpDelegated_Pos_UIN$",
+        "transactionId": "$TRANSACTIONID$",
+        "individualIdType": "UIN",
+        "claimsMetadataRequired": false,
+        "bio": false,
+        "demo": false,
+        "otp": true,
+        "sendOtp":{
+    "transactionID": "$TRANSACTIONID$",
+    "requestTime": "$TIMESTAMP$",
+    "individualId": "$ID:AddIdentity_withValidParameters_forOtpDelegated_Pos_UIN$",
+    "individualIdType": "UIN",
+    "sendOtpReqTemplate": "ida/OtpAuth/sendOtp",
+    "sendOtpEndPoint": "/idauthentication/v1/otp/$partnerKeyURL$",
+    "otpIdentyEnryptRequestPath": "ida/OtpAuthDelegated/OtpIdentityEncrypt.json"
+    }
+    }'
+      output: '{
+      "kycStatus": "true",
+      "sendOtpResp":{
+        "sendOtpResTemplate":"ida/OtpAuth/sendOtpRes"
+      }
+}'
+  auth_OtpAuthDelegatedV2Neg_ConsentNotObtained_Neg:
+      endPoint: /idauthentication/v1/kyc-auth/v2/delegated/$partialPartnerKeyUrl$/$ID:CreateOIDCClient_Delegated_Valid_Smoke_sid_clientId$
+      uniqueIdentifier: TC_IDA_OtpAuthDelegatedV2Neg_11
+      description: Otp auth V2 with consentObtained false - expected to fail
+      role: resident
+      restMethod: post
+      inputTemplate: ida/OtpAuthDelegatedV2/OtpAuthDelegatedV2ConsentNotObtained
+      outputTemplate: ida/OtpAuthDelegatedV2/error
+      input: '{
+        "otpChannel": "$ID:AddIdentity_withValidParameters_forOtpDelegated_Pos_EMAIL$",
+        "requestTime": "$TIMESTAMP$",
+        "individualId": "$ID:AddIdentity_withValidParameters_forOtpDelegated_Pos_UIN$",
+        "transactionId": "$TRANSACTIONID$",
+        "individualIdType": "UIN",
+        "claimsMetadataRequired": false,
+        "bio": false,
+        "demo": false,
+        "otp": true,
+        "sendOtp":{
+    "transactionID": "$TRANSACTIONID$",
+    "requestTime": "$TIMESTAMP$",
+    "individualId": "$ID:AddIdentity_withValidParameters_forOtpDelegated_Pos_UIN$",
+    "individualIdType": "UIN",
+    "sendOtpReqTemplate": "ida/OtpAuth/sendOtp",
+    "sendOtpEndPoint": "/idauthentication/v1/otp/$partnerKeyURL$",
+    "otpIdentyEnryptRequestPath": "ida/OtpAuthDelegated/OtpIdentityEncrypt.json"
+    }
+    }'
+      output: '{
+      "errors": [
+        {
+          "errorCode": "IDA-MLC-012"
+        }
+      ],
+      "response": {
+        "authStatus": false
+      },
+      "sendOtpResp":{
+        "sendOtpResTemplate":"ida/OtpAuth/sendOtpRes"
+      }
+}'

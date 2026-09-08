@@ -2295,3 +2295,64 @@ AddIdentity:
       output: '{
   "status":"ACTIVATED"
 }'
+   auth_AddIdentity_ForVerifiedClaims_Bio_Auth_Smoke_Pos:
+      endPoint: /idrepository/v1/identity/v2
+      uniqueIdentifier: TC_DependentModule_Delegated_IdRepo_10
+      description: Validate that an identity is successfully created via the V2 add-identity endpoint with real verifiedAttributes data (email verified under two trust frameworks) for kyc-auth/kyc-exchange verified-claims decode tests - real value structure confirmed against a live-captured example
+      role: idrepo
+      restMethod: post
+      inputTemplate: ida/AddIdentity/addIdentity_$LANGNUMBER$
+      outputTemplate: ida/AddIdentity/addIdentityResult
+      input: '{
+  "value": "$BIOVALUE$",
+  "id": "mosip.id.create",
+  "registrationId": "$RID$",
+  "addressCopy": "Y",
+  "biometricReferenceId": "23452353",
+  "UIN": "$UIN$",
+  "dateOfBirth": "1970/07/08",
+  "postalCode": "14022",
+  "email": "$EMAILVALUE$",
+  "phone": "$PHONENUMBERFORIDENTITY$",
+  "referenceIdentityNumber": "6789545678878",
+  "version": "v1",
+  "introducerRID": "212124324784879",
+  "introducerUIN": "212124324784879",
+  "category": "individualBiometrics",
+  "requesttime": "$TIMESTAMP$",
+  "verifiedAttributes": [
+    {
+      "trustFramework": "uk_tfida",
+      "verificationProcess": "None",
+      "claims": ["email"],
+      "metadata": {
+        "trust_framework": "uk_tfida",
+        "verification_process": "None",
+        "time": "2024-09-02T12:00:00Z"
+      }
+    },
+    {
+      "trustFramework": "eidas",
+      "verificationProcess": "ver-proc-01",
+      "claims": ["email"],
+      "metadata": {
+        "trust_framework": "eidas",
+        "verification_process": "ver-proc-01",
+        "time": "2024-09-25T12:00:00Z"
+      }
+    },
+    {
+      "trustFramework": "de_aml",
+      "verificationProcess": "ver-proc-007",
+      "claims": ["phone"],
+      "metadata": {
+        "trust_framework": "de_aml",
+        "verification_process": "ver-proc-007",
+        "time": "2024-09-02T12:00:00Z"
+      }
+    }
+  ]
+}'
+      output: '{
+  "status":"ACTIVATED"
+}'
