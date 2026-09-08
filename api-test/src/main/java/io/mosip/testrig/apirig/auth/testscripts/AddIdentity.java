@@ -94,9 +94,7 @@ public class AddIdentity extends IdAuthenticationUtil implements ITest {
 			throw new SkipException(
 					GlobalConstants.TARGET_ENV_HEALTH_CHECK_FAILED + HealthChecker.healthCheckFailureMapS);
 		}
-		// V2 endpoint carries a top-level verifiedAttributes field (sibling to identity) that
-		// modifySchemaGenerateHbs's V1 template has no placeholder for - modifySchemaGenerateHbsV2
-		// is the same generator with that field added, same calling convention as V1.
+		// V2 adds a top-level verifiedAttributes field the V1 template has no placeholder for.
 		if (testCaseDTO.getEndPoint().contains(GlobalConstants.ADD_IDENTITY_V2_ENDPOINT)) {
 			testCaseDTO.setInputTemplate(AdminTestUtil.modifySchemaGenerateHbsV2(testCaseDTO.isRegenerateHbs()));
 		} else {

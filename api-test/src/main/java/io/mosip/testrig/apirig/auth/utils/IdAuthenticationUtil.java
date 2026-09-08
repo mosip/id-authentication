@@ -114,14 +114,14 @@ public class IdAuthenticationUtil extends AdminTestUtil {
 				&& (!isElementPresent(globalRequiredFields, individualBiometrics))) {
 			throw new SkipException(GlobalConstants.FEATURE_NOT_SUPPORTED_MESSAGE);
 		} else if (testCaseName.startsWith("auth_") && testCaseName.contains("_DemoAuthDelegated") || testCaseName.contains("_DemoAuthKycExchange")) {
-			// Intentional skip: app rejects DEMO on delegated flow per client AMR config (confirmed on qa11new for base/Neg/V2/V2Neg alike via IDA-MPA-029), not a code gap.
+			// Intentional: app rejects DEMO on delegated flow (IDA-MPA-029), not a bug.
 			throw new SkipException(GlobalConstants.FEATURE_NOT_SUPPORTED_MESSAGE);
 		} else if (testCaseDTO.getUniqueIdentifier() != null
 				&& (testCaseDTO.getUniqueIdentifier().equals("TC_IDA_KycExchangeNeg_10")
 						|| testCaseDTO.getUniqueIdentifier().equals("TC_IDA_KycExchangeNeg_11")
 						|| testCaseDTO.getUniqueIdentifier().equals("TC_IDA_KycExchangeNeg_12")
 						|| testCaseDTO.getUniqueIdentifier().equals("TC_IDA_KycExchangeNeg_13"))) {
-			// These consume a kycToken minted by DemoAuthDelegated (skipped above), so skip cleanly instead of failing on the downstream dependency-resolution error.
+			// Depend on DemoAuthDelegated's kycToken (skipped above); skip these too.
 			throw new SkipException(GlobalConstants.FEATURE_NOT_SUPPORTED_MESSAGE);
 		} else if (testCaseName.startsWith("auth_")
 				&& ((testCaseName.contains("_DeactivateUINs_")) || (testCaseName.contains("PublishDraft_")))
@@ -247,7 +247,7 @@ public class IdAuthenticationUtil extends AdminTestUtil {
 	private static final String KYC_DELEGATION_DISABLED_POLICY_NAME = "mosip misp no deleg policy "
 			+ AdminTestUtil.timeStamp;
 
-	// Fails fast with the response body when "response" is missing/null or lacks "id"; scope to policy/partner-setup responses only, never authentication responses.
+	// For policy/partner-setup responses only - fails with the body if "id" is missing.
 	private static String extractIdOrFail(Response response, String step) {
 		String body = response.getBody().asString();
 		org.json.JSONObject json = new org.json.JSONObject(body);
@@ -258,7 +258,7 @@ public class IdAuthenticationUtil extends AdminTestUtil {
 		return json.getJSONObject(GlobalConstants.RESPONSE).getString("id");
 	}
 
-	// Cached terminal failure so a retry rethrows the original cause instead of resending fixed names and hitting a duplicate-name error.
+	// Cached so a retry rethrows the original cause instead of re-registering fixed names.
 	private static RuntimeException kycDelegationDisabledSetupFailure = null;
 
 	public static synchronized String generateAndGetKycDelegationDisabledPartnerKeyUrl() {
@@ -357,7 +357,7 @@ public class IdAuthenticationUtil extends AdminTestUtil {
 				MediaType.APPLICATION_JSON, MediaType.APPLICATION_JSON, GlobalConstants.AUTHORIZATION, token);
 		assertSuccessStatusCode(partnerResponse, "Failed to register no-delegation partner");
 
-		// MispPartnerAndLicenseKeyGeneration.getCertificates() hardcodes keyFileNameByPartnerName=false (reuses the first partner's cached certs), so go straight to AuthTestsUtil with true for a cert chain unique to this partner id
+		// getCertificates() would reuse the first partner's certs; call AuthTestsUtil directly instead.
 		io.mosip.testrig.apirig.dto.CertificateChainResponseDto certChain;
 		try {
 			certChain = new io.mosip.testrig.apirig.utils.AuthTestsUtil().generatePartnerKeys(
@@ -370,7 +370,7 @@ public class IdAuthenticationUtil extends AdminTestUtil {
 		MispPartnerAndLicenseKeyGeneration.uploadIntermediateCertificate(certChain.getInterCertificate(), "Auth");
 		org.json.JSONObject signedCertificateValue = MispPartnerAndLicenseKeyGeneration.uploadPartnerCertificate(
 				certChain.getPartnerCertificate(), "Auth", KYC_DELEGATION_DISABLED_PARTNER_ID);
-		// MispPartnerAndLicenseKeyGeneration.uploadSignedCertificate() hardcodes partnerName=null/keyFileNameByPartnerName=false (would update the wrong generic key file), so call AuthTestsUtil directly with the same params used above
+		// uploadSignedCertificate() would update the wrong generic key file; use AuthTestsUtil directly.
 		HashMap<String, String> signedCertRequest = new HashMap<>();
 		signedCertRequest.put("certData", signedCertificateValue.getString("signedCertificateData"));
 		try {
@@ -392,11 +392,7 @@ public class IdAuthenticationUtil extends AdminTestUtil {
 		return kycDelegationDisabledPartnerKeyUrl;
 	}
 
-	/**
-	 * Fails fast with a SkipException when a setup REST call did not succeed,
-	 * instead of letting the caller hit an opaque JSONException while parsing
-	 * an error response, or silently continuing with an invalid/empty token.
-	 */
+	// Skips cleanly instead of an opaque JSONException when a setup call fails.
 	private static void assertSuccessStatusCode(Response response, String failureMessage) {
 		if (response == null) {
 			throw new SkipException(failureMessage + ": null response");
@@ -407,12 +403,8 @@ public class IdAuthenticationUtil extends AdminTestUtil {
 		}
 	}
 
-	/**
-	 * Creates and publishes an additional auth policy (under the same policy
-	 * group as the main auth partner) using the given allowed-auth-types
-	 * attributes file (which determines, among other things, the authTokenType
-	 * of the policy), and returns the created policy id.
-	 */
+	// Creates and publishes an auth policy under the main partner's policy group
+	// using the given allowed-auth-types file, and returns the created policy id.
 	@SuppressWarnings("unchecked")
 	private static String createAndPublishPolicy(String policyNameToCreate, String attrFilePath) {
 		String token = kernelAuthLib.getTokenByRole(GlobalConstants.PARTNER);
@@ -448,14 +440,8 @@ public class IdAuthenticationUtil extends AdminTestUtil {
 		return createdPolicyId;
 	}
 
-	/**
-	 * Logs in as the given partner (PMS internal userid/password auth, the same
-	 * way {@code KernelAuthentication.getAuthForNewPartner()} logs in as the main
-	 * partner) and returns the auth token. Generating an API key is a partner
-	 * self-service action in PMS - it has to be done as that partner's own
-	 * Keycloak user, not via a generic admin/role token, otherwise PMS rejects
-	 * it with "User not authorized" (PMS_PRT_055).
-	 */
+	// API-key generation is partner self-service in PMS; a generic admin token
+	// gets "User not authorized" (PMS_PRT_055), so log in as that partner instead.
 	private static String loginAsPartner(String partnerId) {
 		Map<String, String> kernelProps = AdminTestUtil.readProperty("Kernel");
 		String authenticationInternalEndpoint = kernelProps.get("authenticationInternal");
@@ -475,14 +461,8 @@ public class IdAuthenticationUtil extends AdminTestUtil {
 				.getString(GlobalConstants.TOKEN);
 	}
 
-	/**
-	 * Maps the given partner to the given policy, approves that mapping, and
-	 * generates the resulting API key. {@code submitPartnerAndGetMappingKey}
-	 * alone only returns a mapping key (not an API key) for an unapproved
-	 * mapping; using it as-is in a partner key URL is why IDA used to reject
-	 * these calls with "Partner is not registered" (IDA-MPA-009) - the mapping
-	 * was never approved and no API key was ever generated for it.
-	 */
+	// Maps partner to policy, approves the mapping, and generates the API key.
+	// An unapproved mapping key alone gets IDA-MPA-009 "Partner is not registered".
 	private static String mapPartnerToPolicyAndGenerateApiKey(String partnerId, String policyNameToUse) {
 		KeycloakUserManager.createKeyCloakUsers(partnerId, partnerId + "@mosip.net", PartnerRegistration.partnerType);
 
@@ -517,22 +497,12 @@ public class IdAuthenticationUtil extends AdminTestUtil {
 	public static String policyIdForPolicyToken = "";
 	public static String policyTokenPartnerKeyUrl = "";
 
-	/**
-	 * Creates and publishes a second auth policy (under the same policy group as
-	 * the main auth partner) whose authTokenType is "policy", so that the
-	 * generated authToken is derived from the policy id and the UIN rather than
-	 * the partner id.
-	 */
+	// authTokenType "policy" - authToken is derived from policy id + UIN, not partner id.
 	public static void createAndPublishPolicyWithPolicyTokenType() {
 		policyIdForPolicyToken = createAndPublishPolicy(policyNameForPolicyToken,
 				AUTH_POLICY_FOR_POLICY_TOKEN_REQUEST_ATTR);
 	}
 
-	/**
-	 * Maps the existing auth partner to the policy-token policy (created via
-	 * {@link #createAndPublishPolicyWithPolicyTokenType()}) and builds the
-	 * partner key URL that exercises that mapping.
-	 */
 	public static String generateAndGetPolicyTokenPartnerKeyUrl() {
 		String policyTokenApiKey = mapPartnerToPolicyAndGenerateApiKey(PartnerRegistration.partnerId,
 				policyNameForPolicyToken);
@@ -547,22 +517,12 @@ public class IdAuthenticationUtil extends AdminTestUtil {
 	public static String policyIdForRandomToken = "";
 	public static String randomTokenPartnerKeyUrl = "";
 
-	/**
-	 * Creates and publishes a third auth policy (under the same policy group as
-	 * the main auth partner) whose authTokenType is "random", so that a new,
-	 * unrelated authToken is generated on every authentication call regardless
-	 * of the UIN or partner.
-	 */
+	// authTokenType "random" - a new, unrelated authToken every call.
 	public static void createAndPublishPolicyWithRandomTokenType() {
 		policyIdForRandomToken = createAndPublishPolicy(policyNameForRandomToken,
 				AUTH_POLICY_FOR_RANDOM_TOKEN_REQUEST_ATTR);
 	}
 
-	/**
-	 * Maps the existing auth partner to the random-token policy (created via
-	 * {@link #createAndPublishPolicyWithRandomTokenType()}) and builds the
-	 * partner key URL that exercises that mapping.
-	 */
 	public static String generateAndGetRandomTokenPartnerKeyUrl() {
 		String randomTokenApiKey = mapPartnerToPolicyAndGenerateApiKey(PartnerRegistration.partnerId,
 				policyNameForRandomToken);
@@ -571,14 +531,9 @@ public class IdAuthenticationUtil extends AdminTestUtil {
 		return randomTokenPartnerKeyUrl;
 	}
 
-	/**
-	 * Registers an additional, independent auth partner (its own
-	 * certificates/keys) under the same policy group as the main partner, so
-	 * that it can later be mapped to the same policy-token policy as the main
-	 * partner. Used to verify that a "policy" authTokenType token depends only
-	 * on the policy id and the UIN, not on which partner under that policy made
-	 * the call.
-	 */
+	// Registers an independent partner under the main policy group, so it can be
+	// mapped to the same policy-token policy and prove the token only depends
+	// on policy id + UIN, not which partner called.
 	private static void registerAdditionalPolicyTokenPartner(String partnerId, String organizationName,
 			String emailId) {
 		String url = ApplnURI + properties.getProperty("putPartnerRegistrationUrl");
@@ -619,13 +574,8 @@ public class IdAuthenticationUtil extends AdminTestUtil {
 		PartnerRegistration.uploadSignedCertificate(certValueSigned, "RELYING_PARTY", partnerId, true);
 	}
 
-	/**
-	 * Maps the given partner to the given policy and builds its partner key URL
-	 * for that mapping. A partner can be mapped to several different policies
-	 * (each mapping mints its own API key), which is how the same partner
-	 * entity is reused across the policy/partner/random token type tests
-	 * instead of registering a fresh partner for every combination.
-	 */
+	// A partner can map to several policies (each mapping mints its own API key),
+	// so the same partner is reused across the token-type tests.
 	private static String mapPartnerToPolicyAndGetKeyUrl(String partnerId, String policyNameToUse) {
 		String apiKey = mapPartnerToPolicyAndGenerateApiKey(partnerId, policyNameToUse);
 		return PartnerRegistration.mispLicKey + "/" + partnerId + "/" + apiKey;
@@ -655,11 +605,7 @@ public class IdAuthenticationUtil extends AdminTestUtil {
 	private static final String policyToken3EmailId = "mosip_policy3_" + System.currentTimeMillis() + "@gmail.com";
 	public static String policyToken3PartnerKeyUrl = "";
 
-	/**
-	 * Registers a third partner mapped to the same policy-token policy, so that
-	 * the "same token for the same UIN regardless of partner" property can be
-	 * verified across more than just a single pair of partners.
-	 */
+	// A third partner on the same policy-token policy, for a 3-way comparison.
 	public static void registerThirdPolicyTokenPartner() {
 		registerAdditionalPolicyTokenPartner(policyToken3PartnerId, policyToken3OrganizationName,
 				policyToken3EmailId);
@@ -672,15 +618,8 @@ public class IdAuthenticationUtil extends AdminTestUtil {
 
 	public static String partnerToken2KeyUrl = "";
 
-	/**
-	 * Maps the second partner (already registered for the policy-token tests via
-	 * {@link #registerSecondPolicyTokenPartner()}) to the default policy, whose
-	 * authTokenType is "partner", instead of the policy-token policy. This gives
-	 * a second, independent partner under the SAME authTokenType=partner policy
-	 * as the main partner, so the resulting authToken (which is derived from
-	 * partnerId and UIN) can be compared against the main partner's token for
-	 * the same UIN and shown to differ.
-	 */
+	// Second partner on the default (authTokenType=partner) policy, so its token
+	// for the same UIN can be compared against the main partner's and shown to differ.
 	public static String generateAndGetPartnerToken2KeyUrl() {
 		partnerToken2KeyUrl = mapPartnerToPolicyAndGetKeyUrl(policyToken2PartnerId, policyName);
 		return partnerToken2KeyUrl;
@@ -689,13 +628,8 @@ public class IdAuthenticationUtil extends AdminTestUtil {
 	public static String randomToken2PartnerKeyUrl = "";
 	public static String randomToken3PartnerKeyUrl = "";
 
-	/**
-	 * Maps the second and third partners (already registered for the
-	 * policy-token tests) to the random-token policy created via
-	 * {@link #createAndPublishPolicyWithRandomTokenType()}, so that the
-	 * "a new random token every call, regardless of partner" property can be
-	 * verified across multiple different partners sharing the same policy.
-	 */
+	// Maps the second and third partners to the random-token policy, to verify
+	// "new random token every call" holds across different partners.
 	public static String generateAndGetRandomToken2PartnerKeyUrl() {
 		randomToken2PartnerKeyUrl = mapPartnerToPolicyAndGetKeyUrl(policyToken2PartnerId, policyNameForRandomToken);
 		return randomToken2PartnerKeyUrl;
@@ -760,15 +694,9 @@ public class IdAuthenticationUtil extends AdminTestUtil {
 		}
 	}
 
-	/**
-	 * Asserts that a claim was NOT returned under decodedKyc.verified_claims -
-	 * used for scenarios (e.g. max_age filtering) where OutputValidationUtil's
-	 * exact-match/$IGNORE$ model has no way to express "this field must be
-	 * absent" (a missing expected path is always a hard failure there). Must run
-	 * after injectDecodedKyc has already populated response.decodedKyc.
-	 * Silently returns (nothing to assert) if decode never ran/succeeded, so this
-	 * is safe to call unconditionally for its gated test cases.
-	 */
+	// Asserts a claim was NOT returned under decodedKyc.verified_claims (e.g. for
+	// max_age filtering) - OutputValidationUtil has no way to assert absence.
+	// Call after injectDecodedKyc; no-ops if decode never ran.
 	public static void assertVerifiedClaimAbsent(String responseWithDecodedKyc, String claimName, String testCaseName)
 			throws AdminTestException {
 		try {
@@ -783,9 +711,7 @@ public class IdAuthenticationUtil extends AdminTestUtil {
 			}
 			JSONArray verifiedClaims = decodedKyc.optJSONArray("verified_claims");
 			if (verifiedClaims == null) {
-				// Absent entirely - the whole verified_claims key is only added by the
-				// server when at least one claim matched, so this is the expected shape.
-				return;
+				return; // key only exists when at least one claim matched - expected here
 			}
 			for (int i = 0; i < verifiedClaims.length(); i++) {
 				JSONObject entry = verifiedClaims.optJSONObject(i);
@@ -801,31 +727,17 @@ public class IdAuthenticationUtil extends AdminTestUtil {
 		}
 	}
 
-	/**
-	 * Same request-building/signature-header logic as
-	 * AdminTestUtil.postRequestWithCookieAuthHeaderAndSignature (used unmodified
-	 * by BioAuth/DemoAuth/OtpAuthNew/MultiFactorAuthNew/KycExchange), except the
-	 * signature header is deliberately corrupted with a fixed bogus value instead
-	 * of a real one. Built here rather than in apitest-commons since it is
-	 * IDA-specific: confirmed via source that the shared helper always computes a
-	 * real signature unconditionally, with no existing YAML/keyword hook anywhere
-	 * in the framework to omit or corrupt it for these delegated V2 calls.
-	 */
+	// Same as AdminTestUtil.postRequestWithCookieAuthHeaderAndSignature, but with
+	// a deliberately corrupted signature header (that helper always signs for real,
+	// with no hook to corrupt it).
 	public Response postRequestWithCookieAuthHeaderAndCorruptSignature(String url, String jsonInput,
 			String cookieName, String role, String testCaseName) throws SecurityXSSException {
 		return postRequestWithCookieAuthHeaderAndCorruptSignature(url, jsonInput, cookieName, role, testCaseName,
 				"invalid-signature-value");
 	}
 
-	/**
-	 * Same as {@link #postRequestWithCookieAuthHeaderAndCorruptSignature(String,
-	 * String, String, String, String)} but lets the caller choose the bogus
-	 * signature header value - an empty string exercises the "missing signature"
-	 * path (confirmed via source - BaseAuthFilter.validateSignature throws
-	 * MISSING_INPUT_PARAMETER for an empty/null header, vs DSIGN_FALIED for a
-	 * present-but-invalid one), while a non-empty garbage string exercises the
-	 * "invalid/tampered signature" path.
-	 */
+	// Empty value -> "missing signature" (MISSING_INPUT_PARAMETER); non-empty
+	// garbage -> "invalid signature" (DSIGN_FALIED).
 	public Response postRequestWithCookieAuthHeaderAndCorruptSignature(String url, String jsonInput,
 			String cookieName, String role, String testCaseName, String corruptSignatureValue)
 			throws SecurityXSSException {
