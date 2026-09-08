@@ -140,10 +140,7 @@ public class DemoAuth extends IdAuthenticationUtil implements ITest {
 			invalidThumbprint = request.getString("invalidThumbprint");
 			request.remove("invalidThumbprint");
 		}
-		// Same override mechanism as invalidThumbprint above, applied to the other two
-		// fields #ModifyBioAuth normally forces a freshly-computed real value into
-		// (mapping.properties: hmac->requestHMAC, key->requestSessionKey) - no
-		// equivalent hook existed for these two before.
+		// Same override as invalidThumbprint above, for requestHMAC/requestSessionKey.
 		String invalidRequestHMAC = null;
 		if (request.has("invalidRequestHMAC")) {
 			invalidRequestHMAC = request.getString("invalidRequestHMAC");
