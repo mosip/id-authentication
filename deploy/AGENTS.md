@@ -7,7 +7,7 @@
 
 ## 1. Layout
 
-```
+```text
 deploy/
 ├── copy_cm_func.sh      # Shared helper: copies a configmap/secret between namespaces
 ├── ida/                 # Installs the ida-auth chart into the `ida` namespace
@@ -47,12 +47,14 @@ tested before installing. Run a specific cronjob on demand via
 ## 4. Agent rules
 
 ### Do
+
 1. If a chart under `helm/` is ever added or removed, update `deploy/ida/install.sh` and
    `delete.sh` to match (this is what happened when `ida-internal`/`ida-otp` were removed).
 2. Reuse `copy_cm_func.sh` for any new configmap/secret copy needs rather than duplicating
    `kubectl` plumbing inline.
 
 ### Do not
+
 1. Don't add back `ida-internal`/`ida-otp` install/delete blocks — the Java service is one
    deployable now (`authentication-service`, chart `ida-auth`).
 2. Don't hardcode namespace names other than `ida` / `apitestrig`-scoped values already used by

@@ -39,11 +39,13 @@ anything beyond backward-compatible routing config.
 ## 3. Agent rules
 
 ### Do
+
 1. Keep `istio.match` accurate to `authentication-service`'s actual controller routes when routing changes upstream.
 2. Update [`deploy/ida/install.sh`](../deploy/ida/install.sh) / [`delete.sh`](../deploy/ida/delete.sh) if a chart is ever added or removed here.
 3. Check each `istio.match` entry's own `gateways` override (not just the top-level `istio.gateways`) before assuming a route's exposure.
 
 ### Do not
+
 1. Reintroduce `ida-internal` or `ida-otp` as separate charts — the Java service is one deployable now.
 2. Assume the presence of an `/internal` or `/otp` URL segment implies network-level restriction; check the `gateways` field on that specific `istio.match` entry instead.
 
