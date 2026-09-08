@@ -876,9 +876,6 @@ BioAuthKycExchangeV2:
       "errors": [
         {
           "errorCode": "IDA-MLC-007"
-        },
-        {
-          "errorCode": "IDA-MLC-006"
         }
       ]
 }'
