@@ -25,6 +25,7 @@ import io.mosip.testrig.apirig.auth.testrunner.MosipTestRunner;
 import io.mosip.testrig.apirig.dbaccess.DBManager;
 import io.mosip.testrig.apirig.dto.TestCaseDTO;
 import io.mosip.testrig.apirig.testrunner.BaseTestCase;
+import io.mosip.testrig.apirig.testrunner.JsonPrecondtion;
 import io.mosip.testrig.apirig.utils.AdminTestException;
 import io.mosip.testrig.apirig.utils.AdminTestUtil;
 import io.mosip.testrig.apirig.utils.ConfigManager;
@@ -57,6 +58,20 @@ public class IdAuthenticationUtil extends AdminTestUtil {
 			logger.setLevel(Level.ALL);
 		else
 			logger.setLevel(Level.ERROR);
+	}
+
+	// Skip the 180s OTP poll when otpChannel isn't an email (e.g. negative
+	// tests that pass a bare number) - it can never receive a notification.
+	@Override
+	public String updateTimestampOtp(String otpIdentyEnryptRequest, String otpChannel, String testCaseName) {
+		if (otpChannel == null || !otpChannel.contains("@")) {
+			logger.warn("otpChannel '" + otpChannel + "' is not email-shaped for " + testCaseName
+					+ " - skipping OTP notification poll, using empty otp");
+			otpIdentyEnryptRequest = JsonPrecondtion.parseAndReturnJsonContent(otpIdentyEnryptRequest,
+					generateCurrentUTCTimeStamp(), "timestamp");
+			return otpIdentyEnryptRequest;
+		}
+		return super.updateTimestampOtp(otpIdentyEnryptRequest, otpChannel, testCaseName);
 	}
 
 	public static String isTestCaseValidForExecution(TestCaseDTO testCaseDTO) {
