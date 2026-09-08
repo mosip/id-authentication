@@ -112,17 +112,26 @@ resources:
   # choice for the user. This also increases chances charts run on environments with little
   # resources, such as Minikube. If you do want to specify resources, uncomment the following
   # lines, adjust them as necessary, and remove the curly braces after 'resources:'.
+  # NOTE (Issue #1764 consolidation): this pod now also runs what used to be
+  # authentication-internal-service (limits 500m/6000Mi) and authentication-otp-service
+  # (limits 1500m/4000Mi) as part of the same JVM. Values below are a consolidation
+  # starting point (sum of the three former services' limits/requests, trimmed for shared
+  # JVM/metaspace/code-cache overhead that no longer needs to be paid three times) and
+  # must be validated under combined load before this is relied on in production - see
+  # helm/ida-auth PR test plan.
   limits:
-    cpu: 2000m
-    memory: 5000Mi
+    cpu: 3400m
+    memory: 13000Mi
   requests:
-    cpu: 1000m
-    memory: 3000Mi
+    cpu: 1750m
+    memory: 8000Mi
 additionalResources:
   ## Specify any JAVA_OPTS string here. These typically will be specified in conjunction with above resources
   ## Example: java_opts: "-Xms500M -Xmx500M"
+  ## NOTE (Issue #1764 consolidation): heap sized up from the former ida-auth-only values to
+  ## account for the merged internal + otp workloads now sharing this JVM. Load-test before relying on this in prod.
   javaOpts: >-
-    -XX:+UseZGC -XX:+ZGenerational -XX:+ZUncommit -XX:+ZProactive -XX:ZUncommitDelay=60 -Xms1600m -Xmx3250m -XX:SoftMaxHeapSize=2800m -XX:+UseContainerSupport -XX:MaxMetaspaceSize=256m -XX:MetaspaceSize=76m -XX:ReservedCodeCacheSize=114m -XX:InitialCodeCacheSize=28m -XX:+UseCodeCacheFlushing -XX:+HeapDumpOnOutOfMemoryError
+    -XX:+UseZGC -XX:+ZGenerational -XX:+ZUncommit -XX:+ZProactive -XX:ZUncommitDelay=60 -Xms4200m -Xmx8300m -XX:SoftMaxHeapSize=7100m -XX:+UseContainerSupport -XX:MaxMetaspaceSize=384m -XX:MetaspaceSize=128m -XX:ReservedCodeCacheSize=114m -XX:InitialCodeCacheSize=28m -XX:+UseCodeCacheFlushing -XX:+HeapDumpOnOutOfMemoryError
 ## ref: https://kubernetes.io/docs/tasks/configure-pod-container/security-context/#set-the-security-context-for-a-container
 ## Clamav container already runs as 'mosip' user, so we may not need to enable this
 containerSecurityContext:
@@ -403,6 +412,9 @@ metrics:
     #       severity: error
     rules: []
 ## IDA Auth needs both internal & external access.
+## Issue #1764: ida-internal (/idauthentication/v1/internal) and ida-otp (/idauthentication/v1/otp)
+## prefixes merged in here from their now-removed charts, keeping their original
+## istio-system/internal-only gateway restriction (neither was ever on the public gateway).
 istio:
   enabled: true
   gateways:
@@ -423,6 +435,14 @@ istio:
         prefix: /idauthentication/v1/identity-key-binding
     - uri:
         prefix: /idauthentication/v1/vci-exchange
+    - uri:
+        prefix: /idauthentication/v1/internal
+      gateways:
+        - istio-system/internal
+    - uri:
+        prefix: /idauthentication/v1/otp
+      gateways:
+        - istio-system/internal
 enable_insecure: false
 springConfigNameEnv:
 activeProfileEnv:

@@ -72,7 +72,7 @@ docker-compose up -d
 
 ## Architecture
 
-This is a **Spring Boot 3.2.3 multi-module Maven project** (`authentication-parent`, group `io.mosip.authentication`). It exposes three REST microservices for identity authentication within the MOSIP platform.
+This is a **Spring Boot 3.2.3 multi-module Maven project** (`authentication-parent`, group `io.mosip.authentication`). As of Issue #1764 it exposes a single consolidated REST service — `authentication-service` — for identity authentication within the MOSIP platform; the formerly separate `authentication-internal-service` and `authentication-otp-service` modules were merged into it (see `IdAuthenticationApplication`) and removed.
 
 ### Module Layout
 
@@ -83,9 +83,7 @@ authentication/               # Parent Maven module
   authentication-common/      # Shared entities, repositories, utilities
   authentication-authtypelockfilter-impl/  # Blocks auth when type is locked
   authentication-hotlistfilter-impl/       # Blocks blacklisted IDs/devices
-  authentication-service/     # External-facing service (port 8090)
-  authentication-internal-service/         # Internal MOSIP service
-  authentication-otp-service/              # OTP generation service
+  authentication-service/     # Consolidated service: public + internal + OTP (port 8090)
   esignet-integration-impl/   # eSignet digital signature integration
   local-dev-setup/            # Docker Compose for local dev
 api-test/                     # TestNG + REST Assured API test rig
@@ -93,20 +91,34 @@ deploy/                       # Helm charts and K8s install scripts
 db_scripts/                   # PostgreSQL DDL scripts
 ```
 
-### Three Exposed Services
+### One Consolidated Service, Two Consumer Classes
 
-| Service | Context Path | Port | Consumer |
+| App | Context Path | Port | Consumer |
 |---|---|---|---|
-| `authentication-service` | `/idauthentication/v1` | 8090 | External Auth/KYC Partners |
-| `authentication-internal-service` | `/idauthentication/v1/internal` | — | Internal MOSIP modules (Reg Processor, Resident) |
-| `authentication-otp-service` | `/idauthentication/v1` | — | Partners requesting OTP |
+| `authentication-service` | `/idauthentication/v1` | 8090 | Both external Auth/KYC Partners **and** internal MOSIP modules (Reg Processor, Resident) — same pod, same port |
 
-Key external endpoints:
-- `POST /idauthentication/v1/auth/{MISP-LicenseKey}/{Auth-Partner-ID}/{Partner-Api-Key}` — authenticate via UIN/VID
-- `POST /idauthentication/v1/kyc/{...}` — E-KYC request
-- `POST /idauthentication/v1/otp/{...}` — OTP generation
-- `POST /idauthentication/v1/internal/auth` — internal authentication
-- `GET /idauthentication/v1/internal/authTransactions/individualId/{ID}` — auth transaction history
+The internal-only controllers (`InternalAuthController`, `InternalOTPController`, `InternalAuthTxnController`,
+`InternalUpdateAuthTypeController`, ...) have **no** `/internal` path segment of their own — they are
+plain paths under the shared `/idauthentication/v1` context path (e.g. `POST /idauthentication/v1/auth`,
+`GET /idauthentication/v1/authTransactions/individualId/{ID}`), distinguished from the public partner
+routes only by not having the `{MISP-LK}/{Auth-Partner-ID}/{API-Key}` path variables.
+`helm/ida-auth/values.yaml` (`istio.match`) carries the old `/idauthentication/v1/internal` and
+`/idauthentication/v1/otp` prefixes forward from the removed `ida-internal`/`ida-otp` charts, still
+restricted to `gateways: [istio-system/internal]` as they were on their original standalone charts
+(neither was ever on the public gateway). Note `/idauthentication/v1/internal` no longer matches any
+real route post-merge — the internal controllers dropped that path segment and now listen on plain
+paths like `/auth`, `/otp`, `/authTransactions` directly under `/idauthentication/v1` (see above);
+those bare paths are covered by the public `/idauthentication/v1/auth` prefix entry, not the
+internal-only one, so this consolidation preserves the old chart-level gateway split but does not by
+itself make the merge's internal-only bare-path routes internal-gateway-only.
+
+Key endpoints:
+- `POST /idauthentication/v1/auth/{MISP-LicenseKey}/{Auth-Partner-ID}/{Partner-Api-Key}` — public: authenticate via UIN/VID
+- `POST /idauthentication/v1/kyc/{...}` — public: E-KYC request
+- `POST /idauthentication/v1/otp/{MISP-LicenseKey}/{Auth-Partner-ID}/{Partner-Api-Key}` — public: OTP generation
+- `POST /idauthentication/v1/auth` — internal-only: internal authentication (bare path)
+- `POST /idauthentication/v1/otp` — internal-only: internal OTP request (bare path)
+- `GET /idauthentication/v1/authTransactions/individualId/{ID}` — internal-only: auth transaction history
 
 ### Authentication Types
 

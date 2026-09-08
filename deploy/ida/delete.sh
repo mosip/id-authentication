@@ -14,8 +14,6 @@ function deleting_ida() {
         then
           helm -n $NS delete ida-keygen
           helm -n $NS delete ida-auth
-          helm -n $NS delete ida-internal
-          helm -n $NS delete ida-otp
           break
         else
           break
