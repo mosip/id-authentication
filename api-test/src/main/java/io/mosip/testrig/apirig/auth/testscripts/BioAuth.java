@@ -180,6 +180,11 @@ public class BioAuth extends IdAuthenticationUtil implements ITest {
 		}
 		authRequestTemp.remove("env");
 		authRequestTemp.put("env", invalidEnv != null ? invalidEnv : "Staging");
+		// modifyRequest force-injects domainUri via JsonPrecondtion regardless of the
+		// template - strip it back out for tests that deliberately omit it.
+		if (testCaseDTO.getInputTemplate().contains("WithoutDomainUri")) {
+			authRequestTemp.remove("domainUri");
+		}
 		authRequest = authRequestTemp.toString();
 		testCaseDTO.setInput(authRequest);
 
