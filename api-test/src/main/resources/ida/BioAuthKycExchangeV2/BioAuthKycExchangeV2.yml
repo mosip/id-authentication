@@ -1184,6 +1184,31 @@ BioAuthKycExchangeV2:
   "iss": "mosip-ida",
   "email": "$REGEXP:^(?!null).+$"
 }'
+  auth_BioAuthKycExchangeV2_MultipleLocales_Pos:
+      endPoint: /idauthentication/v1/kyc-exchange/v2/delegated/$partialPartnerKeyUrl$/$ID:CreateOIDCClient_Delegated_Valid_Smoke_sid_clientId$
+      uniqueIdentifier: TC_IDA_BioAuthKycExchangeV2_23
+      description: Kyc exchange V2 requesting locales eng and ara together per the spec example - expected to succeed
+      role: resident
+      restMethod: post
+      checkErrorsOnlyInResponse: true
+      inputTemplate: ida/BioAuthKycExchangeV2/BioAuthKYCExchangeV2Custom
+      outputTemplate: ida/BioAuthKycExchangeV2/BioAuthKYCExchangeResult
+      input: '{
+        "requestTime": "$TIMESTAMP$",
+        "individualId": "$ID:AddIdentity_For_Kyc_Delegated_Bio_Auth_Smoke_Pos_UIN$",
+        "transactionID": "$TRANSACTIONID$",
+        "individualIdType": "UIN",
+        "id": "mosip.identity.kycexchange",
+        "version": "1.0",
+        "kycToken": "$ID:BioAuthDelegatedV2_forKycExchangeV2MultipleLocales_Pos_Sid_kycToken$",
+        "locales": [{localesValue: "eng"}, {localesValue: "ara"}],
+        "respType": "JWE",
+        "verificationBlocks": [{trustFramework: "mosip_trust_framework", maxAge: "3600", verifiedClaims: ["given_name"]}],
+        "unVerifiedClaims": ["email"]
+    }'
+      output: '{
+
+}'
   auth_BioAuthKycExchangeV2Neg_InvalidSignature_Neg:
       endPoint: /idauthentication/v1/kyc-exchange/v2/delegated/$partialPartnerKeyUrl$/$ID:CreateOIDCClient_Delegated_Valid_Smoke_sid_clientId$
       uniqueIdentifier: TC_IDA_BioAuthKycExchangeV2Neg_23
