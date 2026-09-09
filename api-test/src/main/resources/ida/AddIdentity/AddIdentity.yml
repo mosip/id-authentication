@@ -2328,7 +2328,7 @@ AddIdentity:
       "metadata": {
         "trust_framework": "uk_tfida",
         "verification_process": "None",
-        "time": "2024-09-02T12:00:00Z"
+        "time": "$TIMESTAMP$"
       }
     },
     {
@@ -2338,7 +2338,7 @@ AddIdentity:
       "metadata": {
         "trust_framework": "eidas",
         "verification_process": "ver-proc-01",
-        "time": "2024-09-25T12:00:00Z"
+        "time": "$TIMESTAMP$"
       }
     },
     {
@@ -2348,7 +2348,7 @@ AddIdentity:
       "metadata": {
         "trust_framework": "de_aml",
         "verification_process": "ver-proc-007",
-        "time": "2024-09-02T12:00:00Z"
+        "time": "$TIMESTAMP$"
       }
     }
   ]

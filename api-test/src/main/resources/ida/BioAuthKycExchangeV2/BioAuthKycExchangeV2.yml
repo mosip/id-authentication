@@ -922,7 +922,7 @@ BioAuthKycExchangeV2:
         "kycToken": "$ID:BioAuthDelegatedV2_forKycExchangeV2VerifiedClaims_Pos_Sid_kycToken$",
         "locales": [{localesValue: "eng"}],
         "respType": "JWE",
-        "verificationBlocks": [{trustFramework: "uk_tfida", maxAge: "999999999", verifiedClaims: ["email"]}],
+        "verificationBlocks": [{trustFramework: "uk_tfida", maxAge: "2592000", verifiedClaims: ["email"]}],
         "unVerifiedClaims": []
     }'
       output: '{
@@ -971,7 +971,7 @@ BioAuthKycExchangeV2:
         "kycToken": "$ID:BioAuthDelegatedV2_forKycExchangeV2MultiTrustFramework_Pos_Sid_kycToken$",
         "locales": [{localesValue: "eng"}],
         "respType": "JWE",
-        "verificationBlocks": [{trustFrameworks: ["mosip_trust_framework", "uk_tfida"], maxAge: "999999999", verifiedClaims: ["email"]}],
+        "verificationBlocks": [{trustFrameworks: ["mosip_trust_framework", "uk_tfida"], maxAge: "2592000", verifiedClaims: ["email"]}],
         "unVerifiedClaims": []
     }'
       output: '{
@@ -996,7 +996,7 @@ BioAuthKycExchangeV2:
         "kycToken": "$ID:BioAuthDelegatedV2_forKycExchangeV2MultiContext_Pos_Sid_kycToken$",
         "locales": [{localesValue: "eng"}],
         "respType": "JWE",
-        "verificationBlocks": [{trustFramework: "uk_tfida", maxAge: "999999999", verifiedClaims: ["email"]}, {trustFramework: "de_aml", maxAge: "999999999", verifiedClaims: ["phone"]}],
+        "verificationBlocks": [{trustFramework: "uk_tfida", maxAge: "2592000", verifiedClaims: ["email"]}, {trustFramework: "de_aml", maxAge: "2592000", verifiedClaims: ["phone"]}],
         "unVerifiedClaims": []
     }'
       output: '{
@@ -1022,7 +1022,7 @@ BioAuthKycExchangeV2:
         "kycToken": "$ID:BioAuthDelegatedV2_forKycExchangeV2Integration_Pos_Sid_kycToken$",
         "locales": [{localesValue: "eng"}],
         "respType": "JWE",
-        "verificationBlocks": [{trustFramework: "uk_tfida", maxAge: "999999999", verifiedClaims: ["email"]}],
+        "verificationBlocks": [{trustFramework: "uk_tfida", maxAge: "2592000", verifiedClaims: ["email"]}],
         "unVerifiedClaims": []
     }'
       output: '{
@@ -1075,7 +1075,7 @@ BioAuthKycExchangeV2:
         "kycToken": "$ID:BioAuthDelegatedV2_forKycExchangeV2RespTypeOmitted_Pos_Sid_kycToken$",
         "locales": [{localesValue: "eng"}],
         "respType": "$REMOVE$",
-        "verificationBlocks": [{trustFramework: "uk_tfida", maxAge: "999999999", verifiedClaims: ["email"]}],
+        "verificationBlocks": [{trustFramework: "uk_tfida", maxAge: "2592000", verifiedClaims: ["email"]}],
         "unVerifiedClaims": []
     }'
       output: '{
@@ -1153,7 +1153,7 @@ BioAuthKycExchangeV2:
         "kycToken": "$ID:BioAuthDelegatedV2_forKycExchangeV2ClaimNotAvailable_Pos_Sid_kycToken$",
         "locales": [{localesValue: "eng"}],
         "respType": "JWE",
-        "verificationBlocks": [{trustFramework: "mosip_trust_framework", maxAge: "999999999", verifiedClaims: ["fullName"]}],
+        "verificationBlocks": [{trustFramework: "mosip_trust_framework", maxAge: "2592000", verifiedClaims: ["fullName"]}],
         "unVerifiedClaims": []
     }'
       output: '{
