@@ -3328,6 +3328,9 @@ BioAuthDelegatedV2:
       output: '{
       "errors": [
         {
+          "errorCode": "IDA-MLC-024"
+        },
+        {
           "errorCode": "IDA-MLC-009"
         }
       ]
