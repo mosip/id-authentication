@@ -1255,7 +1255,8 @@
     ],
     "TC_IDA_BioAuthDelegatedV2Neg_11": [
         "TC_PMS_CreateOIDCClient_Delegated_01",
-        "TC_IDA_GenerateVID_03"
+        "TC_IDA_GenerateVID_03",
+        "TC_IDA_RevokeVID_01"
     ],
     "TC_IDA_BioAuthDelegatedV2Neg_12": [
         "TC_DependentModule_IdRepo_16",
@@ -1833,5 +1834,21 @@
     "TC_IDA_DemoAuthDelegatedV2Neg_15": [
         "TC_DependentModule_Delegated_IdRepo_09",
         "TC_PMS_CreateOIDCClient_Delegated_01"
+    ],
+    "TC_IDA_BioAuthDelegatedNeg_02": [
+        "TC_PMS_CreateOIDCClient_Delegated_01",
+        "TC_IDA_GenerateVID_03",
+        "TC_IDA_RevokeVID_01"
+    ],
+    "TC_IDA_DemoAuthDelegatedNeg_33": [
+        "TC_PMS_CreateOIDCClient_Delegated_01",
+        "TC_IDA_GenerateVID_03",
+        "TC_IDA_RevokeVID_01"
+    ],
+    "TC_IDA_OtpAuthDelegatedNeg_09": [
+        "TC_PMS_CreateOIDCClient_Delegated_01",
+        "TC_IDA_GenerateVID_03",
+        "TC_IDA_RevokeVID_01",
+        "TC_DependentModule_IdRepo_24"
     ]
 }
