@@ -146,14 +146,14 @@ OtpAuthDelegatedV2:
         "sendOtpResTemplate":"ida/OtpAuth/sendOtpRes"
     }
 }'
-  auth_OtpAuthDelegatedV2Neg_Missing_IndividualIdType_Neg:
+  auth_OtpAuthDelegatedV2_Missing_IndividualIdType_Pos:
       endPoint: /idauthentication/v1/kyc-auth/v2/delegated/$partialPartnerKeyUrl$/$ID:CreateOIDCClient_Delegated_Valid_Smoke_sid_clientId$
       uniqueIdentifier: TC_IDA_OtpAuthDelegatedV2Neg_03
-      description: Kyc auth V2 OTP auth with missing individualIdType - expected to fail
+      description: Kyc auth V2 OTP auth with individualIdType omitted, server auto-detects the type from individualId - expected to succeed
       role: resident
       restMethod: post
       inputTemplate: ida/OtpAuthDelegatedV2/OtpAuthDelegatedV2
-      outputTemplate: ida/DelegateError
+      outputTemplate: ida/OtpAuthDelegatedV2/OtpAuthDelegatedV2Result
       input: '{
         "otpChannel": "$ID:AddIdentity_withValidParameters_forOtpDelegated_Pos_EMAIL$",
         "requestTime": "$TIMESTAMP$",
@@ -175,11 +175,7 @@ OtpAuthDelegatedV2:
     }
     }'
       output: '{
-      "errors": [
-        {
-          "errorCode": "IDA-MLC-006"
-        }
-      ],
+  "kycStatus": "true",
  "sendOtpResp":{
         "sendOtpResTemplate":"ida/OtpAuth/sendOtpRes"
     }

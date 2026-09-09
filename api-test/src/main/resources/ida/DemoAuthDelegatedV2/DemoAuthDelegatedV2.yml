@@ -87,14 +87,14 @@ DemoAuthDelegatedV2:
         }
       ]
 }'
-  auth_DemoAuthDelegatedV2Neg_Missing_IndividualIdType_Neg:
+  auth_DemoAuthDelegatedV2_Missing_IndividualIdType_Pos:
       endPoint: /idauthentication/v1/kyc-auth/v2/delegated/$partialPartnerKeyUrl$/$ID:CreateOIDCClient_Delegated_Valid_Smoke_sid_clientId$
       uniqueIdentifier: TC_IDA_DemoAuthDelegatedV2Neg_03
-      description: Kyc auth V2 demographic auth with missing individualIdType - expected to fail
+      description: Kyc auth V2 demographic auth with individualIdType omitted, server auto-detects the type from individualId - expected to succeed
       role: resident
       restMethod: post
       inputTemplate: ida/DemoAuthDelegatedV2/DemoAuthDelegatedV2
-      outputTemplate: ida/DelegateError
+      outputTemplate: ida/DemoAuthDelegatedV2/DemoAuthDelegatedV2Result
       input: '{
         "requestTime": "$TIMESTAMP$",
         "individualId": "$ID:AddIdentity_withValidParameters_forDemoDelegated_Pos_UIN$",
@@ -111,11 +111,9 @@ DemoAuthDelegatedV2:
     }
     }'
       output: '{
-      "errors": [
-        {
-          "errorCode": "IDA-MLC-006"
-        }
-      ]
+  "kycStatus": "true",
+  "kycToken": "$REGEXP:^(?!null).+$",
+  "authToken": "$REGEXP:^(?!null).+$"
 }'
   auth_DemoAuthDelegatedV2Neg_Missing_TransactionId_Neg:
       endPoint: /idauthentication/v1/kyc-auth/v2/delegated/$partialPartnerKeyUrl$/$ID:CreateOIDCClient_Delegated_Valid_Smoke_sid_clientId$
