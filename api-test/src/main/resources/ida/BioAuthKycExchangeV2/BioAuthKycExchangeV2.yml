@@ -1271,3 +1271,31 @@ BioAuthKycExchangeV2:
         }
       ]
 }'
+  auth_BioAuthKycExchangeV2Neg_Expired_Token_Neg:
+      endPoint: /idauthentication/v1/kyc-exchange/v2/delegated/$partialPartnerKeyUrl$/$ID:CreateOIDCClient_Delegated_Valid_Smoke_sid_clientId$
+      uniqueIdentifier: TC_IDA_BioAuthKycExchangeV2Neg_25
+      description: Kyc exchange V2 with a kycToken past its validity window - expected to fail
+      role: resident
+      restMethod: post
+      inputTemplate: ida/BioAuthKycExchangeV2/BioAuthKYCExchangeV2Custom
+      outputTemplate: ida/DelegateError
+      input: '{
+        "requestTime": "$TIMESTAMP$",
+        "individualId": "$ID:AddIdentity_For_Kyc_Delegated_Bio_Auth_Smoke_Pos_UIN$",
+        "transactionID": "$TRANSACTIONID$",
+        "individualIdType": "UIN",
+        "id": "mosip.identity.kycexchange",
+        "version": "1.0",
+        "kycToken": "7wSsBhLtedRrikCwsgTaC3WV3z5Rs9KEMxHvW2TBcFHe",
+        "locales": [{localesValue: "eng"}],
+        "respType": "JWE",
+        "verificationBlocks": [{trustFramework: "mosip_trust_framework", maxAge: "3600", verifiedClaims: ["given_name"]}],
+        "unVerifiedClaims": ["email"]
+    }'
+      output: '{
+      "errors": [
+        {
+          "errorCode": "IDA-KYE-002"
+        }
+      ]
+}'

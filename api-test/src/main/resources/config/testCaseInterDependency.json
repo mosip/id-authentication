@@ -1711,6 +1711,10 @@
         "TC_IDA_BioAuthDelegatedV2_45",
         "TC_PMS_CreateOIDCClient_Delegated_01"
     ],
+    "TC_IDA_BioAuthKycExchangeV2Neg_25": [
+        "TC_DependentModule_Delegated_IdRepo_01",
+        "TC_PMS_CreateOIDCClient_Delegated_01"
+    ],
     "TC_IDA_OtpAuthDelegatedV2_01": [
         "TC_DependentModule_IdRepo_Delegated_10",
         "TC_PMS_CreateOIDCClient_Delegated_01"
