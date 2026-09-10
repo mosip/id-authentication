@@ -2,12 +2,16 @@ package io.mosip.authentication.common.service.exception;
 
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertTrue;
+import static org.junit.jupiter.api.Assertions.assertNotNull;
+import static org.junit.jupiter.api.Assertions.assertNull;
 import static org.mockito.Mockito.lenient;
+import static org.mockito.Mockito.when;
 
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
 
+import com.fasterxml.jackson.databind.exc.InvalidFormatException;
 import jakarta.servlet.http.HttpServletRequest;
 
 import org.junit.Before;
@@ -27,6 +31,7 @@ import org.springframework.context.annotation.Import;
 import org.springframework.context.support.ResourceBundleMessageSource;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
+import org.springframework.http.converter.HttpMessageConversionException;
 import org.springframework.test.context.ContextConfiguration;
 import org.springframework.test.context.TestContext;
 import org.springframework.test.context.junit4.SpringRunner;
@@ -34,7 +39,9 @@ import org.springframework.test.util.ReflectionTestUtils;
 import org.springframework.validation.BindException;
 import org.springframework.validation.Errors;
 import org.springframework.web.HttpMediaTypeNotSupportedException;
+import org.springframework.web.bind.ServletRequestBindingException;
 import org.springframework.web.context.WebApplicationContext;
+import org.springframework.web.context.request.WebRequest;
 import org.springframework.web.context.request.async.AsyncRequestTimeoutException;
 
 import io.mosip.authentication.common.service.util.EnvUtil;
@@ -71,6 +78,12 @@ public class IDAuthExceptionHandlerTest {
 
 	@Mock
 	private HttpServletRequest servletRequest;
+
+    @InjectMocks
+    private IdAuthExceptionHandler exceptionHandler;
+
+    @Mock
+    private WebRequest webRequest;
 
 	@Before
 	public void before() {
@@ -480,4 +493,71 @@ public class IDAuthExceptionHandlerTest {
 			assertEquals("Request could not be processed. Please try again", e.getErrorMessage());
 		});
 	}
+
+    @Test
+    public void testHandleAllExceptionsReturnsUnknownException() {
+        when(servletRequest.getRequestURL()).thenReturn(new StringBuffer("http://localhost/test"));
+
+        Exception ex = new Exception("Test");
+        ResponseEntity<Object> response = exceptionHandler.handleAllExceptions(ex, webRequest);
+        assertNotNull(response.getBody());
+        assertEquals(200, response.getStatusCodeValue());
+    }
+
+    // ---------- handleExceptionInternal / notify InvalidFormatException eventType ----------
+    @Test
+    public void testHandleExceptionInternalNotifyEventType() {
+        when(servletRequest.getRequestURL()).thenReturn(new StringBuffer("http://localhost/notify"));
+        InvalidFormatException cause = InvalidFormatException.from(null, "eventType", null, null);
+        HttpMessageConversionException ex = new HttpMessageConversionException("Test", cause);
+
+        ResponseEntity<Object> response = exceptionHandler.handleExceptionInternal(ex, null, null, null, webRequest);
+        assertNotNull(response.getBody());
+        assertEquals(200, response.getStatusCodeValue());
+    }
+
+    // ---------- handleExceptionInternal / notify InvalidFormatException expiryTimestamp ----------
+    @Test
+    public void testHandleExceptionInternalNotifyExpiryTimestamp() {
+        when(servletRequest.getRequestURL()).thenReturn(new StringBuffer("http://localhost/notify"));
+        InvalidFormatException cause = InvalidFormatException.from(null, "expiryTimestamp", null, null);
+        HttpMessageConversionException ex = new HttpMessageConversionException("Test", cause);
+
+        ResponseEntity<Object> response = exceptionHandler.handleExceptionInternal(ex, null, null, null, webRequest);
+        assertNotNull(response.getBody());
+        assertEquals(200, response.getStatusCodeValue());
+    }
+
+    // ---------- handleExceptionInternal / ServletException ----------
+    @Test
+    public void testHandleExceptionInternalServletException() {
+        when(servletRequest.getRequestURL()).thenReturn(new StringBuffer("http://localhost/test"));
+        ResponseEntity<Object> response = exceptionHandler.handleExceptionInternal(new ServletRequestBindingException("Test"), null, null, null, webRequest);
+        assertNotNull(response.getBody());
+    }
+
+    // ---------- handleExceptionInternal / HttpMessageConversionException ----------
+    @Test
+    public void testHandleExceptionInternalHttpMessageConversionException() {
+        when(servletRequest.getRequestURL()).thenReturn(new StringBuffer("http://localhost/test"));
+        ResponseEntity<Object> response = exceptionHandler.handleExceptionInternal(new HttpMessageConversionException("Test"), null, null, null, webRequest);
+        assertNotNull(response.getBody());
+    }
+
+    // ---------- handleExceptionInternal / AsyncRequestTimeoutException ----------
+    @Test
+    public void testHandleExceptionInternalAsyncRequestTimeoutException() {
+        when(servletRequest.getRequestURL()).thenReturn(new StringBuffer("http://localhost/test"));
+        ResponseEntity<Object> response = exceptionHandler.handleExceptionInternal(new AsyncRequestTimeoutException(), null, null, null, webRequest);
+        assertNotNull(response.getBody());
+    }
+
+    // ---------- buildExceptionResponse ----------
+    @Test
+    public void testBuildExceptionResponseWithEmptyErrors() {
+        when(servletRequest.getRequestURL()).thenReturn(new StringBuffer("http://localhost/test"));
+        Exception ex = new Exception("Test");
+        Object response = IdAuthExceptionHandler.buildExceptionResponse(ex, servletRequest, Collections.emptyList());
+        assertNull(response);
+    }
 }

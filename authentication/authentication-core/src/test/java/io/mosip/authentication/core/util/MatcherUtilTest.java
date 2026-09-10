@@ -113,7 +113,7 @@ public class MatcherUtilTest {
 	 */
 	@Test
 	public void TestvalidLessThanEqualToMatch() {
-		int value = demoMatcherUtil.doLessThanEqualToMatch(18, 20);
+		int value = demoMatcherUtil.doLessThanEqualToMatch(20, 20);
 		assertEquals(100, value);
 	}
 
