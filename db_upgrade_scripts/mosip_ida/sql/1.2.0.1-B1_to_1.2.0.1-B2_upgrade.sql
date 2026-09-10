@@ -1,4 +1,4 @@
-\c mosip_ida
+\c :mosipdbname
 
 ALTER TABLE ida.misp_license_data ADD policy_id character varying(50);
 
@@ -25,7 +25,7 @@ CREATE TABLE ida.oidc_client_data (
 
 GRANT SELECT, INSERT, REFERENCES, UPDATE, DELETE
    ON ida.oidc_client_data
-   TO idauser;
+   TO :dbuname;
 
 -- DROP TABLE IF EXISTS ida.kyc_token_store CASCADE;
 CREATE TABLE ida.kyc_token_store(
@@ -49,4 +49,4 @@ CREATE TABLE ida.kyc_token_store(
 
 GRANT SELECT, INSERT, REFERENCES, UPDATE, DELETE
    ON ida.kyc_token_store
-   TO idauser;
+   TO :dbuname;
