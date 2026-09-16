@@ -1,13 +1,12 @@
 BioAuthKycExchangeV2:
-  auth_BioAuthKycExchangeV2_Biometric_Face_With_Valid_uin_Smoke_Pos:
+  auth_BioAuthKycExchangeV2_Decode_Biometric_Face_With_Valid_uin_Smoke_Pos:
       endPoint: /idauthentication/v1/kyc-exchange/v2/delegated/$partialPartnerKeyUrl$/$ID:CreateOIDCClient_Delegated_Valid_Smoke_sid_clientId$
       uniqueIdentifier: TC_IDA_BioAuthKycExchangeV2_01
       description: Kyc exchange V2 with a valid UIN-based kycToken - expected to succeed
       role: resident
       restMethod: post
-      checkErrorsOnlyInResponse: true
       inputTemplate: ida/BioAuthKycExchangeV2/BioAuthKYCExchangeV2
-      outputTemplate: ida/BioAuthKycExchangeV2/BioAuthKYCExchangeResult
+      outputTemplate: ida/BioAuthKycExchangeV2/BioAuthKYCExchangeDecodeResult
       input: '{
         "requestTime": "$TIMESTAMP$",
         "individualId": "$ID:AddIdentity_For_Kyc_Delegated_Bio_Auth_Smoke_Pos_UIN$",
@@ -20,7 +19,7 @@ BioAuthKycExchangeV2:
         "respType": "JWE"
     }'
       output: '{
-
+  "iss": "mosip-ida"
 }'
   auth_BioAuthKycExchangeV2Neg_Missing_KycToken_Neg:
       endPoint: /idauthentication/v1/kyc-exchange/v2/delegated/$partialPartnerKeyUrl$/$ID:CreateOIDCClient_Delegated_Valid_Smoke_sid_clientId$
@@ -274,18 +273,17 @@ BioAuthKycExchangeV2:
         }
       ]
 }'
-  auth_BioAuthKycExchangeV2_VerifiedClaimsOnly_Pos:
+  auth_BioAuthKycExchangeV2_Decode_VerifiedClaimsOnly_Pos:
       endPoint: /idauthentication/v1/kyc-exchange/v2/delegated/$partialPartnerKeyUrl$/$ID:CreateOIDCClient_Delegated_Valid_Smoke_sid_clientId$
       uniqueIdentifier: TC_IDA_BioAuthKycExchangeV2_02
       description: Kyc exchange V2 requesting only verifiedConsentedClaims - expected to succeed
       role: resident
       restMethod: post
-      checkErrorsOnlyInResponse: true
       inputTemplate: ida/BioAuthKycExchangeV2/BioAuthKYCExchangeV2Custom
-      outputTemplate: ida/BioAuthKycExchangeV2/BioAuthKYCExchangeResult
+      outputTemplate: ida/BioAuthKycExchangeV2/BioAuthKYCExchangeDecodeResult
       input: '{
         "requestTime": "$TIMESTAMP$",
-        "individualId": "$ID:AddIdentity_For_Kyc_Delegated_Bio_Auth_Smoke_Pos_UIN$",
+        "individualId": "$ID:AddIdentity_ForVerifiedNameDob_Bio_Auth_Smoke_Pos_UIN$",
         "transactionID": "$TRANSACTIONID$",
         "individualIdType": "UIN",
         "id": "mosip.identity.kycexchange",
@@ -293,21 +291,22 @@ BioAuthKycExchangeV2:
         "kycToken": "$ID:BioAuthDelegatedV2_forKycExchangeV2VerifiedOnly_Pos_Sid_kycToken$",
         "locales": [{localesValue: "eng"}],
         "respType": "JWE",
-        "verificationBlocks": [{trustFramework: "mosip_trust_framework", maxAge: "3600", verifiedClaims: ["given_name", "family_name"]}],
+        "verificationBlocks": [{trustFramework: "mosip_trust_framework", maxAge: "3600", verifiedClaims: ["fullName"]}],
         "unVerifiedClaims": []
     }'
       output: '{
-
+  "iss": "mosip-ida",
+  "trustFramework": "mosip_trust_framework",
+  "fullName": "$REGEXP:^(?!null).+$"
 }'
-  auth_BioAuthKycExchangeV2_UnverifiedClaimsOnly_Pos:
+  auth_BioAuthKycExchangeV2_Decode_UnverifiedClaimsOnly_Pos:
       endPoint: /idauthentication/v1/kyc-exchange/v2/delegated/$partialPartnerKeyUrl$/$ID:CreateOIDCClient_Delegated_Valid_Smoke_sid_clientId$
       uniqueIdentifier: TC_IDA_BioAuthKycExchangeV2_03
       description: Kyc exchange V2 requesting only unVerifiedConsentedClaims - expected to succeed
       role: resident
       restMethod: post
-      checkErrorsOnlyInResponse: true
       inputTemplate: ida/BioAuthKycExchangeV2/BioAuthKYCExchangeV2Custom
-      outputTemplate: ida/BioAuthKycExchangeV2/BioAuthKYCExchangeResult
+      outputTemplate: ida/BioAuthKycExchangeV2/BioAuthKYCExchangeDecodeResult
       input: '{
         "requestTime": "$TIMESTAMP$",
         "individualId": "$ID:AddIdentity_For_Kyc_Delegated_Bio_Auth_Smoke_Pos_UIN$",
@@ -322,20 +321,21 @@ BioAuthKycExchangeV2:
         "unVerifiedClaims": ["email", "phone_number"]
     }'
       output: '{
-
+  "iss": "mosip-ida",
+  "email": "$REGEXP:^(?!null).+$",
+  "phone_number": "$REGEXP:^(?!null).+$"
 }'
-  auth_BioAuthKycExchangeV2_MultiVerificationBlocks_Pos:
+  auth_BioAuthKycExchangeV2_Decode_MultiVerificationBlocks_Pos:
       endPoint: /idauthentication/v1/kyc-exchange/v2/delegated/$partialPartnerKeyUrl$/$ID:CreateOIDCClient_Delegated_Valid_Smoke_sid_clientId$
       uniqueIdentifier: TC_IDA_BioAuthKycExchangeV2_04
       description: Kyc exchange V2 with multiple verification blocks in verified_claims - expected to succeed
       role: resident
       restMethod: post
-      checkErrorsOnlyInResponse: true
       inputTemplate: ida/BioAuthKycExchangeV2/BioAuthKYCExchangeV2Custom
-      outputTemplate: ida/BioAuthKycExchangeV2/BioAuthKYCExchangeResult
+      outputTemplate: ida/BioAuthKycExchangeV2/BioAuthKYCExchangeDecodeResult
       input: '{
         "requestTime": "$TIMESTAMP$",
-        "individualId": "$ID:AddIdentity_For_Kyc_Delegated_Bio_Auth_Smoke_Pos_UIN$",
+        "individualId": "$ID:AddIdentity_ForVerifiedNameDob_Bio_Auth_Smoke_Pos_UIN$",
         "transactionID": "$TRANSACTIONID$",
         "individualIdType": "UIN",
         "id": "mosip.identity.kycexchange",
@@ -344,23 +344,24 @@ BioAuthKycExchangeV2:
         "locales": [{localesValue: "eng"}],
         "respType": "JWE",
         "verificationBlocks": [
-          {trustFramework: "mosip_trust_framework", maxAge: "3600", verifiedClaims: ["given_name"]},
-          {trustFramework: "another_trust_framework", maxAge: "1933", verifiedClaims: ["birthdate"]}
+          {trustFramework: "mosip_trust_framework", maxAge: "3600", verifiedClaims: ["fullName"]},
+          {trustFramework: "another_trust_framework", maxAge: "1933", verifiedClaims: ["dateOfBirth"]}
         ],
         "unVerifiedClaims": []
     }'
       output: '{
-
+  "iss": "mosip-ida",
+  "trustFramework1": "mosip_trust_framework",
+  "trustFramework2": "another_trust_framework"
 }'
-  auth_BioAuthKycExchangeV2_RespTypeNonJwe_Pos:
+  auth_BioAuthKycExchangeV2_Decode_RespTypeNonJwe_Pos:
       endPoint: /idauthentication/v1/kyc-exchange/v2/delegated/$partialPartnerKeyUrl$/$ID:CreateOIDCClient_Delegated_Valid_Smoke_sid_clientId$
       uniqueIdentifier: TC_IDA_BioAuthKycExchangeV2_05
       description: Kyc exchange V2 with respType set to a non-JWE value - expected to succeed
       role: resident
       restMethod: post
-      checkErrorsOnlyInResponse: true
       inputTemplate: ida/BioAuthKycExchangeV2/BioAuthKYCExchangeV2Custom
-      outputTemplate: ida/BioAuthKycExchangeV2/BioAuthKYCExchangeResult
+      outputTemplate: ida/BioAuthKycExchangeV2/BioAuthKYCExchangeDecodeResult
       input: '{
         "requestTime": "$TIMESTAMP$",
         "individualId": "$ID:AddIdentity_For_Kyc_Delegated_Bio_Auth_Smoke_Pos_UIN$",
@@ -375,7 +376,8 @@ BioAuthKycExchangeV2:
         "unVerifiedClaims": ["email"]
     }'
       output: '{
-
+  "iss": "mosip-ida",
+  "email": "$REGEXP:^(?!null).+$"
 }'
   auth_BioAuthKycExchangeV2Neg_TransactionID_Mismatch_Neg:
       endPoint: /idauthentication/v1/kyc-exchange/v2/delegated/$partialPartnerKeyUrl$/$ID:CreateOIDCClient_Delegated_Valid_Smoke_sid_clientId$
@@ -405,18 +407,17 @@ BioAuthKycExchangeV2:
         }
       ]
 }'
-  auth_BioAuthKycExchangeV2_SingleVerifiedClaim_Pos:
+  auth_BioAuthKycExchangeV2_Decode_SingleVerifiedClaim_Pos:
       endPoint: /idauthentication/v1/kyc-exchange/v2/delegated/$partialPartnerKeyUrl$/$ID:CreateOIDCClient_Delegated_Valid_Smoke_sid_clientId$
       uniqueIdentifier: TC_IDA_BioAuthKycExchangeV2_06
       description: Kyc exchange V2 requesting a single verified claim - expected to succeed
       role: resident
       restMethod: post
-      checkErrorsOnlyInResponse: true
       inputTemplate: ida/BioAuthKycExchangeV2/BioAuthKYCExchangeV2Custom
-      outputTemplate: ida/BioAuthKycExchangeV2/BioAuthKYCExchangeResult
+      outputTemplate: ida/BioAuthKycExchangeV2/BioAuthKYCExchangeDecodeResult
       input: '{
         "requestTime": "$TIMESTAMP$",
-        "individualId": "$ID:AddIdentity_For_Kyc_Delegated_Bio_Auth_Smoke_Pos_UIN$",
+        "individualId": "$ID:AddIdentity_ForVerifiedNameDob_Bio_Auth_Smoke_Pos_UIN$",
         "transactionID": "$TRANSACTIONID$",
         "individualIdType": "UIN",
         "id": "mosip.identity.kycexchange",
@@ -424,24 +425,25 @@ BioAuthKycExchangeV2:
         "kycToken": "$ID:BioAuthDelegatedV2_forKycExchangeV2SingleVerifiedClaim_Pos_Sid_kycToken$",
         "locales": [{localesValue: "eng"}],
         "respType": "JWE",
-        "verificationBlocks": [{trustFramework: "mosip_trust_framework", maxAge: "3600", verifiedClaims: ["given_name"]}],
+        "verificationBlocks": [{trustFramework: "mosip_trust_framework", maxAge: "3600", verifiedClaims: ["fullName"]}],
         "unVerifiedClaims": []
     }'
       output: '{
-
+  "iss": "mosip-ida",
+  "trustFramework": "mosip_trust_framework",
+  "fullName": "$REGEXP:^(?!null).+$"
 }'
-  auth_BioAuthKycExchangeV2_Empty_Locales_Pos:
+  auth_BioAuthKycExchangeV2_Decode_Empty_Locales_Pos:
       endPoint: /idauthentication/v1/kyc-exchange/v2/delegated/$partialPartnerKeyUrl$/$ID:CreateOIDCClient_Delegated_Valid_Smoke_sid_clientId$
       uniqueIdentifier: TC_IDA_BioAuthKycExchangeV2_07
       description: Kyc exchange V2 with an empty locales array in the verification block - expected to succeed
       role: resident
       restMethod: post
-      checkErrorsOnlyInResponse: true
       inputTemplate: ida/BioAuthKycExchangeV2/BioAuthKYCExchangeV2Custom
-      outputTemplate: ida/BioAuthKycExchangeV2/BioAuthKYCExchangeResult
+      outputTemplate: ida/BioAuthKycExchangeV2/BioAuthKYCExchangeDecodeResult
       input: '{
         "requestTime": "$TIMESTAMP$",
-        "individualId": "$ID:AddIdentity_For_Kyc_Delegated_Bio_Auth_Smoke_Pos_UIN$",
+        "individualId": "$ID:AddIdentity_ForVerifiedNameDob_Bio_Auth_Smoke_Pos_UIN$",
         "transactionID": "$TRANSACTIONID$",
         "individualIdType": "UIN",
         "id": "mosip.identity.kycexchange",
@@ -449,11 +451,13 @@ BioAuthKycExchangeV2:
         "kycToken": "$ID:BioAuthDelegatedV2_forKycExchangeV2EmptyLocales_Pos_Sid_kycToken$",
         "locales": [],
         "respType": "JWE",
-        "verificationBlocks": [{trustFramework: "mosip_trust_framework", maxAge: "3600", verifiedClaims: ["given_name"]}],
+        "verificationBlocks": [{trustFramework: "mosip_trust_framework", maxAge: "3600", verifiedClaims: ["fullName"]}],
         "unVerifiedClaims": []
     }'
       output: '{
-
+  "iss": "mosip-ida",
+  "trustFramework": "mosip_trust_framework",
+  "fullName": "$REGEXP:^(?!null).+$"
 }'
   auth_BioAuthKycExchangeV2Neg_Invalid_AuthPartnerId_Neg:
       endPoint: /idauthentication/v1/kyc-exchange/v2/delegated/$invalidPartnerIdUrl$/$ID:CreateOIDCClient_Delegated_Valid_Smoke_sid_clientId$
@@ -548,15 +552,14 @@ BioAuthKycExchangeV2:
         }
       ]
 }'
-  auth_BioAuthKycExchangeV2_VerifiedClaimsOmitted_Pos:
+  auth_BioAuthKycExchangeV2_Decode_VerifiedClaimsOmitted_Pos:
       endPoint: /idauthentication/v1/kyc-exchange/v2/delegated/$partialPartnerKeyUrl$/$ID:CreateOIDCClient_Delegated_Valid_Smoke_sid_clientId$
       uniqueIdentifier: TC_IDA_BioAuthKycExchangeV2_08
       description: Kyc exchange V2 with verifiedConsentedClaims omitted from the request - expected to succeed
       role: resident
       restMethod: post
-      checkErrorsOnlyInResponse: true
       inputTemplate: ida/BioAuthKycExchangeV2/BioAuthKYCExchangeV2WithoutVerifiedClaims
-      outputTemplate: ida/BioAuthKycExchangeV2/BioAuthKYCExchangeResult
+      outputTemplate: ida/BioAuthKycExchangeV2/BioAuthKYCExchangeDecodeResult
       input: '{
         "requestTime": "$TIMESTAMP$",
         "individualId": "$ID:AddIdentity_For_Kyc_Delegated_Bio_Auth_Smoke_Pos_UIN$",
@@ -570,20 +573,20 @@ BioAuthKycExchangeV2:
         "unVerifiedClaims": ["email"]
     }'
       output: '{
-
+  "iss": "mosip-ida",
+  "email": "$REGEXP:^(?!null).+$"
 }'
-  auth_BioAuthKycExchangeV2_UnverifiedClaimsOmitted_Pos:
+  auth_BioAuthKycExchangeV2_Decode_UnverifiedClaimsOmitted_Pos:
       endPoint: /idauthentication/v1/kyc-exchange/v2/delegated/$partialPartnerKeyUrl$/$ID:CreateOIDCClient_Delegated_Valid_Smoke_sid_clientId$
       uniqueIdentifier: TC_IDA_BioAuthKycExchangeV2_09
       description: Kyc exchange V2 with unVerifiedConsentedClaims omitted from the request - expected to succeed
       role: resident
       restMethod: post
-      checkErrorsOnlyInResponse: true
       inputTemplate: ida/BioAuthKycExchangeV2/BioAuthKYCExchangeV2WithoutUnverifiedClaims
-      outputTemplate: ida/BioAuthKycExchangeV2/BioAuthKYCExchangeResult
+      outputTemplate: ida/BioAuthKycExchangeV2/BioAuthKYCExchangeDecodeResult
       input: '{
         "requestTime": "$TIMESTAMP$",
-        "individualId": "$ID:AddIdentity_For_Kyc_Delegated_Bio_Auth_Smoke_Pos_UIN$",
+        "individualId": "$ID:AddIdentity_ForVerifiedNameDob_Bio_Auth_Smoke_Pos_UIN$",
         "transactionID": "$TRANSACTIONID$",
         "individualIdType": "UIN",
         "id": "mosip.identity.kycexchange",
@@ -591,10 +594,12 @@ BioAuthKycExchangeV2:
         "kycToken": "$ID:BioAuthDelegatedV2_forKycExchangeV2UnverifiedClaimsOmitted_Pos_Sid_kycToken$",
         "locales": [{localesValue: "eng"}],
         "respType": "JWE",
-        "verificationBlocks": [{trustFramework: "mosip_trust_framework", maxAge: "3600", verifiedClaims: ["given_name"]}]
+        "verificationBlocks": [{trustFramework: "mosip_trust_framework", maxAge: "3600", verifiedClaims: ["fullName"]}]
     }'
       output: '{
-
+  "iss": "mosip-ida",
+  "trustFramework": "mosip_trust_framework",
+  "fullName": "$REGEXP:^(?!null).+$"
 }'
   auth_BioAuthKycExchangeV2Neg_Malformed_RequestTime_Neg:
       endPoint: /idauthentication/v1/kyc-exchange/v2/delegated/$partialPartnerKeyUrl$/$ID:CreateOIDCClient_Delegated_Valid_Smoke_sid_clientId$
@@ -764,18 +769,17 @@ BioAuthKycExchangeV2:
   "iss": "mosip-ida",
   "email": "$REGEXP:^(?!null).+$"
 }'
-  auth_BioAuthKycExchangeV2_InvalidRespType_Pos:
+  auth_BioAuthKycExchangeV2_Decode_InvalidRespType_Pos:
       endPoint: /idauthentication/v1/kyc-exchange/v2/delegated/$partialPartnerKeyUrl$/$ID:CreateOIDCClient_Delegated_Valid_Smoke_sid_clientId$
       uniqueIdentifier: TC_IDA_BioAuthKycExchangeV2_12
       description: Kyc exchange V2 with an unsupported respType value - expected to succeed with the default response format
       role: resident
       restMethod: post
-      checkErrorsOnlyInResponse: true
       inputTemplate: ida/BioAuthKycExchangeV2/BioAuthKYCExchangeV2Custom
-      outputTemplate: ida/BioAuthKycExchangeV2/BioAuthKYCExchangeResult
+      outputTemplate: ida/BioAuthKycExchangeV2/BioAuthKYCExchangeDecodeResult
       input: '{
         "requestTime": "$TIMESTAMP$",
-        "individualId": "$ID:AddIdentity_For_Kyc_Delegated_Bio_Auth_Smoke_Pos_UIN$",
+        "individualId": "$ID:AddIdentity_ForVerifiedNameDob_Bio_Auth_Smoke_Pos_UIN$",
         "transactionID": "$TRANSACTIONID$",
         "individualIdType": "UIN",
         "id": "mosip.identity.kycexchange",
@@ -783,11 +787,13 @@ BioAuthKycExchangeV2:
         "kycToken": "$ID:BioAuthDelegatedV2_forKycExchangeV2InvalidRespType_Pos_Sid_kycToken$",
         "locales": [{localesValue: "eng"}],
         "respType": "XML",
-        "verificationBlocks": [{trustFramework: "mosip_trust_framework", maxAge: "3600", verifiedClaims: ["given_name"]}],
+        "verificationBlocks": [{trustFramework: "mosip_trust_framework", maxAge: "3600", verifiedClaims: ["fullName"]}],
         "unVerifiedClaims": []
     }'
       output: '{
-
+  "iss": "mosip-ida",
+  "trustFramework": "mosip_trust_framework",
+  "fullName": "$REGEXP:^(?!null).+$"
 }'
   auth_BioAuthKycExchangeV2Neg_Missing_Id_Neg:
       endPoint: /idauthentication/v1/kyc-exchange/v2/delegated/$partialPartnerKeyUrl$/$ID:CreateOIDCClient_Delegated_Valid_Smoke_sid_clientId$
@@ -911,7 +917,7 @@ BioAuthKycExchangeV2:
       role: resident
       restMethod: post
       inputTemplate: ida/BioAuthKycExchangeV2/BioAuthKYCExchangeV2Custom
-      outputTemplate: ida/BioAuthKycExchangeV2/BioAuthKYCExchangeDecodeVerifiedClaimsResult
+      outputTemplate: ida/BioAuthKycExchangeV2/BioAuthKYCExchangeDecodeResult
       input: '{
         "requestTime": "$TIMESTAMP$",
         "individualId": "$ID:AddIdentity_ForVerifiedClaims_Bio_Auth_Smoke_Pos_UIN$",
@@ -936,7 +942,7 @@ BioAuthKycExchangeV2:
       role: resident
       restMethod: post
       inputTemplate: ida/BioAuthKycExchangeV2/BioAuthKYCExchangeV2Custom
-      outputTemplate: ida/BioAuthKycExchangeV2/BioAuthKYCExchangeDecodeIssOnlyResult
+      outputTemplate: ida/BioAuthKycExchangeV2/BioAuthKYCExchangeDecodeResult
       input: '{
         "requestTime": "$TIMESTAMP$",
         "individualId": "$ID:AddIdentity_ForVerifiedClaims_Bio_Auth_Smoke_Pos_UIN$",
@@ -960,7 +966,7 @@ BioAuthKycExchangeV2:
       role: resident
       restMethod: post
       inputTemplate: ida/BioAuthKycExchangeV2/BioAuthKYCExchangeV2CustomMultiTrustFrameworkValues
-      outputTemplate: ida/BioAuthKycExchangeV2/BioAuthKYCExchangeDecodeVerifiedClaimsResult
+      outputTemplate: ida/BioAuthKycExchangeV2/BioAuthKYCExchangeDecodeResult
       input: '{
         "requestTime": "$TIMESTAMP$",
         "individualId": "$ID:AddIdentity_ForVerifiedClaims_Bio_Auth_Smoke_Pos_UIN$",
@@ -985,7 +991,7 @@ BioAuthKycExchangeV2:
       role: resident
       restMethod: post
       inputTemplate: ida/BioAuthKycExchangeV2/BioAuthKYCExchangeV2Custom
-      outputTemplate: ida/BioAuthKycExchangeV2/BioAuthKYCExchangeDecodeMultiContextResult
+      outputTemplate: ida/BioAuthKycExchangeV2/BioAuthKYCExchangeDecodeResult
       input: '{
         "requestTime": "$TIMESTAMP$",
         "individualId": "$ID:AddIdentity_ForVerifiedClaims_Bio_Auth_Smoke_Pos_UIN$",
@@ -1011,7 +1017,7 @@ BioAuthKycExchangeV2:
       role: resident
       restMethod: post
       inputTemplate: ida/BioAuthKycExchangeV2/BioAuthKYCExchangeV2Custom
-      outputTemplate: ida/BioAuthKycExchangeV2/BioAuthKYCExchangeDecodeVerifiedClaimsResult
+      outputTemplate: ida/BioAuthKycExchangeV2/BioAuthKYCExchangeDecodeResult
       input: '{
         "requestTime": "$TIMESTAMP$",
         "individualId": "$ID:AddIdentity_ForVerifiedClaims_Bio_Auth_Smoke_Pos_UIN$",
@@ -1064,7 +1070,7 @@ BioAuthKycExchangeV2:
       role: resident
       restMethod: post
       inputTemplate: ida/BioAuthKycExchangeV2/BioAuthKYCExchangeV2Custom
-      outputTemplate: ida/BioAuthKycExchangeV2/BioAuthKYCExchangeDecodeVerifiedClaimsResult
+      outputTemplate: ida/BioAuthKycExchangeV2/BioAuthKYCExchangeDecodeResult
       input: '{
         "requestTime": "$TIMESTAMP$",
         "individualId": "$ID:AddIdentity_ForVerifiedClaims_Bio_Auth_Smoke_Pos_UIN$",
@@ -1142,7 +1148,7 @@ BioAuthKycExchangeV2:
       role: resident
       restMethod: post
       inputTemplate: ida/BioAuthKycExchangeV2/BioAuthKYCExchangeV2Custom
-      outputTemplate: ida/BioAuthKycExchangeV2/BioAuthKYCExchangeDecodeIssOnlyResult
+      outputTemplate: ida/BioAuthKycExchangeV2/BioAuthKYCExchangeDecodeResult
       input: '{
         "requestTime": "$TIMESTAMP$",
         "individualId": "$ID:AddIdentity_ForVerifiedClaims_Bio_Auth_Smoke_Pos_UIN$",
@@ -1184,15 +1190,14 @@ BioAuthKycExchangeV2:
   "iss": "mosip-ida",
   "email": "$REGEXP:^(?!null).+$"
 }'
-  auth_BioAuthKycExchangeV2_MultipleLocales_Pos:
+  auth_BioAuthKycExchangeV2_Decode_MultipleLocales_Pos:
       endPoint: /idauthentication/v1/kyc-exchange/v2/delegated/$partialPartnerKeyUrl$/$ID:CreateOIDCClient_Delegated_Valid_Smoke_sid_clientId$
       uniqueIdentifier: TC_IDA_BioAuthKycExchangeV2_23
       description: Kyc exchange V2 requesting locales eng and ara together per the spec example - expected to succeed
       role: resident
       restMethod: post
-      checkErrorsOnlyInResponse: true
       inputTemplate: ida/BioAuthKycExchangeV2/BioAuthKYCExchangeV2Custom
-      outputTemplate: ida/BioAuthKycExchangeV2/BioAuthKYCExchangeResult
+      outputTemplate: ida/BioAuthKycExchangeV2/BioAuthKYCExchangeDecodeResult
       input: '{
         "requestTime": "$TIMESTAMP$",
         "individualId": "$ID:AddIdentity_For_Kyc_Delegated_Bio_Auth_Smoke_Pos_UIN$",
@@ -1207,7 +1212,8 @@ BioAuthKycExchangeV2:
         "unVerifiedClaims": ["email"]
     }'
       output: '{
-
+  "iss": "mosip-ida",
+  "email": "$REGEXP:^(?!null).+$"
 }'
   auth_BioAuthKycExchangeV2Neg_InvalidSignature_Neg:
       endPoint: /idauthentication/v1/kyc-exchange/v2/delegated/$partialPartnerKeyUrl$/$ID:CreateOIDCClient_Delegated_Valid_Smoke_sid_clientId$

@@ -358,10 +358,11 @@ public class IdAuthenticationUtil extends AdminTestUtil {
 		assertSuccessStatusCode(partnerResponse, "Failed to register no-delegation partner");
 
 		// getCertificates() would reuse the first partner's certs; call AuthTestsUtil directly instead.
+		// RELYING_PARTY ("rp-" prefix) matches what BioAuth/KycExchange expect here; MISP breaks the key lookup.
 		io.mosip.testrig.apirig.dto.CertificateChainResponseDto certChain;
 		try {
 			certChain = new io.mosip.testrig.apirig.utils.AuthTestsUtil().generatePartnerKeys(
-					io.mosip.testrig.apirig.utils.PartnerTypes.MISP, KYC_DELEGATION_DISABLED_PARTNER_ID, true, null,
+					io.mosip.testrig.apirig.utils.PartnerTypes.RELYING_PARTY, KYC_DELEGATION_DISABLED_PARTNER_ID, true, null,
 					BaseTestCase.certsForModule, ApplnURI.replace("https://", ""));
 		} catch (Exception e) {
 			throw new RuntimeException("failed to generate no-delegation partner keys", e);
@@ -371,11 +372,12 @@ public class IdAuthenticationUtil extends AdminTestUtil {
 		org.json.JSONObject signedCertificateValue = MispPartnerAndLicenseKeyGeneration.uploadPartnerCertificate(
 				certChain.getPartnerCertificate(), "Auth", KYC_DELEGATION_DISABLED_PARTNER_ID);
 		// uploadSignedCertificate() would update the wrong generic key file; use AuthTestsUtil directly.
+		// Must match the RELYING_PARTY type used above, or this updates the wrong ("misp-") file.
 		HashMap<String, String> signedCertRequest = new HashMap<>();
 		signedCertRequest.put("certData", signedCertificateValue.getString("signedCertificateData"));
 		try {
 			new io.mosip.testrig.apirig.utils.AuthTestsUtil().updatePartnerCertificate(
-					io.mosip.testrig.apirig.utils.PartnerTypes.MISP, KYC_DELEGATION_DISABLED_PARTNER_ID, true,
+					io.mosip.testrig.apirig.utils.PartnerTypes.RELYING_PARTY, KYC_DELEGATION_DISABLED_PARTNER_ID, true,
 					signedCertRequest, null, BaseTestCase.certsForModule, ApplnURI.replace("https://", ""));
 		} catch (Exception e) {
 			throw new RuntimeException("failed to update no-delegation partner certificate", e);
