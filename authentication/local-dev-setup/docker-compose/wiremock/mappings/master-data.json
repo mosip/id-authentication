@@ -219,6 +219,38 @@
         ],
         "body": "{\"id\":null,\"version\":null,\"responsetime\":\"{{now timezone='UTC' format='yyyy-MM-dd\\'T\\'HH:mm:ss.SSS\\'Z\\''}}\",\"metadata\":null,\"response\":{\"status\":\"success\",\"message\":\"Email Request submitted\"},\"errors\":null}"
       }
+    },
+    {
+      "name": "To download IDA-FIR Certificate for MockMDS.",
+      "request": {
+        "method": "GET",
+        "url": "/idauthentication/v1/internal/getCertificate?applicationId=IDA&referenceId=IDA-FIR"
+      },
+      "response": {
+        "status": 200,
+        "headers": {
+          "Content-Type": "application/json"
+        },
+        "body": "{\n\"id\": null,\n\"version\": null,\n\"responsetime\": \"2026-06-22T13:11:05.033Z\",\n\"metadata\": null,\n\"response\": {\n\"certificate\": \"-----BEGIN CERTIFICATE-----\\nMIIDkDCCAnigAwIBAgIIDzy+CbOOT/swDQYJKoZIhvcNAQELBQAwazELMAkGA1UE\\nBhMCSU4xCzAJBgNVBAgMAktBMRIwEAYDVQQHDAlCQU5HQUxPUkUxDjAMBgNVBAoM\\nBW1vc2lwMQ4wDAYDVQQLDAVJSUlUQjEbMBkGA1UEAwwSd3d3Lm1vc2lwLmlvIChJ\\nREEpMB4XDTI2MDQwNDA0MTcwNFoXDTQ2MDQwNDA0MTcwNFowZDELMAkGA1UEBhMC\\nSU4xCzAJBgNVBAgMAktBMRIwEAYDVQQHDAlCQU5HQUxPUkUxDjAMBgNVBAoMBW1v\\nc2lwMQ4wDAYDVQQLDAVJSUlUQjEUMBIGA1UEAwwLSURBLUlEQS1GSVIwggEiMA0G\\nCSqGSIb3DQEBAQUAA4IBDwAwggEKAoIBAQDjeneaPTKhC/rF84xeMmnM41fOMC/6\\nGTTY3NQtJHH4wuRtJm2O8IDhoNNUo/xvDhE2bVK1EAaMlkk0Bk7WWpXYu8PclAGu\\nNie8sUrJSq0Zu4acAH2/OgmqDesSkSk+CGrsN44G6IB0bG9M6Do0TQsgUNHHEN3R\\nkdegl0jfJ1+GLBMpg2kB/MkShjbF6j7VpNg4Gi50ocwWWXdtzQ+IEgGEydPt3274\\nJTUH4gejB8OvKpOf0gkcvnH/jxKZWT45W66lnyzJyYzBRQ4lqvShT1gRocwHvetV\\n3mYgHc+TB3OsnaG4D4E0oEPvExfvH921Hj341Zt0GwGj/MHClJrk8rbJAgMBAAGj\\nPzA9MAwGA1UdEwEB/wQCMAAwHQYDVR0OBBYEFIqAH7OFnQ/GIX8xZ+24PDHHO/HV\\nMA4GA1UdDwEB/wQEAwIFIDANBgkqhkiG9w0BAQsFAAOCAQEAXYIAweKK9iy6D09c\\nF1LZsKJ22bNmDCXFpjPcPi16Cyh+8w2pa9hFt+9bXq+j1nUYYQuaozf7fRZbO7CT\\nvVXn6W3T6R+3PEbVDG3cTQGPF6gQp3jdIvY3TkTPOuoc+Gu1znHM0t8+tfJGsdwu\\njd9ITXQyi7tAY5gwuuG1nyJedW02Ho95q9WvIzFHPR9PgLXcggf1l/LydwsH3u5D\\nJUzVqtfS2IsAJhmv+A3WpcKdBkfcuWl6v4li0Ps4eiG95ItG2IceAXY2F/bPNMRB\\nlGH2x7jlC1uVsHlwdnzSgMSbHQ8LqP2ZTDDzF7boTZUz7uPH9AVo4XuTpGDOglZ6\\ntT7C6A==\\n-----END CERTIFICATE-----\",\n\"certSignRequest\": null,\n\"issuedAt\": \"2026-01-13T11:27:23.000Z\",\n\"expiryAt\": \"2034-01-11T11:27:23.000Z\",\n\"timestamp\": \"2026-06-22T13:11:05.034Z\"\n},\n\"errors\": null\n}"
+      }
+    },
+    {
+      "name": "To get the Dummy Auth Token.",
+      "request": {
+        "method": "POST",
+        "url": "/v1/authmanager/authenticate/clientidsecretkey"
+      },
+      "response": {
+        "status": 200,
+        "headers": {
+          "Content-Type": "application/json"
+        },
+        "jsonBody": {
+          "access_token": "DUMMY.AUTH.TOKEN",
+          "token_type": "Bearer",
+          "expires_in": 300
+        }
+      }
     }
   ]
 }

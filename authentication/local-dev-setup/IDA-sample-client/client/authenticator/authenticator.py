@@ -16,6 +16,7 @@ from jwcrypto import jwk, jws
 from model import MOSIPAuthRequest, DemographicsModel, MOSIPEncryptAuthRequest, MOSIPEncryptAuthRequestKeyBind, KeyBindedTokenModel, CredentialDefRequest
 from utils import CryptoUtility
 from utils import RestUtility
+from utils import CaptureUtility
 from exceptions import AuthenticatorException, AuthenticatorCryptoException, Errors
 
 class MOSIPAuthenticator:
@@ -38,11 +39,20 @@ class MOSIPAuthenticator:
         self.ida_auth_version = config_obj.mosip_auth.ida_auth_version
         self.ida_auth_request_id = config_obj.mosip_auth.ida_auth_request_id
         self.ida_otp_request_id = config_obj.mosip_auth.ida_otp_request_id
+        self.ida_kyc_request_id = config_obj.mosip_auth.ida_kyc_request_id
         self.ida_auth_env = config_obj.mosip_auth.ida_auth_env
         self.timestamp_format = config_obj.mosip_auth.timestamp_format
         self.authorization_header_constant = config_obj.mosip_auth.authorization_header_constant
         self.ida_auth_url = config_obj.mosip_auth_server.ida_auth_url
         self.ida_otp_url = config_obj.mosip_auth_server.ida_otp_url
+        self.ida_ekyc_url = config_obj.mosip_auth_server.ida_ekyc_url
+
+        self.capture_util = CaptureUtility(
+            config_obj.MockMDS,
+            env=self.ida_auth_env,
+            domain_uri=self.auth_domain_scheme,
+            logger=self.logger,
+        )
 
         self.auth_request = MOSIPAuthRequest(
             id = self.ida_auth_request_id,
@@ -76,7 +86,7 @@ class MOSIPAuthenticator:
         logger.addHandler(fileHandler)
         return logger
     
-    def do_auth(self, auth_req_data : dict):
+    def do_auth(self, auth_req_data : dict, use_ekyc: bool = False):
         vid = auth_req_data.pop('vid')
         
         print('\n\nReceived Auth Request.')
@@ -85,6 +95,7 @@ class MOSIPAuthenticator:
             timestamp = datetime.utcnow()
             timestamp_str = timestamp.strftime(self.timestamp_format) + timestamp.strftime('.%f')[0:4] + 'Z'
 
+            self.auth_request.id = self.ida_kyc_request_id if use_ekyc else self.ida_auth_request_id
             self.auth_request.requestTime = timestamp_str
             self.auth_request.transactionID = ''.join([secrets.choice(string.digits) for _ in range(10)])
             self.auth_request.individualId = vid
@@ -104,9 +115,10 @@ class MOSIPAuthenticator:
             signature_header = {'Signature': self.crypto_util.sign_auth_request_data(full_request_json)}
 
             path_params = self.partner_misp_lk + '/' + self.partner_id + '/' + self.partner_apikey
-            response = self.auth_rest_util.post_request(server_url=self.ida_auth_url, path_params=path_params, data=full_request_json, additional_headers=signature_header)
+            target_url = self.ida_ekyc_url if use_ekyc else self.ida_auth_url
+            response = self.auth_rest_util.post_request(server_url=target_url, path_params=path_params, data=full_request_json, additional_headers=signature_header)
             print('Auth Request Completed Successfully.')
-            
+
             return response.text
         except:
             exp = traceback.format_exc()
@@ -144,12 +156,13 @@ class MOSIPAuthenticator:
             self.logger.error('Error Processing Auth Request. Error Message: {}'.format(exp))
             raise AuthenticatorException(Errors.AUT_BAS_001.name, Errors.AUT_BAS_001.value)
 
-    def do_otp_auth(self, idvid: str, otp: str, transaction_id: str):
+    def do_otp_auth(self, idvid: str, otp: str, transaction_id: str, use_ekyc: bool = False):
         print('\n\nReceived OTP Auth Request.')
         try:
             timestamp = datetime.utcnow()
             timestamp_str = timestamp.strftime(self.timestamp_format) + timestamp.strftime('.%f')[0:4] + 'Z'
 
+            self.auth_request.id = self.ida_kyc_request_id if use_ekyc else self.ida_auth_request_id
             self.auth_request.requestTime = timestamp_str
             self.auth_request.transactionID = transaction_id
             self.auth_request.individualId = idvid
@@ -171,8 +184,9 @@ class MOSIPAuthenticator:
             signature_header = {'Signature': self.crypto_util.sign_auth_request_data(full_request_json)}
 
             path_params = self.partner_misp_lk + '/' + self.partner_id + '/' + self.partner_apikey
+            target_url = self.ida_ekyc_url if use_ekyc else self.ida_auth_url
             response = self.auth_rest_util.post_request(
-                server_url=self.ida_auth_url,
+                server_url=target_url,
                 path_params=path_params,
                 data=full_request_json,
                 additional_headers=signature_header
@@ -185,7 +199,7 @@ class MOSIPAuthenticator:
             self.logger.error('Error Processing OTP Auth Request. Error Message: {}'.format(exp))
             raise AuthenticatorException(Errors.AUT_BAS_001.name, Errors.AUT_BAS_001.value)
 
-    def do_demo_otp_auth(self, auth_req_data: dict, idvid: str, otp: str, transaction_id: str):
+    def do_demo_otp_auth(self, auth_req_data: dict, idvid: str, otp: str, transaction_id: str, use_ekyc: bool = False):
         print('\n\nReceived Demo + OTP Auth Request.')
         try:
             req_data = dict(auth_req_data)
@@ -195,6 +209,7 @@ class MOSIPAuthenticator:
             timestamp = datetime.utcnow()
             timestamp_str = timestamp.strftime(self.timestamp_format) + timestamp.strftime('.%f')[0:4] + 'Z'
 
+            self.auth_request.id = self.ida_kyc_request_id if use_ekyc else self.ida_auth_request_id
             self.auth_request.requestTime = timestamp_str
             self.auth_request.transactionID = transaction_id
             self.auth_request.individualId = idvid
@@ -217,8 +232,9 @@ class MOSIPAuthenticator:
             signature_header = {'Signature': self.crypto_util.sign_auth_request_data(full_request_json)}
 
             path_params = self.partner_misp_lk + '/' + self.partner_id + '/' + self.partner_apikey
+            target_url = self.ida_ekyc_url if use_ekyc else self.ida_auth_url
             response = self.auth_rest_util.post_request(
-                server_url=self.ida_auth_url,
+                server_url=target_url,
                 path_params=path_params,
                 data=full_request_json,
                 additional_headers=signature_header
@@ -229,4 +245,59 @@ class MOSIPAuthenticator:
         except:
             exp = traceback.format_exc()
             self.logger.error('Error Processing Demo + OTP Auth Request. Error Message: {}'.format(exp))
+            raise AuthenticatorException(Errors.AUT_BAS_001.name, Errors.AUT_BAS_001.value)
+
+    def do_bio_auth(self, idvid: str, bio_type: str, bio_sub_type: str, use_ekyc: bool = False):
+        print('\n\nReceived Biometric Auth Request.')
+        try:
+            timestamp = datetime.utcnow()
+            timestamp_str = timestamp.strftime(self.timestamp_format) + timestamp.strftime('.%f')[0:4] + 'Z'
+            transaction_id = ''.join([secrets.choice(string.digits) for _ in range(10)])
+
+            print('Capturing biometric from Mock MDS...')
+            parsed_biometrics = self.capture_util.capture_biometric(
+                transaction_id=transaction_id,
+                capture_time=timestamp_str,
+                bio_type=bio_type,
+                bio_sub_type=bio_sub_type,
+            )
+            print('Biometric capture completed successfully.')
+
+            self.auth_request.id = self.ida_kyc_request_id if use_ekyc else self.ida_auth_request_id
+            self.auth_request.requestTime = timestamp_str
+            self.auth_request.transactionID = transaction_id
+            self.auth_request.individualId = idvid
+
+            self.auth_request.requestedAuth.demo = False
+            self.auth_request.requestedAuth.otp = False
+            self.auth_request.requestedAuth.pin = False
+            self.auth_request.requestedAuth.bio = True
+
+            bio_request = {
+                "timestamp": timestamp_str,
+                "biometrics": parsed_biometrics,
+            }
+
+            self.auth_request.request, self.auth_request.requestSessionKey, self.auth_request.requestHMAC = \
+                self.crypto_util.encrypt_auth_data(json.dumps(bio_request))
+
+            full_request_json = self.auth_request.json()
+            signature_header = {'Signature': self.crypto_util.sign_auth_request_data(full_request_json)}
+
+            path_params = self.partner_misp_lk + '/' + self.partner_id + '/' + self.partner_apikey
+            target_url = self.ida_ekyc_url if use_ekyc else self.ida_auth_url
+            response = self.auth_rest_util.post_request(
+                server_url=target_url,
+                path_params=path_params,
+                data=full_request_json,
+                additional_headers=signature_header
+            )
+            print('Biometric Auth Request Completed Successfully.')
+
+            return response.text
+        except AuthenticatorException:
+            raise
+        except:
+            exp = traceback.format_exc()
+            self.logger.error('Error Processing Biometric Auth Request. Error Message: {}'.format(exp))
             raise AuthenticatorException(Errors.AUT_BAS_001.name, Errors.AUT_BAS_001.value)

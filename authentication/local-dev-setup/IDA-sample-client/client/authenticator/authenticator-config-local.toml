@@ -3,6 +3,7 @@ timestamp_format = "%Y-%m-%dT%H:%M:%S"
 ida_auth_version = '1.0'
 ida_auth_request_id = 'mosip.identity.auth'
 ida_otp_request_id = 'mosip.identity.otp'
+ida_kyc_request_id = 'mosip.identity.kyc'
 ida_auth_env = 'Staging'
 authorization_header_constant = 'Authorization'
 partner_apikey = '198833'
@@ -13,7 +14,8 @@ partner_id = 'auth_v1z0816154432'
 [mosip_auth_server]
 ida_auth_domain_uri = 'localhost'
 ida_auth_url = 'http://localhost:8090/idauthentication/v1/auth'
-ida_otp_url = 'http://localhost:8092/idauthentication/v1/otp'
+ida_otp_url = 'http://localhost:8090/idauthentication/v1/otp'
+ida_ekyc_url = 'http://localhost:8090/idauthentication/v1/kyc'
 
 [crypto_encrypt]
 algorithm = '@none'
@@ -27,6 +29,17 @@ encrypt_cert_path = 'new-keys/ida-partner-local.cer'
 algorithm = 'RS256'
 sign_p12_file_path = 'new-keys/partner-mosip-signed.p12'
 sign_p12_file_password = '1234'
+
+[MockMDS]
+mock_mds_capture_url = 'http://localhost:4501/capture'
+mock_mds_capture_request_method = 'CAPTURE'
+mock_mds_spec_version = '0.9.5'
+mock_mds_timeout = '10000'
+mock_mds_requested_score = '70'
+mock_mds_face_device_id = '3'
+mock_mds_finger_device_id = '4'
+mock_mds_iris_device_id = '5'
+mock_mds_device_sub_id = '0'
 
 [logging]
 log_file_path = 'authenticator.log'

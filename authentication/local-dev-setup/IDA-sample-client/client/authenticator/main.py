@@ -7,11 +7,12 @@ from cli_options import run_cli
 
 CONFIG_FILES = [
     str(Path(__file__).resolve().parent / "authenticator-config-local.toml"),
-    "/app/auth_config.conf",
+    "/app/token_seeder.conf",
 ]
-config = Dynaconf(settings_files=CONFIG_FILES, envvar_prefix="MOSIP", environments=False)
+config = Dynaconf(settings_files=CONFIG_FILES, en13vvar_prefix="MOSIP", environments=False)
 
 if __name__ == "__main__":
     print(f"Configured IDA URL: {config.mosip_auth_server.ida_auth_url}")
     mosip_authenticator = MOSIPAuthenticator(config)
     run_cli(mosip_authenticator)
+    
