@@ -291,13 +291,13 @@ BioAuthKycExchangeV2:
         "kycToken": "$ID:BioAuthDelegatedV2_forKycExchangeV2VerifiedOnly_Pos_Sid_kycToken$",
         "locales": [{localesValue: "eng"}],
         "respType": "JWE",
-        "verificationBlocks": [{trustFramework: "mosip_trust_framework", maxAge: "3600", verifiedClaims: ["fullName"]}],
+        "verificationBlocks": [{trustFramework: "mosip_trust_framework", maxAge: "3600", verifiedClaims: ["name"]}],
         "unVerifiedClaims": []
     }'
       output: '{
   "iss": "mosip-ida",
   "trustFramework": "mosip_trust_framework",
-  "fullName": "$REGEXP:^(?!null).+$"
+  "name": "$REGEXP:^(?!null).+$"
 }'
   auth_BioAuthKycExchangeV2_Decode_UnverifiedClaimsOnly_Pos:
       endPoint: /idauthentication/v1/kyc-exchange/v2/delegated/$partialPartnerKeyUrl$/$ID:CreateOIDCClient_Delegated_Valid_Smoke_sid_clientId$
@@ -344,8 +344,8 @@ BioAuthKycExchangeV2:
         "locales": [{localesValue: "eng"}],
         "respType": "JWE",
         "verificationBlocks": [
-          {trustFramework: "mosip_trust_framework", maxAge: "3600", verifiedClaims: ["fullName"]},
-          {trustFramework: "another_trust_framework", maxAge: "1933", verifiedClaims: ["dateOfBirth"]}
+          {trustFramework: "mosip_trust_framework", maxAge: "3600", verifiedClaims: ["name"]},
+          {trustFramework: "another_trust_framework", maxAge: "1933", verifiedClaims: ["dob"]}
         ],
         "unVerifiedClaims": []
     }'
@@ -425,13 +425,13 @@ BioAuthKycExchangeV2:
         "kycToken": "$ID:BioAuthDelegatedV2_forKycExchangeV2SingleVerifiedClaim_Pos_Sid_kycToken$",
         "locales": [{localesValue: "eng"}],
         "respType": "JWE",
-        "verificationBlocks": [{trustFramework: "mosip_trust_framework", maxAge: "3600", verifiedClaims: ["fullName"]}],
+        "verificationBlocks": [{trustFramework: "mosip_trust_framework", maxAge: "3600", verifiedClaims: ["name"]}],
         "unVerifiedClaims": []
     }'
       output: '{
   "iss": "mosip-ida",
   "trustFramework": "mosip_trust_framework",
-  "fullName": "$REGEXP:^(?!null).+$"
+  "name": "$REGEXP:^(?!null).+$"
 }'
   auth_BioAuthKycExchangeV2_Decode_Empty_Locales_Pos:
       endPoint: /idauthentication/v1/kyc-exchange/v2/delegated/$partialPartnerKeyUrl$/$ID:CreateOIDCClient_Delegated_Valid_Smoke_sid_clientId$
@@ -451,13 +451,13 @@ BioAuthKycExchangeV2:
         "kycToken": "$ID:BioAuthDelegatedV2_forKycExchangeV2EmptyLocales_Pos_Sid_kycToken$",
         "locales": [],
         "respType": "JWE",
-        "verificationBlocks": [{trustFramework: "mosip_trust_framework", maxAge: "3600", verifiedClaims: ["fullName"]}],
+        "verificationBlocks": [{trustFramework: "mosip_trust_framework", maxAge: "3600", verifiedClaims: ["name"]}],
         "unVerifiedClaims": []
     }'
       output: '{
   "iss": "mosip-ida",
   "trustFramework": "mosip_trust_framework",
-  "fullName": "$REGEXP:^(?!null).+$"
+  "name": "$REGEXP:^(?!null).+$"
 }'
   auth_BioAuthKycExchangeV2Neg_Invalid_AuthPartnerId_Neg:
       endPoint: /idauthentication/v1/kyc-exchange/v2/delegated/$invalidPartnerIdUrl$/$ID:CreateOIDCClient_Delegated_Valid_Smoke_sid_clientId$
@@ -594,12 +594,12 @@ BioAuthKycExchangeV2:
         "kycToken": "$ID:BioAuthDelegatedV2_forKycExchangeV2UnverifiedClaimsOmitted_Pos_Sid_kycToken$",
         "locales": [{localesValue: "eng"}],
         "respType": "JWE",
-        "verificationBlocks": [{trustFramework: "mosip_trust_framework", maxAge: "3600", verifiedClaims: ["fullName"]}]
+        "verificationBlocks": [{trustFramework: "mosip_trust_framework", maxAge: "3600", verifiedClaims: ["name"]}]
     }'
       output: '{
   "iss": "mosip-ida",
   "trustFramework": "mosip_trust_framework",
-  "fullName": "$REGEXP:^(?!null).+$"
+  "name": "$REGEXP:^(?!null).+$"
 }'
   auth_BioAuthKycExchangeV2Neg_Malformed_RequestTime_Neg:
       endPoint: /idauthentication/v1/kyc-exchange/v2/delegated/$partialPartnerKeyUrl$/$ID:CreateOIDCClient_Delegated_Valid_Smoke_sid_clientId$
@@ -787,13 +787,13 @@ BioAuthKycExchangeV2:
         "kycToken": "$ID:BioAuthDelegatedV2_forKycExchangeV2InvalidRespType_Pos_Sid_kycToken$",
         "locales": [{localesValue: "eng"}],
         "respType": "XML",
-        "verificationBlocks": [{trustFramework: "mosip_trust_framework", maxAge: "3600", verifiedClaims: ["fullName"]}],
+        "verificationBlocks": [{trustFramework: "mosip_trust_framework", maxAge: "3600", verifiedClaims: ["name"]}],
         "unVerifiedClaims": []
     }'
       output: '{
   "iss": "mosip-ida",
   "trustFramework": "mosip_trust_framework",
-  "fullName": "$REGEXP:^(?!null).+$"
+  "name": "$REGEXP:^(?!null).+$"
 }'
   auth_BioAuthKycExchangeV2Neg_Missing_Id_Neg:
       endPoint: /idauthentication/v1/kyc-exchange/v2/delegated/$partialPartnerKeyUrl$/$ID:CreateOIDCClient_Delegated_Valid_Smoke_sid_clientId$
@@ -1277,10 +1277,35 @@ BioAuthKycExchangeV2:
         }
       ]
 }'
+  auth_BioAuthKycExchangeV2_Decode_TokenReuseSetup_Pos:
+      endPoint: /idauthentication/v1/kyc-exchange/v2/delegated/$partialPartnerKeyUrl$/$ID:CreateOIDCClient_Delegated_Valid_Smoke_sid_clientId$
+      uniqueIdentifier: TC_IDA_BioAuthKycExchangeV2_24
+      description: Kyc exchange V2 first (legitimate) use of a dedicated kycToken, so it can be reused in the token-reuse negative test - expected to succeed
+      role: resident
+      restMethod: post
+      inputTemplate: ida/BioAuthKycExchangeV2/BioAuthKYCExchangeV2Custom
+      outputTemplate: ida/BioAuthKycExchangeV2/BioAuthKYCExchangeDecodeResult
+      input: '{
+        "requestTime": "$TIMESTAMP$",
+        "individualId": "$ID:AddIdentity_For_Kyc_Delegated_Bio_Auth_Smoke_Pos_UIN$",
+        "transactionID": "$TRANSACTIONID$",
+        "individualIdType": "UIN",
+        "id": "mosip.identity.kycexchange",
+        "version": "1.0",
+        "kycToken": "$ID:BioAuthDelegatedV2_forKycExchangeV2TokenReuse_Pos_Sid_kycToken$",
+        "locales": [{localesValue: "eng"}],
+        "respType": "JWE",
+        "verificationBlocks": [],
+        "unVerifiedClaims": ["email"]
+    }'
+      output: '{
+  "iss": "mosip-ida",
+  "email": "$REGEXP:^(?!null).+$"
+}'
   auth_BioAuthKycExchangeV2Neg_Expired_Token_Neg:
       endPoint: /idauthentication/v1/kyc-exchange/v2/delegated/$partialPartnerKeyUrl$/$ID:CreateOIDCClient_Delegated_Valid_Smoke_sid_clientId$
       uniqueIdentifier: TC_IDA_BioAuthKycExchangeV2Neg_25
-      description: Kyc exchange V2 with a kycToken past its validity window - expected to fail
+      description: Kyc exchange V2 reusing a kycToken that was already successfully consumed once - expected to fail with IDA-KYE-003 (a dedicated, dynamically-minted token is used here rather than a hardcoded value, since a fixed kycToken string is environment-dependent - it could be already-processed, genuinely expired, or entirely unknown to a fresh environment's database depending on prior history)
       role: resident
       restMethod: post
       inputTemplate: ida/BioAuthKycExchangeV2/BioAuthKYCExchangeV2Custom
@@ -1292,7 +1317,7 @@ BioAuthKycExchangeV2:
         "individualIdType": "UIN",
         "id": "mosip.identity.kycexchange",
         "version": "1.0",
-        "kycToken": "7wSsBhLtedRrikCwsgTaC3WV3z5Rs9KEMxHvW2TBcFHe",
+        "kycToken": "$ID:BioAuthDelegatedV2_forKycExchangeV2TokenReuse_Pos_Sid_kycToken$",
         "locales": [{localesValue: "eng"}],
         "respType": "JWE",
         "verificationBlocks": [{trustFramework: "mosip_trust_framework", maxAge: "3600", verifiedClaims: ["given_name"]}],
@@ -1301,7 +1326,7 @@ BioAuthKycExchangeV2:
       output: '{
       "errors": [
         {
-          "errorCode": "IDA-KYE-002"
+          "errorCode": "IDA-KYE-003"
         }
       ]
 }'

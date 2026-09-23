@@ -1,4 +1,6 @@
 {
+    "TC_IDA_BioAuthDelegated_26": ["TC_DependentModule_Delegated_IdRepo_01", "TC_PMS_CreateOIDCClient_Delegated_01"],
+    "TC_IDA_BioAuthKycExchange_28": ["TC_DependentModule_Delegated_IdRepo_01", "TC_PMS_CreateOIDCClient_Delegated_01"],
     "TC_IDA_EkycBio_55": ["TC_DependentModule_IdRepo_09"],
     "TC_IDA_EkycBio_56": ["TC_DependentModule_IdRepo_09"],
     "TC_IDA_DependentTc_AuthTransaction_RetrieveIdentity_01": ["TC_IDA_dependentTC_AuthTransaction_45"],
@@ -1711,8 +1713,19 @@
         "TC_IDA_BioAuthDelegatedV2_45",
         "TC_PMS_CreateOIDCClient_Delegated_01"
     ],
+    "TC_IDA_BioAuthDelegatedV2_47": [
+        "TC_DependentModule_Delegated_IdRepo_01",
+        "TC_PMS_CreateOIDCClient_Delegated_01"
+    ],
+    "TC_IDA_BioAuthKycExchangeV2_24": [
+        "TC_DependentModule_Delegated_IdRepo_01",
+        "TC_IDA_BioAuthDelegatedV2_47",
+        "TC_PMS_CreateOIDCClient_Delegated_01"
+    ],
     "TC_IDA_BioAuthKycExchangeV2Neg_25": [
         "TC_DependentModule_Delegated_IdRepo_01",
+        "TC_IDA_BioAuthDelegatedV2_47",
+        "TC_IDA_BioAuthKycExchangeV2_24",
         "TC_PMS_CreateOIDCClient_Delegated_01"
     ],
     "TC_IDA_OtpAuthDelegatedV2_01": [

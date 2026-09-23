@@ -1,16 +1,14 @@
 package io.mosip.testrig.apirig.auth.utils;
 
-import java.nio.charset.StandardCharsets;
-import java.security.KeyStore.PrivateKeyEntry;
-import java.security.interfaces.RSAPrivateKey;
-import java.util.ArrayList;
-import java.util.Base64;
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
-
-import javax.ws.rs.core.MediaType;
-
+import com.nimbusds.jose.JWEObject;
+import com.nimbusds.jose.crypto.RSADecrypter;
+import io.mosip.testrig.apirig.auth.testrunner.MosipTestRunner;
+import io.mosip.testrig.apirig.dbaccess.DBManager;
+import io.mosip.testrig.apirig.dto.TestCaseDTO;
+import io.mosip.testrig.apirig.testrunner.BaseTestCase;
+import io.mosip.testrig.apirig.testrunner.JsonPrecondtion;
+import io.mosip.testrig.apirig.utils.*;
+import io.restassured.response.Response;
 import org.apache.log4j.Level;
 import org.apache.log4j.Logger;
 import org.json.JSONArray;
@@ -18,32 +16,11 @@ import org.json.JSONException;
 import org.json.JSONObject;
 import org.testng.SkipException;
 
-import com.nimbusds.jose.JWEObject;
-import com.nimbusds.jose.crypto.RSADecrypter;
-
-import io.mosip.testrig.apirig.auth.testrunner.MosipTestRunner;
-import io.mosip.testrig.apirig.dbaccess.DBManager;
-import io.mosip.testrig.apirig.dto.TestCaseDTO;
-import io.mosip.testrig.apirig.testrunner.BaseTestCase;
-import io.mosip.testrig.apirig.testrunner.JsonPrecondtion;
-import io.mosip.testrig.apirig.utils.AdminTestException;
-import io.mosip.testrig.apirig.utils.AdminTestUtil;
-import io.mosip.testrig.apirig.utils.ConfigManager;
-import io.mosip.testrig.apirig.utils.CryptoCoreUtil;
-import io.mosip.testrig.apirig.utils.GlobalConstants;
-import io.mosip.testrig.apirig.utils.GlobalMethods;
-import io.mosip.testrig.apirig.utils.JWKKeyUtil;
-import io.mosip.testrig.apirig.utils.KernelAuthentication;
-import io.mosip.testrig.apirig.utils.KeyCloakUserAndAPIKeyGeneration;
-import io.mosip.testrig.apirig.utils.KeyMgrUtility;
-import io.mosip.testrig.apirig.utils.KeycloakUserManager;
-import io.mosip.testrig.apirig.utils.MispPartnerAndLicenseKeyGeneration;
-import io.mosip.testrig.apirig.utils.PartnerRegistration;
-import io.mosip.testrig.apirig.utils.PartnerTypes;
-import io.mosip.testrig.apirig.utils.RestClient;
-import io.mosip.testrig.apirig.utils.SecurityXSSException;
-import io.mosip.testrig.apirig.utils.SkipTestCaseHandler;
-import io.restassured.response.Response;
+import javax.ws.rs.core.MediaType;
+import java.nio.charset.StandardCharsets;
+import java.security.KeyStore.PrivateKeyEntry;
+import java.security.interfaces.RSAPrivateKey;
+import java.util.*;
 
 public class IdAuthenticationUtil extends AdminTestUtil {
 
@@ -390,7 +367,7 @@ public class IdAuthenticationUtil extends AdminTestUtil {
 		kycDelegationDisabledMispLicKey = MispPartnerAndLicenseKeyGeneration
 				.generateMispLicKey(KYC_DELEGATION_DISABLED_PARTNER_ID);
 
-		kycDelegationDisabledPartnerKeyUrl = kycDelegationDisabledMispLicKey + "/" + KYC_DELEGATION_DISABLED_PARTNER_ID;
+		kycDelegationDisabledPartnerKeyUrl = kycDelegationDisabledMispLicKey + "/" + PartnerRegistration.partnerId;
 		return kycDelegationDisabledPartnerKeyUrl;
 	}
 
