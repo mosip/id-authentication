@@ -188,7 +188,7 @@ public class BioAuth extends IdAuthenticationUtil implements ITest {
 		authRequest = authRequestTemp.toString();
 		testCaseDTO.setInput(authRequest);
 
-		logger.info("******Post request Json to EndPointUrl: " + ApplnURI + testCaseDTO.getEndPoint() + " *******");
+		logger.info("Posting bio authentication request for " + testCaseName);
 
 		// Only the InvalidSignature negative test needs a corrupted signature header.
 		if (testCaseName.contains("_InvalidSignature_")) {

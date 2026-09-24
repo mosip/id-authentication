@@ -686,7 +686,7 @@ public class IdAuthenticationUtil extends AdminTestUtil {
 			}
 			JSONObject decodedKyc = responseObj.optJSONObject("decodedKyc");
 			if (decodedKyc == null) {
-				return;
+				throw new AdminTestException("Missing response.decodedKyc for " + testCaseName);
 			}
 			JSONArray verifiedClaims = decodedKyc.optJSONArray("verified_claims");
 			if (verifiedClaims == null) {

@@ -122,7 +122,7 @@ public class KycExchange extends IdAuthenticationUtil implements ITest {
 
 		inputJson = IdAuthenticationUtil.inputStringKeyWordHandeler(inputJson, testCaseName);
 
-		logger.info("******Post request Json to EndPointUrl: " + ApplnURI + testCaseDTO.getEndPoint() + " *******");
+		logger.info("Posting kyc exchange request for " + testCaseName);
 
 		// Only InvalidSignature/MissingSignature negative tests need a bad signature header.
 		if (testCaseName.contains("_InvalidSignature_")) {
