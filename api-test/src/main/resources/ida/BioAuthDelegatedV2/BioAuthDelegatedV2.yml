@@ -2659,7 +2659,7 @@ BioAuthDelegatedV2:
       outputTemplate: ida/BioAuthDelegatedV2/BioKYCAuthDelegatedResult
       input: '{
         "requestTime": "$TIMESTAMP$",
-        "individualId": "$ID:AddIdentity_ForVerifiedClaims_Bio_Auth_Smoke_Pos_UIN$",
+        "individualId": "$ID:AddIdentity_ForMaxAgeFiltered_Bio_Auth_Smoke_Pos_UIN$",
         "transactionId": "$TRANSACTIONID$",
         "individualIdType": "UIN",
         "claimsMetadataRequired": false,

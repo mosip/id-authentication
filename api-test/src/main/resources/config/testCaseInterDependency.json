@@ -1422,7 +1422,7 @@
         "TC_PMS_CreateOIDCClient_Delegated_01"
     ],
     "TC_IDA_BioAuthDelegatedV2_32": [
-        "TC_DependentModule_Delegated_IdRepo_10",
+        "TC_DependentModule_Delegated_IdRepo_12",
         "TC_PMS_CreateOIDCClient_Delegated_01"
     ],
     "TC_IDA_BioAuthDelegatedV2_33": [
@@ -1654,7 +1654,7 @@
         "TC_PMS_CreateOIDCClient_Delegated_01"
     ],
     "TC_IDA_BioAuthKycExchangeV2_15": [
-        "TC_DependentModule_Delegated_IdRepo_10",
+        "TC_DependentModule_Delegated_IdRepo_12",
         "TC_IDA_BioAuthDelegatedV2_32",
         "TC_PMS_CreateOIDCClient_Delegated_01"
     ],

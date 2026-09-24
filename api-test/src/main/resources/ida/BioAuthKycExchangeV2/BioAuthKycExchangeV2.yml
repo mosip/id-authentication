@@ -945,7 +945,7 @@ BioAuthKycExchangeV2:
       outputTemplate: ida/BioAuthKycExchangeV2/BioAuthKYCExchangeDecodeResult
       input: '{
         "requestTime": "$TIMESTAMP$",
-        "individualId": "$ID:AddIdentity_ForVerifiedClaims_Bio_Auth_Smoke_Pos_UIN$",
+        "individualId": "$ID:AddIdentity_ForMaxAgeFiltered_Bio_Auth_Smoke_Pos_UIN$",
         "transactionID": "$TRANSACTIONID$",
         "individualIdType": "UIN",
         "id": "mosip.identity.kycexchange",
