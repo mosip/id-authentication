@@ -345,7 +345,7 @@ BioAuthKycExchangeV2:
         "respType": "JWE",
         "verificationBlocks": [
           {trustFramework: "mosip_trust_framework", maxAge: "3600", verifiedClaims: ["name"]},
-          {trustFramework: "another_trust_framework", maxAge: "1933", verifiedClaims: ["dob"]}
+          {trustFramework: "another_trust_framework", maxAge: "1933", verifiedClaims: ["birthdate"]}
         ],
         "unVerifiedClaims": []
     }'
@@ -1002,7 +1002,7 @@ BioAuthKycExchangeV2:
         "kycToken": "$ID:BioAuthDelegatedV2_forKycExchangeV2MultiContext_Pos_Sid_kycToken$",
         "locales": [{localesValue: "eng"}],
         "respType": "JWE",
-        "verificationBlocks": [{trustFramework: "uk_tfida", maxAge: "2592000", verifiedClaims: ["email"]}, {trustFramework: "de_aml", maxAge: "2592000", verifiedClaims: ["phone"]}],
+        "verificationBlocks": [{trustFramework: "uk_tfida", maxAge: "2592000", verifiedClaims: ["email"]}, {trustFramework: "de_aml", maxAge: "2592000", verifiedClaims: ["phone_number"]}],
         "unVerifiedClaims": []
     }'
       output: '{
