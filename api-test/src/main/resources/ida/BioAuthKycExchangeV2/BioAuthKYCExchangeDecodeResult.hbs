@@ -1,0 +1,32 @@
+{
+    "response": {
+        "decodedKyc": {
+            "iss": "{{iss}}"{{#if sub}},
+            "sub": "{{sub}}"{{/if}}{{#if email}},
+            "email": "{{email}}"{{/if}}{{#if phone_number}},
+            "phone_number": "{{phone_number}}"{{/if}}{{#if trustFramework}},
+            "verified_claims": [
+                {
+                    "verification": {
+                        "trust_framework": "{{trustFramework}}"
+                    }{{#if name}},
+                    "claims": {
+                        "name": "{{name}}"
+                    }{{/if}}
+                }
+            ]{{/if}}{{#if trustFramework1}},
+            "verified_claims": [
+                {
+                    "verification": {
+                        "trust_framework": "{{trustFramework1}}"
+                    }
+                },
+                {
+                    "verification": {
+                        "trust_framework": "{{trustFramework2}}"
+                    }
+                }
+            ]{{/if}}
+        }
+    }
+}

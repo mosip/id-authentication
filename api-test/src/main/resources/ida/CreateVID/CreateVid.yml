@@ -20,7 +20,7 @@ CreateVID:
 
   auth_GenerateVID_to_revoke_Perpetual_sid:
       endPoint: /idrepository/v1/vid
-      uniqueIdentifier: TC_IDA_CreateVID_01
+      uniqueIdentifier: TC_IDA_CreateVID_04
       description: Verify that a perpetual VID is successfully generated and can be revoked when SID is provided
       role: idrepo
       restMethod: post
