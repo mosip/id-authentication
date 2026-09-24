@@ -1,7 +1,8 @@
 {
     "response": {
         "decodedKyc": {
-            "iss": "{{iss}}"{{#if email}},
+            "iss": "{{iss}}"{{#if sub}},
+            "sub": "{{sub}}"{{/if}}{{#if email}},
             "email": "{{email}}"{{/if}}{{#if phone_number}},
             "phone_number": "{{phone_number}}"{{/if}}{{#if trustFramework}},
             "verified_claims": [

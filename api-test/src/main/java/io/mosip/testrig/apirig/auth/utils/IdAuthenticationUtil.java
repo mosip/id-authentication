@@ -564,7 +564,7 @@ public class IdAuthenticationUtil extends AdminTestUtil {
 		return mapPartnerToPolicyAndGetKeyUrl(partnerId, policyNameForPolicyToken);
 	}
 
-	private static final String policyToken2OrganizationName = BaseTestCase.currentModule + "_policy2_pid";
+	private static final String policyToken2OrganizationName = "mosip-policy2-" + AdminTestUtil.timeStamp;
 	public static String policyToken2PartnerId = policyToken2OrganizationName;
 	private static final String policyToken2EmailId = "mosip_policy2_" + System.currentTimeMillis() + "@gmail.com";
 	public static String policyToken2PartnerKeyUrl = "";
@@ -579,7 +579,7 @@ public class IdAuthenticationUtil extends AdminTestUtil {
 		return policyToken2PartnerKeyUrl;
 	}
 
-	private static final String policyToken3OrganizationName = BaseTestCase.currentModule + "_policy3_pid";
+	private static final String policyToken3OrganizationName = "mosip-policy3-" + AdminTestUtil.timeStamp;
 	public static String policyToken3PartnerId = policyToken3OrganizationName;
 	private static final String policyToken3EmailId = "mosip_policy3_" + System.currentTimeMillis() + "@gmail.com";
 	public static String policyToken3PartnerKeyUrl = "";
