@@ -1847,7 +1847,8 @@
     ],
     "TC_IDA_DemoAuthDelegatedV2Neg_12": [
         "TC_PMS_CreateOIDCClient_Delegated_01",
-        "TC_IDA_GenerateVID_18"
+        "TC_IDA_GenerateVID_18",
+        "TC_IDA_DemoAuthDelegatedV2_06"
     ],
     "TC_IDA_DemoAuthDelegatedV2Neg_13": [
         "TC_DependentModule_Delegated_IdRepo_09",

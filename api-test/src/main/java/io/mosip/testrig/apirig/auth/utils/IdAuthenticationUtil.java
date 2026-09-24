@@ -726,8 +726,11 @@ public class IdAuthenticationUtil extends AdminTestUtil {
 		String inputJson = inputJsonKeyWordHandeler(jsonInput, testCaseName);
 		headers.put(SIGNATURE_HEADERNAME, corruptSignatureValue);
 		String token = new KernelAuthentication().getTokenByRole(role);
-		logger.info(GlobalConstants.POST_REQ_URL + url);
-		GlobalMethods.reportRequest(headers.toString(), inputJson, url);
+		// Not logging/reporting the raw url: it's a delegated partnerKeyURL carrying
+		// the MISP license key and API key in its path segments.
+		String redactedEndpointLabel = "[redacted delegated endpoint for " + testCaseName + "]";
+		logger.info(GlobalConstants.POST_REQ_URL + redactedEndpointLabel);
+		GlobalMethods.reportRequest(headers.toString(), inputJson, redactedEndpointLabel);
 		try {
 			response = RestClient.postRequestWithMultipleHeaders(url, inputJson, MediaType.APPLICATION_JSON,
 					MediaType.APPLICATION_JSON, cookieName, token, headers);

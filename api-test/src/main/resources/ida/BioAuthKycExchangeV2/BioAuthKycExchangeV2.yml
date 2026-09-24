@@ -1168,7 +1168,7 @@ BioAuthKycExchangeV2:
   auth_BioAuthKycExchangeV2_Decode_MetadataPresent_Pos:
       endPoint: /idauthentication/v1/kyc-exchange/v2/delegated/$partialPartnerKeyUrl$/$ID:CreateOIDCClient_Delegated_Valid_Smoke_sid_clientId$
       uniqueIdentifier: TC_IDA_BioAuthKycExchangeV2_22
-      description: Kyc exchange V2 with claimsMetadataRequired true, decodes and validates the claims_metadata in the id_token - expected to succeed
+      description: Kyc exchange V2 with a populated request-level metadata object (partnerId/requestSource passthrough, unrelated to claimsMetadataRequired), decodes and validates the unverified email claim in the id_token - expected to succeed
       role: resident
       restMethod: post
       inputTemplate: ida/BioAuthKycExchangeV2/BioAuthKYCExchangeV2CustomWithMetadata
