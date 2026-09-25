@@ -1209,6 +1209,15 @@
         "TC_DependentModule_Delegated_IdRepo_01",
         "TC_PMS_CreateOIDCClient_Delegated_01"
     ],
+    "TC_IDA_IdentityKeyBinding_01": [
+        "TC_DependentModule_Delegated_IdRepo_01",
+        "TC_PMS_CreateOIDCClient_Delegated_01"
+    ],
+    "TC_IDA_BioAuthDelegatedV2_48": [
+        "TC_DependentModule_Delegated_IdRepo_01",
+        "TC_PMS_CreateOIDCClient_Delegated_01",
+        "TC_IDA_IdentityKeyBinding_01"
+    ],
     "TC_IDA_BioAuthDelegatedV2_02": [
         "TC_DependentModule_Delegated_IdRepo_01",
         "TC_PMS_CreateOIDCClient_Delegated_01"
