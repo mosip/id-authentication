@@ -709,13 +709,7 @@ public class IdAuthenticationUtil extends AdminTestUtil {
 	private static final java.util.regex.Pattern WALLET_PUBLIC_JWK_TOKEN = java.util.regex.Pattern
 			.compile("^\\$WALLETPUBLICJWK:(.+)\\$$");
 
-	/**
-	 * Generates (or reuses, if already cached) a wallet RSA keypair for the given
-	 * name and substitutes its public-only JWK in place of a
-	 * "$WALLETPUBLICJWK:<name>$" token at request.identityKeyBinding.publicKeyJWK.
-	 * The full JWK (including the private key) stays cached under the same name
-	 * in JWKKeyUtil for later use signing a WLA JWT (see resolveWlaJwt).
-	 */
+	// Private key stays cached under walletKeyName in JWKKeyUtil, for resolveWlaJwt to sign with later.
 	public static void resolveWalletPublicJwk(JSONObject request) {
 		if (!request.has("identityKeyBinding")) {
 			return;
@@ -740,18 +734,12 @@ public class IdAuthenticationUtil extends AdminTestUtil {
 			identityKeyBinding.put("publicKeyJWK", publicJwk);
 		} catch (java.text.ParseException e) {
 			logger.error("Failed to build wallet public JWK '" + walletKeyName + "': " + e.getMessage(), e);
+			throw new RuntimeException("Failed to build wallet public JWK '" + walletKeyName + "'", e);
 		}
 	}
 
 	private static final java.util.regex.Pattern WLA_JWT_TOKEN = java.util.regex.Pattern.compile("\\$WLAJWT:([^$]+)\\$");
 
-	/**
-	 * Replaces every "$WLAJWT:<bindingSidTestCaseName>$" token in identityRequest
-	 * with a freshly-signed RS256 WLA JWT, built from the wallet keypair and
-	 * identity-key-binding certificate cached by that binding test's _sid capture.
-	 * Must run on the raw identityRequest string BEFORE it is encrypted, since the
-	 * server enforces a short (default 30s) iat freshness window on this token.
-	 */
 	public static String resolveWlaJwt(String identityRequest, String individualId) {
 		java.util.regex.Matcher matcher = WLA_JWT_TOKEN.matcher(identityRequest);
 		StringBuffer result = new StringBuffer();

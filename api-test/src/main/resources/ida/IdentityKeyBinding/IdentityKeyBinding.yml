@@ -41,5 +41,6 @@ IdentityKeyBinding:
     }
     }'
       output: '{
-  "bindingAuthStatus": "true"
+  "bindingAuthStatus": "true",
+  "identityCertificate": "$IGNORE$"
 }'
