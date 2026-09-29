@@ -11,7 +11,9 @@ import io.mosip.authentication.common.service.validator.AuthRequestValidator;
 import io.mosip.authentication.common.service.validator.BaseAuthRequestValidator;
 import io.mosip.authentication.core.constant.IdAuthCommonConstants;
 import io.mosip.authentication.core.constant.IdAuthenticationErrorConstants;
+import io.mosip.authentication.core.indauth.dto.BaseRequestDTO;
 import io.mosip.authentication.core.indauth.dto.KycExchangeRequestDTO;
+import io.mosip.authentication.core.indauth.dto.KycExchangeRequestDTOV2;
 import io.mosip.authentication.core.logger.IdaLogger;
 import io.mosip.kernel.core.logger.spi.Logger;
 import io.mosip.kernel.core.util.StringUtils;
@@ -39,26 +41,29 @@ public class KycExchangeRequestValidator extends AuthRequestValidator {
 	 */
 	@Override
 	public boolean supports(Class<?> clazz) {
-		return KycExchangeRequestDTO.class.equals(clazz);
+		return KycExchangeRequestDTO.class.equals(clazz) || KycExchangeRequestDTOV2.class.equals(clazz);
 	}
 
 	/*
 	 * (non-Javadoc)
-	 * 
+	 *
 	 * @see io.mosip.authentication.service.impl.indauth.validator.
 	 * BaseAuthRequestValidator#validate(java.lang.Object,
 	 * org.springframework.validation.Errors)
 	 */
 	@Override
 	public void validate(Object target, Errors errors) {
-		KycExchangeRequestDTO kycExchangeRequestDTO = (KycExchangeRequestDTO) target;
+		// target is either KycExchangeRequestDTO (v1) or KycExchangeRequestDTOV2 - they
+		// don't share a common type for kycToken, so BaseRequestDTO covers the common
+		// fields and getKycToken(target) branches for the rest.
+		BaseRequestDTO kycExchangeRequestDTO = target instanceof BaseRequestDTO ? (BaseRequestDTO) target : null;
 		if (kycExchangeRequestDTO != null) {
 			if (!errors.hasErrors()) {
 				validateReqTime(kycExchangeRequestDTO.getRequestTime(), errors, IdAuthCommonConstants.REQ_TIME);
 			}
 
 			if (!errors.hasErrors()) {
-				validateKycToken(kycExchangeRequestDTO.getKycToken(), errors, IdAuthCommonConstants.KYC_TOKEN);
+				validateKycToken(getKycToken(target), errors, IdAuthCommonConstants.KYC_TOKEN);
 			}
 
 			// commented below validation because end user can provide nil consent.
@@ -69,7 +74,7 @@ public class KycExchangeRequestValidator extends AuthRequestValidator {
 			if (!errors.hasErrors()) {
 				validateTxnId(kycExchangeRequestDTO.getTransactionID(), errors, IdAuthCommonConstants.TRANSACTION_ID);
 			}
-			
+
 		} else {
 			mosipLogger.error(IdAuthCommonConstants.SESSION_ID, this.getClass().getSimpleName(), IdAuthCommonConstants.VALIDATE,
 					IdAuthCommonConstants.INVALID_INPUT_PARAMETER + IdAuthCommonConstants.REQUEST);
@@ -77,6 +82,15 @@ public class KycExchangeRequestValidator extends AuthRequestValidator {
 					String.format(IdAuthenticationErrorConstants.UNABLE_TO_PROCESS.getErrorMessage(), IdAuthCommonConstants.REQUEST));
 		}
 
+	}
+
+	private String getKycToken(Object target) {
+		if (target instanceof KycExchangeRequestDTO) {
+			return ((KycExchangeRequestDTO) target).getKycToken();
+		} else if (target instanceof KycExchangeRequestDTOV2) {
+			return ((KycExchangeRequestDTOV2) target).getKycToken();
+		}
+		return null;
 	}
 
 	private void validateKycToken(String kycToken, Errors errors, String paramName) {
