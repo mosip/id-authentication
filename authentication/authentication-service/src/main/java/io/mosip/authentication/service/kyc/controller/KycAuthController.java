@@ -1,5 +1,7 @@
 package io.mosip.authentication.service.kyc.controller;
 
+import static io.mosip.authentication.core.constant.IdAuthCommonConstants.INDIVIDUAL_ID;
+
 import java.util.Map;
 import java.util.Objects;
 import java.util.Optional;
@@ -147,6 +149,15 @@ public class KycAuthController {
 	private void initKycExchangeBinder(WebDataBinder binder) {
 		binder.setValidator(kycExchangeValidator);
 	}
+
+	/**
+	 *
+	 * @param binder the binder
+	 */
+	@InitBinder("kycExchangeRequestDTOV2")
+	private void initKycExchangeV2Binder(WebDataBinder binder) {
+		binder.setValidator(kycExchangeValidator);
+	}
 	
 	@PostConstruct
 	public void init() {
@@ -283,7 +294,7 @@ public class KycAuthController {
 						: idTypeUtil.getIdType(authRequestDTO.getIndividualId()).getType();
 				authRequestDTO.setIndividualIdType(idType);
 
-				authRequestValidator.validateIdvId(authRequestDTO.getIndividualId(), idType, errors);
+				authRequestValidator.validateIdvId(authRequestDTO.getIndividualId(), idType, errors, INDIVIDUAL_ID);
 
 				if (AuthTypeUtil.isBio(authRequestDTO)) {
 					mosipLogger.debug(IdAuthCommonConstants.SESSION_ID, this.getClass().getSimpleName(), "processKycAuth",
@@ -395,7 +406,7 @@ public class KycAuthController {
 				String idType = Objects.nonNull(kycExchangeRequestDTO.getIndividualIdType()) ? kycExchangeRequestDTO.getIndividualIdType()
 						: idTypeUtil.getIdType(kycExchangeRequestDTO.getIndividualId()).getType();
 				kycExchangeRequestDTO.setIndividualIdType(idType);
-				kycExchangeValidator.validateIdvId(kycExchangeRequestDTO.getIndividualId(), idType, errors);
+				kycExchangeValidator.validateIdvId(kycExchangeRequestDTO.getIndividualId(), idType, errors, INDIVIDUAL_ID);
 				DataValidationUtil.validate(errors);
 				
 				Map<String, Object> metadata = kycExchangeRequestDTO.getMetadata();
@@ -463,7 +474,7 @@ public class KycAuthController {
 				String idType = Objects.nonNull(authRequestDTO.getIndividualIdType()) ? authRequestDTO.getIndividualIdType()
 						: idTypeUtil.getIdType(authRequestDTO.getIndividualId()).getType();
 						authRequestDTO.setIndividualIdType(idType);
-				authRequestValidator.validateIdvId(authRequestDTO.getIndividualId(), idType, errors);
+				authRequestValidator.validateIdvId(authRequestDTO.getIndividualId(), idType, errors, INDIVIDUAL_ID);
 				if(AuthTypeUtil.isBio(authRequestDTO)) {
 					kycReqValidator.validateDeviceDetails(authRequestDTO, errors);
 				}
@@ -546,7 +557,7 @@ public class KycAuthController {
 				String idType = Objects.nonNull(kycExchangeRequestDTOV2.getIndividualIdType()) ? kycExchangeRequestDTOV2.getIndividualIdType()
 						: idTypeUtil.getIdType(kycExchangeRequestDTOV2.getIndividualId()).getType();
 						kycExchangeRequestDTOV2.setIndividualIdType(idType);
-				kycExchangeValidator.validateIdvId(kycExchangeRequestDTOV2.getIndividualId(), idType, errors);
+				kycExchangeValidator.validateIdvId(kycExchangeRequestDTOV2.getIndividualId(), idType, errors, INDIVIDUAL_ID);
 				DataValidationUtil.validate(errors);
 				
 				Map<String, Object> metadata = kycExchangeRequestDTOV2.getMetadata();
