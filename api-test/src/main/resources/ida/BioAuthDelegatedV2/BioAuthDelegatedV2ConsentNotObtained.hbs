@@ -1,6 +1,6 @@
 {
-	"id": "mosip.identity.auth",
-	"consentObtained": true,
+	"id": "mosip.identity.kycauth",
+	"consentObtained": false,
 	"individualId": "{{individualId}}",
 	"individualIdType": "{{individualIdType}}",
 	"request": "wB6n9jA-jZ0NPJQjkyPyugYWzk4fJvgHnP8OKVu4urfnjdrT1O3hycb9HncVXMmgrmgbXwBAX-01RgHyB-EJJN9Ahk_u0JZTKiZfXLnmQI6lBjpruG-L2dJyfR0vAMt3Yb0W8BcNd1i2wMpAcu8tpm-aXz79nnh68_a3HdSM84799kopLW26pFo_iQzqNT0VuOg1OBEjtkb92NsCt-391v20UjRyIr1hIETHReOjCjI",
@@ -8,11 +8,11 @@
 	"requestTime": "{{requestTime}}",
 	"filters": [
     {{#each filters}}
-       "{{type}}": {{bio}}
+       { "{{type}}": {{bio}} }
        {{#unless @last}},{{/unless}}
       	{{/each}}
     ],
-	"requestedAuth": {	
+	"requestedAuth": {
 		"bio": {{bio}},
 		"demo": {{demo}},
 		"otp": {{otp}},
@@ -21,9 +21,10 @@
 	"requestSessionKey": "sessionkey",
 	"transactionID": "{{transactionId}}",
 	"domainUri": "baseurl",
-	"env": "Staging",
+    "env": "Staging",
 	"keyIndex": "string",
 	"specVersion": "1.0",
 	"thumbprint": "partnerORinternalthumbprint",
-	"version": "1.0"
+	"version": "1.0",
+	"claimsMetadataRequired": {{claimsMetadataRequired}}
 }

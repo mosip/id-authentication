@@ -902,14 +902,15 @@ BioAuthDelegatedNeg:
   auth_BioAuthDelegatedNeg_With_Deactivated_UIN:
       endPoint: /idauthentication/v1/kyc-auth/delegated/$partialPartnerKeyUrl$/$ID:CreateOIDCClient_Delegated_Valid_Smoke_sid_clientId$
       uniqueIdentifier: TC_IDA_BioAuthDelegatedNeg_21
-      description: Bio kyc delegated auth with deactivated UIN
+      description: Bio kyc delegated auth with a hotlist-blocked UIN
       role: resident
       restMethod: post
+      additionalDependencies: TC_DependentModule_IdRepo_63,TC_IDA_HotlistAPI_15
       inputTemplate: ida/BioAuthDelegatedNeg/BioAuthDelegated
       outputTemplate: ida/DelegateError
       input: '{
         "requestTime": "$TIMESTAMP$",
-        "individualId": "$ID:AddIdentity_deactivate_UIN_smoke_sid_Pos_UIN$",
+        "individualId": "$ID:AddIdentity_ForBioAuthDelegatedNeg_HotlistedUIN_smoke_sid_Pos_UIN$",
         "transactionId": "$TRANSACTIONID$",
         "individualIdType": "UIN",
         "bio": true,
@@ -940,7 +941,7 @@ BioAuthDelegatedNeg:
       output: '{
     "errors": [
         {
-          "errorCode": "IDA-MLC-019"
+          "errorCode": "IDA-MLC-008"
         }
       ]
 }'

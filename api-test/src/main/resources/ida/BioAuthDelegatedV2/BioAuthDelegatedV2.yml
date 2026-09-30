@@ -43,11 +43,11 @@ BioAuthDelegatedV2:
   auth_BioAuthDelegatedV2_claimsMetadataRequired_true_Pos:
       endPoint: /idauthentication/v1/kyc-auth/v2/delegated/$partialPartnerKeyUrl$/$ID:CreateOIDCClient_Delegated_Valid_Smoke_sid_clientId$
       uniqueIdentifier: TC_IDA_BioAuthDelegatedV2_02
-      description: Kyc auth V2 with claimsMetadataRequired true - response must carry a non-empty verifiedClaimsMetadata - expected to succeed
+      description: Kyc auth V2 with claimsMetadataRequired true - expected to succeed
       role: resident
       restMethod: post
       inputTemplate: ida/BioAuthDelegatedV2/BioAuthDelegatedV2
-      outputTemplate: ida/BioAuthDelegatedV2/BioKYCAuthDelegatedResultWithClaimsMeta
+      outputTemplate: ida/BioAuthDelegatedV2/BioKYCAuthDelegatedResult
       input: '{
         "requestTime": "$TIMESTAMP$",
         "individualId": "$ID:AddIdentity_For_Kyc_Delegated_Bio_Auth_Smoke_Pos_UIN$",
@@ -80,6 +80,8 @@ BioAuthDelegatedV2:
     }'
       output: '{
   "kycStatus": "true",
+  "kycToken": "$REGEXP:^(?!null).+$",
+  "authToken": "$REGEXP:^(?!null).+$",
   "verifiedClaimsMetadata": "$IGNORE$"
 }'
   auth_BioAuthDelegatedV2_claimsMetadataRequired_false_Pos:
@@ -89,7 +91,7 @@ BioAuthDelegatedV2:
       role: resident
       restMethod: post
       inputTemplate: ida/BioAuthDelegatedV2/BioAuthDelegatedV2ClaimsOmitted
-      outputTemplate: ida/BioAuthDelegatedV2/BioKYCAuthDelegatedResult
+      outputTemplate: ida/BioAuthDelegatedV2/BioKYCAuthDelegatedResultWithTokens
       input: '{
         "requestTime": "$TIMESTAMP$",
         "individualId": "$ID:AddIdentity_For_Kyc_Delegated_Bio_Auth_Smoke_Pos_UIN$",
@@ -120,7 +122,52 @@ BioAuthDelegatedV2:
     }
     }'
       output: '{
-  "kycStatus": "true"
+  "kycStatus": "true",
+  "kycToken": "$REGEXP:^(?!null).+$",
+  "authToken": "$REGEXP:^(?!null).+$"
+}'
+  auth_BioAuthDelegatedV2_claimsMetadataRequired_explicit_false_Pos:
+      endPoint: /idauthentication/v1/kyc-auth/v2/delegated/$partialPartnerKeyUrl$/$ID:CreateOIDCClient_Delegated_Valid_Smoke_sid_clientId$
+      uniqueIdentifier: TC_IDA_BioAuthDelegatedV2_11
+      description: Kyc auth V2 with claimsMetadataRequired explicitly false - expected to succeed
+      role: resident
+      restMethod: post
+      inputTemplate: ida/BioAuthDelegatedV2/BioAuthDelegatedV2
+      outputTemplate: ida/BioAuthDelegatedV2/BioKYCAuthDelegatedResultWithTokens
+      input: '{
+        "requestTime": "$TIMESTAMP$",
+        "individualId": "$ID:AddIdentity_For_Kyc_Delegated_Bio_Auth_Smoke_Pos_UIN$",
+        "transactionId": "$TRANSACTIONID$",
+        "individualIdType": "UIN",
+        "claimsMetadataRequired": false,
+        "bio": true,
+        "demo": false,
+        "otp": false,
+        "identityRequest":{
+          "bioSubType": "UNKNOWN",
+          "bioType": "FACE",
+          "bioValue": "$FACE$",
+          "deviceCode": "bc0b6848-6d45-46d1-a9bd-b334410bf823",
+          "dateTime": "$DATETIME$",
+          "deviceProviderID": "1873299273",
+          "deviceServiceID": "",
+          "deviceServiceVersion": "SB.WIN.001",
+          "deviceProvider": "SYNCBYTE",
+          "deviceProviderId": "SYNCBYTE.LTC165",
+          "deviceSubType": "Full face",
+          "make": "Logitech",
+          "model": "4d36e96c-e325-11ce-bfc1-08002be10318",
+          "serialNo": "78467171",
+          "type": "Face",
+    "transactionId": "$TRANSACTIONID$",
+    "identityRequestTemplate": "ida/BioAuthDelegatedV2/BioAuthIdentityEncrypt",
+    "identityRequestEncUrl": "/idauthentication/v1/internal/encrypt"
+    }
+    }'
+      output: '{
+  "kycStatus": "true",
+  "kycToken": "$REGEXP:^(?!null).+$",
+  "authToken": "$REGEXP:^(?!null).+$"
 }'
   auth_BioAuthDelegatedV2Neg_Invalid_BioValue_Neg:
       endPoint: /idauthentication/v1/kyc-auth/v2/delegated/$partialPartnerKeyUrl$/$ID:CreateOIDCClient_Delegated_Valid_Smoke_sid_clientId$
@@ -467,7 +514,7 @@ BioAuthDelegatedV2:
   auth_BioAuthDelegatedV2Neg_Malformed_TransactionID_Neg:
       endPoint: /idauthentication/v1/kyc-auth/v2/delegated/$partialPartnerKeyUrl$/$ID:CreateOIDCClient_Delegated_Valid_Smoke_sid_clientId$
       uniqueIdentifier: TC_IDA_BioAuthDelegatedV2Neg_08
-      description: Kyc auth V2 with transactionId not matching v1's 10-char alphanumeric format - v2 rejects it same as v1 (see TC_IDA_BioAuthDelegatedV2Neg_09 for the v2-specific upper bound instead)
+      description: Kyc auth V2 with a malformed transactionID - expected to fail
       role: resident
       restMethod: post
       inputTemplate: ida/BioAuthDelegatedV2/BioAuthDelegatedV2
@@ -515,7 +562,7 @@ BioAuthDelegatedV2:
   auth_BioAuthDelegatedV2Neg_TransactionID_TooLong_Neg:
       endPoint: /idauthentication/v1/kyc-auth/v2/delegated/$partialPartnerKeyUrl$/$ID:CreateOIDCClient_Delegated_Valid_Smoke_sid_clientId$
       uniqueIdentifier: TC_IDA_BioAuthDelegatedV2Neg_09
-      description: Kyc auth V2 with transactionID exceeding the v2 schema's 50 char upper bound - expected to fail
+      description: Kyc auth V2 with a transactionID exceeding the max length - expected to fail
       role: resident
       restMethod: post
       inputTemplate: ida/BioAuthDelegatedV2/BioAuthDelegatedV2
@@ -707,7 +754,7 @@ BioAuthDelegatedV2:
   auth_BioAuthDelegatedV2Neg_IndividualId_TooShort_Neg:
       endPoint: /idauthentication/v1/kyc-auth/v2/delegated/$partialPartnerKeyUrl$/$ID:CreateOIDCClient_Delegated_Valid_Smoke_sid_clientId$
       uniqueIdentifier: TC_IDA_BioAuthDelegatedV2Neg_13
-      description: Kyc auth V2 with individualId shorter than the schema's 12 char lower bound - expected to fail
+      description: Kyc auth V2 with an individualId shorter than allowed - expected to fail
       role: resident
       restMethod: post
       inputTemplate: ida/BioAuthDelegatedV2/BioAuthDelegatedV2
@@ -755,7 +802,7 @@ BioAuthDelegatedV2:
   auth_BioAuthDelegatedV2Neg_IndividualId_TooLong_Neg:
       endPoint: /idauthentication/v1/kyc-auth/v2/delegated/$partialPartnerKeyUrl$/$ID:CreateOIDCClient_Delegated_Valid_Smoke_sid_clientId$
       uniqueIdentifier: TC_IDA_BioAuthDelegatedV2Neg_14
-      description: Kyc auth V2 with individualId longer than the schema's 28 char upper bound - expected to fail
+      description: Kyc auth V2 with an individualId longer than allowed - expected to fail
       role: resident
       restMethod: post
       inputTemplate: ida/BioAuthDelegatedV2/BioAuthDelegatedV2
@@ -800,10 +847,243 @@ BioAuthDelegatedV2:
         "authStatus": false
       }
 }'
+  auth_BioAuthDelegatedV2Neg_Missing_IndividualId_Neg:
+      endPoint: /idauthentication/v1/kyc-auth/v2/delegated/$partialPartnerKeyUrl$/$ID:CreateOIDCClient_Delegated_Valid_Smoke_sid_clientId$
+      uniqueIdentifier: TC_IDA_BioAuthDelegatedV2Neg_15
+      description: Kyc auth V2 with missing individualId - expected to fail
+      role: resident
+      restMethod: post
+      inputTemplate: ida/BioAuthDelegatedV2/BioAuthDelegatedV2
+      outputTemplate: ida/BioAuthDelegatedV2/error
+      input: '{
+        "requestTime": "$TIMESTAMP$",
+        "individualId": "$REMOVE$",
+        "transactionId": "$TRANSACTIONID$",
+        "individualIdType": "UIN",
+        "claimsMetadataRequired": false,
+        "bio": true,
+        "demo": false,
+        "otp": false,
+        "identityRequest":{
+          "bioSubType": "UNKNOWN",
+          "bioType": "FACE",
+          "bioValue": "$FACE$",
+          "deviceCode": "bc0b6848-6d45-46d1-a9bd-b334410bf823",
+          "dateTime": "$DATETIME$",
+          "deviceProviderID": "1873299273",
+          "deviceServiceID": "",
+          "deviceServiceVersion": "SB.WIN.001",
+          "deviceProvider": "SYNCBYTE",
+          "deviceProviderId": "SYNCBYTE.LTC165",
+          "deviceSubType": "Full face",
+          "make": "Logitech",
+          "model": "4d36e96c-e325-11ce-bfc1-08002be10318",
+          "serialNo": "78467171",
+          "type": "Face",
+    "transactionId": "$TRANSACTIONID$",
+    "identityRequestTemplate": "ida/BioAuthDelegatedV2/BioAuthIdentityEncrypt",
+    "identityRequestEncUrl": "/idauthentication/v1/internal/encrypt"
+    }
+    }'
+      output: '{
+      "errors": [
+        {
+          "errorCode": "IDA-MLC-006"
+        }
+      ],
+      "response": {
+        "authStatus": false
+      }
+}'
+  auth_BioAuthDelegatedV2_Missing_IndividualIdType_Pos:
+      endPoint: /idauthentication/v1/kyc-auth/v2/delegated/$partialPartnerKeyUrl$/$ID:CreateOIDCClient_Delegated_Valid_Smoke_sid_clientId$
+      uniqueIdentifier: TC_IDA_BioAuthDelegatedV2Neg_16
+      description: Kyc auth V2 with individualIdType omitted, server auto-detects the type from individualId - expected to succeed
+      role: resident
+      restMethod: post
+      inputTemplate: ida/BioAuthDelegatedV2/BioAuthDelegatedV2
+      outputTemplate: ida/BioAuthDelegatedV2/BioKYCAuthDelegatedResult
+      input: '{
+        "requestTime": "$TIMESTAMP$",
+        "individualId": "$ID:AddIdentity_ValidParam_smoke_Pos_UIN$",
+        "transactionId": "$TRANSACTIONID$",
+        "individualIdType": "$REMOVE$",
+        "claimsMetadataRequired": false,
+        "bio": true,
+        "demo": false,
+        "otp": false,
+        "identityRequest":{
+          "bioSubType": "UNKNOWN",
+          "bioType": "FACE",
+          "bioValue": "$FACE$",
+          "deviceCode": "bc0b6848-6d45-46d1-a9bd-b334410bf823",
+          "dateTime": "$DATETIME$",
+          "deviceProviderID": "1873299273",
+          "deviceServiceID": "",
+          "deviceServiceVersion": "SB.WIN.001",
+          "deviceProvider": "SYNCBYTE",
+          "deviceProviderId": "SYNCBYTE.LTC165",
+          "deviceSubType": "Full face",
+          "make": "Logitech",
+          "model": "4d36e96c-e325-11ce-bfc1-08002be10318",
+          "serialNo": "78467171",
+          "type": "Face",
+    "transactionId": "$TRANSACTIONID$",
+    "identityRequestTemplate": "ida/BioAuthDelegatedV2/BioAuthIdentityEncrypt",
+    "identityRequestEncUrl": "/idauthentication/v1/internal/encrypt"
+    }
+    }'
+      output: '{
+  "kycStatus": "true"
+}'
+  auth_BioAuthDelegatedV2Neg_Missing_TransactionId_Neg:
+      endPoint: /idauthentication/v1/kyc-auth/v2/delegated/$partialPartnerKeyUrl$/$ID:CreateOIDCClient_Delegated_Valid_Smoke_sid_clientId$
+      uniqueIdentifier: TC_IDA_BioAuthDelegatedV2Neg_17
+      description: Kyc auth V2 with missing transactionId - expected to fail
+      role: resident
+      restMethod: post
+      inputTemplate: ida/BioAuthDelegatedV2/BioAuthDelegatedV2
+      outputTemplate: ida/BioAuthDelegatedV2/error
+      input: '{
+        "requestTime": "$TIMESTAMP$",
+        "individualId": "$ID:AddIdentity_ValidParam_smoke_Pos_UIN$",
+        "transactionId": "$REMOVE$",
+        "individualIdType": "UIN",
+        "claimsMetadataRequired": false,
+        "bio": true,
+        "demo": false,
+        "otp": false,
+        "identityRequest":{
+          "bioSubType": "UNKNOWN",
+          "bioType": "FACE",
+          "bioValue": "$FACE$",
+          "deviceCode": "bc0b6848-6d45-46d1-a9bd-b334410bf823",
+          "dateTime": "$DATETIME$",
+          "deviceProviderID": "1873299273",
+          "deviceServiceID": "",
+          "deviceServiceVersion": "SB.WIN.001",
+          "deviceProvider": "SYNCBYTE",
+          "deviceProviderId": "SYNCBYTE.LTC165",
+          "deviceSubType": "Full face",
+          "make": "Logitech",
+          "model": "4d36e96c-e325-11ce-bfc1-08002be10318",
+          "serialNo": "78467171",
+          "type": "Face",
+    "transactionId": "$TRANSACTIONID$",
+    "identityRequestTemplate": "ida/BioAuthDelegatedV2/BioAuthIdentityEncrypt",
+    "identityRequestEncUrl": "/idauthentication/v1/internal/encrypt"
+    }
+    }'
+      output: '{
+      "errors": [
+        {
+          "errorCode": "IDA-MLC-006"
+        }
+      ],
+      "response": {
+        "authStatus": false
+      }
+}'
+  auth_BioAuthDelegatedV2Neg_Missing_Id_Neg:
+      endPoint: /idauthentication/v1/kyc-auth/v2/delegated/$partialPartnerKeyUrl$/$ID:CreateOIDCClient_Delegated_Valid_Smoke_sid_clientId$
+      uniqueIdentifier: TC_IDA_BioAuthDelegatedV2Neg_18
+      description: Kyc auth V2 with the top-level id field omitted - expected to fail
+      role: resident
+      restMethod: post
+      inputTemplate: ida/BioAuthDelegatedV2/BioAuthDelegatedV2WithoutId
+      outputTemplate: ida/DelegateError
+      input: '{
+        "requestTime": "$TIMESTAMP$",
+        "individualId": "$ID:AddIdentity_ValidParam_smoke_Pos_UIN$",
+        "transactionId": "$TRANSACTIONID$",
+        "individualIdType": "UIN",
+        "claimsMetadataRequired": false,
+        "bio": true,
+        "demo": false,
+        "otp": false,
+        "identityRequest":{
+          "bioSubType": "UNKNOWN",
+          "bioType": "FACE",
+          "bioValue": "$FACE$",
+          "deviceCode": "bc0b6848-6d45-46d1-a9bd-b334410bf823",
+          "dateTime": "$DATETIME$",
+          "deviceProviderID": "1873299273",
+          "deviceServiceID": "",
+          "deviceServiceVersion": "SB.WIN.001",
+          "deviceProvider": "SYNCBYTE",
+          "deviceProviderId": "SYNCBYTE.LTC165",
+          "deviceSubType": "Full face",
+          "make": "Logitech",
+          "model": "4d36e96c-e325-11ce-bfc1-08002be10318",
+          "serialNo": "78467171",
+          "type": "Face",
+    "transactionId": "$TRANSACTIONID$",
+    "identityRequestTemplate": "ida/BioAuthDelegatedV2/BioAuthIdentityEncrypt",
+    "identityRequestEncUrl": "/idauthentication/v1/internal/encrypt"
+    }
+    }'
+      output: '{
+      "errors": [
+        {
+          "errorCode": "IDA-MLC-007"
+        },
+        {
+          "errorCode": "IDA-MLC-006"
+        }
+      ]
+}'
+  auth_BioAuthDelegatedV2Neg_Missing_Version_Neg:
+      endPoint: /idauthentication/v1/kyc-auth/v2/delegated/$partialPartnerKeyUrl$/$ID:CreateOIDCClient_Delegated_Valid_Smoke_sid_clientId$
+      uniqueIdentifier: TC_IDA_BioAuthDelegatedV2Neg_19
+      description: Kyc auth V2 with the top-level version field omitted - expected to fail
+      role: resident
+      restMethod: post
+      inputTemplate: ida/BioAuthDelegatedV2/BioAuthDelegatedV2WithoutVersion
+      outputTemplate: ida/DelegateError
+      input: '{
+        "requestTime": "$TIMESTAMP$",
+        "individualId": "$ID:AddIdentity_ValidParam_smoke_Pos_UIN$",
+        "transactionId": "$TRANSACTIONID$",
+        "individualIdType": "UIN",
+        "claimsMetadataRequired": false,
+        "bio": true,
+        "demo": false,
+        "otp": false,
+        "identityRequest":{
+          "bioSubType": "UNKNOWN",
+          "bioType": "FACE",
+          "bioValue": "$FACE$",
+          "deviceCode": "bc0b6848-6d45-46d1-a9bd-b334410bf823",
+          "dateTime": "$DATETIME$",
+          "deviceProviderID": "1873299273",
+          "deviceServiceID": "",
+          "deviceServiceVersion": "SB.WIN.001",
+          "deviceProvider": "SYNCBYTE",
+          "deviceProviderId": "SYNCBYTE.LTC165",
+          "deviceSubType": "Full face",
+          "make": "Logitech",
+          "model": "4d36e96c-e325-11ce-bfc1-08002be10318",
+          "serialNo": "78467171",
+          "type": "Face",
+    "transactionId": "$TRANSACTIONID$",
+    "identityRequestTemplate": "ida/BioAuthDelegatedV2/BioAuthIdentityEncrypt",
+    "identityRequestEncUrl": "/idauthentication/v1/internal/encrypt"
+    }
+    }'
+      output: '{
+      "errors": [
+        {
+          "errorCode": "IDA-MLC-007"
+        },
+        {
+          "errorCode": "IDA-MLC-006"
+        }
+      ]
+}'
   auth_BioAuthDelegatedV2_forKycExchangeV2IndividualIdMismatch_Pos_Sid:
       endPoint: /idauthentication/v1/kyc-auth/v2/delegated/$partialPartnerKeyUrl$/$ID:CreateOIDCClient_Delegated_Valid_Smoke_sid_clientId$
       uniqueIdentifier: TC_IDA_BioAuthDelegatedV2_04
-      description: Kyc auth V2 dedicated token for kyc-exchange V2 individualId mismatch negative test - expected to succeed
+      description: Kyc auth V2 dedicated token for the kyc-exchange individualId-mismatch test - expected to succeed
       role: resident
       restMethod: post
       inputTemplate: ida/BioAuthDelegatedV2/BioAuthDelegatedV2
@@ -844,7 +1124,7 @@ BioAuthDelegatedV2:
   auth_BioAuthDelegatedV2_forKycExchangeV2DuplicateClaims_Pos_Sid:
       endPoint: /idauthentication/v1/kyc-auth/v2/delegated/$partialPartnerKeyUrl$/$ID:CreateOIDCClient_Delegated_Valid_Smoke_sid_clientId$
       uniqueIdentifier: TC_IDA_BioAuthDelegatedV2_05
-      description: Kyc auth V2 dedicated token for kyc-exchange V2 duplicate verified/unverified claims negative test - expected to succeed
+      description: Kyc auth V2 dedicated token for the kyc-exchange duplicate-claims test - expected to succeed
       role: resident
       restMethod: post
       inputTemplate: ida/BioAuthDelegatedV2/BioAuthDelegatedV2
@@ -885,7 +1165,7 @@ BioAuthDelegatedV2:
   auth_BioAuthDelegatedV2_forKycExchangeV2MissingTxnId_Pos_Sid:
       endPoint: /idauthentication/v1/kyc-auth/v2/delegated/$partialPartnerKeyUrl$/$ID:CreateOIDCClient_Delegated_Valid_Smoke_sid_clientId$
       uniqueIdentifier: TC_IDA_BioAuthDelegatedV2_06
-      description: Kyc auth V2 dedicated token for kyc-exchange V2 missing/null transactionID negative test - expected to succeed
+      description: Kyc auth V2 dedicated token for the kyc-exchange missing-transactionID test - expected to succeed
       role: resident
       restMethod: post
       inputTemplate: ida/BioAuthDelegatedV2/BioAuthDelegatedV2
@@ -926,14 +1206,14 @@ BioAuthDelegatedV2:
   auth_BioAuthDelegatedV2_forKycExchangeV2VerifiedOnly_Pos_Sid:
       endPoint: /idauthentication/v1/kyc-auth/v2/delegated/$partialPartnerKeyUrl$/$ID:CreateOIDCClient_Delegated_Valid_Smoke_sid_clientId$
       uniqueIdentifier: TC_IDA_BioAuthDelegatedV2_07
-      description: Kyc auth V2 dedicated token for kyc-exchange V2 verified-claims-only positive test - expected to succeed
+      description: Kyc auth V2 dedicated token for the kyc-exchange verified-claims-only test - expected to succeed
       role: resident
       restMethod: post
       inputTemplate: ida/BioAuthDelegatedV2/BioAuthDelegatedV2
       outputTemplate: ida/BioAuthDelegatedV2/BioKYCAuthDelegatedResult
       input: '{
         "requestTime": "$TIMESTAMP$",
-        "individualId": "$ID:AddIdentity_For_Kyc_Delegated_Bio_Auth_Smoke_Pos_UIN$",
+        "individualId": "$ID:AddIdentity_ForVerifiedNameDob_Bio_Auth_Smoke_Pos_UIN$",
         "transactionId": "$TRANSACTIONID$",
         "individualIdType": "UIN",
         "claimsMetadataRequired": false,
@@ -967,7 +1247,7 @@ BioAuthDelegatedV2:
   auth_BioAuthDelegatedV2_forKycExchangeV2UnverifiedOnly_Pos_Sid:
       endPoint: /idauthentication/v1/kyc-auth/v2/delegated/$partialPartnerKeyUrl$/$ID:CreateOIDCClient_Delegated_Valid_Smoke_sid_clientId$
       uniqueIdentifier: TC_IDA_BioAuthDelegatedV2_08
-      description: Kyc auth V2 dedicated token for kyc-exchange V2 unverified-claims-only positive test - expected to succeed
+      description: Kyc auth V2 dedicated token for the kyc-exchange unverified-claims-only test - expected to succeed
       role: resident
       restMethod: post
       inputTemplate: ida/BioAuthDelegatedV2/BioAuthDelegatedV2
@@ -1008,7 +1288,48 @@ BioAuthDelegatedV2:
   auth_BioAuthDelegatedV2_forKycExchangeV2MultiVerification_Pos_Sid:
       endPoint: /idauthentication/v1/kyc-auth/v2/delegated/$partialPartnerKeyUrl$/$ID:CreateOIDCClient_Delegated_Valid_Smoke_sid_clientId$
       uniqueIdentifier: TC_IDA_BioAuthDelegatedV2_09
-      description: Kyc auth V2 dedicated token for kyc-exchange V2 multiple verification blocks positive test - expected to succeed
+      description: Kyc auth V2 dedicated token for the kyc-exchange multi-verification-block test - expected to succeed
+      role: resident
+      restMethod: post
+      inputTemplate: ida/BioAuthDelegatedV2/BioAuthDelegatedV2
+      outputTemplate: ida/BioAuthDelegatedV2/BioKYCAuthDelegatedResult
+      input: '{
+        "requestTime": "$TIMESTAMP$",
+        "individualId": "$ID:AddIdentity_ForVerifiedNameDob_Bio_Auth_Smoke_Pos_UIN$",
+        "transactionId": "$TRANSACTIONID$",
+        "individualIdType": "UIN",
+        "claimsMetadataRequired": true,
+        "bio": true,
+        "demo": false,
+        "otp": false,
+        "identityRequest":{
+          "bioSubType": "UNKNOWN",
+          "bioType": "FACE",
+          "bioValue": "$FACE$",
+          "deviceCode": "bc0b6848-6d45-46d1-a9bd-b334410bf823",
+          "dateTime": "$DATETIME$",
+          "deviceProviderID": "1873299273",
+          "deviceServiceID": "",
+          "deviceServiceVersion": "SB.WIN.001",
+          "deviceProvider": "SYNCBYTE",
+          "deviceProviderId": "SYNCBYTE.LTC165",
+          "deviceSubType": "Full face",
+          "make": "Logitech",
+          "model": "4d36e96c-e325-11ce-bfc1-08002be10318",
+          "serialNo": "78467171",
+          "type": "Face",
+    "transactionId": "$TRANSACTIONID$",
+    "identityRequestTemplate": "ida/BioAuthDelegatedV2/BioAuthIdentityEncrypt",
+    "identityRequestEncUrl": "/idauthentication/v1/internal/encrypt"
+    }
+    }'
+      output: '{
+  "kycStatus": "true"
+}'
+  auth_BioAuthDelegatedV2_forKycExchangeV2RespTypeNonJwe_Pos_Sid:
+      endPoint: /idauthentication/v1/kyc-auth/v2/delegated/$partialPartnerKeyUrl$/$ID:CreateOIDCClient_Delegated_Valid_Smoke_sid_clientId$
+      uniqueIdentifier: TC_IDA_BioAuthDelegatedV2_10
+      description: Kyc auth V2 dedicated token for the kyc-exchange non-JWE respType test - expected to succeed
       role: resident
       restMethod: post
       inputTemplate: ida/BioAuthDelegatedV2/BioAuthDelegatedV2
@@ -1046,10 +1367,389 @@ BioAuthDelegatedV2:
       output: '{
   "kycStatus": "true"
 }'
-  auth_BioAuthDelegatedV2_forKycExchangeV2RespTypeNonJwe_Pos_Sid:
+  auth_BioAuthDelegatedV2Neg_Expired_RequestTime_Neg:
       endPoint: /idauthentication/v1/kyc-auth/v2/delegated/$partialPartnerKeyUrl$/$ID:CreateOIDCClient_Delegated_Valid_Smoke_sid_clientId$
-      uniqueIdentifier: TC_IDA_BioAuthDelegatedV2_10
-      description: Kyc auth V2 dedicated token for kyc-exchange V2 non-JWE respType positive test - expected to succeed
+      uniqueIdentifier: TC_IDA_BioAuthDelegatedV2Neg_20
+      description: Kyc auth V2 with an expired requestTime - expected to fail
+      role: resident
+      restMethod: post
+      inputTemplate: ida/BioAuthDelegatedV2/BioAuthDelegatedV2
+      outputTemplate: ida/BioAuthDelegatedV2/error
+      input: '{
+        "requestTime": "2020-01-01T00:00:00.000Z",
+        "individualId": "$ID:AddIdentity_ValidParam_smoke_Pos_UIN$",
+        "transactionId": "$TRANSACTIONID$",
+        "individualIdType": "UIN",
+        "claimsMetadataRequired": false,
+        "bio": true,
+        "demo": false,
+        "otp": false,
+        "identityRequest":{
+          "bioSubType": "UNKNOWN",
+          "bioType": "FACE",
+          "bioValue": "$FACE$",
+          "deviceCode": "bc0b6848-6d45-46d1-a9bd-b334410bf823",
+          "dateTime": "$DATETIME$",
+          "deviceProviderID": "1873299273",
+          "deviceServiceID": "",
+          "deviceServiceVersion": "SB.WIN.001",
+          "deviceProvider": "SYNCBYTE",
+          "deviceProviderId": "SYNCBYTE.LTC165",
+          "deviceSubType": "Full face",
+          "make": "Logitech",
+          "model": "4d36e96c-e325-11ce-bfc1-08002be10318",
+          "serialNo": "78467171",
+          "type": "Face",
+    "transactionId": "$TRANSACTIONID$",
+    "identityRequestTemplate": "ida/BioAuthDelegatedV2/BioAuthIdentityEncrypt",
+    "identityRequestEncUrl": "/idauthentication/v1/internal/encrypt"
+    }
+    }'
+      output: '{
+      "errors": [
+        {
+          "errorCode": "IDA-MLC-001"
+        }
+      ],
+      "response": {
+        "authStatus": false
+      }
+}'
+  auth_BioAuthDelegatedV2Neg_ClaimsMetadataRequired_As_String_Neg:
+      endPoint: /idauthentication/v1/kyc-auth/v2/delegated/$partialPartnerKeyUrl$/$ID:CreateOIDCClient_Delegated_Valid_Smoke_sid_clientId$
+      uniqueIdentifier: TC_IDA_BioAuthDelegatedV2Neg_21
+      description: Kyc auth V2 with claimsMetadataRequired sent as a string instead of boolean - expected to succeed (Jackson coerces it)
+      role: resident
+      restMethod: post
+      inputTemplate: ida/BioAuthDelegatedV2/BioAuthDelegatedV2ClaimsMetaAsString
+      outputTemplate: ida/BioAuthDelegatedV2/BioKYCAuthDelegatedResult
+      input: '{
+        "requestTime": "$TIMESTAMP$",
+        "individualId": "$ID:AddIdentity_ValidParam_smoke_Pos_UIN$",
+        "transactionId": "$TRANSACTIONID$",
+        "individualIdType": "UIN",
+        "claimsMetadataRequired": "true",
+        "bio": true,
+        "demo": false,
+        "otp": false,
+        "identityRequest":{
+          "bioSubType": "UNKNOWN",
+          "bioType": "FACE",
+          "bioValue": "$FACE$",
+          "deviceCode": "bc0b6848-6d45-46d1-a9bd-b334410bf823",
+          "dateTime": "$DATETIME$",
+          "deviceProviderID": "1873299273",
+          "deviceServiceID": "",
+          "deviceServiceVersion": "SB.WIN.001",
+          "deviceProvider": "SYNCBYTE",
+          "deviceProviderId": "SYNCBYTE.LTC165",
+          "deviceSubType": "Full face",
+          "make": "Logitech",
+          "model": "4d36e96c-e325-11ce-bfc1-08002be10318",
+          "serialNo": "78467171",
+          "type": "Face",
+    "transactionId": "$TRANSACTIONID$",
+    "identityRequestTemplate": "ida/BioAuthDelegatedV2/BioAuthIdentityEncrypt",
+    "identityRequestEncUrl": "/idauthentication/v1/internal/encrypt"
+    }
+    }'
+      output: '{
+  "kycStatus": "true"
+}'
+  auth_BioAuthDelegatedV2Neg_ConsentNotObtained_Neg:
+      endPoint: /idauthentication/v1/kyc-auth/v2/delegated/$partialPartnerKeyUrl$/$ID:CreateOIDCClient_Delegated_Valid_Smoke_sid_clientId$
+      uniqueIdentifier: TC_IDA_BioAuthDelegatedV2Neg_22
+      description: Kyc auth V2 with consentObtained false - expected to fail
+      role: resident
+      restMethod: post
+      inputTemplate: ida/BioAuthDelegatedV2/BioAuthDelegatedV2ConsentNotObtained
+      outputTemplate: ida/BioAuthDelegatedV2/error
+      input: '{
+        "requestTime": "$TIMESTAMP$",
+        "individualId": "$ID:AddIdentity_ValidParam_smoke_Pos_UIN$",
+        "transactionId": "$TRANSACTIONID$",
+        "individualIdType": "UIN",
+        "claimsMetadataRequired": false,
+        "bio": true,
+        "demo": false,
+        "otp": false,
+        "identityRequest":{
+          "bioSubType": "UNKNOWN",
+          "bioType": "FACE",
+          "bioValue": "$FACE$",
+          "deviceCode": "bc0b6848-6d45-46d1-a9bd-b334410bf823",
+          "dateTime": "$DATETIME$",
+          "deviceProviderID": "1873299273",
+          "deviceServiceID": "",
+          "deviceServiceVersion": "SB.WIN.001",
+          "deviceProvider": "SYNCBYTE",
+          "deviceProviderId": "SYNCBYTE.LTC165",
+          "deviceSubType": "Full face",
+          "make": "Logitech",
+          "model": "4d36e96c-e325-11ce-bfc1-08002be10318",
+          "serialNo": "78467171",
+          "type": "Face",
+    "transactionId": "$TRANSACTIONID$",
+    "identityRequestTemplate": "ida/BioAuthDelegatedV2/BioAuthIdentityEncrypt",
+    "identityRequestEncUrl": "/idauthentication/v1/internal/encrypt"
+    }
+    }'
+      output: '{
+      "errors": [
+        {
+          "errorCode": "IDA-MLC-012"
+        }
+      ],
+      "response": {
+        "authStatus": false
+      }
+}'
+  auth_BioAuthDelegatedV2Neg_Invalid_AuthPartnerId_Neg:
+      endPoint: /idauthentication/v1/kyc-auth/v2/delegated/$invalidPartnerIdUrl$/$ID:CreateOIDCClient_Delegated_Valid_Smoke_sid_clientId$
+      uniqueIdentifier: TC_IDA_BioAuthDelegatedV2Neg_23
+      description: Kyc auth V2 with an invalid Auth-Partner-ID path parameter - expected to fail
+      role: resident
+      restMethod: post
+      inputTemplate: ida/BioAuthDelegatedV2/BioAuthDelegatedV2
+      outputTemplate: ida/BioAuthDelegatedV2/error
+      input: '{
+        "requestTime": "$TIMESTAMP$",
+        "individualId": "$ID:AddIdentity_ValidParam_smoke_Pos_UIN$",
+        "transactionId": "$TRANSACTIONID$",
+        "individualIdType": "UIN",
+        "claimsMetadataRequired": false,
+        "bio": true,
+        "demo": false,
+        "otp": false,
+        "identityRequest":{
+          "bioSubType": "UNKNOWN",
+          "bioType": "FACE",
+          "bioValue": "$FACE$",
+          "deviceCode": "bc0b6848-6d45-46d1-a9bd-b334410bf823",
+          "dateTime": "$DATETIME$",
+          "deviceProviderID": "1873299273",
+          "deviceServiceID": "",
+          "deviceServiceVersion": "SB.WIN.001",
+          "deviceProvider": "SYNCBYTE",
+          "deviceProviderId": "SYNCBYTE.LTC165",
+          "deviceSubType": "Full face",
+          "make": "Logitech",
+          "model": "4d36e96c-e325-11ce-bfc1-08002be10318",
+          "serialNo": "78467171",
+          "type": "Face",
+    "transactionId": "$TRANSACTIONID$",
+    "identityRequestTemplate": "ida/BioAuthDelegatedV2/BioAuthIdentityEncrypt",
+    "identityRequestEncUrl": "/idauthentication/v1/internal/encrypt"
+    }
+    }'
+      output: '{
+      "errors": [
+        {
+          "errorCode": "IDA-MLC-007"
+        },
+        {
+          "errorCode": "IDA-MPA-001"
+        }
+      ],
+      "response": {
+        "authStatus": false
+      }
+}'
+  auth_BioAuthDelegatedV2Neg_Invalid_IdpLk_Neg:
+      endPoint: /idauthentication/v1/kyc-auth/v2/delegated/$invalidLicenseKeyUrl$/$ID:CreateOIDCClient_Delegated_Valid_Smoke_sid_clientId$
+      uniqueIdentifier: TC_IDA_BioAuthDelegatedV2Neg_24
+      description: Kyc auth V2 with an invalid IdP-LK path parameter - expected to fail
+      role: resident
+      restMethod: post
+      inputTemplate: ida/BioAuthDelegatedV2/BioAuthDelegatedV2
+      outputTemplate: ida/BioAuthDelegatedV2/error
+      input: '{
+        "requestTime": "$TIMESTAMP$",
+        "individualId": "$ID:AddIdentity_ValidParam_smoke_Pos_UIN$",
+        "transactionId": "$TRANSACTIONID$",
+        "individualIdType": "UIN",
+        "claimsMetadataRequired": false,
+        "bio": true,
+        "demo": false,
+        "otp": false,
+        "identityRequest":{
+          "bioSubType": "UNKNOWN",
+          "bioType": "FACE",
+          "bioValue": "$FACE$",
+          "deviceCode": "bc0b6848-6d45-46d1-a9bd-b334410bf823",
+          "dateTime": "$DATETIME$",
+          "deviceProviderID": "1873299273",
+          "deviceServiceID": "",
+          "deviceServiceVersion": "SB.WIN.001",
+          "deviceProvider": "SYNCBYTE",
+          "deviceProviderId": "SYNCBYTE.LTC165",
+          "deviceSubType": "Full face",
+          "make": "Logitech",
+          "model": "4d36e96c-e325-11ce-bfc1-08002be10318",
+          "serialNo": "78467171",
+          "type": "Face",
+    "transactionId": "$TRANSACTIONID$",
+    "identityRequestTemplate": "ida/BioAuthDelegatedV2/BioAuthIdentityEncrypt",
+    "identityRequestEncUrl": "/idauthentication/v1/internal/encrypt"
+    }
+    }'
+      output: '{
+      "errors": [
+        {
+          "errorCode": "IDA-MLC-007"
+        },
+        {
+          "errorCode": "IDA-MPA-007"
+        }
+      ],
+      "response": {
+        "authStatus": false
+      }
+}'
+  auth_BioAuthDelegatedV2Neg_Invalid_OidcClientId_Neg:
+      endPoint: /idauthentication/v1/kyc-auth/v2/delegated/$partialPartnerKeyUrl$/invalid-oidc-client-id-00000
+      uniqueIdentifier: TC_IDA_BioAuthDelegatedV2Neg_25
+      description: Kyc auth V2 with an invalid OIDC-Client-Id path parameter - expected to fail
+      role: resident
+      restMethod: post
+      inputTemplate: ida/BioAuthDelegatedV2/BioAuthDelegatedV2
+      outputTemplate: ida/BioAuthDelegatedV2/error
+      input: '{
+        "requestTime": "$TIMESTAMP$",
+        "individualId": "$ID:AddIdentity_ValidParam_smoke_Pos_UIN$",
+        "transactionId": "$TRANSACTIONID$",
+        "individualIdType": "UIN",
+        "claimsMetadataRequired": false,
+        "bio": true,
+        "demo": false,
+        "otp": false,
+        "identityRequest":{
+          "bioSubType": "UNKNOWN",
+          "bioType": "FACE",
+          "bioValue": "$FACE$",
+          "deviceCode": "bc0b6848-6d45-46d1-a9bd-b334410bf823",
+          "dateTime": "$DATETIME$",
+          "deviceProviderID": "1873299273",
+          "deviceServiceID": "",
+          "deviceServiceVersion": "SB.WIN.001",
+          "deviceProvider": "SYNCBYTE",
+          "deviceProviderId": "SYNCBYTE.LTC165",
+          "deviceSubType": "Full face",
+          "make": "Logitech",
+          "model": "4d36e96c-e325-11ce-bfc1-08002be10318",
+          "serialNo": "78467171",
+          "type": "Face",
+    "transactionId": "$TRANSACTIONID$",
+    "identityRequestTemplate": "ida/BioAuthDelegatedV2/BioAuthIdentityEncrypt",
+    "identityRequestEncUrl": "/idauthentication/v1/internal/encrypt"
+    }
+    }'
+      output: '{
+      "errors": [
+        {
+          "errorCode": "IDA-MLC-007"
+        },
+        {
+          "errorCode": "IDA-MPA-009"
+        }
+      ],
+      "response": {
+        "authStatus": false
+      }
+}'
+  auth_BioAuthDelegatedV2Neg_NonExistent_UIN_Neg:
+      endPoint: /idauthentication/v1/kyc-auth/v2/delegated/$partialPartnerKeyUrl$/$ID:CreateOIDCClient_Delegated_Valid_Smoke_sid_clientId$
+      uniqueIdentifier: TC_IDA_BioAuthDelegatedV2Neg_26
+      description: Kyc auth V2 with a valid-format but non-existent individualId - expected to fail
+      role: resident
+      restMethod: post
+      inputTemplate: ida/BioAuthDelegatedV2/BioAuthDelegatedV2
+      outputTemplate: ida/BioAuthDelegatedV2/error
+      input: '{
+        "requestTime": "$TIMESTAMP$",
+        "individualId": "1234567890",
+        "transactionId": "$TRANSACTIONID$",
+        "individualIdType": "UIN",
+        "claimsMetadataRequired": false,
+        "bio": true,
+        "demo": false,
+        "otp": false,
+        "identityRequest":{
+          "bioSubType": "UNKNOWN",
+          "bioType": "FACE",
+          "bioValue": "$FACE$",
+          "deviceCode": "bc0b6848-6d45-46d1-a9bd-b334410bf823",
+          "dateTime": "$DATETIME$",
+          "deviceProviderID": "1873299273",
+          "deviceServiceID": "",
+          "deviceServiceVersion": "SB.WIN.001",
+          "deviceProvider": "SYNCBYTE",
+          "deviceProviderId": "SYNCBYTE.LTC165",
+          "deviceSubType": "Full face",
+          "make": "Logitech",
+          "model": "4d36e96c-e325-11ce-bfc1-08002be10318",
+          "serialNo": "78467171",
+          "type": "Face",
+    "transactionId": "$TRANSACTIONID$",
+    "identityRequestTemplate": "ida/BioAuthDelegatedV2/BioAuthIdentityEncrypt",
+    "identityRequestEncUrl": "/idauthentication/v1/internal/encrypt"
+    }
+    }'
+      output: '{
+      "errors": [
+        {
+          "errorCode": "IDA-MLC-018"
+        }
+      ],
+      "response": {
+        "authStatus": false
+      }
+}'
+  auth_BioAuthDelegatedV2Neg_Missing_SpecVersion_Neg:
+      endPoint: /idauthentication/v1/kyc-auth/v2/delegated/$partialPartnerKeyUrl$/$ID:CreateOIDCClient_Delegated_Valid_Smoke_sid_clientId$
+      uniqueIdentifier: TC_IDA_BioAuthDelegatedV2Neg_27
+      description: Kyc auth V2 with the specVersion field omitted - expected to succeed (not validated server-side)
+      role: resident
+      restMethod: post
+      inputTemplate: ida/BioAuthDelegatedV2/BioAuthDelegatedV2WithoutSpecVersion
+      outputTemplate: ida/BioAuthDelegatedV2/BioKYCAuthDelegatedResult
+      input: '{
+        "requestTime": "$TIMESTAMP$",
+        "individualId": "$ID:AddIdentity_ValidParam_smoke_Pos_UIN$",
+        "transactionId": "$TRANSACTIONID$",
+        "individualIdType": "UIN",
+        "claimsMetadataRequired": false,
+        "bio": true,
+        "demo": false,
+        "otp": false,
+        "identityRequest":{
+          "bioSubType": "UNKNOWN",
+          "bioType": "FACE",
+          "bioValue": "$FACE$",
+          "deviceCode": "bc0b6848-6d45-46d1-a9bd-b334410bf823",
+          "dateTime": "$DATETIME$",
+          "deviceProviderID": "1873299273",
+          "deviceServiceID": "",
+          "deviceServiceVersion": "SB.WIN.001",
+          "deviceProvider": "SYNCBYTE",
+          "deviceProviderId": "SYNCBYTE.LTC165",
+          "deviceSubType": "Full face",
+          "make": "Logitech",
+          "model": "4d36e96c-e325-11ce-bfc1-08002be10318",
+          "serialNo": "78467171",
+          "type": "Face",
+    "transactionId": "$TRANSACTIONID$",
+    "identityRequestTemplate": "ida/BioAuthDelegatedV2/BioAuthIdentityEncrypt",
+    "identityRequestEncUrl": "/idauthentication/v1/internal/encrypt"
+    }
+    }'
+      output: '{
+  "kycStatus": "true"
+}'
+  auth_BioAuthDelegatedV2_forKycExchangeV2TxnIdMismatch_Pos_Sid:
+      endPoint: /idauthentication/v1/kyc-auth/v2/delegated/$partialPartnerKeyUrl$/$ID:CreateOIDCClient_Delegated_Valid_Smoke_sid_clientId$
+      uniqueIdentifier: TC_IDA_BioAuthDelegatedV2_36
+      description: Kyc auth V2 dedicated token for the kyc-exchange transactionID-mismatch test - expected to succeed
       role: resident
       restMethod: post
       inputTemplate: ida/BioAuthDelegatedV2/BioAuthDelegatedV2
@@ -1086,4 +1786,1677 @@ BioAuthDelegatedV2:
     }'
       output: '{
   "kycStatus": "true"
+}'
+  auth_BioAuthDelegatedV2_forKycExchangeV2SingleVerifiedClaim_Pos_Sid:
+      endPoint: /idauthentication/v1/kyc-auth/v2/delegated/$partialPartnerKeyUrl$/$ID:CreateOIDCClient_Delegated_Valid_Smoke_sid_clientId$
+      uniqueIdentifier: TC_IDA_BioAuthDelegatedV2_12
+      description: Kyc auth V2 dedicated token for the kyc-exchange single-verified-claim test - expected to succeed
+      role: resident
+      restMethod: post
+      inputTemplate: ida/BioAuthDelegatedV2/BioAuthDelegatedV2
+      outputTemplate: ida/BioAuthDelegatedV2/BioKYCAuthDelegatedResult
+      input: '{
+        "requestTime": "$TIMESTAMP$",
+        "individualId": "$ID:AddIdentity_ForVerifiedNameDob_Bio_Auth_Smoke_Pos_UIN$",
+        "transactionId": "$TRANSACTIONID$",
+        "individualIdType": "UIN",
+        "claimsMetadataRequired": false,
+        "bio": true,
+        "demo": false,
+        "otp": false,
+        "identityRequest":{
+          "bioSubType": "UNKNOWN",
+          "bioType": "FACE",
+          "bioValue": "$FACE$",
+          "deviceCode": "bc0b6848-6d45-46d1-a9bd-b334410bf823",
+          "dateTime": "$DATETIME$",
+          "deviceProviderID": "1873299273",
+          "deviceServiceID": "",
+          "deviceServiceVersion": "SB.WIN.001",
+          "deviceProvider": "SYNCBYTE",
+          "deviceProviderId": "SYNCBYTE.LTC165",
+          "deviceSubType": "Full face",
+          "make": "Logitech",
+          "model": "4d36e96c-e325-11ce-bfc1-08002be10318",
+          "serialNo": "78467171",
+          "type": "Face",
+    "transactionId": "$TRANSACTIONID$",
+    "identityRequestTemplate": "ida/BioAuthDelegatedV2/BioAuthIdentityEncrypt",
+    "identityRequestEncUrl": "/idauthentication/v1/internal/encrypt"
+    }
+    }'
+      output: '{
+  "kycStatus": "true"
+}'
+  auth_BioAuthDelegatedV2_forKycExchangeV2EmptyLocales_Pos_Sid:
+      endPoint: /idauthentication/v1/kyc-auth/v2/delegated/$partialPartnerKeyUrl$/$ID:CreateOIDCClient_Delegated_Valid_Smoke_sid_clientId$
+      uniqueIdentifier: TC_IDA_BioAuthDelegatedV2_13
+      description: Kyc auth V2 dedicated token for the kyc-exchange empty-locales test - expected to succeed
+      role: resident
+      restMethod: post
+      inputTemplate: ida/BioAuthDelegatedV2/BioAuthDelegatedV2
+      outputTemplate: ida/BioAuthDelegatedV2/BioKYCAuthDelegatedResult
+      input: '{
+        "requestTime": "$TIMESTAMP$",
+        "individualId": "$ID:AddIdentity_ForVerifiedNameDob_Bio_Auth_Smoke_Pos_UIN$",
+        "transactionId": "$TRANSACTIONID$",
+        "individualIdType": "UIN",
+        "claimsMetadataRequired": false,
+        "bio": true,
+        "demo": false,
+        "otp": false,
+        "identityRequest":{
+          "bioSubType": "UNKNOWN",
+          "bioType": "FACE",
+          "bioValue": "$FACE$",
+          "deviceCode": "bc0b6848-6d45-46d1-a9bd-b334410bf823",
+          "dateTime": "$DATETIME$",
+          "deviceProviderID": "1873299273",
+          "deviceServiceID": "",
+          "deviceServiceVersion": "SB.WIN.001",
+          "deviceProvider": "SYNCBYTE",
+          "deviceProviderId": "SYNCBYTE.LTC165",
+          "deviceSubType": "Full face",
+          "make": "Logitech",
+          "model": "4d36e96c-e325-11ce-bfc1-08002be10318",
+          "serialNo": "78467171",
+          "type": "Face",
+    "transactionId": "$TRANSACTIONID$",
+    "identityRequestTemplate": "ida/BioAuthDelegatedV2/BioAuthIdentityEncrypt",
+    "identityRequestEncUrl": "/idauthentication/v1/internal/encrypt"
+    }
+    }'
+      output: '{
+  "kycStatus": "true"
+}'
+  auth_BioAuthDelegatedV2_forKycExchangeV2InvalidPartner_Pos_Sid:
+      endPoint: /idauthentication/v1/kyc-auth/v2/delegated/$partialPartnerKeyUrl$/$ID:CreateOIDCClient_Delegated_Valid_Smoke_sid_clientId$
+      uniqueIdentifier: TC_IDA_BioAuthDelegatedV2_14
+      description: Kyc auth V2 dedicated token for the kyc-exchange invalid-partner test - expected to succeed
+      role: resident
+      restMethod: post
+      inputTemplate: ida/BioAuthDelegatedV2/BioAuthDelegatedV2
+      outputTemplate: ida/BioAuthDelegatedV2/BioKYCAuthDelegatedResult
+      input: '{
+        "requestTime": "$TIMESTAMP$",
+        "individualId": "$ID:AddIdentity_For_Kyc_Delegated_Bio_Auth_Smoke_Pos_UIN$",
+        "transactionId": "$TRANSACTIONID$",
+        "individualIdType": "UIN",
+        "claimsMetadataRequired": false,
+        "bio": true,
+        "demo": false,
+        "otp": false,
+        "identityRequest":{
+          "bioSubType": "UNKNOWN",
+          "bioType": "FACE",
+          "bioValue": "$FACE$",
+          "deviceCode": "bc0b6848-6d45-46d1-a9bd-b334410bf823",
+          "dateTime": "$DATETIME$",
+          "deviceProviderID": "1873299273",
+          "deviceServiceID": "",
+          "deviceServiceVersion": "SB.WIN.001",
+          "deviceProvider": "SYNCBYTE",
+          "deviceProviderId": "SYNCBYTE.LTC165",
+          "deviceSubType": "Full face",
+          "make": "Logitech",
+          "model": "4d36e96c-e325-11ce-bfc1-08002be10318",
+          "serialNo": "78467171",
+          "type": "Face",
+    "transactionId": "$TRANSACTIONID$",
+    "identityRequestTemplate": "ida/BioAuthDelegatedV2/BioAuthIdentityEncrypt",
+    "identityRequestEncUrl": "/idauthentication/v1/internal/encrypt"
+    }
+    }'
+      output: '{
+  "kycStatus": "true"
+}'
+  auth_BioAuthDelegatedV2_forKycExchangeV2InvalidIdpLk_Pos_Sid:
+      endPoint: /idauthentication/v1/kyc-auth/v2/delegated/$partialPartnerKeyUrl$/$ID:CreateOIDCClient_Delegated_Valid_Smoke_sid_clientId$
+      uniqueIdentifier: TC_IDA_BioAuthDelegatedV2_15
+      description: Kyc auth V2 dedicated token for the kyc-exchange invalid-IdP-LK test - expected to succeed
+      role: resident
+      restMethod: post
+      inputTemplate: ida/BioAuthDelegatedV2/BioAuthDelegatedV2
+      outputTemplate: ida/BioAuthDelegatedV2/BioKYCAuthDelegatedResult
+      input: '{
+        "requestTime": "$TIMESTAMP$",
+        "individualId": "$ID:AddIdentity_For_Kyc_Delegated_Bio_Auth_Smoke_Pos_UIN$",
+        "transactionId": "$TRANSACTIONID$",
+        "individualIdType": "UIN",
+        "claimsMetadataRequired": false,
+        "bio": true,
+        "demo": false,
+        "otp": false,
+        "identityRequest":{
+          "bioSubType": "UNKNOWN",
+          "bioType": "FACE",
+          "bioValue": "$FACE$",
+          "deviceCode": "bc0b6848-6d45-46d1-a9bd-b334410bf823",
+          "dateTime": "$DATETIME$",
+          "deviceProviderID": "1873299273",
+          "deviceServiceID": "",
+          "deviceServiceVersion": "SB.WIN.001",
+          "deviceProvider": "SYNCBYTE",
+          "deviceProviderId": "SYNCBYTE.LTC165",
+          "deviceSubType": "Full face",
+          "make": "Logitech",
+          "model": "4d36e96c-e325-11ce-bfc1-08002be10318",
+          "serialNo": "78467171",
+          "type": "Face",
+    "transactionId": "$TRANSACTIONID$",
+    "identityRequestTemplate": "ida/BioAuthDelegatedV2/BioAuthIdentityEncrypt",
+    "identityRequestEncUrl": "/idauthentication/v1/internal/encrypt"
+    }
+    }'
+      output: '{
+  "kycStatus": "true"
+}'
+  auth_BioAuthDelegatedV2_forKycExchangeV2InvalidOidcClient_Pos_Sid:
+      endPoint: /idauthentication/v1/kyc-auth/v2/delegated/$partialPartnerKeyUrl$/$ID:CreateOIDCClient_Delegated_Valid_Smoke_sid_clientId$
+      uniqueIdentifier: TC_IDA_BioAuthDelegatedV2_16
+      description: Kyc auth V2 dedicated token for the kyc-exchange invalid-oidc-client test - expected to succeed
+      role: resident
+      restMethod: post
+      inputTemplate: ida/BioAuthDelegatedV2/BioAuthDelegatedV2
+      outputTemplate: ida/BioAuthDelegatedV2/BioKYCAuthDelegatedResult
+      input: '{
+        "requestTime": "$TIMESTAMP$",
+        "individualId": "$ID:AddIdentity_For_Kyc_Delegated_Bio_Auth_Smoke_Pos_UIN$",
+        "transactionId": "$TRANSACTIONID$",
+        "individualIdType": "UIN",
+        "claimsMetadataRequired": false,
+        "bio": true,
+        "demo": false,
+        "otp": false,
+        "identityRequest":{
+          "bioSubType": "UNKNOWN",
+          "bioType": "FACE",
+          "bioValue": "$FACE$",
+          "deviceCode": "bc0b6848-6d45-46d1-a9bd-b334410bf823",
+          "dateTime": "$DATETIME$",
+          "deviceProviderID": "1873299273",
+          "deviceServiceID": "",
+          "deviceServiceVersion": "SB.WIN.001",
+          "deviceProvider": "SYNCBYTE",
+          "deviceProviderId": "SYNCBYTE.LTC165",
+          "deviceSubType": "Full face",
+          "make": "Logitech",
+          "model": "4d36e96c-e325-11ce-bfc1-08002be10318",
+          "serialNo": "78467171",
+          "type": "Face",
+    "transactionId": "$TRANSACTIONID$",
+    "identityRequestTemplate": "ida/BioAuthDelegatedV2/BioAuthIdentityEncrypt",
+    "identityRequestEncUrl": "/idauthentication/v1/internal/encrypt"
+    }
+    }'
+      output: '{
+  "kycStatus": "true"
+}'
+  auth_BioAuthDelegatedV2_forKycExchangeV2VerifiedClaimsOmitted_Pos_Sid:
+      endPoint: /idauthentication/v1/kyc-auth/v2/delegated/$partialPartnerKeyUrl$/$ID:CreateOIDCClient_Delegated_Valid_Smoke_sid_clientId$
+      uniqueIdentifier: TC_IDA_BioAuthDelegatedV2_17
+      description: Kyc auth V2 dedicated token for the kyc-exchange verifiedConsentedClaims-omitted test - expected to succeed
+      role: resident
+      restMethod: post
+      inputTemplate: ida/BioAuthDelegatedV2/BioAuthDelegatedV2
+      outputTemplate: ida/BioAuthDelegatedV2/BioKYCAuthDelegatedResult
+      input: '{
+        "requestTime": "$TIMESTAMP$",
+        "individualId": "$ID:AddIdentity_For_Kyc_Delegated_Bio_Auth_Smoke_Pos_UIN$",
+        "transactionId": "$TRANSACTIONID$",
+        "individualIdType": "UIN",
+        "claimsMetadataRequired": false,
+        "bio": true,
+        "demo": false,
+        "otp": false,
+        "identityRequest":{
+          "bioSubType": "UNKNOWN",
+          "bioType": "FACE",
+          "bioValue": "$FACE$",
+          "deviceCode": "bc0b6848-6d45-46d1-a9bd-b334410bf823",
+          "dateTime": "$DATETIME$",
+          "deviceProviderID": "1873299273",
+          "deviceServiceID": "",
+          "deviceServiceVersion": "SB.WIN.001",
+          "deviceProvider": "SYNCBYTE",
+          "deviceProviderId": "SYNCBYTE.LTC165",
+          "deviceSubType": "Full face",
+          "make": "Logitech",
+          "model": "4d36e96c-e325-11ce-bfc1-08002be10318",
+          "serialNo": "78467171",
+          "type": "Face",
+    "transactionId": "$TRANSACTIONID$",
+    "identityRequestTemplate": "ida/BioAuthDelegatedV2/BioAuthIdentityEncrypt",
+    "identityRequestEncUrl": "/idauthentication/v1/internal/encrypt"
+    }
+    }'
+      output: '{
+  "kycStatus": "true"
+}'
+  auth_BioAuthDelegatedV2_forKycExchangeV2UnverifiedClaimsOmitted_Pos_Sid:
+      endPoint: /idauthentication/v1/kyc-auth/v2/delegated/$partialPartnerKeyUrl$/$ID:CreateOIDCClient_Delegated_Valid_Smoke_sid_clientId$
+      uniqueIdentifier: TC_IDA_BioAuthDelegatedV2_18
+      description: Kyc auth V2 dedicated token for the kyc-exchange unVerifiedConsentedClaims-omitted test - expected to succeed
+      role: resident
+      restMethod: post
+      inputTemplate: ida/BioAuthDelegatedV2/BioAuthDelegatedV2
+      outputTemplate: ida/BioAuthDelegatedV2/BioKYCAuthDelegatedResult
+      input: '{
+        "requestTime": "$TIMESTAMP$",
+        "individualId": "$ID:AddIdentity_ForVerifiedNameDob_Bio_Auth_Smoke_Pos_UIN$",
+        "transactionId": "$TRANSACTIONID$",
+        "individualIdType": "UIN",
+        "claimsMetadataRequired": false,
+        "bio": true,
+        "demo": false,
+        "otp": false,
+        "identityRequest":{
+          "bioSubType": "UNKNOWN",
+          "bioType": "FACE",
+          "bioValue": "$FACE$",
+          "deviceCode": "bc0b6848-6d45-46d1-a9bd-b334410bf823",
+          "dateTime": "$DATETIME$",
+          "deviceProviderID": "1873299273",
+          "deviceServiceID": "",
+          "deviceServiceVersion": "SB.WIN.001",
+          "deviceProvider": "SYNCBYTE",
+          "deviceProviderId": "SYNCBYTE.LTC165",
+          "deviceSubType": "Full face",
+          "make": "Logitech",
+          "model": "4d36e96c-e325-11ce-bfc1-08002be10318",
+          "serialNo": "78467171",
+          "type": "Face",
+    "transactionId": "$TRANSACTIONID$",
+    "identityRequestTemplate": "ida/BioAuthDelegatedV2/BioAuthIdentityEncrypt",
+    "identityRequestEncUrl": "/idauthentication/v1/internal/encrypt"
+    }
+    }'
+      output: '{
+  "kycStatus": "true"
+}'
+  auth_BioAuthDelegatedV2_forKycExchangeV2TokenReuse_Pos_Sid:
+      endPoint: /idauthentication/v1/kyc-auth/v2/delegated/$partialPartnerKeyUrl$/$ID:CreateOIDCClient_Delegated_Valid_Smoke_sid_clientId$
+      uniqueIdentifier: TC_IDA_BioAuthDelegatedV2_47
+      description: Kyc auth V2 dedicated token for the kyc-exchange token-reuse negative test - expected to succeed
+      role: resident
+      restMethod: post
+      inputTemplate: ida/BioAuthDelegatedV2/BioAuthDelegatedV2
+      outputTemplate: ida/BioAuthDelegatedV2/BioKYCAuthDelegatedResult
+      input: '{
+        "requestTime": "$TIMESTAMP$",
+        "individualId": "$ID:AddIdentity_For_Kyc_Delegated_Bio_Auth_Smoke_Pos_UIN$",
+        "transactionId": "$TRANSACTIONID$",
+        "individualIdType": "UIN",
+        "claimsMetadataRequired": false,
+        "bio": true,
+        "demo": false,
+        "otp": false,
+        "identityRequest":{
+          "bioSubType": "UNKNOWN",
+          "bioType": "FACE",
+          "bioValue": "$FACE$",
+          "deviceCode": "bc0b6848-6d45-46d1-a9bd-b334410bf823",
+          "dateTime": "$DATETIME$",
+          "deviceProviderID": "1873299273",
+          "deviceServiceID": "",
+          "deviceServiceVersion": "SB.WIN.001",
+          "deviceProvider": "SYNCBYTE",
+          "deviceProviderId": "SYNCBYTE.LTC165",
+          "deviceSubType": "Full face",
+          "make": "Logitech",
+          "model": "4d36e96c-e325-11ce-bfc1-08002be10318",
+          "serialNo": "78467171",
+          "type": "Face",
+    "transactionId": "$TRANSACTIONID$",
+    "identityRequestTemplate": "ida/BioAuthDelegatedV2/BioAuthIdentityEncrypt",
+    "identityRequestEncUrl": "/idauthentication/v1/internal/encrypt"
+    }
+    }'
+      output: '{
+  "kycStatus": "true"
+}'
+  auth_BioAuthDelegatedV2_forKycExchangeV2MalformedRequestTime_Pos_Sid:
+      endPoint: /idauthentication/v1/kyc-auth/v2/delegated/$partialPartnerKeyUrl$/$ID:CreateOIDCClient_Delegated_Valid_Smoke_sid_clientId$
+      uniqueIdentifier: TC_IDA_BioAuthDelegatedV2_19
+      description: Kyc auth V2 dedicated token for the kyc-exchange malformed-requestTime test - expected to succeed
+      role: resident
+      restMethod: post
+      inputTemplate: ida/BioAuthDelegatedV2/BioAuthDelegatedV2
+      outputTemplate: ida/BioAuthDelegatedV2/BioKYCAuthDelegatedResult
+      input: '{
+        "requestTime": "$TIMESTAMP$",
+        "individualId": "$ID:AddIdentity_For_Kyc_Delegated_Bio_Auth_Smoke_Pos_UIN$",
+        "transactionId": "$TRANSACTIONID$",
+        "individualIdType": "UIN",
+        "claimsMetadataRequired": false,
+        "bio": true,
+        "demo": false,
+        "otp": false,
+        "identityRequest":{
+          "bioSubType": "UNKNOWN",
+          "bioType": "FACE",
+          "bioValue": "$FACE$",
+          "deviceCode": "bc0b6848-6d45-46d1-a9bd-b334410bf823",
+          "dateTime": "$DATETIME$",
+          "deviceProviderID": "1873299273",
+          "deviceServiceID": "",
+          "deviceServiceVersion": "SB.WIN.001",
+          "deviceProvider": "SYNCBYTE",
+          "deviceProviderId": "SYNCBYTE.LTC165",
+          "deviceSubType": "Full face",
+          "make": "Logitech",
+          "model": "4d36e96c-e325-11ce-bfc1-08002be10318",
+          "serialNo": "78467171",
+          "type": "Face",
+    "transactionId": "$TRANSACTIONID$",
+    "identityRequestTemplate": "ida/BioAuthDelegatedV2/BioAuthIdentityEncrypt",
+    "identityRequestEncUrl": "/idauthentication/v1/internal/encrypt"
+    }
+    }'
+      output: '{
+  "kycStatus": "true"
+}'
+  auth_BioAuthDelegatedV2_forKycExchangeV2ExpiredRequestTime_Pos_Sid:
+      endPoint: /idauthentication/v1/kyc-auth/v2/delegated/$partialPartnerKeyUrl$/$ID:CreateOIDCClient_Delegated_Valid_Smoke_sid_clientId$
+      uniqueIdentifier: TC_IDA_BioAuthDelegatedV2_20
+      description: Kyc auth V2 dedicated token for the kyc-exchange expired-requestTime test - expected to succeed
+      role: resident
+      restMethod: post
+      inputTemplate: ida/BioAuthDelegatedV2/BioAuthDelegatedV2
+      outputTemplate: ida/BioAuthDelegatedV2/BioKYCAuthDelegatedResult
+      input: '{
+        "requestTime": "$TIMESTAMP$",
+        "individualId": "$ID:AddIdentity_For_Kyc_Delegated_Bio_Auth_Smoke_Pos_UIN$",
+        "transactionId": "$TRANSACTIONID$",
+        "individualIdType": "UIN",
+        "claimsMetadataRequired": false,
+        "bio": true,
+        "demo": false,
+        "otp": false,
+        "identityRequest":{
+          "bioSubType": "UNKNOWN",
+          "bioType": "FACE",
+          "bioValue": "$FACE$",
+          "deviceCode": "bc0b6848-6d45-46d1-a9bd-b334410bf823",
+          "dateTime": "$DATETIME$",
+          "deviceProviderID": "1873299273",
+          "deviceServiceID": "",
+          "deviceServiceVersion": "SB.WIN.001",
+          "deviceProvider": "SYNCBYTE",
+          "deviceProviderId": "SYNCBYTE.LTC165",
+          "deviceSubType": "Full face",
+          "make": "Logitech",
+          "model": "4d36e96c-e325-11ce-bfc1-08002be10318",
+          "serialNo": "78467171",
+          "type": "Face",
+    "transactionId": "$TRANSACTIONID$",
+    "identityRequestTemplate": "ida/BioAuthDelegatedV2/BioAuthIdentityEncrypt",
+    "identityRequestEncUrl": "/idauthentication/v1/internal/encrypt"
+    }
+    }'
+      output: '{
+  "kycStatus": "true"
+}'
+  auth_BioAuthDelegatedV2_forKycExchangeV2InvalidId_Pos_Sid:
+      endPoint: /idauthentication/v1/kyc-auth/v2/delegated/$partialPartnerKeyUrl$/$ID:CreateOIDCClient_Delegated_Valid_Smoke_sid_clientId$
+      uniqueIdentifier: TC_IDA_BioAuthDelegatedV2_21
+      description: Kyc auth V2 dedicated token for the kyc-exchange invalid-id test - expected to succeed
+      role: resident
+      restMethod: post
+      inputTemplate: ida/BioAuthDelegatedV2/BioAuthDelegatedV2
+      outputTemplate: ida/BioAuthDelegatedV2/BioKYCAuthDelegatedResult
+      input: '{
+        "requestTime": "$TIMESTAMP$",
+        "individualId": "$ID:AddIdentity_For_Kyc_Delegated_Bio_Auth_Smoke_Pos_UIN$",
+        "transactionId": "$TRANSACTIONID$",
+        "individualIdType": "UIN",
+        "claimsMetadataRequired": false,
+        "bio": true,
+        "demo": false,
+        "otp": false,
+        "identityRequest":{
+          "bioSubType": "UNKNOWN",
+          "bioType": "FACE",
+          "bioValue": "$FACE$",
+          "deviceCode": "bc0b6848-6d45-46d1-a9bd-b334410bf823",
+          "dateTime": "$DATETIME$",
+          "deviceProviderID": "1873299273",
+          "deviceServiceID": "",
+          "deviceServiceVersion": "SB.WIN.001",
+          "deviceProvider": "SYNCBYTE",
+          "deviceProviderId": "SYNCBYTE.LTC165",
+          "deviceSubType": "Full face",
+          "make": "Logitech",
+          "model": "4d36e96c-e325-11ce-bfc1-08002be10318",
+          "serialNo": "78467171",
+          "type": "Face",
+    "transactionId": "$TRANSACTIONID$",
+    "identityRequestTemplate": "ida/BioAuthDelegatedV2/BioAuthIdentityEncrypt",
+    "identityRequestEncUrl": "/idauthentication/v1/internal/encrypt"
+    }
+    }'
+      output: '{
+  "kycStatus": "true"
+}'
+  auth_BioAuthDelegatedV2_forKycExchangeV2InvalidVersion_Pos_Sid:
+      endPoint: /idauthentication/v1/kyc-auth/v2/delegated/$partialPartnerKeyUrl$/$ID:CreateOIDCClient_Delegated_Valid_Smoke_sid_clientId$
+      uniqueIdentifier: TC_IDA_BioAuthDelegatedV2_22
+      description: Kyc auth V2 dedicated token for the kyc-exchange invalid-version test - expected to succeed
+      role: resident
+      restMethod: post
+      inputTemplate: ida/BioAuthDelegatedV2/BioAuthDelegatedV2
+      outputTemplate: ida/BioAuthDelegatedV2/BioKYCAuthDelegatedResult
+      input: '{
+        "requestTime": "$TIMESTAMP$",
+        "individualId": "$ID:AddIdentity_For_Kyc_Delegated_Bio_Auth_Smoke_Pos_UIN$",
+        "transactionId": "$TRANSACTIONID$",
+        "individualIdType": "UIN",
+        "claimsMetadataRequired": false,
+        "bio": true,
+        "demo": false,
+        "otp": false,
+        "identityRequest":{
+          "bioSubType": "UNKNOWN",
+          "bioType": "FACE",
+          "bioValue": "$FACE$",
+          "deviceCode": "bc0b6848-6d45-46d1-a9bd-b334410bf823",
+          "dateTime": "$DATETIME$",
+          "deviceProviderID": "1873299273",
+          "deviceServiceID": "",
+          "deviceServiceVersion": "SB.WIN.001",
+          "deviceProvider": "SYNCBYTE",
+          "deviceProviderId": "SYNCBYTE.LTC165",
+          "deviceSubType": "Full face",
+          "make": "Logitech",
+          "model": "4d36e96c-e325-11ce-bfc1-08002be10318",
+          "serialNo": "78467171",
+          "type": "Face",
+    "transactionId": "$TRANSACTIONID$",
+    "identityRequestTemplate": "ida/BioAuthDelegatedV2/BioAuthIdentityEncrypt",
+    "identityRequestEncUrl": "/idauthentication/v1/internal/encrypt"
+    }
+    }'
+      output: '{
+  "kycStatus": "true"
+}'
+  auth_BioAuthDelegatedV2_forKycExchangeV2DecodeJwt_Pos_Sid:
+      endPoint: /idauthentication/v1/kyc-auth/v2/delegated/$partialPartnerKeyUrl$/$ID:CreateOIDCClient_Delegated_Valid_Smoke_sid_clientId$
+      uniqueIdentifier: TC_IDA_BioAuthDelegatedV2_23
+      description: Kyc auth V2 dedicated token for the kyc-exchange decode-JWT test - expected to succeed
+      role: resident
+      restMethod: post
+      inputTemplate: ida/BioAuthDelegatedV2/BioAuthDelegatedV2
+      outputTemplate: ida/BioAuthDelegatedV2/BioKYCAuthDelegatedResult
+      input: '{
+        "requestTime": "$TIMESTAMP$",
+        "individualId": "$ID:AddIdentity_For_Kyc_Delegated_Bio_Auth_Smoke_Pos_UIN$",
+        "transactionId": "$TRANSACTIONID$",
+        "individualIdType": "UIN",
+        "claimsMetadataRequired": false,
+        "bio": true,
+        "demo": false,
+        "otp": false,
+        "identityRequest":{
+          "bioSubType": "UNKNOWN",
+          "bioType": "FACE",
+          "bioValue": "$FACE$",
+          "deviceCode": "bc0b6848-6d45-46d1-a9bd-b334410bf823",
+          "dateTime": "$DATETIME$",
+          "deviceProviderID": "1873299273",
+          "deviceServiceID": "",
+          "deviceServiceVersion": "SB.WIN.001",
+          "deviceProvider": "SYNCBYTE",
+          "deviceProviderId": "SYNCBYTE.LTC165",
+          "deviceSubType": "Full face",
+          "make": "Logitech",
+          "model": "4d36e96c-e325-11ce-bfc1-08002be10318",
+          "serialNo": "78467171",
+          "type": "Face",
+    "transactionId": "$TRANSACTIONID$",
+    "identityRequestTemplate": "ida/BioAuthDelegatedV2/BioAuthIdentityEncrypt",
+    "identityRequestEncUrl": "/idauthentication/v1/internal/encrypt"
+    }
+    }'
+      output: '{
+  "kycStatus": "true"
+}'
+  auth_BioAuthDelegatedV2_forKycExchangeV2DecodeJwe_Pos_Sid:
+      endPoint: /idauthentication/v1/kyc-auth/v2/delegated/$partialPartnerKeyUrl$/$ID:CreateOIDCClient_Delegated_Valid_Smoke_sid_clientId$
+      uniqueIdentifier: TC_IDA_BioAuthDelegatedV2_24
+      description: Kyc auth V2 dedicated token for the kyc-exchange decode-JWE test - expected to succeed
+      role: resident
+      restMethod: post
+      inputTemplate: ida/BioAuthDelegatedV2/BioAuthDelegatedV2
+      outputTemplate: ida/BioAuthDelegatedV2/BioKYCAuthDelegatedResult
+      input: '{
+        "requestTime": "$TIMESTAMP$",
+        "individualId": "$ID:AddIdentity_For_Kyc_Delegated_Bio_Auth_Smoke_Pos_UIN$",
+        "transactionId": "$TRANSACTIONID$",
+        "individualIdType": "UIN",
+        "claimsMetadataRequired": false,
+        "bio": true,
+        "demo": false,
+        "otp": false,
+        "identityRequest":{
+          "bioSubType": "UNKNOWN",
+          "bioType": "FACE",
+          "bioValue": "$FACE$",
+          "deviceCode": "bc0b6848-6d45-46d1-a9bd-b334410bf823",
+          "dateTime": "$DATETIME$",
+          "deviceProviderID": "1873299273",
+          "deviceServiceID": "",
+          "deviceServiceVersion": "SB.WIN.001",
+          "deviceProvider": "SYNCBYTE",
+          "deviceProviderId": "SYNCBYTE.LTC165",
+          "deviceSubType": "Full face",
+          "make": "Logitech",
+          "model": "4d36e96c-e325-11ce-bfc1-08002be10318",
+          "serialNo": "78467171",
+          "type": "Face",
+    "transactionId": "$TRANSACTIONID$",
+    "identityRequestTemplate": "ida/BioAuthDelegatedV2/BioAuthIdentityEncrypt",
+    "identityRequestEncUrl": "/idauthentication/v1/internal/encrypt"
+    }
+    }'
+      output: '{
+  "kycStatus": "true"
+}'
+  auth_BioAuthDelegatedV2_forKycExchangeV2InvalidRespType_Pos_Sid:
+      endPoint: /idauthentication/v1/kyc-auth/v2/delegated/$partialPartnerKeyUrl$/$ID:CreateOIDCClient_Delegated_Valid_Smoke_sid_clientId$
+      uniqueIdentifier: TC_IDA_BioAuthDelegatedV2_25
+      description: Kyc auth V2 dedicated token for the kyc-exchange invalid-respType test - expected to succeed
+      role: resident
+      restMethod: post
+      inputTemplate: ida/BioAuthDelegatedV2/BioAuthDelegatedV2
+      outputTemplate: ida/BioAuthDelegatedV2/BioKYCAuthDelegatedResult
+      input: '{
+        "requestTime": "$TIMESTAMP$",
+        "individualId": "$ID:AddIdentity_ForVerifiedNameDob_Bio_Auth_Smoke_Pos_UIN$",
+        "transactionId": "$TRANSACTIONID$",
+        "individualIdType": "UIN",
+        "claimsMetadataRequired": false,
+        "bio": true,
+        "demo": false,
+        "otp": false,
+        "identityRequest":{
+          "bioSubType": "UNKNOWN",
+          "bioType": "FACE",
+          "bioValue": "$FACE$",
+          "deviceCode": "bc0b6848-6d45-46d1-a9bd-b334410bf823",
+          "dateTime": "$DATETIME$",
+          "deviceProviderID": "1873299273",
+          "deviceServiceID": "",
+          "deviceServiceVersion": "SB.WIN.001",
+          "deviceProvider": "SYNCBYTE",
+          "deviceProviderId": "SYNCBYTE.LTC165",
+          "deviceSubType": "Full face",
+          "make": "Logitech",
+          "model": "4d36e96c-e325-11ce-bfc1-08002be10318",
+          "serialNo": "78467171",
+          "type": "Face",
+    "transactionId": "$TRANSACTIONID$",
+    "identityRequestTemplate": "ida/BioAuthDelegatedV2/BioAuthIdentityEncrypt",
+    "identityRequestEncUrl": "/idauthentication/v1/internal/encrypt"
+    }
+    }'
+      output: '{
+  "kycStatus": "true"
+}'
+  auth_BioAuthDelegatedV2_forKycExchangeV2InvalidId_Omitted_Pos_Sid:
+      endPoint: /idauthentication/v1/kyc-auth/v2/delegated/$partialPartnerKeyUrl$/$ID:CreateOIDCClient_Delegated_Valid_Smoke_sid_clientId$
+      uniqueIdentifier: TC_IDA_BioAuthDelegatedV2_26
+      description: Kyc auth V2 dedicated token for the kyc-exchange id-omitted test - expected to succeed
+      role: resident
+      restMethod: post
+      inputTemplate: ida/BioAuthDelegatedV2/BioAuthDelegatedV2
+      outputTemplate: ida/BioAuthDelegatedV2/BioKYCAuthDelegatedResult
+      input: '{
+        "requestTime": "$TIMESTAMP$",
+        "individualId": "$ID:AddIdentity_For_Kyc_Delegated_Bio_Auth_Smoke_Pos_UIN$",
+        "transactionId": "$TRANSACTIONID$",
+        "individualIdType": "UIN",
+        "claimsMetadataRequired": false,
+        "bio": true,
+        "demo": false,
+        "otp": false,
+        "identityRequest":{
+          "bioSubType": "UNKNOWN",
+          "bioType": "FACE",
+          "bioValue": "$FACE$",
+          "deviceCode": "bc0b6848-6d45-46d1-a9bd-b334410bf823",
+          "dateTime": "$DATETIME$",
+          "deviceProviderID": "1873299273",
+          "deviceServiceID": "",
+          "deviceServiceVersion": "SB.WIN.001",
+          "deviceProvider": "SYNCBYTE",
+          "deviceProviderId": "SYNCBYTE.LTC165",
+          "deviceSubType": "Full face",
+          "make": "Logitech",
+          "model": "4d36e96c-e325-11ce-bfc1-08002be10318",
+          "serialNo": "78467171",
+          "type": "Face",
+    "transactionId": "$TRANSACTIONID$",
+    "identityRequestTemplate": "ida/BioAuthDelegatedV2/BioAuthIdentityEncrypt",
+    "identityRequestEncUrl": "/idauthentication/v1/internal/encrypt"
+    }
+    }'
+      output: '{
+  "kycStatus": "true"
+}'
+  auth_BioAuthDelegatedV2_forKycExchangeV2Version_Omitted_Pos_Sid:
+      endPoint: /idauthentication/v1/kyc-auth/v2/delegated/$partialPartnerKeyUrl$/$ID:CreateOIDCClient_Delegated_Valid_Smoke_sid_clientId$
+      uniqueIdentifier: TC_IDA_BioAuthDelegatedV2_27
+      description: Kyc auth V2 dedicated token for the kyc-exchange version-omitted test - expected to succeed
+      role: resident
+      restMethod: post
+      inputTemplate: ida/BioAuthDelegatedV2/BioAuthDelegatedV2
+      outputTemplate: ida/BioAuthDelegatedV2/BioKYCAuthDelegatedResult
+      input: '{
+        "requestTime": "$TIMESTAMP$",
+        "individualId": "$ID:AddIdentity_For_Kyc_Delegated_Bio_Auth_Smoke_Pos_UIN$",
+        "transactionId": "$TRANSACTIONID$",
+        "individualIdType": "UIN",
+        "claimsMetadataRequired": false,
+        "bio": true,
+        "demo": false,
+        "otp": false,
+        "identityRequest":{
+          "bioSubType": "UNKNOWN",
+          "bioType": "FACE",
+          "bioValue": "$FACE$",
+          "deviceCode": "bc0b6848-6d45-46d1-a9bd-b334410bf823",
+          "dateTime": "$DATETIME$",
+          "deviceProviderID": "1873299273",
+          "deviceServiceID": "",
+          "deviceServiceVersion": "SB.WIN.001",
+          "deviceProvider": "SYNCBYTE",
+          "deviceProviderId": "SYNCBYTE.LTC165",
+          "deviceSubType": "Full face",
+          "make": "Logitech",
+          "model": "4d36e96c-e325-11ce-bfc1-08002be10318",
+          "serialNo": "78467171",
+          "type": "Face",
+    "transactionId": "$TRANSACTIONID$",
+    "identityRequestTemplate": "ida/BioAuthDelegatedV2/BioAuthIdentityEncrypt",
+    "identityRequestEncUrl": "/idauthentication/v1/internal/encrypt"
+    }
+    }'
+      output: '{
+  "kycStatus": "true"
+}'
+  auth_BioAuthDelegatedV2_forKycExchangeV2RequestTime_Omitted_Pos_Sid:
+      endPoint: /idauthentication/v1/kyc-auth/v2/delegated/$partialPartnerKeyUrl$/$ID:CreateOIDCClient_Delegated_Valid_Smoke_sid_clientId$
+      uniqueIdentifier: TC_IDA_BioAuthDelegatedV2_28
+      description: Kyc auth V2 dedicated token for the kyc-exchange requestTime-omitted test - expected to succeed
+      role: resident
+      restMethod: post
+      inputTemplate: ida/BioAuthDelegatedV2/BioAuthDelegatedV2
+      outputTemplate: ida/BioAuthDelegatedV2/BioKYCAuthDelegatedResult
+      input: '{
+        "requestTime": "$TIMESTAMP$",
+        "individualId": "$ID:AddIdentity_For_Kyc_Delegated_Bio_Auth_Smoke_Pos_UIN$",
+        "transactionId": "$TRANSACTIONID$",
+        "individualIdType": "UIN",
+        "claimsMetadataRequired": false,
+        "bio": true,
+        "demo": false,
+        "otp": false,
+        "identityRequest":{
+          "bioSubType": "UNKNOWN",
+          "bioType": "FACE",
+          "bioValue": "$FACE$",
+          "deviceCode": "bc0b6848-6d45-46d1-a9bd-b334410bf823",
+          "dateTime": "$DATETIME$",
+          "deviceProviderID": "1873299273",
+          "deviceServiceID": "",
+          "deviceServiceVersion": "SB.WIN.001",
+          "deviceProvider": "SYNCBYTE",
+          "deviceProviderId": "SYNCBYTE.LTC165",
+          "deviceSubType": "Full face",
+          "make": "Logitech",
+          "model": "4d36e96c-e325-11ce-bfc1-08002be10318",
+          "serialNo": "78467171",
+          "type": "Face",
+    "transactionId": "$TRANSACTIONID$",
+    "identityRequestTemplate": "ida/BioAuthDelegatedV2/BioAuthIdentityEncrypt",
+    "identityRequestEncUrl": "/idauthentication/v1/internal/encrypt"
+    }
+    }'
+      output: '{
+  "kycStatus": "true"
+}'
+  auth_BioAuthDelegatedV2_forKycExchangeV2BothClaimTypes_Pos_Sid:
+      endPoint: /idauthentication/v1/kyc-auth/v2/delegated/$partialPartnerKeyUrl$/$ID:CreateOIDCClient_Delegated_Valid_Smoke_sid_clientId$
+      uniqueIdentifier: TC_IDA_BioAuthDelegatedV2_29
+      description: Kyc auth V2 dedicated token for the kyc-exchange both-claim-types test - expected to succeed
+      role: resident
+      restMethod: post
+      inputTemplate: ida/BioAuthDelegatedV2/BioAuthDelegatedV2
+      outputTemplate: ida/BioAuthDelegatedV2/BioKYCAuthDelegatedResult
+      input: '{
+        "requestTime": "$TIMESTAMP$",
+        "individualId": "$ID:AddIdentity_For_Kyc_Delegated_Bio_Auth_Smoke_Pos_UIN$",
+        "transactionId": "$TRANSACTIONID$",
+        "individualIdType": "UIN",
+        "claimsMetadataRequired": false,
+        "bio": true,
+        "demo": false,
+        "otp": false,
+        "identityRequest":{
+          "bioSubType": "UNKNOWN",
+          "bioType": "FACE",
+          "bioValue": "$FACE$",
+          "deviceCode": "bc0b6848-6d45-46d1-a9bd-b334410bf823",
+          "dateTime": "$DATETIME$",
+          "deviceProviderID": "1873299273",
+          "deviceServiceID": "",
+          "deviceServiceVersion": "SB.WIN.001",
+          "deviceProvider": "SYNCBYTE",
+          "deviceProviderId": "SYNCBYTE.LTC165",
+          "deviceSubType": "Full face",
+          "make": "Logitech",
+          "model": "4d36e96c-e325-11ce-bfc1-08002be10318",
+          "serialNo": "78467171",
+          "type": "Face",
+    "transactionId": "$TRANSACTIONID$",
+    "identityRequestTemplate": "ida/BioAuthDelegatedV2/BioAuthIdentityEncrypt",
+    "identityRequestEncUrl": "/idauthentication/v1/internal/encrypt"
+    }
+    }'
+      output: '{
+  "kycStatus": "true"
+}'
+  auth_BioAuthDelegatedV2_forKycExchangeV2VerifiedClaims_Pos_Sid:
+      endPoint: /idauthentication/v1/kyc-auth/v2/delegated/$partialPartnerKeyUrl$/$ID:CreateOIDCClient_Delegated_Valid_Smoke_sid_clientId$
+      uniqueIdentifier: TC_IDA_BioAuthDelegatedV2_30
+      description: Kyc auth V2 dedicated token against the verified-claims fixture identity - expected to succeed
+      role: resident
+      restMethod: post
+      inputTemplate: ida/BioAuthDelegatedV2/BioAuthDelegatedV2
+      outputTemplate: ida/BioAuthDelegatedV2/BioKYCAuthDelegatedResult
+      input: '{
+        "requestTime": "$TIMESTAMP$",
+        "individualId": "$ID:AddIdentity_ForVerifiedClaims_Bio_Auth_Smoke_Pos_UIN$",
+        "transactionId": "$TRANSACTIONID$",
+        "individualIdType": "UIN",
+        "claimsMetadataRequired": false,
+        "bio": true,
+        "demo": false,
+        "otp": false,
+        "identityRequest":{
+          "bioSubType": "UNKNOWN",
+          "bioType": "FACE",
+          "bioValue": "$FACE$",
+          "deviceCode": "bc0b6848-6d45-46d1-a9bd-b334410bf823",
+          "dateTime": "$DATETIME$",
+          "deviceProviderID": "1873299273",
+          "deviceServiceID": "",
+          "deviceServiceVersion": "SB.WIN.001",
+          "deviceProvider": "SYNCBYTE",
+          "deviceProviderId": "SYNCBYTE.LTC165",
+          "deviceSubType": "Full face",
+          "make": "Logitech",
+          "model": "4d36e96c-e325-11ce-bfc1-08002be10318",
+          "serialNo": "78467171",
+          "type": "Face",
+    "transactionId": "$TRANSACTIONID$",
+    "identityRequestTemplate": "ida/BioAuthDelegatedV2/BioAuthIdentityEncrypt",
+    "identityRequestEncUrl": "/idauthentication/v1/internal/encrypt"
+    }
+    }'
+      output: '{
+  "kycStatus": "true"
+}'
+  auth_BioAuthDelegatedV2_VerifiedClaimsMetadata_Pos:
+      endPoint: /idauthentication/v1/kyc-auth/v2/delegated/$partialPartnerKeyUrl$/$ID:CreateOIDCClient_Delegated_Valid_Smoke_sid_clientId$
+      uniqueIdentifier: TC_IDA_BioAuthDelegatedV2_31
+      description: Kyc auth V2 with claimsMetadataRequired true against the verified-claims fixture identity - expected to succeed
+      role: resident
+      restMethod: post
+      inputTemplate: ida/BioAuthDelegatedV2/BioAuthDelegatedV2
+      outputTemplate: ida/BioAuthDelegatedV2/BioKYCAuthDelegatedResult
+      input: '{
+        "requestTime": "$TIMESTAMP$",
+        "individualId": "$ID:AddIdentity_ForVerifiedClaims_Bio_Auth_Smoke_Pos_UIN$",
+        "transactionId": "$TRANSACTIONID$",
+        "individualIdType": "UIN",
+        "claimsMetadataRequired": true,
+        "bio": true,
+        "demo": false,
+        "otp": false,
+        "identityRequest":{
+          "bioSubType": "UNKNOWN",
+          "bioType": "FACE",
+          "bioValue": "$FACE$",
+          "deviceCode": "bc0b6848-6d45-46d1-a9bd-b334410bf823",
+          "dateTime": "$DATETIME$",
+          "deviceProviderID": "1873299273",
+          "deviceServiceID": "",
+          "deviceServiceVersion": "SB.WIN.001",
+          "deviceProvider": "SYNCBYTE",
+          "deviceProviderId": "SYNCBYTE.LTC165",
+          "deviceSubType": "Full face",
+          "make": "Logitech",
+          "model": "4d36e96c-e325-11ce-bfc1-08002be10318",
+          "serialNo": "78467171",
+          "type": "Face",
+    "transactionId": "$TRANSACTIONID$",
+    "identityRequestTemplate": "ida/BioAuthDelegatedV2/BioAuthIdentityEncrypt",
+    "identityRequestEncUrl": "/idauthentication/v1/internal/encrypt"
+    }
+    }'
+      output: '{
+  "kycStatus": "true",
+  "verifiedClaimsMetadata": "$REGEXP:^(?!null).+$"
+}'
+  auth_BioAuthDelegatedV2_forKycExchangeV2MaxAgeFiltered_Pos_Sid:
+      endPoint: /idauthentication/v1/kyc-auth/v2/delegated/$partialPartnerKeyUrl$/$ID:CreateOIDCClient_Delegated_Valid_Smoke_sid_clientId$
+      uniqueIdentifier: TC_IDA_BioAuthDelegatedV2_32
+      description: Kyc auth V2 dedicated token for the kyc-exchange max_age-filtering test - expected to succeed
+      role: resident
+      restMethod: post
+      inputTemplate: ida/BioAuthDelegatedV2/BioAuthDelegatedV2
+      outputTemplate: ida/BioAuthDelegatedV2/BioKYCAuthDelegatedResult
+      input: '{
+        "requestTime": "$TIMESTAMP$",
+        "individualId": "$ID:AddIdentity_ForMaxAgeFiltered_Bio_Auth_Smoke_Pos_UIN$",
+        "transactionId": "$TRANSACTIONID$",
+        "individualIdType": "UIN",
+        "claimsMetadataRequired": false,
+        "bio": true,
+        "demo": false,
+        "otp": false,
+        "identityRequest":{
+          "bioSubType": "UNKNOWN",
+          "bioType": "FACE",
+          "bioValue": "$FACE$",
+          "deviceCode": "bc0b6848-6d45-46d1-a9bd-b334410bf823",
+          "dateTime": "$DATETIME$",
+          "deviceProviderID": "1873299273",
+          "deviceServiceID": "",
+          "deviceServiceVersion": "SB.WIN.001",
+          "deviceProvider": "SYNCBYTE",
+          "deviceProviderId": "SYNCBYTE.LTC165",
+          "deviceSubType": "Full face",
+          "make": "Logitech",
+          "model": "4d36e96c-e325-11ce-bfc1-08002be10318",
+          "serialNo": "78467171",
+          "type": "Face",
+    "transactionId": "$TRANSACTIONID$",
+    "identityRequestTemplate": "ida/BioAuthDelegatedV2/BioAuthIdentityEncrypt",
+    "identityRequestEncUrl": "/idauthentication/v1/internal/encrypt"
+    }
+    }'
+      output: '{
+  "kycStatus": "true"
+}'
+  auth_BioAuthDelegatedV2_forKycExchangeV2MultiTrustFramework_Pos_Sid:
+      endPoint: /idauthentication/v1/kyc-auth/v2/delegated/$partialPartnerKeyUrl$/$ID:CreateOIDCClient_Delegated_Valid_Smoke_sid_clientId$
+      uniqueIdentifier: TC_IDA_BioAuthDelegatedV2_33
+      description: Kyc auth V2 dedicated token for the kyc-exchange multi-trust-framework test - expected to succeed
+      role: resident
+      restMethod: post
+      inputTemplate: ida/BioAuthDelegatedV2/BioAuthDelegatedV2
+      outputTemplate: ida/BioAuthDelegatedV2/BioKYCAuthDelegatedResult
+      input: '{
+        "requestTime": "$TIMESTAMP$",
+        "individualId": "$ID:AddIdentity_ForVerifiedClaims_Bio_Auth_Smoke_Pos_UIN$",
+        "transactionId": "$TRANSACTIONID$",
+        "individualIdType": "UIN",
+        "claimsMetadataRequired": false,
+        "bio": true,
+        "demo": false,
+        "otp": false,
+        "identityRequest":{
+          "bioSubType": "UNKNOWN",
+          "bioType": "FACE",
+          "bioValue": "$FACE$",
+          "deviceCode": "bc0b6848-6d45-46d1-a9bd-b334410bf823",
+          "dateTime": "$DATETIME$",
+          "deviceProviderID": "1873299273",
+          "deviceServiceID": "",
+          "deviceServiceVersion": "SB.WIN.001",
+          "deviceProvider": "SYNCBYTE",
+          "deviceProviderId": "SYNCBYTE.LTC165",
+          "deviceSubType": "Full face",
+          "make": "Logitech",
+          "model": "4d36e96c-e325-11ce-bfc1-08002be10318",
+          "serialNo": "78467171",
+          "type": "Face",
+    "transactionId": "$TRANSACTIONID$",
+    "identityRequestTemplate": "ida/BioAuthDelegatedV2/BioAuthIdentityEncrypt",
+    "identityRequestEncUrl": "/idauthentication/v1/internal/encrypt"
+    }
+    }'
+      output: '{
+  "kycStatus": "true"
+}'
+  auth_BioAuthDelegatedV2_forKycExchangeV2MultiContext_Pos_Sid:
+      endPoint: /idauthentication/v1/kyc-auth/v2/delegated/$partialPartnerKeyUrl$/$ID:CreateOIDCClient_Delegated_Valid_Smoke_sid_clientId$
+      uniqueIdentifier: TC_IDA_BioAuthDelegatedV2_34
+      description: Kyc auth V2 dedicated token for the kyc-exchange multi-context test - expected to succeed
+      role: resident
+      restMethod: post
+      inputTemplate: ida/BioAuthDelegatedV2/BioAuthDelegatedV2
+      outputTemplate: ida/BioAuthDelegatedV2/BioKYCAuthDelegatedResult
+      input: '{
+        "requestTime": "$TIMESTAMP$",
+        "individualId": "$ID:AddIdentity_ForVerifiedClaims_Bio_Auth_Smoke_Pos_UIN$",
+        "transactionId": "$TRANSACTIONID$",
+        "individualIdType": "UIN",
+        "claimsMetadataRequired": true,
+        "bio": true,
+        "demo": false,
+        "otp": false,
+        "identityRequest":{
+          "bioSubType": "UNKNOWN",
+          "bioType": "FACE",
+          "bioValue": "$FACE$",
+          "deviceCode": "bc0b6848-6d45-46d1-a9bd-b334410bf823",
+          "dateTime": "$DATETIME$",
+          "deviceProviderID": "1873299273",
+          "deviceServiceID": "",
+          "deviceServiceVersion": "SB.WIN.001",
+          "deviceProvider": "SYNCBYTE",
+          "deviceProviderId": "SYNCBYTE.LTC165",
+          "deviceSubType": "Full face",
+          "make": "Logitech",
+          "model": "4d36e96c-e325-11ce-bfc1-08002be10318",
+          "serialNo": "78467171",
+          "type": "Face",
+    "transactionId": "$TRANSACTIONID$",
+    "identityRequestTemplate": "ida/BioAuthDelegatedV2/BioAuthIdentityEncrypt",
+    "identityRequestEncUrl": "/idauthentication/v1/internal/encrypt"
+    }
+    }'
+      output: '{
+  "kycStatus": "true"
+}'
+  auth_BioAuthDelegatedV2_forKycExchangeV2Integration_Pos_Sid:
+      endPoint: /idauthentication/v1/kyc-auth/v2/delegated/$partialPartnerKeyUrl$/$ID:CreateOIDCClient_Delegated_Valid_Smoke_sid_clientId$
+      uniqueIdentifier: TC_IDA_BioAuthDelegatedV2_35
+      description: Kyc auth V2 with claimsMetadataRequired true, kyc-auth leg of the kyc-auth/kyc-exchange consistency test - expected to succeed
+      role: resident
+      restMethod: post
+      inputTemplate: ida/BioAuthDelegatedV2/BioAuthDelegatedV2
+      outputTemplate: ida/BioAuthDelegatedV2/BioKYCAuthDelegatedResult
+      input: '{
+        "requestTime": "$TIMESTAMP$",
+        "individualId": "$ID:AddIdentity_ForVerifiedClaims_Bio_Auth_Smoke_Pos_UIN$",
+        "transactionId": "$TRANSACTIONID$",
+        "individualIdType": "UIN",
+        "claimsMetadataRequired": true,
+        "bio": true,
+        "demo": false,
+        "otp": false,
+        "identityRequest":{
+          "bioSubType": "UNKNOWN",
+          "bioType": "FACE",
+          "bioValue": "$FACE$",
+          "deviceCode": "bc0b6848-6d45-46d1-a9bd-b334410bf823",
+          "dateTime": "$DATETIME$",
+          "deviceProviderID": "1873299273",
+          "deviceServiceID": "",
+          "deviceServiceVersion": "SB.WIN.001",
+          "deviceProvider": "SYNCBYTE",
+          "deviceProviderId": "SYNCBYTE.LTC165",
+          "deviceSubType": "Full face",
+          "make": "Logitech",
+          "model": "4d36e96c-e325-11ce-bfc1-08002be10318",
+          "serialNo": "78467171",
+          "type": "Face",
+    "transactionId": "$TRANSACTIONID$",
+    "identityRequestTemplate": "ida/BioAuthDelegatedV2/BioAuthIdentityEncrypt",
+    "identityRequestEncUrl": "/idauthentication/v1/internal/encrypt"
+    }
+    }'
+      output: '{
+  "kycStatus": "true",
+  "verifiedClaimsMetadata": "$REGEXP:.*uk_tfida.*$"
+}'
+  auth_BioAuthDelegatedV2Neg_Missing_DomainUri_Neg:
+      endPoint: /idauthentication/v1/kyc-auth/v2/delegated/$partialPartnerKeyUrl$/$ID:CreateOIDCClient_Delegated_Valid_Smoke_sid_clientId$
+      uniqueIdentifier: TC_IDA_BioAuthDelegatedV2Neg_28
+      description: Kyc auth V2 with the top-level domainUri field omitted while biometric data still carries one - expected to fail
+      role: resident
+      restMethod: post
+      inputTemplate: ida/BioAuthDelegatedV2/BioAuthDelegatedV2WithoutDomainUri
+      outputTemplate: ida/DelegateError
+      input: '{
+        "requestTime": "$TIMESTAMP$",
+        "individualId": "$ID:AddIdentity_ValidParam_smoke_Pos_UIN$",
+        "transactionId": "$TRANSACTIONID$",
+        "individualIdType": "UIN",
+        "claimsMetadataRequired": false,
+        "bio": true,
+        "demo": false,
+        "otp": false,
+        "identityRequest":{
+          "bioSubType": "UNKNOWN",
+          "bioType": "FACE",
+          "bioValue": "$FACE$",
+          "deviceCode": "bc0b6848-6d45-46d1-a9bd-b334410bf823",
+          "dateTime": "$DATETIME$",
+          "deviceProviderID": "1873299273",
+          "deviceServiceID": "",
+          "deviceServiceVersion": "SB.WIN.001",
+          "deviceProvider": "SYNCBYTE",
+          "deviceProviderId": "SYNCBYTE.LTC165",
+          "deviceSubType": "Full face",
+          "make": "Logitech",
+          "model": "4d36e96c-e325-11ce-bfc1-08002be10318",
+          "serialNo": "78467171",
+          "type": "Face",
+    "transactionId": "$TRANSACTIONID$",
+    "identityRequestTemplate": "ida/BioAuthDelegatedV2/BioAuthIdentityEncrypt",
+    "identityRequestEncUrl": "/idauthentication/v1/internal/encrypt"
+    }
+    }'
+      output: '{
+      "errors": [
+        {
+          "errorCode": "IDA-MLC-009"
+        }
+      ]
+}'
+  auth_BioAuthDelegatedV2_MultipleVerifiedClaims_Pos:
+      endPoint: /idauthentication/v1/kyc-auth/v2/delegated/$partialPartnerKeyUrl$/$ID:CreateOIDCClient_Delegated_Valid_Smoke_sid_clientId$
+      uniqueIdentifier: TC_IDA_BioAuthDelegatedV2_37
+      description: Kyc auth V2 with claimsMetadataRequired true against a fixture with two verified claims - expected to succeed
+      role: resident
+      restMethod: post
+      inputTemplate: ida/BioAuthDelegatedV2/BioAuthDelegatedV2
+      outputTemplate: ida/BioAuthDelegatedV2/BioKYCAuthDelegatedResult
+      input: '{
+        "requestTime": "$TIMESTAMP$",
+        "individualId": "$ID:AddIdentity_ForVerifiedClaims_Bio_Auth_Smoke_Pos_UIN$",
+        "transactionId": "$TRANSACTIONID$",
+        "individualIdType": "UIN",
+        "claimsMetadataRequired": true,
+        "bio": true,
+        "demo": false,
+        "otp": false,
+        "identityRequest":{
+          "bioSubType": "UNKNOWN",
+          "bioType": "FACE",
+          "bioValue": "$FACE$",
+          "deviceCode": "bc0b6848-6d45-46d1-a9bd-b334410bf823",
+          "dateTime": "$DATETIME$",
+          "deviceProviderID": "1873299273",
+          "deviceServiceID": "",
+          "deviceServiceVersion": "SB.WIN.001",
+          "deviceProvider": "SYNCBYTE",
+          "deviceProviderId": "SYNCBYTE.LTC165",
+          "deviceSubType": "Full face",
+          "make": "Logitech",
+          "model": "4d36e96c-e325-11ce-bfc1-08002be10318",
+          "serialNo": "78467171",
+          "type": "Face",
+    "transactionId": "$TRANSACTIONID$",
+    "identityRequestTemplate": "ida/BioAuthDelegatedV2/BioAuthIdentityEncrypt",
+    "identityRequestEncUrl": "/idauthentication/v1/internal/encrypt"
+    }
+    }'
+      output: '{
+  "kycStatus": "true",
+  "verifiedClaimsMetadata": "$REGEXP:^(?=.*email)(?=.*phone).*$"
+}'
+  auth_BioAuthDelegatedV2_KeyBindedToken_WLA_Pos:
+      endPoint: /idauthentication/v1/kyc-auth/v2/delegated/$partialPartnerKeyUrl$/$ID:CreateOIDCClient_Delegated_Valid_Smoke_sid_clientId$
+      uniqueIdentifier: TC_IDA_BioAuthDelegatedV2_48
+      description: Kyc auth V2 authenticated via a fresh key-binded WLA JWT bound in a prior identity-key-binding call - expected to succeed
+      role: resident
+      restMethod: post
+      inputTemplate: ida/BioAuthDelegatedV2/BioAuthDelegatedV2
+      outputTemplate: ida/BioAuthDelegatedV2/BioKYCAuthDelegatedResult
+      input: '{
+        "requestTime": "$TIMESTAMP$",
+        "individualId": "$ID:AddIdentity_For_Kyc_Delegated_Bio_Auth_Smoke_Pos_UIN$",
+        "transactionId": "$TRANSACTIONID$",
+        "individualIdType": "UIN",
+        "claimsMetadataRequired": false,
+        "bio": true,
+        "demo": false,
+        "otp": false,
+        "identityRequest":{
+          "bioSubType": "UNKNOWN",
+          "bioType": "FACE",
+          "bioValue": "$FACE$",
+          "deviceCode": "bc0b6848-6d45-46d1-a9bd-b334410bf823",
+          "dateTime": "$DATETIME$",
+          "deviceProviderID": "1873299273",
+          "deviceServiceID": "",
+          "deviceServiceVersion": "SB.WIN.001",
+          "deviceProvider": "SYNCBYTE",
+          "deviceProviderId": "SYNCBYTE.LTC165",
+          "deviceSubType": "Full face",
+          "make": "Logitech",
+          "model": "4d36e96c-e325-11ce-bfc1-08002be10318",
+          "serialNo": "78467171",
+          "type": "Face",
+    "transactionId": "$TRANSACTIONID$",
+    "keyBindedTokens": [
+      {
+        "type": "WLA",
+        "token": "$WLAJWT:IdentityKeyBinding_forKycAuthV2_Bio_Pos_Sid$",
+        "format": "jwt"
+      }
+    ],
+    "identityRequestTemplate": "ida/BioAuthDelegatedV2/BioAuthIdentityEncryptWithKBT",
+    "identityRequestEncUrl": "/idauthentication/v1/internal/encrypt"
+    }
+    }'
+      output: '{
+  "kycStatus": "true"
+}'
+  auth_BioAuthDelegatedV2Neg_InvalidSignature_Neg:
+      endPoint: /idauthentication/v1/kyc-auth/v2/delegated/$partialPartnerKeyUrl$/$ID:CreateOIDCClient_Delegated_Valid_Smoke_sid_clientId$
+      uniqueIdentifier: TC_IDA_BioAuthDelegatedV2Neg_29
+      description: Kyc auth V2 with a corrupted digital-signature header - expected to fail
+      role: resident
+      restMethod: post
+      inputTemplate: ida/BioAuthDelegatedV2/BioAuthDelegatedV2
+      outputTemplate: ida/DelegateError
+      input: '{
+        "requestTime": "$TIMESTAMP$",
+        "individualId": "$ID:AddIdentity_ValidParam_smoke_Pos_UIN$",
+        "transactionId": "$TRANSACTIONID$",
+        "individualIdType": "UIN",
+        "claimsMetadataRequired": true,
+        "bio": true,
+        "demo": false,
+        "otp": false,
+        "identityRequest":{
+          "bioSubType": "UNKNOWN",
+          "bioType": "FACE",
+          "bioValue": "$FACE$",
+          "deviceCode": "bc0b6848-6d45-46d1-a9bd-b334410bf823",
+          "dateTime": "$DATETIME$",
+          "deviceProviderID": "1873299273",
+          "deviceServiceID": "",
+          "deviceServiceVersion": "SB.WIN.001",
+          "deviceProvider": "SYNCBYTE",
+          "deviceProviderId": "SYNCBYTE.LTC165",
+          "deviceSubType": "Full face",
+          "make": "Logitech",
+          "model": "4d36e96c-e325-11ce-bfc1-08002be10318",
+          "serialNo": "78467171",
+          "type": "Face",
+    "transactionId": "$TRANSACTIONID$",
+    "identityRequestTemplate": "ida/BioAuthDelegatedV2/BioAuthIdentityEncrypt",
+    "identityRequestEncUrl": "/idauthentication/v1/internal/encrypt"
+    }
+    }'
+      output: '{
+      "errors": [
+        {
+          "errorCode": "IDA-MLC-007"
+        },
+        {
+          "errorCode": "IDA-MPA-001"
+        }
+      ]
+}'
+  auth_BioAuthDelegatedV2_forKycExchangeV2TxnIdOmitted_Pos_Sid:
+      endPoint: /idauthentication/v1/kyc-auth/v2/delegated/$partialPartnerKeyUrl$/$ID:CreateOIDCClient_Delegated_Valid_Smoke_sid_clientId$
+      uniqueIdentifier: TC_IDA_BioAuthDelegatedV2_38
+      description: Kyc auth V2 dedicated token for the kyc-exchange transactionID-omitted test - expected to succeed
+      role: resident
+      restMethod: post
+      inputTemplate: ida/BioAuthDelegatedV2/BioAuthDelegatedV2
+      outputTemplate: ida/BioAuthDelegatedV2/BioKYCAuthDelegatedResult
+      input: '{
+        "requestTime": "$TIMESTAMP$",
+        "individualId": "$ID:AddIdentity_For_Kyc_Delegated_Bio_Auth_Smoke_Pos_UIN$",
+        "transactionId": "$TRANSACTIONID$",
+        "individualIdType": "UIN",
+        "claimsMetadataRequired": false,
+        "bio": true,
+        "demo": false,
+        "otp": false,
+        "identityRequest":{
+          "bioSubType": "UNKNOWN",
+          "bioType": "FACE",
+          "bioValue": "$FACE$",
+          "deviceCode": "bc0b6848-6d45-46d1-a9bd-b334410bf823",
+          "dateTime": "$DATETIME$",
+          "deviceProviderID": "1873299273",
+          "deviceServiceID": "",
+          "deviceServiceVersion": "SB.WIN.001",
+          "deviceProvider": "SYNCBYTE",
+          "deviceProviderId": "SYNCBYTE.LTC165",
+          "deviceSubType": "Full face",
+          "make": "Logitech",
+          "model": "4d36e96c-e325-11ce-bfc1-08002be10318",
+          "serialNo": "78467171",
+          "type": "Face",
+    "transactionId": "$TRANSACTIONID$",
+    "identityRequestTemplate": "ida/BioAuthDelegatedV2/BioAuthIdentityEncrypt",
+    "identityRequestEncUrl": "/idauthentication/v1/internal/encrypt"
+    }
+    }'
+      output: '{
+  "kycStatus": "true"
+}'
+  auth_BioAuthDelegatedV2_forKycExchangeV2RespTypeOmitted_Pos_Sid:
+      endPoint: /idauthentication/v1/kyc-auth/v2/delegated/$partialPartnerKeyUrl$/$ID:CreateOIDCClient_Delegated_Valid_Smoke_sid_clientId$
+      uniqueIdentifier: TC_IDA_BioAuthDelegatedV2_39
+      description: Kyc auth V2 dedicated token for the kyc-exchange respType-omitted test - expected to succeed
+      role: resident
+      restMethod: post
+      inputTemplate: ida/BioAuthDelegatedV2/BioAuthDelegatedV2
+      outputTemplate: ida/BioAuthDelegatedV2/BioKYCAuthDelegatedResult
+      input: '{
+        "requestTime": "$TIMESTAMP$",
+        "individualId": "$ID:AddIdentity_ForVerifiedClaims_Bio_Auth_Smoke_Pos_UIN$",
+        "transactionId": "$TRANSACTIONID$",
+        "individualIdType": "UIN",
+        "claimsMetadataRequired": false,
+        "bio": true,
+        "demo": false,
+        "otp": false,
+        "identityRequest":{
+          "bioSubType": "UNKNOWN",
+          "bioType": "FACE",
+          "bioValue": "$FACE$",
+          "deviceCode": "bc0b6848-6d45-46d1-a9bd-b334410bf823",
+          "dateTime": "$DATETIME$",
+          "deviceProviderID": "1873299273",
+          "deviceServiceID": "",
+          "deviceServiceVersion": "SB.WIN.001",
+          "deviceProvider": "SYNCBYTE",
+          "deviceProviderId": "SYNCBYTE.LTC165",
+          "deviceSubType": "Full face",
+          "make": "Logitech",
+          "model": "4d36e96c-e325-11ce-bfc1-08002be10318",
+          "serialNo": "78467171",
+          "type": "Face",
+    "transactionId": "$TRANSACTIONID$",
+    "identityRequestTemplate": "ida/BioAuthDelegatedV2/BioAuthIdentityEncrypt",
+    "identityRequestEncUrl": "/idauthentication/v1/internal/encrypt"
+    }
+    }'
+      output: '{
+  "kycStatus": "true"
+}'
+  auth_BioAuthDelegatedV2_forKycExchangeV2VerifiedKeyInUnverified_Pos_Sid:
+      endPoint: /idauthentication/v1/kyc-auth/v2/delegated/$partialPartnerKeyUrl$/$ID:CreateOIDCClient_Delegated_Valid_Smoke_sid_clientId$
+      uniqueIdentifier: TC_IDA_BioAuthDelegatedV2_40
+      description: Kyc auth V2 dedicated token for the kyc-exchange verified-key-in-unverified-claims test - expected to succeed
+      role: resident
+      restMethod: post
+      inputTemplate: ida/BioAuthDelegatedV2/BioAuthDelegatedV2
+      outputTemplate: ida/BioAuthDelegatedV2/BioKYCAuthDelegatedResult
+      input: '{
+        "requestTime": "$TIMESTAMP$",
+        "individualId": "$ID:AddIdentity_ForVerifiedClaims_Bio_Auth_Smoke_Pos_UIN$",
+        "transactionId": "$TRANSACTIONID$",
+        "individualIdType": "UIN",
+        "claimsMetadataRequired": false,
+        "bio": true,
+        "demo": false,
+        "otp": false,
+        "identityRequest":{
+          "bioSubType": "UNKNOWN",
+          "bioType": "FACE",
+          "bioValue": "$FACE$",
+          "deviceCode": "bc0b6848-6d45-46d1-a9bd-b334410bf823",
+          "dateTime": "$DATETIME$",
+          "deviceProviderID": "1873299273",
+          "deviceServiceID": "",
+          "deviceServiceVersion": "SB.WIN.001",
+          "deviceProvider": "SYNCBYTE",
+          "deviceProviderId": "SYNCBYTE.LTC165",
+          "deviceSubType": "Full face",
+          "make": "Logitech",
+          "model": "4d36e96c-e325-11ce-bfc1-08002be10318",
+          "serialNo": "78467171",
+          "type": "Face",
+    "transactionId": "$TRANSACTIONID$",
+    "identityRequestTemplate": "ida/BioAuthDelegatedV2/BioAuthIdentityEncrypt",
+    "identityRequestEncUrl": "/idauthentication/v1/internal/encrypt"
+    }
+    }'
+      output: '{
+  "kycStatus": "true"
+}'
+  auth_BioAuthDelegatedV2_forKycExchangeV2VidUinMismatch_Pos_Sid:
+      endPoint: /idauthentication/v1/kyc-auth/v2/delegated/$partialPartnerKeyUrl$/$ID:CreateOIDCClient_Delegated_Valid_Smoke_sid_clientId$
+      uniqueIdentifier: TC_IDA_BioAuthDelegatedV2_41
+      description: Kyc auth V2 dedicated token (minted via UIN) for the kyc-exchange VID/UIN-mismatch test - expected to succeed
+      role: resident
+      restMethod: post
+      inputTemplate: ida/BioAuthDelegatedV2/BioAuthDelegatedV2
+      outputTemplate: ida/BioAuthDelegatedV2/BioKYCAuthDelegatedResult
+      input: '{
+        "requestTime": "$TIMESTAMP$",
+        "individualId": "$ID:AddIdentity_ValidParam_smoke_Pos_UIN$",
+        "transactionId": "$TRANSACTIONID$",
+        "individualIdType": "UIN",
+        "claimsMetadataRequired": false,
+        "bio": true,
+        "demo": false,
+        "otp": false,
+        "identityRequest":{
+          "bioSubType": "UNKNOWN",
+          "bioType": "FACE",
+          "bioValue": "$FACE$",
+          "deviceCode": "bc0b6848-6d45-46d1-a9bd-b334410bf823",
+          "dateTime": "$DATETIME$",
+          "deviceProviderID": "1873299273",
+          "deviceServiceID": "",
+          "deviceServiceVersion": "SB.WIN.001",
+          "deviceProvider": "SYNCBYTE",
+          "deviceProviderId": "SYNCBYTE.LTC165",
+          "deviceSubType": "Full face",
+          "make": "Logitech",
+          "model": "4d36e96c-e325-11ce-bfc1-08002be10318",
+          "serialNo": "78467171",
+          "type": "Face",
+    "transactionId": "$TRANSACTIONID$",
+    "identityRequestTemplate": "ida/BioAuthDelegatedV2/BioAuthIdentityEncrypt",
+    "identityRequestEncUrl": "/idauthentication/v1/internal/encrypt"
+    }
+    }'
+      output: '{
+  "kycStatus": "true"
+}'
+  auth_BioAuthDelegatedV2_forKycExchangeV2ClaimNotAvailable_Pos_Sid:
+      endPoint: /idauthentication/v1/kyc-auth/v2/delegated/$partialPartnerKeyUrl$/$ID:CreateOIDCClient_Delegated_Valid_Smoke_sid_clientId$
+      uniqueIdentifier: TC_IDA_BioAuthDelegatedV2_42
+      description: Kyc auth V2 dedicated token for the kyc-exchange claim-not-available test - expected to succeed
+      role: resident
+      restMethod: post
+      inputTemplate: ida/BioAuthDelegatedV2/BioAuthDelegatedV2
+      outputTemplate: ida/BioAuthDelegatedV2/BioKYCAuthDelegatedResult
+      input: '{
+        "requestTime": "$TIMESTAMP$",
+        "individualId": "$ID:AddIdentity_ForVerifiedClaims_Bio_Auth_Smoke_Pos_UIN$",
+        "transactionId": "$TRANSACTIONID$",
+        "individualIdType": "UIN",
+        "claimsMetadataRequired": false,
+        "bio": true,
+        "demo": false,
+        "otp": false,
+        "identityRequest":{
+          "bioSubType": "UNKNOWN",
+          "bioType": "FACE",
+          "bioValue": "$FACE$",
+          "deviceCode": "bc0b6848-6d45-46d1-a9bd-b334410bf823",
+          "dateTime": "$DATETIME$",
+          "deviceProviderID": "1873299273",
+          "deviceServiceID": "",
+          "deviceServiceVersion": "SB.WIN.001",
+          "deviceProvider": "SYNCBYTE",
+          "deviceProviderId": "SYNCBYTE.LTC165",
+          "deviceSubType": "Full face",
+          "make": "Logitech",
+          "model": "4d36e96c-e325-11ce-bfc1-08002be10318",
+          "serialNo": "78467171",
+          "type": "Face",
+    "transactionId": "$TRANSACTIONID$",
+    "identityRequestTemplate": "ida/BioAuthDelegatedV2/BioAuthIdentityEncrypt",
+    "identityRequestEncUrl": "/idauthentication/v1/internal/encrypt"
+    }
+    }'
+      output: '{
+  "kycStatus": "true"
+}'
+  auth_BioAuthDelegatedV2_forKycExchangeV2MetadataPresent_Pos_Sid:
+      endPoint: /idauthentication/v1/kyc-auth/v2/delegated/$partialPartnerKeyUrl$/$ID:CreateOIDCClient_Delegated_Valid_Smoke_sid_clientId$
+      uniqueIdentifier: TC_IDA_BioAuthDelegatedV2_43
+      description: Kyc auth V2 dedicated token for the kyc-exchange metadata-present test - expected to succeed
+      role: resident
+      restMethod: post
+      inputTemplate: ida/BioAuthDelegatedV2/BioAuthDelegatedV2
+      outputTemplate: ida/BioAuthDelegatedV2/BioKYCAuthDelegatedResult
+      input: '{
+        "requestTime": "$TIMESTAMP$",
+        "individualId": "$ID:AddIdentity_For_Kyc_Delegated_Bio_Auth_Smoke_Pos_UIN$",
+        "transactionId": "$TRANSACTIONID$",
+        "individualIdType": "UIN",
+        "claimsMetadataRequired": false,
+        "bio": true,
+        "demo": false,
+        "otp": false,
+        "identityRequest":{
+          "bioSubType": "UNKNOWN",
+          "bioType": "FACE",
+          "bioValue": "$FACE$",
+          "deviceCode": "bc0b6848-6d45-46d1-a9bd-b334410bf823",
+          "dateTime": "$DATETIME$",
+          "deviceProviderID": "1873299273",
+          "deviceServiceID": "",
+          "deviceServiceVersion": "SB.WIN.001",
+          "deviceProvider": "SYNCBYTE",
+          "deviceProviderId": "SYNCBYTE.LTC165",
+          "deviceSubType": "Full face",
+          "make": "Logitech",
+          "model": "4d36e96c-e325-11ce-bfc1-08002be10318",
+          "serialNo": "78467171",
+          "type": "Face",
+    "transactionId": "$TRANSACTIONID$",
+    "identityRequestTemplate": "ida/BioAuthDelegatedV2/BioAuthIdentityEncrypt",
+    "identityRequestEncUrl": "/idauthentication/v1/internal/encrypt"
+    }
+    }'
+      output: '{
+  "kycStatus": "true"
+}'
+  auth_BioAuthDelegatedV2_forKycExchangeV2InvalidSignature_Pos_Sid:
+      endPoint: /idauthentication/v1/kyc-auth/v2/delegated/$partialPartnerKeyUrl$/$ID:CreateOIDCClient_Delegated_Valid_Smoke_sid_clientId$
+      uniqueIdentifier: TC_IDA_BioAuthDelegatedV2_44
+      description: Kyc auth V2 dedicated token for the kyc-exchange invalid-signature test - expected to succeed
+      role: resident
+      restMethod: post
+      inputTemplate: ida/BioAuthDelegatedV2/BioAuthDelegatedV2
+      outputTemplate: ida/BioAuthDelegatedV2/BioKYCAuthDelegatedResult
+      input: '{
+        "requestTime": "$TIMESTAMP$",
+        "individualId": "$ID:AddIdentity_For_Kyc_Delegated_Bio_Auth_Smoke_Pos_UIN$",
+        "transactionId": "$TRANSACTIONID$",
+        "individualIdType": "UIN",
+        "claimsMetadataRequired": false,
+        "bio": true,
+        "demo": false,
+        "otp": false,
+        "identityRequest":{
+          "bioSubType": "UNKNOWN",
+          "bioType": "FACE",
+          "bioValue": "$FACE$",
+          "deviceCode": "bc0b6848-6d45-46d1-a9bd-b334410bf823",
+          "dateTime": "$DATETIME$",
+          "deviceProviderID": "1873299273",
+          "deviceServiceID": "",
+          "deviceServiceVersion": "SB.WIN.001",
+          "deviceProvider": "SYNCBYTE",
+          "deviceProviderId": "SYNCBYTE.LTC165",
+          "deviceSubType": "Full face",
+          "make": "Logitech",
+          "model": "4d36e96c-e325-11ce-bfc1-08002be10318",
+          "serialNo": "78467171",
+          "type": "Face",
+    "transactionId": "$TRANSACTIONID$",
+    "identityRequestTemplate": "ida/BioAuthDelegatedV2/BioAuthIdentityEncrypt",
+    "identityRequestEncUrl": "/idauthentication/v1/internal/encrypt"
+    }
+    }'
+      output: '{
+  "kycStatus": "true"
+}'
+  auth_BioAuthDelegatedV2_forKycExchangeV2MissingSignature_Pos_Sid:
+      endPoint: /idauthentication/v1/kyc-auth/v2/delegated/$partialPartnerKeyUrl$/$ID:CreateOIDCClient_Delegated_Valid_Smoke_sid_clientId$
+      uniqueIdentifier: TC_IDA_BioAuthDelegatedV2_45
+      description: Kyc auth V2 dedicated token for the kyc-exchange missing-signature test - expected to succeed
+      role: resident
+      restMethod: post
+      inputTemplate: ida/BioAuthDelegatedV2/BioAuthDelegatedV2
+      outputTemplate: ida/BioAuthDelegatedV2/BioKYCAuthDelegatedResult
+      input: '{
+        "requestTime": "$TIMESTAMP$",
+        "individualId": "$ID:AddIdentity_For_Kyc_Delegated_Bio_Auth_Smoke_Pos_UIN$",
+        "transactionId": "$TRANSACTIONID$",
+        "individualIdType": "UIN",
+        "claimsMetadataRequired": false,
+        "bio": true,
+        "demo": false,
+        "otp": false,
+        "identityRequest":{
+          "bioSubType": "UNKNOWN",
+          "bioType": "FACE",
+          "bioValue": "$FACE$",
+          "deviceCode": "bc0b6848-6d45-46d1-a9bd-b334410bf823",
+          "dateTime": "$DATETIME$",
+          "deviceProviderID": "1873299273",
+          "deviceServiceID": "",
+          "deviceServiceVersion": "SB.WIN.001",
+          "deviceProvider": "SYNCBYTE",
+          "deviceProviderId": "SYNCBYTE.LTC165",
+          "deviceSubType": "Full face",
+          "make": "Logitech",
+          "model": "4d36e96c-e325-11ce-bfc1-08002be10318",
+          "serialNo": "78467171",
+          "type": "Face",
+    "transactionId": "$TRANSACTIONID$",
+    "identityRequestTemplate": "ida/BioAuthDelegatedV2/BioAuthIdentityEncrypt",
+    "identityRequestEncUrl": "/idauthentication/v1/internal/encrypt"
+    }
+    }'
+      output: '{
+  "kycStatus": "true"
+}'
+  auth_BioAuthDelegatedV2_forKycExchangeV2MultipleLocales_Pos_Sid:
+      endPoint: /idauthentication/v1/kyc-auth/v2/delegated/$partialPartnerKeyUrl$/$ID:CreateOIDCClient_Delegated_Valid_Smoke_sid_clientId$
+      uniqueIdentifier: TC_IDA_BioAuthDelegatedV2_46
+      description: Kyc auth V2 dedicated token for the kyc-exchange multiple-locales test - expected to succeed
+      role: resident
+      restMethod: post
+      inputTemplate: ida/BioAuthDelegatedV2/BioAuthDelegatedV2
+      outputTemplate: ida/BioAuthDelegatedV2/BioKYCAuthDelegatedResult
+      input: '{
+        "requestTime": "$TIMESTAMP$",
+        "individualId": "$ID:AddIdentity_For_Kyc_Delegated_Bio_Auth_Smoke_Pos_UIN$",
+        "transactionId": "$TRANSACTIONID$",
+        "individualIdType": "UIN",
+        "claimsMetadataRequired": false,
+        "bio": true,
+        "demo": false,
+        "otp": false,
+        "identityRequest":{
+          "bioSubType": "UNKNOWN",
+          "bioType": "FACE",
+          "bioValue": "$FACE$",
+          "deviceCode": "bc0b6848-6d45-46d1-a9bd-b334410bf823",
+          "dateTime": "$DATETIME$",
+          "deviceProviderID": "1873299273",
+          "deviceServiceID": "",
+          "deviceServiceVersion": "SB.WIN.001",
+          "deviceProvider": "SYNCBYTE",
+          "deviceProviderId": "SYNCBYTE.LTC165",
+          "deviceSubType": "Full face",
+          "make": "Logitech",
+          "model": "4d36e96c-e325-11ce-bfc1-08002be10318",
+          "serialNo": "78467171",
+          "type": "Face",
+    "transactionId": "$TRANSACTIONID$",
+    "identityRequestTemplate": "ida/BioAuthDelegatedV2/BioAuthIdentityEncrypt",
+    "identityRequestEncUrl": "/idauthentication/v1/internal/encrypt"
+    }
+    }'
+      output: '{
+  "kycStatus": "true"
+}'
+  auth_BioAuthDelegatedV2Neg_InvalidEnv_Neg:
+      endPoint: /idauthentication/v1/kyc-auth/v2/delegated/$partialPartnerKeyUrl$/$ID:CreateOIDCClient_Delegated_Valid_Smoke_sid_clientId$
+      uniqueIdentifier: TC_IDA_BioAuthDelegatedV2Neg_30
+      description: Kyc auth V2 with env set to an unsupported value - expected to fail
+      role: resident
+      restMethod: post
+      inputTemplate: ida/BioAuthDelegatedV2/BioAuthDelegatedV2
+      outputTemplate: ida/DelegateError
+      input: '{
+        "requestTime": "$TIMESTAMP$",
+        "individualId": "$ID:AddIdentity_ValidParam_smoke_Pos_UIN$",
+        "transactionId": "$TRANSACTIONID$",
+        "individualIdType": "UIN",
+        "claimsMetadataRequired": false,
+        "bio": true,
+        "demo": false,
+        "otp": false,
+        "invalidEnv": "NotAnAllowedEnv",
+        "identityRequest":{
+          "bioSubType": "UNKNOWN",
+          "bioType": "FACE",
+          "bioValue": "$FACE$",
+          "deviceCode": "bc0b6848-6d45-46d1-a9bd-b334410bf823",
+          "dateTime": "$DATETIME$",
+          "deviceProviderID": "1873299273",
+          "deviceServiceID": "",
+          "deviceServiceVersion": "SB.WIN.001",
+          "deviceProvider": "SYNCBYTE",
+          "deviceProviderId": "SYNCBYTE.LTC165",
+          "deviceSubType": "Full face",
+          "make": "Logitech",
+          "model": "4d36e96c-e325-11ce-bfc1-08002be10318",
+          "serialNo": "78467171",
+          "type": "Face",
+    "transactionId": "$TRANSACTIONID$",
+    "identityRequestTemplate": "ida/BioAuthDelegatedV2/BioAuthIdentityEncrypt",
+    "identityRequestEncUrl": "/idauthentication/v1/internal/encrypt"
+    }
+    }'
+      output: '{
+      "errors": [
+        {
+          "errorCode": "IDA-MLC-024"
+        },
+        {
+          "errorCode": "IDA-MLC-009"
+        }
+      ]
+}'
+  auth_BioAuthDelegatedV2Neg_DeactivatedUin_Neg:
+      endPoint: /idauthentication/v1/kyc-auth/v2/delegated/$partialPartnerKeyUrl$/$ID:CreateOIDCClient_Delegated_Valid_Smoke_sid_clientId$
+      uniqueIdentifier: TC_IDA_BioAuthDelegatedV2Neg_31
+      description: Kyc auth V2 for a deactivated UIN - expected to fail
+      role: resident
+      restMethod: post
+      inputTemplate: ida/BioAuthDelegatedV2/BioAuthDelegatedV2
+      outputTemplate: ida/DelegateError
+      input: '{
+        "requestTime": "$TIMESTAMP$",
+        "individualId": "$ID:AddIdentity_deactivate_UIN_smoke_sid_Pos_UIN$",
+        "transactionId": "$TRANSACTIONID$",
+        "individualIdType": "UIN",
+        "claimsMetadataRequired": false,
+        "bio": true,
+        "demo": false,
+        "otp": false,
+        "identityRequest":{
+          "bioSubType": "UNKNOWN",
+          "bioType": "FACE",
+          "bioValue": "$FACE$",
+          "deviceCode": "bc0b6848-6d45-46d1-a9bd-b334410bf823",
+          "dateTime": "$DATETIME$",
+          "deviceProviderID": "1873299273",
+          "deviceServiceID": "",
+          "deviceServiceVersion": "SB.WIN.001",
+          "deviceProvider": "SYNCBYTE",
+          "deviceProviderId": "SYNCBYTE.LTC165",
+          "deviceSubType": "Full face",
+          "make": "Logitech",
+          "model": "4d36e96c-e325-11ce-bfc1-08002be10318",
+          "serialNo": "78467171",
+          "type": "Face",
+    "transactionId": "$TRANSACTIONID$",
+    "identityRequestTemplate": "ida/BioAuthDelegatedV2/BioAuthIdentityEncrypt",
+    "identityRequestEncUrl": "/idauthentication/v1/internal/encrypt"
+    }
+    }'
+      output: '{
+      "errors": [
+        {
+          "errorCode": "IDA-MLC-018"
+        }
+      ]
 }'

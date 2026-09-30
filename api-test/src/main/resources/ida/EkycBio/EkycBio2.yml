@@ -2148,7 +2148,7 @@ EkycBio:
       inputTemplate: ida/EkycBio/EkycBio
       outputTemplate: ida/EkycBio/errorCommon
       input: '{
-        "requestTime": "22/02/2887262",
+        "requestTime": "$TIMESTAMP$",
         "individualId": "$ID:AddIdentity_Positive_EKYC_smoke_UIN$",
         "transactionId": "1234567890",
         "individualIdType": "UIN",
