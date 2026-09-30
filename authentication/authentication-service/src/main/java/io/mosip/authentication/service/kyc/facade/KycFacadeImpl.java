@@ -578,8 +578,9 @@ public class KycFacadeImpl implements KycFacade {
 							IdAuthenticationErrorConstants.PARTNER_POLICY_NOT_FOUND.getErrorMessage());
 			}
 			
-			List<String> unVerifiedConsentClaims = kycExchangeRequestDTOV2.getUnVerifiedConsentedClaims()
-																	.keySet().stream().collect(Collectors.toList());
+			List<String> unVerifiedConsentClaims = kycExchangeRequestDTOV2.getUnVerifiedConsentedClaims() == null
+					? new ArrayList<>()
+					: new ArrayList<>(kycExchangeRequestDTOV2.getUnVerifiedConsentedClaims().keySet());
 			mosipLogger.info(IdAuthCommonConstants.SESSION_ID, this.getClass().getSimpleName(), "processKycExchangeV2",
 												"UnVerifiedConsentClaims List:" + unVerifiedConsentClaims);
 			List<String> verifiedConsentClaims = exchangeDataAttributesUtil.getVerifiedClaimsList(

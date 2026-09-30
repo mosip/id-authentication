@@ -7,6 +7,8 @@ import static io.mosip.authentication.core.constant.IdAuthCommonConstants.REQ_TI
 import static io.mosip.authentication.core.constant.IdAuthCommonConstants.SESSION_ID;
 import static io.mosip.authentication.core.constant.IdAuthCommonConstants.TRANSACTION_ID;
 
+import java.text.ParsePosition;
+import java.text.SimpleDateFormat;
 import java.time.Duration;
 import java.time.Instant;
 import java.time.LocalDateTime;
@@ -477,7 +479,20 @@ public abstract class IdAuthValidator implements Validator {
 	 * @throws ParseException the parse exception
 	 */
 	protected Date requestTimeParser(String reqTime) throws ParseException {
-		return DateUtils.parseToDate(reqTime, EnvUtil.getDateTimePattern());
+		// SimpleDateFormat.parse(String) only matches a leading prefix of the input and
+		// silently ignores trailing characters (e.g. "2024-01-01T10:00:00.000Z111111"
+		// would otherwise parse successfully). Parsing with a ParsePosition lets us
+		// confirm the whole string was consumed and reject any leftover characters.
+		String pattern = EnvUtil.getDateTimePattern();
+		SimpleDateFormat simpleDateFormat = new SimpleDateFormat(pattern);
+		simpleDateFormat.setLenient(false);
+		ParsePosition parsePosition = new ParsePosition(0);
+		Date parsedDate = simpleDateFormat.parse(reqTime, parsePosition);
+		if (parsedDate == null || parsePosition.getIndex() != reqTime.length()) {
+			throw new ParseException(IdAuthenticationErrorConstants.INVALID_INPUT_PARAMETER.getErrorCode(),
+					String.format(IdAuthenticationErrorConstants.INVALID_INPUT_PARAMETER.getErrorMessage(), REQ_TIME));
+		}
+		return parsedDate;
 	}
 
 }

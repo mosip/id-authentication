@@ -11,6 +11,7 @@ import java.nio.charset.Charset;
 import java.time.Duration;
 import java.time.LocalDateTime;
 import java.time.format.DateTimeFormatter;
+import java.time.format.DateTimeParseException;
 import java.time.temporal.Temporal;
 import java.util.LinkedHashMap;
 import java.util.List;
@@ -221,7 +222,15 @@ public abstract class BaseIDAFilter implements Filter {
 		boolean hasUnableToProcessError = errors.stream()
 				.anyMatch(err -> err.getErrorCode()
 								.equals(IdAuthenticationErrorConstants.UNABLE_TO_PROCESS.getErrorCode()));
-		if(!hasUnableToProcessError) {
+		// MOSIP-45564: id/version missing or invalid is already a specific, well-formed
+		// validation error (raised only by handleException() for id/version). Wrapping it
+		// here re-adds UNABLE_TO_PROCESS as a cause, and since BaseCheckedException copies
+		// the cause's info items into the wrapper, both error codes end up in the response.
+		boolean isIdOrVersionValidationError = errors.stream()
+				.anyMatch(err -> err.getErrorCode().equals(IdAuthenticationErrorConstants.MISSING_INPUT_PARAMETER.getErrorCode())
+								|| err.getErrorCode().equals(IdAuthenticationErrorConstants.INVALID_INPUT_PARAMETER.getErrorCode())
+								|| err.getErrorCode().equals(IdAuthenticationErrorConstants.INVALID_ENCRYPTION.getErrorCode()));
+		if(!hasUnableToProcessError && !isIdOrVersionValidationError) {
 			exception = new IdAuthenticationBusinessException(IdAuthenticationErrorConstants.UNABLE_TO_PROCESS.getErrorCode(),
 					IdAuthenticationErrorConstants.UNABLE_TO_PROCESS.getErrorMessage(), ex);
 		}
@@ -306,16 +315,26 @@ public abstract class BaseIDAFilter implements Filter {
 		if (timeInTheAllowedPattern == null || timeInTheAllowedPattern.isEmpty()) {
 			timeInTheAllowedPattern = IdaRequestResponsConsumerUtil.getResponseTime(null, dateTimePattern);
 		}
-		mosipLogger.info(IdAuthCommonConstants.SESSION_ID, EVENT_FILTER, BASE_IDA_FILTER, type + " at : " + timeInTheAllowedPattern);
-		long duration = Duration
-				.between(actualRequestTime,
-						LocalDateTime.parse(timeInTheAllowedPattern,
-								DateTimeFormatter
-										.ofPattern(dateTimePattern)))
-				.toMillis();
-		mosipLogger.info(IdAuthCommonConstants.SESSION_ID, EVENT_FILTER, BASE_IDA_FILTER,
-				"Time difference between request and response in millis:" + duration
-						+ ".  Time difference between request and response in Seconds: " + ((double) duration / 1000));
+		// timeInTheAllowedPattern is taken verbatim from the raw request body, so it must
+		// never be echoed into logs unsanitized - only that a timestamp was received/parsed.
+		mosipLogger.info(IdAuthCommonConstants.SESSION_ID, EVENT_FILTER, BASE_IDA_FILTER, type + " timestamp received");
+		// It's also ahead of (and independent of) request validation, so an invalid
+		// requestTime must not let this purely diagnostic duration calculation crash
+		// response processing.
+		try {
+			long duration = Duration
+					.between(actualRequestTime,
+							LocalDateTime.parse(timeInTheAllowedPattern,
+									DateTimeFormatter
+											.ofPattern(dateTimePattern)))
+					.toMillis();
+			mosipLogger.info(IdAuthCommonConstants.SESSION_ID, EVENT_FILTER, BASE_IDA_FILTER,
+					"Time difference between request and response in millis:" + duration
+							+ ".  Time difference between request and response in Seconds: " + ((double) duration / 1000));
+		} catch (DateTimeParseException e) {
+			mosipLogger.warn(IdAuthCommonConstants.SESSION_ID, EVENT_FILTER, BASE_IDA_FILTER,
+					"Unable to compute request/response time difference - invalid requestTime format");
+		}
 	}
 	
 	protected boolean needStoreAuthTransaction() {
@@ -490,7 +509,14 @@ public abstract class BaseIDAFilter implements Filter {
 			String inputReqTimeStr = inputRequestTime instanceof String? (String) inputRequestTime : null;
 			logTime(inputReqTimeStr, IdAuthCommonConstants.RESPONSE, actualRequestTime);
 			return responseAsString;
-		} catch (IdAuthenticationAppException e ) {
+		} catch (Exception e) {
+			// By this point responseAsString is already the fully-built response (success
+			// or a structured error already resolved by IdAuthExceptionHandler upstream).
+			// Everything in this try block past that is auxiliary post-processing (signing,
+			// storing the auth transaction, storing the anonymous profile) - a failure there
+			// (e.g. an unchecked DB/serialization exception, not just IdAuthenticationAppException)
+			// must not discard the already-correct response and fall through to the
+			// container's default error page.
 			mosipLogger.error(IdAuthCommonConstants.SESSION_ID, EVENT_FILTER, BASE_IDA_FILTER, e.getMessage());
 			return responseAsString;
 		}
