@@ -315,10 +315,12 @@ public abstract class BaseIDAFilter implements Filter {
 		if (timeInTheAllowedPattern == null || timeInTheAllowedPattern.isEmpty()) {
 			timeInTheAllowedPattern = IdaRequestResponsConsumerUtil.getResponseTime(null, dateTimePattern);
 		}
-		mosipLogger.info(IdAuthCommonConstants.SESSION_ID, EVENT_FILTER, BASE_IDA_FILTER, type + " at : " + timeInTheAllowedPattern);
-		// timeInTheAllowedPattern comes straight from the raw request body, ahead of
-		// (and independent of) request validation, so an invalid requestTime must not
-		// let this purely diagnostic duration calculation crash response processing.
+		// timeInTheAllowedPattern is taken verbatim from the raw request body, so it must
+		// never be echoed into logs unsanitized - only that a timestamp was received/parsed.
+		mosipLogger.info(IdAuthCommonConstants.SESSION_ID, EVENT_FILTER, BASE_IDA_FILTER, type + " timestamp received");
+		// It's also ahead of (and independent of) request validation, so an invalid
+		// requestTime must not let this purely diagnostic duration calculation crash
+		// response processing.
 		try {
 			long duration = Duration
 					.between(actualRequestTime,
@@ -331,7 +333,7 @@ public abstract class BaseIDAFilter implements Filter {
 							+ ".  Time difference between request and response in Seconds: " + ((double) duration / 1000));
 		} catch (DateTimeParseException e) {
 			mosipLogger.warn(IdAuthCommonConstants.SESSION_ID, EVENT_FILTER, BASE_IDA_FILTER,
-					"Unable to compute request/response time difference - invalid requestTime: " + e.getMessage());
+					"Unable to compute request/response time difference - invalid requestTime format");
 		}
 	}
 	
