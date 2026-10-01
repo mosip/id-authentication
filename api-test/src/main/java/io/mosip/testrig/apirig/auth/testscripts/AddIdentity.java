@@ -94,7 +94,12 @@ public class AddIdentity extends IdAuthenticationUtil implements ITest {
 			throw new SkipException(
 					GlobalConstants.TARGET_ENV_HEALTH_CHECK_FAILED + HealthChecker.healthCheckFailureMapS);
 		}
-		testCaseDTO.setInputTemplate(AdminTestUtil.modifySchemaGenerateHbs(testCaseDTO.isRegenerateHbs()));
+		// V2 adds a top-level verifiedAttributes field the V1 template has no placeholder for.
+		if (testCaseDTO.getEndPoint().contains(GlobalConstants.ADD_IDENTITY_V2_ENDPOINT)) {
+			testCaseDTO.setInputTemplate(AdminTestUtil.modifySchemaGenerateHbsV2(testCaseDTO.isRegenerateHbs()));
+		} else {
+			testCaseDTO.setInputTemplate(AdminTestUtil.modifySchemaGenerateHbs(testCaseDTO.isRegenerateHbs()));
+		}
 		String uin = JsonPrecondtion
 				.getValueFromJson(
 						RestClient.getRequestWithCookie(ApplnURI + "/v1/idgenerator/uin", MediaType.APPLICATION_JSON,

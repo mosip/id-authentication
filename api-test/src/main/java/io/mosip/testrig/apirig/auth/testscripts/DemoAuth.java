@@ -140,6 +140,17 @@ public class DemoAuth extends IdAuthenticationUtil implements ITest {
 			invalidThumbprint = request.getString("invalidThumbprint");
 			request.remove("invalidThumbprint");
 		}
+		// Same override as invalidThumbprint above, for requestHMAC/requestSessionKey.
+		String invalidRequestHMAC = null;
+		if (request.has("invalidRequestHMAC")) {
+			invalidRequestHMAC = request.getString("invalidRequestHMAC");
+			request.remove("invalidRequestHMAC");
+		}
+		String invalidRequestSessionKey = null;
+		if (request.has("invalidRequestSessionKey")) {
+			invalidRequestSessionKey = request.getString("invalidRequestSessionKey");
+			request.remove("invalidRequestSessionKey");
+		}
 		
 		if (identityRequest.contains("$PRIMARYLANG$"))
 			identityRequest = identityRequest.replace("$PRIMARYLANG$", BaseTestCase.languageList.get(0));
@@ -169,9 +180,17 @@ public class DemoAuth extends IdAuthenticationUtil implements ITest {
 		 identityRequest = inputJsonKeyWordHandeler(identityRequest, testCaseName);
 		identityRequest = JsonPrecondtion.parseAndReturnJsonContent(identityRequest, generateCurrentUTCTimeStamp(), "timestamp");
 		Map<String, String> demoAuthTempMap = encryptDecryptUtil.getEncryptSessionKeyValue(identityRequest);
-		if (invalidThumbprint != null) {
+		if (invalidThumbprint != null || invalidRequestHMAC != null || invalidRequestSessionKey != null) {
 			demoAuthTempMap = new HashMap<>(demoAuthTempMap);
-			demoAuthTempMap.put("thumbprint", invalidThumbprint);
+			if (invalidThumbprint != null) {
+				demoAuthTempMap.put("thumbprint", invalidThumbprint);
+			}
+			if (invalidRequestHMAC != null) {
+				demoAuthTempMap.put("hmac", invalidRequestHMAC);
+			}
+			if (invalidRequestSessionKey != null) {
+				demoAuthTempMap.put("key", invalidRequestSessionKey);
+			}
 		}
 		String authRequest = getJsonFromTemplate(request.toString(), testCaseDTO.getInputTemplate());
 		logger.info("************* Modification of demo auth request ******************");
@@ -198,7 +217,7 @@ public class DemoAuth extends IdAuthenticationUtil implements ITest {
 		testCaseDTO.setInput(authRequest);
 		
 				
-		logger.info("******Post request Json to EndPointUrl: " + ApplnURI + testCaseDTO.getEndPoint() + " *******");		
+		logger.info("Posting demo authentication request");
 		
 		response = postRequestWithCookieAuthHeaderAndSignature(ApplnURI + testCaseDTO.getEndPoint(), authRequest, COOKIENAME, testCaseDTO.getRole(), testCaseDTO.getTestCaseName());
 		
