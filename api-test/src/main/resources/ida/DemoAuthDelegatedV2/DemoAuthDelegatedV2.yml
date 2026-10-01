@@ -89,7 +89,7 @@ DemoAuthDelegatedV2:
 }'
   auth_DemoAuthDelegatedV2_Missing_IndividualIdType_Pos:
       endPoint: /idauthentication/v1/kyc-auth/v2/delegated/$partialPartnerKeyUrl$/$ID:CreateOIDCClient_Delegated_Valid_Smoke_sid_clientId$
-      uniqueIdentifier: TC_IDA_DemoAuthDelegatedV2Neg_03
+      uniqueIdentifier: TC_IDA_DemoAuthDelegatedV2_07
       description: Kyc auth V2 demographic auth with individualIdType omitted, server auto-detects the type from individualId - expected to succeed
       role: resident
       restMethod: post
@@ -409,9 +409,9 @@ DemoAuthDelegatedV2:
         }
       ]
 }'
-  auth_DemoAuthDelegatedV2Neg_Missing_SpecVersion_Neg:
+  auth_DemoAuthDelegatedV2_Missing_SpecVersion_Pos:
       endPoint: /idauthentication/v1/kyc-auth/v2/delegated/$partialPartnerKeyUrl$/$ID:CreateOIDCClient_Delegated_Valid_Smoke_sid_clientId$
-      uniqueIdentifier: TC_IDA_DemoAuthDelegatedV2Neg_10
+      uniqueIdentifier: TC_IDA_DemoAuthDelegatedV2_08
       description: Demo auth V2 with the specVersion field omitted - expected to succeed (not validated server-side)
       role: resident
       restMethod: post
@@ -499,7 +499,7 @@ DemoAuthDelegatedV2:
   auth_DemoAuthDelegatedV2_OneTimeUseVID_Reuse_Neg:
       endPoint: /idauthentication/v1/kyc-auth/v2/delegated/$partialPartnerKeyUrl$/$ID:CreateOIDCClient_Delegated_Valid_Smoke_sid_clientId$
       uniqueIdentifier: TC_IDA_DemoAuthDelegatedV2Neg_12
-      description: Demo auth V2 replaying an already-consumed one-time-use VID - expected to fail
+      description: Demo auth V2 replaying an already-consumed one-time-use VID - expected to fail with IDA-MLC-018
       role: resident
       restMethod: post
       inputTemplate: ida/DemoAuthDelegatedV2/DemoAuthDelegatedV2
@@ -522,7 +522,7 @@ DemoAuthDelegatedV2:
       output: '{
       "errors": [
         {
-          "errorCode": "$IGNORE$"
+          "errorCode": "IDA-MLC-018"
         }
       ]
 }'

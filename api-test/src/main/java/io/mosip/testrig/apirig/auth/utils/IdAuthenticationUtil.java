@@ -42,7 +42,7 @@ public class IdAuthenticationUtil extends AdminTestUtil {
 	@Override
 	public String updateTimestampOtp(String otpIdentyEnryptRequest, String otpChannel, String testCaseName) {
 		if (otpChannel == null || !otpChannel.contains("@")) {
-			logger.warn("otpChannel '" + otpChannel + "' is not email-shaped for " + testCaseName
+			logger.warn("otpChannel is not email-shaped for " + testCaseName
 					+ " - skipping OTP notification poll, using empty otp");
 			otpIdentyEnryptRequest = JsonPrecondtion.parseAndReturnJsonContent(otpIdentyEnryptRequest,
 					generateCurrentUTCTimeStamp(), "timestamp");
@@ -703,6 +703,7 @@ public class IdAuthenticationUtil extends AdminTestUtil {
 			}
 		} catch (JSONException e) {
 			logger.error("Failed to check verified-claim absence for " + testCaseName + ": " + e.getMessage(), e);
+			throw new AdminTestException("Failed to check verified-claim absence for " + testCaseName);
 		}
 	}
 

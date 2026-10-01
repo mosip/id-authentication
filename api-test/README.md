@@ -102,7 +102,7 @@ To execute the tests using Jar, use the following steps:
 
 2. Run the automation test suite JAR file:
    ```
-   java -jar -Dmodules=auth -Denv.user=api-internal.<env_name> -Denv.endpoint=<base_env> -Denv.testLevel=smokeAndRegression -jar apitest-auth-1.4.0-jar-with-dependencies.jar
+   java -Dmodules=auth -Denv.user=api-internal.<env_name> -Denv.endpoint=<base_env> -Denv.testLevel=smokeAndRegression -jar apitest-auth-1.4.0-jar-with-dependencies.jar
    ```
    
 # Using Eclipse IDE

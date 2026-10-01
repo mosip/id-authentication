@@ -1590,7 +1590,8 @@
     ],
     "TC_IDA_BioAuthKycExchangeV2Neg_13": [
         "TC_DependentModule_Delegated_IdRepo_01",
-        "TC_IDA_BioAuthDelegatedV2_16"
+        "TC_IDA_BioAuthDelegatedV2_16",
+        "TC_PMS_CreateOIDCClient_Delegated_01"
     ],
     "TC_IDA_BioAuthKycExchangeV2_08": [
         "TC_DependentModule_Delegated_IdRepo_01",
@@ -1753,7 +1754,7 @@
         "TC_DependentModule_IdRepo_Delegated_10",
         "TC_PMS_CreateOIDCClient_Delegated_01"
     ],
-    "TC_IDA_OtpAuthDelegatedV2Neg_03": [
+    "TC_IDA_OtpAuthDelegatedV2_03": [
         "TC_DependentModule_IdRepo_Delegated_10",
         "TC_PMS_CreateOIDCClient_Delegated_01"
     ],
@@ -1781,7 +1782,7 @@
         "TC_DependentModule_IdRepo_Delegated_10",
         "TC_PMS_CreateOIDCClient_Delegated_01"
     ],
-    "TC_IDA_OtpAuthDelegatedV2Neg_10": [
+    "TC_IDA_OtpAuthDelegatedV2_04": [
         "TC_DependentModule_IdRepo_Delegated_10",
         "TC_PMS_CreateOIDCClient_Delegated_01"
     ],
@@ -1798,7 +1799,7 @@
         "TC_PMS_CreateOIDCClient_Delegated_01"
     ],
     "TC_IDA_DemoAuthDelegatedV2Neg_02": ["TC_PMS_CreateOIDCClient_Delegated_01"],
-    "TC_IDA_DemoAuthDelegatedV2Neg_03": [
+    "TC_IDA_DemoAuthDelegatedV2_07": [
         "TC_DependentModule_Delegated_IdRepo_09",
         "TC_PMS_CreateOIDCClient_Delegated_01"
     ],
@@ -1842,7 +1843,7 @@
         "TC_DependentModule_Delegated_IdRepo_09",
         "TC_PMS_CreateOIDCClient_Delegated_01"
     ],
-    "TC_IDA_DemoAuthDelegatedV2Neg_10": [
+    "TC_IDA_DemoAuthDelegatedV2_08": [
         "TC_DependentModule_Delegated_IdRepo_09",
         "TC_PMS_CreateOIDCClient_Delegated_01"
     ],

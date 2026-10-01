@@ -1302,7 +1302,7 @@ BioAuthKycExchangeV2:
   "iss": "mosip-ida",
   "email": "$REGEXP:^(?!null).+$"
 }'
-  auth_BioAuthKycExchangeV2Neg_Expired_Token_Neg:
+  auth_BioAuthKycExchangeV2Neg_TokenReuse_Neg:
       endPoint: /idauthentication/v1/kyc-exchange/v2/delegated/$partialPartnerKeyUrl$/$ID:CreateOIDCClient_Delegated_Valid_Smoke_sid_clientId$
       uniqueIdentifier: TC_IDA_BioAuthKycExchangeV2Neg_25
       description: Kyc exchange V2 reusing a kycToken that was already successfully consumed once - expected to fail with IDA-KYE-003 (a dedicated, dynamically-minted token is used here rather than a hardcoded value, since a fixed kycToken string is environment-dependent - it could be already-processed, genuinely expired, or entirely unknown to a fresh environment's database depending on prior history)

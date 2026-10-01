@@ -546,7 +546,7 @@ GenerateVID:
    auth_GenerateVID_All_Valid_Smoke_Onetimeuse_sid:
       endPoint: /resident/v1/vid
       uniqueIdentifier: TC_IDA_GenerateVID_18
-      description: Verify that VID generation succeeds for a one-time-use VID with a valid SID - vidType 'onetimeuse' confirmed as a real, live-configured VID policy type (VidPolicyProvider reads vid types from a deployed policy JSON, not a compiled enum) via id-repository's own test suite already using it successfully (CreateVid.yml, RetrieveVIDByUIN.yml) - for the kyc-auth V2 one-time-use VID tests (TC_21/TC_21b)
+      description: Generate a one-time-use VID with a valid SID - expected to succeed
       role: resident
       checkErrorsOnlyInResponse: true
       restMethod: post

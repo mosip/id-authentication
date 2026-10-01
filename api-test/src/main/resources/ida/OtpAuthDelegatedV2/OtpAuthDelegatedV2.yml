@@ -148,7 +148,7 @@ OtpAuthDelegatedV2:
 }'
   auth_OtpAuthDelegatedV2_Missing_IndividualIdType_Pos:
       endPoint: /idauthentication/v1/kyc-auth/v2/delegated/$partialPartnerKeyUrl$/$ID:CreateOIDCClient_Delegated_Valid_Smoke_sid_clientId$
-      uniqueIdentifier: TC_IDA_OtpAuthDelegatedV2Neg_03
+      uniqueIdentifier: TC_IDA_OtpAuthDelegatedV2_03
       description: Kyc auth V2 OTP auth with individualIdType omitted, server auto-detects the type from individualId - expected to succeed
       role: resident
       restMethod: post
@@ -176,6 +176,8 @@ OtpAuthDelegatedV2:
     }'
       output: '{
   "kycStatus": "true",
+  "kycToken": "$REGEXP:^(?!null).+$",
+  "authToken": "$REGEXP:^(?!null).+$",
  "sendOtpResp":{
         "sendOtpResTemplate":"ida/OtpAuth/sendOtpRes"
     }
@@ -408,9 +410,9 @@ OtpAuthDelegatedV2:
         "sendOtpResTemplate":"ida/OtpAuth/sendOtpRes"
       }
 }'
-  auth_OtpAuthDelegatedV2Neg_Missing_SpecVersion_Neg:
+  auth_OtpAuthDelegatedV2_Missing_SpecVersion_Pos:
       endPoint: /idauthentication/v1/kyc-auth/v2/delegated/$partialPartnerKeyUrl$/$ID:CreateOIDCClient_Delegated_Valid_Smoke_sid_clientId$
-      uniqueIdentifier: TC_IDA_OtpAuthDelegatedV2Neg_10
+      uniqueIdentifier: TC_IDA_OtpAuthDelegatedV2_04
       description: Otp auth V2 with the specVersion field omitted - expected to succeed (not validated server-side)
       role: resident
       restMethod: post
@@ -439,6 +441,8 @@ OtpAuthDelegatedV2:
     }'
       output: '{
       "kycStatus": "true",
+      "kycToken": "$REGEXP:^(?!null).+$",
+      "authToken": "$REGEXP:^(?!null).+$",
       "sendOtpResp":{
         "sendOtpResTemplate":"ida/OtpAuth/sendOtpRes"
       }

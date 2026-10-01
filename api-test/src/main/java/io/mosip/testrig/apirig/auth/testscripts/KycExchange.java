@@ -14,6 +14,8 @@ import org.testng.annotations.BeforeClass;
 import org.testng.annotations.DataProvider;
 import org.testng.annotations.Test;
 
+import org.json.JSONObject;
+
 import io.mosip.testrig.apirig.auth.utils.IdAuthConfigManager;
 import io.mosip.testrig.apirig.auth.utils.IdAuthenticationUtil;
 import io.mosip.testrig.apirig.dto.OutputValidationDto;
@@ -140,6 +142,11 @@ public class KycExchange extends IdAuthenticationUtil implements ITest {
 		// Decode tests only: merge encryptedKyc's claims into response.decodedKyc.
 		if (testCaseName.contains("_Decode_")) {
 			actualResponse = IdAuthenticationUtil.injectDecodedKyc(actualResponse, testCaseName);
+			JSONObject decodeResponseObj = new JSONObject(actualResponse).optJSONObject("response");
+			if (decodeResponseObj != null && !decodeResponseObj.has("errors")
+					&& !decodeResponseObj.has("decodedKyc")) {
+				throw new AdminTestException("decodedKyc not produced for " + testCaseName);
+			}
 		}
 		// OutputValidationUtil can't assert a field is absent, so do it explicitly here.
 		if (testCaseName.contains("_MaxAgeFiltered_")) {

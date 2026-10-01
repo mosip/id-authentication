@@ -177,7 +177,8 @@ public class BioAuth extends IdAuthenticationUtil implements ITest {
 		logger.info("bioAuthTempMap is = " + bioAuthTempMap);
 		// modifyRequest always rewrites requestTime to now, clobbering a
 		// YAML-hardcoded expired/malformed value - save and restore it below.
-		String originalRequestTime = new JSONObject(authRequest).optString("requestTime", null);
+		String originalRequestTime = request.has("requestTime") && !request.optString("requestTime").contains("$")
+				? request.optString("requestTime", null) : null;
 		authRequest = modifyRequest(authRequest, bioAuthTempMap,
 				getResourcePath() + props.getProperty("idaMappingPath"));
 		logger.info("authRequestTemp is = " + authRequest);
