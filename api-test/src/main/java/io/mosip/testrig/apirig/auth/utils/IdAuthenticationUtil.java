@@ -706,6 +706,92 @@ public class IdAuthenticationUtil extends AdminTestUtil {
 		}
 	}
 
+	private static final java.util.regex.Pattern WALLET_PUBLIC_JWK_TOKEN = java.util.regex.Pattern
+			.compile("^\\$WALLETPUBLICJWK:(.+)\\$$");
+
+	// Private key stays cached under walletKeyName in JWKKeyUtil, for resolveWlaJwt to sign with later.
+	public static void resolveWalletPublicJwk(JSONObject request) {
+		if (!request.has("identityKeyBinding")) {
+			return;
+		}
+		JSONObject identityKeyBinding = request.getJSONObject("identityKeyBinding");
+		Object publicKeyJwkValue = identityKeyBinding.opt("publicKeyJWK");
+		if (!(publicKeyJwkValue instanceof String)) {
+			return;
+		}
+		java.util.regex.Matcher matcher = WALLET_PUBLIC_JWK_TOKEN.matcher((String) publicKeyJwkValue);
+		if (!matcher.matches()) {
+			return;
+		}
+		String walletKeyName = matcher.group(1);
+		try {
+			String fullJwk = JWKKeyUtil.getJWKKey(walletKeyName);
+			if (fullJwk == null) {
+				fullJwk = JWKKeyUtil.generateAndCacheJWKKey(walletKeyName);
+			}
+			com.nimbusds.jose.jwk.RSAKey rsaKey = com.nimbusds.jose.jwk.RSAKey.parse(fullJwk);
+			JSONObject publicJwk = new JSONObject(rsaKey.toPublicJWK().toJSONString());
+			identityKeyBinding.put("publicKeyJWK", publicJwk);
+		} catch (java.text.ParseException e) {
+			logger.error("Failed to build wallet public JWK '" + walletKeyName + "': " + e.getMessage(), e);
+			throw new RuntimeException("Failed to build wallet public JWK '" + walletKeyName + "'", e);
+		}
+	}
+
+	private static final java.util.regex.Pattern WLA_JWT_TOKEN = java.util.regex.Pattern.compile("\\$WLAJWT:([^$]+)\\$");
+
+	public static String resolveWlaJwt(String identityRequest, String individualId) {
+		java.util.regex.Matcher matcher = WLA_JWT_TOKEN.matcher(identityRequest);
+		StringBuffer result = new StringBuffer();
+		while (matcher.find()) {
+			String bindingSidTestCaseName = matcher.group(1);
+			String token = buildWlaJwt(bindingSidTestCaseName, individualId);
+			matcher.appendReplacement(result, java.util.regex.Matcher.quoteReplacement(token));
+		}
+		matcher.appendTail(result);
+		return result.toString();
+	}
+
+	private static String buildWlaJwt(String bindingSidTestCaseName, String individualId) {
+		try {
+			String identityCertificateStr = getFromCache(bindingSidTestCaseName + "_identityCertificate");
+			if (identityCertificateStr == null) {
+				throw new IllegalStateException(
+						"No cached identityCertificate for " + bindingSidTestCaseName + " - did the binding _sid test run first?");
+			}
+			String walletJwk = JWKKeyUtil.getJWKKey(bindingSidTestCaseName);
+			if (walletJwk == null) {
+				throw new IllegalStateException("No cached wallet JWK for " + bindingSidTestCaseName);
+			}
+			com.nimbusds.jose.jwk.RSAKey rsaKey = com.nimbusds.jose.jwk.RSAKey.parse(walletJwk);
+			java.security.interfaces.RSAPrivateKey privateKey = rsaKey.toRSAPrivateKey();
+
+			java.security.cert.Certificate certificate = convertToCertificate(identityCertificateStr);
+			if (certificate == null) {
+				throw new IllegalStateException("Could not parse cached identityCertificate for " + bindingSidTestCaseName);
+			}
+			java.security.cert.X509Certificate x509Certificate = (java.security.cert.X509Certificate) certificate;
+
+			org.jose4j.jwt.JwtClaims claims = new org.jose4j.jwt.JwtClaims();
+			claims.setSubject(individualId);
+			claims.setAudience("ida-binding");
+			claims.setIssuer("apitest-commons");
+			claims.setIssuedAtToNow();
+			claims.setExpirationTimeMinutesInTheFuture(5);
+
+			org.jose4j.jws.JsonWebSignature jws = new org.jose4j.jws.JsonWebSignature();
+			jws.setPayload(claims.toJson());
+			jws.setAlgorithmHeaderValue("RS256");
+			jws.setKey(privateKey);
+			jws.setX509CertSha256ThumbprintHeaderValue(x509Certificate);
+
+			return jws.getCompactSerialization();
+		} catch (Exception e) {
+			logger.error("Failed to build WLA JWT for " + bindingSidTestCaseName + ": " + e.getMessage(), e);
+			throw new RuntimeException("Failed to build WLA JWT for " + bindingSidTestCaseName, e);
+		}
+	}
+
 	// Same as AdminTestUtil.postRequestWithCookieAuthHeaderAndSignature, but with
 	// a deliberately corrupted signature header (that helper always signs for real,
 	// with no hook to corrupt it).
