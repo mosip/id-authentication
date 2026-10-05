@@ -2,8 +2,7 @@ package childauthFilter;
 
 import io.mosip.authentication.authfilter.exception.IdAuthenticationFilterException;
 import io.mosip.authentication.childauthfilter.impl.ChildAuthFilterImpl;
-import io.mosip.authentication.core.indauth.dto.AuthRequestDTO;
-import io.mosip.authentication.core.indauth.dto.IdentityInfoDTO;
+import io.mosip.authentication.core.indauth.dto.*;
 
 import org.junit.Before;
 import org.junit.Test;
@@ -89,7 +88,63 @@ public class ChildAuthFilterImplTest {
 
         filter.validate(new AuthRequestDTO(), data, new HashMap<>());
     }
+    private AuthRequestDTO buildOtpRequest() {
+        AuthRequestDTO authRequest = new AuthRequestDTO();
+        RequestDTO request = new RequestDTO();
+        request.setOtp("123456");
+        authRequest.setRequest(request);
+        return authRequest;
+    }
 
+    private AuthRequestDTO buildDemoRequest() {
+        AuthRequestDTO authRequest = new AuthRequestDTO();
+        RequestDTO request = new RequestDTO();
+
+        IdentityDTO identity = new IdentityDTO();
+        identity.setDob("2019-01-01"); // any demo attribute
+
+        request.setDemographics(identity);
+        authRequest.setRequest(request);
+        return authRequest;
+    }
+
+    private AuthRequestDTO buildEmptyAuthRequest() {
+        AuthRequestDTO authRequest = new AuthRequestDTO();
+        authRequest.setRequest(new RequestDTO());
+        return authRequest;
+    }
+
+    @Test(expected = IdAuthenticationFilterException.class)
+    public void testChildOtpDenied() throws Exception {
+        String dob = LocalDate.now().minusYears(3).toString(); // child
+
+        Map<String, List<IdentityInfoDTO>> data = new HashMap<>();
+        data.put("dob", List.of(createDob(dob)));
+
+        filter.validate(buildOtpRequest(), data, new HashMap<>());
+    }
+
+    @Test(expected = IdAuthenticationFilterException.class)
+    public void testChildDemoDeniedWhenConfigured() throws Exception {
+        TestUtils.setField(filter, "factorsDeniedForChild", new String[]{"otp", "bio", "demo"});
+
+        String dob = LocalDate.now().minusYears(4).toString();
+
+        Map<String, List<IdentityInfoDTO>> data = new HashMap<>();
+        data.put("dob", List.of(createDob(dob)));
+
+        filter.validate(buildDemoRequest(), data, new HashMap<>());
+    }
+
+    @Test
+    public void testChildWithNoAuthFactorsAllowed() throws Exception {
+        String dob = LocalDate.now().minusYears(3).toString();
+
+        Map<String, List<IdentityInfoDTO>> data = new HashMap<>();
+        data.put("dob", List.of(createDob(dob)));
+
+        filter.validate(buildEmptyAuthRequest(), data, new HashMap<>());
+    }
 }
 
 
