@@ -1,33 +1,26 @@
 package io.mosip.testrig.apirig.auth.utils;
 
-import java.util.ArrayList;
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
-
-import javax.ws.rs.core.MediaType;
-
-import org.apache.log4j.Level;
-import org.apache.log4j.Logger;
-import org.json.JSONArray;
-import org.json.JSONObject;
-import org.testng.SkipException;
-
+import com.nimbusds.jose.JWEObject;
+import com.nimbusds.jose.crypto.RSADecrypter;
 import io.mosip.testrig.apirig.auth.testrunner.MosipTestRunner;
 import io.mosip.testrig.apirig.dbaccess.DBManager;
 import io.mosip.testrig.apirig.dto.TestCaseDTO;
 import io.mosip.testrig.apirig.testrunner.BaseTestCase;
-import io.mosip.testrig.apirig.utils.AdminTestUtil;
-import io.mosip.testrig.apirig.utils.ConfigManager;
-import io.mosip.testrig.apirig.utils.GlobalConstants;
-import io.mosip.testrig.apirig.utils.JWKKeyUtil;
-import io.mosip.testrig.apirig.utils.KeyCloakUserAndAPIKeyGeneration;
-import io.mosip.testrig.apirig.utils.KeycloakUserManager;
-import io.mosip.testrig.apirig.utils.MispPartnerAndLicenseKeyGeneration;
-import io.mosip.testrig.apirig.utils.PartnerRegistration;
-import io.mosip.testrig.apirig.utils.RestClient;
-import io.mosip.testrig.apirig.utils.SkipTestCaseHandler;
+import io.mosip.testrig.apirig.testrunner.JsonPrecondtion;
+import io.mosip.testrig.apirig.utils.*;
 import io.restassured.response.Response;
+import org.apache.log4j.Level;
+import org.apache.log4j.Logger;
+import org.json.JSONArray;
+import org.json.JSONException;
+import org.json.JSONObject;
+import org.testng.SkipException;
+
+import javax.ws.rs.core.MediaType;
+import java.nio.charset.StandardCharsets;
+import java.security.KeyStore.PrivateKeyEntry;
+import java.security.interfaces.RSAPrivateKey;
+import java.util.*;
 
 public class IdAuthenticationUtil extends AdminTestUtil {
 
@@ -43,7 +36,21 @@ public class IdAuthenticationUtil extends AdminTestUtil {
 		else
 			logger.setLevel(Level.ERROR);
 	}
-	
+
+	// Skip the 180s OTP poll when otpChannel isn't an email (e.g. negative
+	// tests that pass a bare number) - it can never receive a notification.
+	@Override
+	public String updateTimestampOtp(String otpIdentyEnryptRequest, String otpChannel, String testCaseName) {
+		if (otpChannel == null || !otpChannel.contains("@")) {
+			logger.warn("otpChannel is not email-shaped for " + testCaseName
+					+ " - skipping OTP notification poll, using empty otp");
+			otpIdentyEnryptRequest = JsonPrecondtion.parseAndReturnJsonContent(otpIdentyEnryptRequest,
+					generateCurrentUTCTimeStamp(), "timestamp");
+			return otpIdentyEnryptRequest;
+		}
+		return super.updateTimestampOtp(otpIdentyEnryptRequest, otpChannel, testCaseName);
+	}
+
 	public static String isTestCaseValidForExecution(TestCaseDTO testCaseDTO) {
 		String testCaseName = testCaseDTO.getTestCaseName();
 		currentTestCaseName = testCaseName;
@@ -84,14 +91,14 @@ public class IdAuthenticationUtil extends AdminTestUtil {
 				&& (!isElementPresent(globalRequiredFields, individualBiometrics))) {
 			throw new SkipException(GlobalConstants.FEATURE_NOT_SUPPORTED_MESSAGE);
 		} else if (testCaseName.startsWith("auth_") && testCaseName.contains("_DemoAuthDelegated") || testCaseName.contains("_DemoAuthKycExchange")) {
-			// Intentional skip: app rejects DEMO on delegated flow per client AMR config (confirmed on qa11new for base/Neg/V2/V2Neg alike via IDA-MPA-029), not a code gap.
+			// Intentional: app rejects DEMO on delegated flow (IDA-MPA-029), not a bug.
 			throw new SkipException(GlobalConstants.FEATURE_NOT_SUPPORTED_MESSAGE);
 		} else if (testCaseDTO.getUniqueIdentifier() != null
 				&& (testCaseDTO.getUniqueIdentifier().equals("TC_IDA_KycExchangeNeg_10")
 						|| testCaseDTO.getUniqueIdentifier().equals("TC_IDA_KycExchangeNeg_11")
 						|| testCaseDTO.getUniqueIdentifier().equals("TC_IDA_KycExchangeNeg_12")
 						|| testCaseDTO.getUniqueIdentifier().equals("TC_IDA_KycExchangeNeg_13"))) {
-			// These consume a kycToken minted by DemoAuthDelegated (skipped above), so skip cleanly instead of failing on the downstream dependency-resolution error.
+			// Depend on DemoAuthDelegated's kycToken (skipped above); skip these too.
 			throw new SkipException(GlobalConstants.FEATURE_NOT_SUPPORTED_MESSAGE);
 		} else if (testCaseName.startsWith("auth_")
 				&& ((testCaseName.contains("_DeactivateUINs_")) || (testCaseName.contains("PublishDraft_")))
@@ -217,7 +224,7 @@ public class IdAuthenticationUtil extends AdminTestUtil {
 	private static final String KYC_DELEGATION_DISABLED_POLICY_NAME = "mosip misp no deleg policy "
 			+ AdminTestUtil.timeStamp;
 
-	// Fails fast with the response body when "response" is missing/null or lacks "id"; scope to policy/partner-setup responses only, never authentication responses.
+	// For policy/partner-setup responses only - fails with the body if "id" is missing.
 	private static String extractIdOrFail(Response response, String step) {
 		String body = response.getBody().asString();
 		org.json.JSONObject json = new org.json.JSONObject(body);
@@ -228,7 +235,7 @@ public class IdAuthenticationUtil extends AdminTestUtil {
 		return json.getJSONObject(GlobalConstants.RESPONSE).getString("id");
 	}
 
-	// Cached terminal failure so a retry rethrows the original cause instead of resending fixed names and hitting a duplicate-name error.
+	// Cached so a retry rethrows the original cause instead of re-registering fixed names.
 	private static RuntimeException kycDelegationDisabledSetupFailure = null;
 
 	public static synchronized String generateAndGetKycDelegationDisabledPartnerKeyUrl() {
@@ -301,8 +308,9 @@ public class IdAuthenticationUtil extends AdminTestUtil {
 		if (publishPolicyURL.contains("POLICYID")) {
 			publishPolicyURL = publishPolicyURL.replace("POLICYID", policyId).replace("POLICYGROUPID", policyGroupId);
 		}
-		RestClient.postRequestWithCookie(publishPolicyURL, MediaType.APPLICATION_JSON, MediaType.APPLICATION_JSON,
-				GlobalConstants.AUTHORIZATION, token);
+		Response publishResponse = RestClient.postRequestWithCookie(publishPolicyURL, MediaType.APPLICATION_JSON,
+				MediaType.APPLICATION_JSON, GlobalConstants.AUTHORIZATION, token);
+		assertSuccessStatusCode(publishResponse, "Failed to publish no-delegation policy");
 
 		// new MISP partner mapped to that policy group; Auth-Partner-ID/OIDC-Client-Id stay unchanged
 		String partnersUrl = ApplnURI + "/v1/partnermanager/partners";
@@ -322,14 +330,16 @@ public class IdAuthenticationUtil extends AdminTestUtil {
 		partnerBody.put(GlobalConstants.REQUESTTIME, generateCurrentUTCTimeStamp());
 		partnerBody.put(GlobalConstants.VERSION, GlobalConstants.STRING);
 
-		RestClient.postRequestWithCookie(partnersUrl, partnerBody, MediaType.APPLICATION_JSON,
-				MediaType.APPLICATION_JSON, GlobalConstants.AUTHORIZATION, token);
+		Response partnerResponse = RestClient.postRequestWithCookie(partnersUrl, partnerBody,
+				MediaType.APPLICATION_JSON, MediaType.APPLICATION_JSON, GlobalConstants.AUTHORIZATION, token);
+		assertSuccessStatusCode(partnerResponse, "Failed to register no-delegation partner");
 
-		// MispPartnerAndLicenseKeyGeneration.getCertificates() hardcodes keyFileNameByPartnerName=false (reuses the first partner's cached certs), so go straight to AuthTestsUtil with true for a cert chain unique to this partner id
+		// getCertificates() would reuse the first partner's certs; call AuthTestsUtil directly instead.
+		// RELYING_PARTY ("rp-" prefix) matches what BioAuth/KycExchange expect here; MISP breaks the key lookup.
 		io.mosip.testrig.apirig.dto.CertificateChainResponseDto certChain;
 		try {
 			certChain = new io.mosip.testrig.apirig.utils.AuthTestsUtil().generatePartnerKeys(
-					io.mosip.testrig.apirig.utils.PartnerTypes.MISP, KYC_DELEGATION_DISABLED_PARTNER_ID, true, null,
+					io.mosip.testrig.apirig.utils.PartnerTypes.RELYING_PARTY, KYC_DELEGATION_DISABLED_PARTNER_ID, true, null,
 					BaseTestCase.certsForModule, ApplnURI.replace("https://", ""));
 		} catch (Exception e) {
 			throw new RuntimeException("failed to generate no-delegation partner keys", e);
@@ -338,12 +348,13 @@ public class IdAuthenticationUtil extends AdminTestUtil {
 		MispPartnerAndLicenseKeyGeneration.uploadIntermediateCertificate(certChain.getInterCertificate(), "Auth");
 		org.json.JSONObject signedCertificateValue = MispPartnerAndLicenseKeyGeneration.uploadPartnerCertificate(
 				certChain.getPartnerCertificate(), "Auth", KYC_DELEGATION_DISABLED_PARTNER_ID);
-		// MispPartnerAndLicenseKeyGeneration.uploadSignedCertificate() hardcodes partnerName=null/keyFileNameByPartnerName=false (would update the wrong generic key file), so call AuthTestsUtil directly with the same params used above
+		// uploadSignedCertificate() would update the wrong generic key file; use AuthTestsUtil directly.
+		// Must match the RELYING_PARTY type used above, or this updates the wrong ("misp-") file.
 		HashMap<String, String> signedCertRequest = new HashMap<>();
 		signedCertRequest.put("certData", signedCertificateValue.getString("signedCertificateData"));
 		try {
 			new io.mosip.testrig.apirig.utils.AuthTestsUtil().updatePartnerCertificate(
-					io.mosip.testrig.apirig.utils.PartnerTypes.MISP, KYC_DELEGATION_DISABLED_PARTNER_ID, true,
+					io.mosip.testrig.apirig.utils.PartnerTypes.RELYING_PARTY, KYC_DELEGATION_DISABLED_PARTNER_ID, true,
 					signedCertRequest, null, BaseTestCase.certsForModule, ApplnURI.replace("https://", ""));
 		} catch (Exception e) {
 			throw new RuntimeException("failed to update no-delegation partner certificate", e);
@@ -360,11 +371,7 @@ public class IdAuthenticationUtil extends AdminTestUtil {
 		return kycDelegationDisabledPartnerKeyUrl;
 	}
 
-	/**
-	 * Fails fast with a SkipException when a setup REST call did not succeed,
-	 * instead of letting the caller hit an opaque JSONException while parsing
-	 * an error response, or silently continuing with an invalid/empty token.
-	 */
+	// Skips cleanly instead of an opaque JSONException when a setup call fails.
 	private static void assertSuccessStatusCode(Response response, String failureMessage) {
 		if (response == null) {
 			throw new SkipException(failureMessage + ": null response");
@@ -375,12 +382,8 @@ public class IdAuthenticationUtil extends AdminTestUtil {
 		}
 	}
 
-	/**
-	 * Creates and publishes an additional auth policy (under the same policy
-	 * group as the main auth partner) using the given allowed-auth-types
-	 * attributes file (which determines, among other things, the authTokenType
-	 * of the policy), and returns the created policy id.
-	 */
+	// Creates and publishes an auth policy under the main partner's policy group
+	// using the given allowed-auth-types file, and returns the created policy id.
 	@SuppressWarnings("unchecked")
 	private static String createAndPublishPolicy(String policyNameToCreate, String attrFilePath) {
 		String token = kernelAuthLib.getTokenByRole(GlobalConstants.PARTNER);
@@ -416,14 +419,8 @@ public class IdAuthenticationUtil extends AdminTestUtil {
 		return createdPolicyId;
 	}
 
-	/**
-	 * Logs in as the given partner (PMS internal userid/password auth, the same
-	 * way {@code KernelAuthentication.getAuthForNewPartner()} logs in as the main
-	 * partner) and returns the auth token. Generating an API key is a partner
-	 * self-service action in PMS - it has to be done as that partner's own
-	 * Keycloak user, not via a generic admin/role token, otherwise PMS rejects
-	 * it with "User not authorized" (PMS_PRT_055).
-	 */
+	// API-key generation is partner self-service in PMS; a generic admin token
+	// gets "User not authorized" (PMS_PRT_055), so log in as that partner instead.
 	private static String loginAsPartner(String partnerId) {
 		Map<String, String> kernelProps = AdminTestUtil.readProperty("Kernel");
 		String authenticationInternalEndpoint = kernelProps.get("authenticationInternal");
@@ -443,14 +440,8 @@ public class IdAuthenticationUtil extends AdminTestUtil {
 				.getString(GlobalConstants.TOKEN);
 	}
 
-	/**
-	 * Maps the given partner to the given policy, approves that mapping, and
-	 * generates the resulting API key. {@code submitPartnerAndGetMappingKey}
-	 * alone only returns a mapping key (not an API key) for an unapproved
-	 * mapping; using it as-is in a partner key URL is why IDA used to reject
-	 * these calls with "Partner is not registered" (IDA-MPA-009) - the mapping
-	 * was never approved and no API key was ever generated for it.
-	 */
+	// Maps partner to policy, approves the mapping, and generates the API key.
+	// An unapproved mapping key alone gets IDA-MPA-009 "Partner is not registered".
 	private static String mapPartnerToPolicyAndGenerateApiKey(String partnerId, String policyNameToUse) {
 		KeycloakUserManager.createKeyCloakUsers(partnerId, partnerId + "@mosip.net", PartnerRegistration.partnerType);
 
@@ -485,22 +476,12 @@ public class IdAuthenticationUtil extends AdminTestUtil {
 	public static String policyIdForPolicyToken = "";
 	public static String policyTokenPartnerKeyUrl = "";
 
-	/**
-	 * Creates and publishes a second auth policy (under the same policy group as
-	 * the main auth partner) whose authTokenType is "policy", so that the
-	 * generated authToken is derived from the policy id and the UIN rather than
-	 * the partner id.
-	 */
+	// authTokenType "policy" - authToken is derived from policy id + UIN, not partner id.
 	public static void createAndPublishPolicyWithPolicyTokenType() {
 		policyIdForPolicyToken = createAndPublishPolicy(policyNameForPolicyToken,
 				AUTH_POLICY_FOR_POLICY_TOKEN_REQUEST_ATTR);
 	}
 
-	/**
-	 * Maps the existing auth partner to the policy-token policy (created via
-	 * {@link #createAndPublishPolicyWithPolicyTokenType()}) and builds the
-	 * partner key URL that exercises that mapping.
-	 */
 	public static String generateAndGetPolicyTokenPartnerKeyUrl() {
 		String policyTokenApiKey = mapPartnerToPolicyAndGenerateApiKey(PartnerRegistration.partnerId,
 				policyNameForPolicyToken);
@@ -515,22 +496,12 @@ public class IdAuthenticationUtil extends AdminTestUtil {
 	public static String policyIdForRandomToken = "";
 	public static String randomTokenPartnerKeyUrl = "";
 
-	/**
-	 * Creates and publishes a third auth policy (under the same policy group as
-	 * the main auth partner) whose authTokenType is "random", so that a new,
-	 * unrelated authToken is generated on every authentication call regardless
-	 * of the UIN or partner.
-	 */
+	// authTokenType "random" - a new, unrelated authToken every call.
 	public static void createAndPublishPolicyWithRandomTokenType() {
 		policyIdForRandomToken = createAndPublishPolicy(policyNameForRandomToken,
 				AUTH_POLICY_FOR_RANDOM_TOKEN_REQUEST_ATTR);
 	}
 
-	/**
-	 * Maps the existing auth partner to the random-token policy (created via
-	 * {@link #createAndPublishPolicyWithRandomTokenType()}) and builds the
-	 * partner key URL that exercises that mapping.
-	 */
 	public static String generateAndGetRandomTokenPartnerKeyUrl() {
 		String randomTokenApiKey = mapPartnerToPolicyAndGenerateApiKey(PartnerRegistration.partnerId,
 				policyNameForRandomToken);
@@ -539,14 +510,9 @@ public class IdAuthenticationUtil extends AdminTestUtil {
 		return randomTokenPartnerKeyUrl;
 	}
 
-	/**
-	 * Registers an additional, independent auth partner (its own
-	 * certificates/keys) under the same policy group as the main partner, so
-	 * that it can later be mapped to the same policy-token policy as the main
-	 * partner. Used to verify that a "policy" authTokenType token depends only
-	 * on the policy id and the UIN, not on which partner under that policy made
-	 * the call.
-	 */
+	// Registers an independent partner under the main policy group, so it can be
+	// mapped to the same policy-token policy and prove the token only depends
+	// on policy id + UIN, not which partner called.
 	private static void registerAdditionalPolicyTokenPartner(String partnerId, String organizationName,
 			String emailId) {
 		String url = ApplnURI + properties.getProperty("putPartnerRegistrationUrl");
@@ -587,13 +553,8 @@ public class IdAuthenticationUtil extends AdminTestUtil {
 		PartnerRegistration.uploadSignedCertificate(certValueSigned, "RELYING_PARTY", partnerId, true);
 	}
 
-	/**
-	 * Maps the given partner to the given policy and builds its partner key URL
-	 * for that mapping. A partner can be mapped to several different policies
-	 * (each mapping mints its own API key), which is how the same partner
-	 * entity is reused across the policy/partner/random token type tests
-	 * instead of registering a fresh partner for every combination.
-	 */
+	// A partner can map to several policies (each mapping mints its own API key),
+	// so the same partner is reused across the token-type tests.
 	private static String mapPartnerToPolicyAndGetKeyUrl(String partnerId, String policyNameToUse) {
 		String apiKey = mapPartnerToPolicyAndGenerateApiKey(partnerId, policyNameToUse);
 		return PartnerRegistration.mispLicKey + "/" + partnerId + "/" + apiKey;
@@ -603,7 +564,7 @@ public class IdAuthenticationUtil extends AdminTestUtil {
 		return mapPartnerToPolicyAndGetKeyUrl(partnerId, policyNameForPolicyToken);
 	}
 
-	private static final String policyToken2OrganizationName = BaseTestCase.currentModule + "_policy2_pid";
+	private static final String policyToken2OrganizationName = "mosip-policy2-" + AdminTestUtil.timeStamp;
 	public static String policyToken2PartnerId = policyToken2OrganizationName;
 	private static final String policyToken2EmailId = "mosip_policy2_" + System.currentTimeMillis() + "@gmail.com";
 	public static String policyToken2PartnerKeyUrl = "";
@@ -618,16 +579,12 @@ public class IdAuthenticationUtil extends AdminTestUtil {
 		return policyToken2PartnerKeyUrl;
 	}
 
-	private static final String policyToken3OrganizationName = BaseTestCase.currentModule + "_policy3_pid";
+	private static final String policyToken3OrganizationName = "mosip-policy3-" + AdminTestUtil.timeStamp;
 	public static String policyToken3PartnerId = policyToken3OrganizationName;
 	private static final String policyToken3EmailId = "mosip_policy3_" + System.currentTimeMillis() + "@gmail.com";
 	public static String policyToken3PartnerKeyUrl = "";
 
-	/**
-	 * Registers a third partner mapped to the same policy-token policy, so that
-	 * the "same token for the same UIN regardless of partner" property can be
-	 * verified across more than just a single pair of partners.
-	 */
+	// A third partner on the same policy-token policy, for a 3-way comparison.
 	public static void registerThirdPolicyTokenPartner() {
 		registerAdditionalPolicyTokenPartner(policyToken3PartnerId, policyToken3OrganizationName,
 				policyToken3EmailId);
@@ -640,15 +597,8 @@ public class IdAuthenticationUtil extends AdminTestUtil {
 
 	public static String partnerToken2KeyUrl = "";
 
-	/**
-	 * Maps the second partner (already registered for the policy-token tests via
-	 * {@link #registerSecondPolicyTokenPartner()}) to the default policy, whose
-	 * authTokenType is "partner", instead of the policy-token policy. This gives
-	 * a second, independent partner under the SAME authTokenType=partner policy
-	 * as the main partner, so the resulting authToken (which is derived from
-	 * partnerId and UIN) can be compared against the main partner's token for
-	 * the same UIN and shown to differ.
-	 */
+	// Second partner on the default (authTokenType=partner) policy, so its token
+	// for the same UIN can be compared against the main partner's and shown to differ.
 	public static String generateAndGetPartnerToken2KeyUrl() {
 		partnerToken2KeyUrl = mapPartnerToPolicyAndGetKeyUrl(policyToken2PartnerId, policyName);
 		return partnerToken2KeyUrl;
@@ -657,13 +607,8 @@ public class IdAuthenticationUtil extends AdminTestUtil {
 	public static String randomToken2PartnerKeyUrl = "";
 	public static String randomToken3PartnerKeyUrl = "";
 
-	/**
-	 * Maps the second and third partners (already registered for the
-	 * policy-token tests) to the random-token policy created via
-	 * {@link #createAndPublishPolicyWithRandomTokenType()}, so that the
-	 * "a new random token every call, regardless of partner" property can be
-	 * verified across multiple different partners sharing the same policy.
-	 */
+	// Maps the second and third partners to the random-token policy, to verify
+	// "new random token every call" holds across different partners.
 	public static String generateAndGetRandomToken2PartnerKeyUrl() {
 		randomToken2PartnerKeyUrl = mapPartnerToPolicyAndGetKeyUrl(policyToken2PartnerId, policyNameForRandomToken);
 		return randomToken2PartnerKeyUrl;
@@ -672,6 +617,219 @@ public class IdAuthenticationUtil extends AdminTestUtil {
 	public static String generateAndGetRandomToken3PartnerKeyUrl() {
 		randomToken3PartnerKeyUrl = mapPartnerToPolicyAndGetKeyUrl(policyToken3PartnerId, policyNameForRandomToken);
 		return randomToken3PartnerKeyUrl;
+	}
+
+	/**
+	 * Decodes response.encryptedKyc (JWT: 3 segments, or JWE: 5 segments) into
+	 * response.decodedKyc. JWE is decrypted with the relying-party's own
+	 * keystore (same key BioDataUtility signs bio requests with) - the server
+	 * encrypts with the partner cert, not the OIDC client's key.
+	 */
+	public static String injectDecodedKyc(String responseStr, String testCaseName) {
+		try {
+			JSONObject respJson = new JSONObject(responseStr);
+			if (!respJson.has(GlobalConstants.RESPONSE) || respJson.isNull(GlobalConstants.RESPONSE)) {
+				return responseStr;
+			}
+			JSONObject responseObj = respJson.getJSONObject(GlobalConstants.RESPONSE);
+			if (!responseObj.has("encryptedKyc") || responseObj.isNull("encryptedKyc")) {
+				return responseStr;
+			}
+			String encryptedKyc = responseObj.getString("encryptedKyc");
+			String[] parts = encryptedKyc.split("\\.");
+			String jwtToDecode;
+			if (parts.length == 5) {
+				JWEObject jweObject = JWEObject.parse(encryptedKyc);
+				KeyMgrUtility keyMgrUtil = new KeyMgrUtility(new CryptoCoreUtil());
+				String dirPath = keyMgrUtil.getKeysDirPath("", certsForModule, ApplnURI.replace("https://", ""));
+				// File is "rp-<organizationName>-partner.p12", not "rp-partner.p12".
+				PrivateKeyEntry keyEntry = keyMgrUtil.getKeyEntry(dirPath, PartnerTypes.RELYING_PARTY,
+						PartnerRegistration.organizationName, true);
+				if (keyEntry == null) {
+					logger.warn("No relying-party partner keystore found under " + dirPath
+							+ " to decrypt encryptedKyc for " + testCaseName);
+					return responseStr;
+				}
+				jweObject.decrypt(new RSADecrypter((RSAPrivateKey) keyEntry.getPrivateKey()));
+				jwtToDecode = jweObject.getPayload().toString();
+			} else if (parts.length == 3) {
+				jwtToDecode = encryptedKyc;
+			} else {
+				logger.warn("Unrecognized encryptedKyc format for decode (segments=" + parts.length
+						+ "), skipping decode for " + testCaseName);
+				return responseStr;
+			}
+			String payloadSegment = jwtToDecode.split("\\.")[1];
+			int pad = (4 - payloadSegment.length() % 4) % 4;
+			for (int i = 0; i < pad; i++) {
+				payloadSegment += "=";
+			}
+			String decodedJson = new String(Base64.getUrlDecoder().decode(payloadSegment), StandardCharsets.UTF_8);
+			responseObj.put("decodedKyc", new JSONObject(decodedJson));
+			return respJson.toString();
+		} catch (Exception e) {
+			logger.error("Failed to decode encryptedKyc for " + testCaseName + ": " + e.getMessage(), e);
+			return responseStr;
+		}
+	}
+
+	// Asserts a claim was NOT returned under decodedKyc.verified_claims (e.g. for
+	// max_age filtering) - OutputValidationUtil has no way to assert absence.
+	// Call after injectDecodedKyc; no-ops if decode never ran.
+	public static void assertVerifiedClaimAbsent(String responseWithDecodedKyc, String claimName, String testCaseName)
+			throws AdminTestException {
+		try {
+			JSONObject respJson = new JSONObject(responseWithDecodedKyc);
+			JSONObject responseObj = respJson.optJSONObject(GlobalConstants.RESPONSE);
+			if (responseObj == null) {
+				return;
+			}
+			JSONObject decodedKyc = responseObj.optJSONObject("decodedKyc");
+			if (decodedKyc == null) {
+				throw new AdminTestException("Missing response.decodedKyc for " + testCaseName);
+			}
+			JSONArray verifiedClaims = decodedKyc.optJSONArray("verified_claims");
+			if (verifiedClaims == null) {
+				return; // key only exists when at least one claim matched - expected here
+			}
+			for (int i = 0; i < verifiedClaims.length(); i++) {
+				JSONObject entry = verifiedClaims.optJSONObject(i);
+				JSONObject claims = entry == null ? null : entry.optJSONObject("claims");
+				if (claims != null && claims.has(claimName)) {
+					throw new AdminTestException("Expected claim '" + claimName
+							+ "' to be filtered out of verified_claims for " + testCaseName
+							+ " but it was present: " + entry);
+				}
+			}
+		} catch (JSONException e) {
+			logger.error("Failed to check verified-claim absence for " + testCaseName + ": " + e.getMessage(), e);
+			throw new AdminTestException("Failed to check verified-claim absence for " + testCaseName);
+		}
+	}
+
+	private static final java.util.regex.Pattern WALLET_PUBLIC_JWK_TOKEN = java.util.regex.Pattern
+			.compile("^\\$WALLETPUBLICJWK:(.+)\\$$");
+
+	// Private key stays cached under walletKeyName in JWKKeyUtil, for resolveWlaJwt to sign with later.
+	public static void resolveWalletPublicJwk(JSONObject request) {
+		if (!request.has("identityKeyBinding")) {
+			return;
+		}
+		JSONObject identityKeyBinding = request.getJSONObject("identityKeyBinding");
+		Object publicKeyJwkValue = identityKeyBinding.opt("publicKeyJWK");
+		if (!(publicKeyJwkValue instanceof String)) {
+			return;
+		}
+		java.util.regex.Matcher matcher = WALLET_PUBLIC_JWK_TOKEN.matcher((String) publicKeyJwkValue);
+		if (!matcher.matches()) {
+			return;
+		}
+		String walletKeyName = matcher.group(1);
+		try {
+			String fullJwk = JWKKeyUtil.getJWKKey(walletKeyName);
+			if (fullJwk == null) {
+				fullJwk = JWKKeyUtil.generateAndCacheJWKKey(walletKeyName);
+			}
+			com.nimbusds.jose.jwk.RSAKey rsaKey = com.nimbusds.jose.jwk.RSAKey.parse(fullJwk);
+			JSONObject publicJwk = new JSONObject(rsaKey.toPublicJWK().toJSONString());
+			identityKeyBinding.put("publicKeyJWK", publicJwk);
+		} catch (java.text.ParseException e) {
+			logger.error("Failed to build wallet public JWK '" + walletKeyName + "': " + e.getMessage(), e);
+			throw new RuntimeException("Failed to build wallet public JWK '" + walletKeyName + "'", e);
+		}
+	}
+
+	private static final java.util.regex.Pattern WLA_JWT_TOKEN = java.util.regex.Pattern.compile("\\$WLAJWT:([^$]+)\\$");
+
+	public static String resolveWlaJwt(String identityRequest, String individualId) {
+		java.util.regex.Matcher matcher = WLA_JWT_TOKEN.matcher(identityRequest);
+		StringBuffer result = new StringBuffer();
+		while (matcher.find()) {
+			String bindingSidTestCaseName = matcher.group(1);
+			String token = buildWlaJwt(bindingSidTestCaseName, individualId);
+			matcher.appendReplacement(result, java.util.regex.Matcher.quoteReplacement(token));
+		}
+		matcher.appendTail(result);
+		return result.toString();
+	}
+
+	private static String buildWlaJwt(String bindingSidTestCaseName, String individualId) {
+		try {
+			String identityCertificateStr = getFromCache(bindingSidTestCaseName + "_identityCertificate");
+			if (identityCertificateStr == null) {
+				throw new IllegalStateException(
+						"No cached identityCertificate for " + bindingSidTestCaseName + " - did the binding _sid test run first?");
+			}
+			String walletJwk = JWKKeyUtil.getJWKKey(bindingSidTestCaseName);
+			if (walletJwk == null) {
+				throw new IllegalStateException("No cached wallet JWK for " + bindingSidTestCaseName);
+			}
+			com.nimbusds.jose.jwk.RSAKey rsaKey = com.nimbusds.jose.jwk.RSAKey.parse(walletJwk);
+			java.security.interfaces.RSAPrivateKey privateKey = rsaKey.toRSAPrivateKey();
+
+			java.security.cert.Certificate certificate = convertToCertificate(identityCertificateStr);
+			if (certificate == null) {
+				throw new IllegalStateException("Could not parse cached identityCertificate for " + bindingSidTestCaseName);
+			}
+			java.security.cert.X509Certificate x509Certificate = (java.security.cert.X509Certificate) certificate;
+
+			org.jose4j.jwt.JwtClaims claims = new org.jose4j.jwt.JwtClaims();
+			claims.setSubject(individualId);
+			claims.setAudience("ida-binding");
+			claims.setIssuer("apitest-commons");
+			claims.setIssuedAtToNow();
+			claims.setExpirationTimeMinutesInTheFuture(5);
+
+			org.jose4j.jws.JsonWebSignature jws = new org.jose4j.jws.JsonWebSignature();
+			jws.setPayload(claims.toJson());
+			jws.setAlgorithmHeaderValue("RS256");
+			jws.setKey(privateKey);
+			jws.setX509CertSha256ThumbprintHeaderValue(x509Certificate);
+
+			return jws.getCompactSerialization();
+		} catch (Exception e) {
+			logger.error("Failed to build WLA JWT for " + bindingSidTestCaseName + ": " + e.getMessage(), e);
+			throw new RuntimeException("Failed to build WLA JWT for " + bindingSidTestCaseName, e);
+		}
+	}
+
+	// Same as AdminTestUtil.postRequestWithCookieAuthHeaderAndSignature, but with
+	// a deliberately corrupted signature header (that helper always signs for real,
+	// with no hook to corrupt it).
+	public Response postRequestWithCookieAuthHeaderAndCorruptSignature(String url, String jsonInput,
+			String cookieName, String role, String testCaseName) throws SecurityXSSException {
+		return postRequestWithCookieAuthHeaderAndCorruptSignature(url, jsonInput, cookieName, role, testCaseName,
+				"invalid-signature-value");
+	}
+
+	// Empty value -> "missing signature" (MISSING_INPUT_PARAMETER); non-empty
+	// garbage -> "invalid signature" (DSIGN_FALIED).
+	public Response postRequestWithCookieAuthHeaderAndCorruptSignature(String url, String jsonInput,
+			String cookieName, String role, String testCaseName, String corruptSignatureValue)
+			throws SecurityXSSException {
+		Response response = null;
+		HashMap<String, String> headers = new HashMap<>();
+		headers.put(AUTHORIZATHION_HEADERNAME, AUTH_HEADER_VALUE);
+		String inputJson = inputJsonKeyWordHandeler(jsonInput, testCaseName);
+		headers.put(SIGNATURE_HEADERNAME, corruptSignatureValue);
+		String token = new KernelAuthentication().getTokenByRole(role);
+		// Not logging/reporting the raw url: it's a delegated partnerKeyURL carrying
+		// the MISP license key and API key in its path segments.
+		String redactedEndpointLabel = "[redacted delegated endpoint for " + testCaseName + "]";
+		logger.info(GlobalConstants.POST_REQ_URL + redactedEndpointLabel);
+		GlobalMethods.reportRequest(headers.toString(), inputJson, redactedEndpointLabel);
+		try {
+			response = RestClient.postRequestWithMultipleHeaders(url, inputJson, MediaType.APPLICATION_JSON,
+					MediaType.APPLICATION_JSON, cookieName, token, headers);
+			GlobalMethods.checkXSSProtectionHeader(response, url);
+			GlobalMethods.reportResponse(response.getHeaders().asList().toString(), url, response);
+			return response;
+		} catch (SecurityXSSException se) {
+			throw se;
+		} catch (Exception e) {
+			logger.error(GlobalConstants.EXCEPTION_STRING_2 + e);
+			return response;
+		}
 	}
 
 }

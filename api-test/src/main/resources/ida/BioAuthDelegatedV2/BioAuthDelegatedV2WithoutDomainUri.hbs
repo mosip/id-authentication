@@ -1,5 +1,5 @@
 {
-	"id": "mosip.identity.auth",
+	"id": "mosip.identity.kycauth",
 	"consentObtained": true,
 	"individualId": "{{individualId}}",
 	"individualIdType": "{{individualIdType}}",
@@ -8,11 +8,11 @@
 	"requestTime": "{{requestTime}}",
 	"filters": [
     {{#each filters}}
-       "{{type}}": {{bio}}
+       { "{{type}}": {{bio}} }
        {{#unless @last}},{{/unless}}
       	{{/each}}
     ],
-	"requestedAuth": {	
+	"requestedAuth": {
 		"bio": {{bio}},
 		"demo": {{demo}},
 		"otp": {{otp}},
@@ -20,10 +20,10 @@
 	},
 	"requestSessionKey": "sessionkey",
 	"transactionID": "{{transactionId}}",
-	"domainUri": "baseurl",
-	"env": "Staging",
+    "env": "Staging",
 	"keyIndex": "string",
 	"specVersion": "1.0",
 	"thumbprint": "partnerORinternalthumbprint",
-	"version": "1.0"
+	"version": "1.0",
+	"claimsMetadataRequired": {{claimsMetadataRequired}}
 }
