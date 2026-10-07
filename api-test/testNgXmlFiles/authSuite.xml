@@ -40,6 +40,15 @@
 			<class name="io.mosip.testrig.apirig.auth.testscripts.KycExchange" />
 		</classes>
 	</test>
+	<test name="IdentityKeyBinding">
+		<parameter name="ymlFile"
+			value="ida/IdentityKeyBinding/IdentityKeyBinding.yml" />
+		<parameter name="isInternal" value="false" />
+		<parameter name="idKeyName" value="identityCertificate,authToken" />
+		<classes>
+			<class name="io.mosip.testrig.apirig.auth.testscripts.BioAuth" />
+		</classes>
+	</test>
 	<test name="BioAuthDelegatedV2">
 		<parameter name="ymlFile"
 			value="ida/BioAuthDelegatedV2/BioAuthDelegatedV2.yml" />
