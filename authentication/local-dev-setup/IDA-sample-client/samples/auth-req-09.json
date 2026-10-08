@@ -1,0 +1,9 @@
+{
+  "vid": "8724928329",
+  "name": [{"language":"eng", "value": "Sanjay Sneha Deshmukh"}],
+  "gender": [{"language":"eng", "value": "Female"}],
+  "dob": "1988/07/24",
+  "phoneNumber": "6513873070",
+  "emailId": "sanjay.sneha@testmail.com",
+  "fullAddress": [{"language":"eng", "value": "Flat No.208 Sector 8 Crystal Plaza, H.K. Road Noida 201301 NOI Noida"}]
+}
