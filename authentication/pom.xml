@@ -369,6 +369,13 @@
 			                <goal>report</goal>
 			            </goals>
 			        </execution>
+			        <execution>
+			            <id>report</id>
+			            <phase>verify</phase>
+			            <goals>
+			                <goal>report-aggregate</goal>
+			            </goals>
+			        </execution>
 			    </executions>
 			</plugin>
 
@@ -383,19 +390,6 @@
 						${argLine} --add-opens java.xml/jdk.xml.internal=ALL-UNNAMED --illegal-access=permit
 					</argLine>
 				</configuration>
-			</plugin>
-			<plugin>
-				<groupId>org.jacoco</groupId>
-				<artifactId>jacoco-maven-plugin</artifactId>
-				<executions>
-					<execution>
-						<id>report</id>
-						<goals>
-							<goal>report-aggregate</goal>
-						</goals>
-						<phase>verify</phase>
-					</execution>
-				</executions>
 			</plugin>
 			<plugin>
 				<groupId>org.apache.maven.plugins</groupId>
