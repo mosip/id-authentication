@@ -1,12 +1,12 @@
-\c mosip_ida
+\c :mosipdbname
 
 REASSIGN OWNED BY sysadmin TO postgres;
 
-REVOKE ALL PRIVILEGES ON ALL TABLES IN SCHEMA ida FROM idauser;
+REVOKE ALL PRIVILEGES ON ALL TABLES IN SCHEMA ida FROM :dbuname;
 
 REVOKE ALL PRIVILEGES ON ALL TABLES IN SCHEMA ida FROM sysadmin;
 
-GRANT SELECT, INSERT, TRUNCATE, REFERENCES, UPDATE, DELETE ON ALL TABLES IN SCHEMA ida TO idauser;
+GRANT SELECT, INSERT, TRUNCATE, REFERENCES, UPDATE, DELETE ON ALL TABLES IN SCHEMA ida TO :dbuname;
 
 GRANT ALL PRIVILEGES ON ALL TABLES IN SCHEMA ida TO postgres;
 
@@ -36,7 +36,7 @@ CREATE TABLE ida.api_key_data (
 
 GRANT SELECT, INSERT, TRUNCATE, REFERENCES, UPDATE, DELETE
    ON ida.api_key_data
-   TO idauser;
+   TO :dbuname;
    
 --index section starts----
 CREATE INDEX ind_akd_apkeyid ON ida.api_key_data (api_key_id);
@@ -62,7 +62,7 @@ CREATE TABLE ida.partner_data (
 
 GRANT SELECT, INSERT, TRUNCATE, REFERENCES, UPDATE, DELETE
    ON ida.partner_data
-   TO idauser;
+   TO :dbuname;
 --index section starts----
 CREATE INDEX ind_pd_pid ON ida.partner_data (partner_id);
 --index section ends------
@@ -87,7 +87,7 @@ CREATE TABLE ida.partner_mapping (
 
 GRANT SELECT, INSERT, TRUNCATE, REFERENCES, UPDATE, DELETE
    ON ida.partner_mapping
-   TO idauser;
+   TO :dbuname;
 --index section starts----
 CREATE INDEX ind_pm_pid ON ida.partner_mapping (partner_id);
 --index section ends------
@@ -115,7 +115,7 @@ CREATE TABLE ida.policy_data (
 
 GRANT SELECT, INSERT, TRUNCATE, REFERENCES, UPDATE, DELETE
    ON ida.policy_data
-   TO idauser;
+   TO :dbuname;
 
 --index section starts----
 CREATE INDEX ind_pl_pid ON ida.policy_data (policy_id);
@@ -141,7 +141,7 @@ CREATE TABLE ida.misp_license_data (
 
 GRANT SELECT, INSERT, TRUNCATE, REFERENCES, UPDATE, DELETE
    ON ida.misp_license_data
-   TO idauser;
+   TO :dbuname;
 --index section starts----
 CREATE INDEX ind_mld_lk ON ida.misp_license_data (license_key);
 --index section ends------
@@ -164,7 +164,7 @@ CREATE TABLE ida.anonymous_profile(
 
 GRANT SELECT, INSERT, TRUNCATE, REFERENCES, UPDATE, DELETE
    ON ida.anonymous_profile
-   TO idauser;
+   TO :dbuname;
 -- ddl-end --
 COMMENT ON TABLE ida.anonymous_profile IS 'anonymous_profile: Anonymous profiling information for reporting purpose.';
 COMMENT ON COLUMN ida.anonymous_profile.id IS 'Reference ID: System generated id for references in the system.';

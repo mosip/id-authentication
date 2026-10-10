@@ -1,4 +1,4 @@
-\c mosip_ida
+\c :mosipdbname
 
 ALTER TABLE ida.misp_license_data DROP COLUMN policy_id;
 

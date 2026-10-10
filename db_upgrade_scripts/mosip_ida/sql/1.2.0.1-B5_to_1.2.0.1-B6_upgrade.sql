@@ -1,4 +1,4 @@
-\c mosip_ida
+\c :mosipdbname
 
 ALTER TABLE ida.credential_event_store ALTER COLUMN credential_transaction_id type character varying(64);
 

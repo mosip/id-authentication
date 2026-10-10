@@ -1,4 +1,4 @@
-\c mosip_ida
+\c :mosipdbname
 
 ALTER TABLE ida.kyc_token_store DROP COLUMN request_trn_id;
 
