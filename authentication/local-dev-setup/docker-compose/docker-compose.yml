@@ -44,6 +44,8 @@ services:
       - ./wiremock/mappings:/home/wiremock/mappings   # stub JSON files
       - ./wiremock/__files:/home/wiremock/__files
     command: --verbose --port 8082 --local-response-templating --max-template-cache-entries 10 --no-request-journal
+    extra_hosts:
+      - "host.docker.internal:host-gateway"
     healthcheck:
       test: ["CMD-SHELL", "curl -f http://localhost:8082/__admin/health || exit 1"]
       interval: 500s

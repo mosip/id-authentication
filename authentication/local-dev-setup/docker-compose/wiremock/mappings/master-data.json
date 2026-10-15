@@ -251,6 +251,468 @@
           "expires_in": 300
         }
       }
+    },
+    {
+      "name": "Receive event and notify callback - deactivate",
+      "request": {
+        "method": "POST",
+        "urlPath": "/idrepository/v1/vid/deactivate"
+      },
+      "response": {
+        "status": 200,
+        "headers": { "Content-Type": "application/json" },
+        "body": "{\"id\":\"mosip.vid.deactivate\",\"version\":\"v1\",\"responsetime\":\"2026-10-14T08:15:43.321Z\",\"metadata\":null,\"response\":{\"vidStatus\":\"DEACTIVATED\",\"restoredVid\":null,\"UIN\":null,\"VID\":null},\"errors\":[]}"
+      },
+      "serveEventListeners": [
+        {
+          "name": "webhook",
+          "parameters": {
+            "method": "POST",
+            "url": "http://host.docker.internal:8090/idauthentication/v1/internal/callback/idchange/deactivate_id/mpartner-default-auth",
+            "headers": {
+              "Content-Type": "application/json",
+              "accept": "application/json",
+              "x-hub-signature": "SHA256=3f131eed8ec085c24badaf9a5dcb1fca8a8bd6218f05f485288bcb87bdb016c4"
+            },
+            "body": "{\"event\":{\"data\":{\"TOKEN\":\"BD8207D2DBFFC0FF6064EF1647002C846B7F3B9B155C7EC01DA1FEF04AAD2649\",\"credentialType\":\"deactivated-vid\",\"id_hash\":\"BB28A8B011094A5E9C946B90AA7B83928A4AD0AB4A1880BE9072947C76A25775\",\"protectionKey\":null,\"expiry_timestamp\": \"2026-10-10T14:05:22.807Z\",\"transaction_limit\":null},\"id\":\"22132f67-2430-4354-95ac-e738e40e5261\",\"timestamp\":\"2026-10-13T14:05:22.808Z\",\"transactionId\":\"87103fcd-755c-4424-9615-d5281b987997\",\"type\":{\"name\":\"mosip\",\"namespace\":\"mosip\"}},\"publishedOn\":\"2026-10-13T14:05:22.808Z\",\"publisher\":\"ID_REPO\",\"topic\":\"mpartner-default-auth/DEACTIVATE_ID\"}"
+          }
+        }
+      ]
+    },
+    {
+      "name": "Receive event and notify callback - reactivate",
+      "request": {
+        "method": "POST",
+        "urlPath": "/idrepository/v1/vid/reactivate"
+      },
+      "response": {
+        "status": 200,
+        "headers": { "Content-Type": "application/json" },
+        "body": "{\"id\":\"mosip.vid.reactivate\",\"version\":\"v1\",\"responsetime\":\"2026-10-12T12:32:40.002Z\",\"metadata\":null,\"response\":{\"vidStatus\":\"ACTIVE\",\"restoredVid\":null,\"UIN\":null,\"VID\":null},\"errors\":[]}"
+      },
+      "serveEventListeners": [
+        {
+          "name": "webhook",
+          "parameters": {
+            "method": "POST",
+            "url": "http://host.docker.internal:8090/idauthentication/v1/internal/callback/idchange/activate_id/mpartner-default-auth",
+            "headers": {
+              "Content-Type": "application/json",
+              "accept": "application/json",
+              "x-hub-signature": "SHA256=e1ec9cca6fbdceb5fcdca8925796dd753dec8bfc78cec219c0de67130a5814b7"
+            },
+            "body": "{\"event\":{\"data\":{\"TOKEN\":\"BD8207D2DBFFC0FF6064EF1647002C846B7F3B9B155C7EC01DA1FEF04AAD2649\",\"credentialType\":\"activated-vid\",\"id_hash\":\"BB28A8B011094A5E9C946B90AA7B83928A4AD0AB4A1880BE9072947C76A25775\",\"protectionKey\":null,\"expiry_timestamp\": \"2041-10-10T14:05:22.807Z\",\"transaction_limit\":null},\"id\":\"22132f67-2430-4354-95ac-e738e40e5261\",\"timestamp\":\"2026-10-13T14:05:22.808Z\",\"transactionId\":\"87103fcd-755c-4424-9615-d5281b987997\",\"type\":{\"name\":\"mosip\",\"namespace\":\"mosip\"}},\"publishedOn\":\"2026-10-13T14:05:22.808Z\",\"publisher\":\"ID_REPO\",\"topic\":\"mpartner-default-auth/ACTIVATE_ID\"}"
+          }
+        }
+      ]
+    },
+    {
+      "name": "Receive event and notify callback - lock - BIO - FINGER",
+      "request": {
+        "method": "POST",
+        "urlPath": "/resident/v1/auth-lock-unlock",
+        "bodyPatterns": [
+          {
+            "matchesJsonPath": "$.request.authTypes[?(@.authType == 'bio' && @.authSubType == 'finger' && @.locked == true)]"
+          }
+        ]
+      },
+      "response": {
+        "status": 200,
+        "headers": {
+          "Content-Type": "application/json"
+        },
+        "body": "{\"id\": \"mosip.resident.auth.lock.unlock\", \"version\": \"1.0\", \"responsetime\": \"2026-10-15T04:52:44.505Z\", \"metadata\": null, \"response\": {\"status\": \"Success\", \"message\": \"The chosen authentication types have been successfully locked/unlocked.\"}, \"errors\": null}"
+      },
+      "serveEventListeners": [
+        {
+          "name": "webhook",
+          "parameters": {
+            "method": "POST",
+            "url": "http://host.docker.internal:8090/idauthentication/v1/internal/callback/authTypeCallback/mpartner-default-auth",
+            "headers": {
+              "Content-Type": "application/json",
+              "accept": "application/json",
+              "x-hub-signature": "SHA256=6c7f0b555b95cad2b9ca2e47824f10f0ecf15362b5811575d0652c0737b9b463"
+            },
+            "body": "{\"event\":{\"data\":{\"saltedIdHash\":\"BB28A8B011094A5E9C946B90AA7B83928A4AD0AB4A1880BE9072947C76A25775\",\"tokenId\":\"F5F771199CEA34F49D85BEABF96D3F16683E640A7CB343EF9EB670A199732F33\",\"authTypeStatusList\":[{\"authType\":\"bio\",\"authSubType\":\"finger\",\"locked\":true,\"unlockForSeconds\":null}],\"expiryTimestamp\":\"2026-10-15T18:30:00.000Z\",\"transactionLimit\":null},\"id\":\"22132f67-2430-4354-95ac-e738e40e5261\",\"timestamp\":\"2026-10-13T14:05:22.808Z\",\"transactionId\":\"87103fcd-755c-4424-9615-d5281b987997\",\"type\":{\"name\":\"mosip\",\"namespace\":\"mosip\"}},\"publishedOn\":\"2026-10-13T14:05:22.808Z\",\"publisher\":\"ID_REPO\",\"topic\":\"mpartner-default-auth/AUTH_TYPE_STATUS_UPDATE\"}"
+          }
+        }
+      ]
+    },
+    {
+      "name": "Receive event and notify callback - unlock - BIO - FINGER",
+      "request": {
+        "method": "POST",
+        "urlPath": "/resident/v1/auth-lock-unlock",
+        "bodyPatterns": [
+          {
+            "matchesJsonPath": "$.request.authTypes[?(@.authType == 'bio' && @.authSubType == 'finger' && @.locked == false)]"
+          }
+        ]
+      },
+      "response": {
+        "status": 200,
+        "headers": {
+          "Content-Type": "application/json"
+        },
+        "body": "{\"id\": \"mosip.resident.auth.lock.unlock\", \"version\": \"1.0\", \"responsetime\": \"2026-10-15T04:52:44.505Z\", \"metadata\": null, \"response\": {\"status\": \"Success\", \"message\": \"The chosen authentication types have been successfully locked/unlocked.\"}, \"errors\": null}"
+      },
+      "serveEventListeners": [
+        {
+          "name": "webhook",
+          "parameters": {
+            "method": "POST",
+            "url": "http://host.docker.internal:8090/idauthentication/v1/internal/callback/authTypeCallback/mpartner-default-auth",
+            "headers": {
+              "Content-Type": "application/json",
+              "accept": "application/json",
+              "x-hub-signature": "SHA256=437745717fc535a74d162f37f9f0590d9979130d7c6a45cadc29b3213cec0286"
+            },
+            "body": "{\"event\":{\"data\":{\"saltedIdHash\":\"BB28A8B011094A5E9C946B90AA7B83928A4AD0AB4A1880BE9072947C76A25775\",\"tokenId\":\"F5F771199CEA34F49D85BEABF96D3F16683E640A7CB343EF9EB670A199732F33\",\"authTypeStatusList\":[{\"authType\":\"bio\",\"authSubType\":\"finger\",\"locked\":false,\"unlockForSeconds\":null}],\"expiryTimestamp\":\"2026-10-15T18:30:00.000Z\",\"transactionLimit\":null},\"id\":\"22132f67-2430-4354-95ac-e738e40e5261\",\"timestamp\":\"2026-10-13T14:05:22.808Z\",\"transactionId\":\"87103fcd-755c-4424-9615-d5281b987997\",\"type\":{\"name\":\"mosip\",\"namespace\":\"mosip\"}},\"publishedOn\":\"2026-10-13T14:05:22.808Z\",\"publisher\":\"ID_REPO\",\"topic\":\"mpartner-default-auth/AUTH_TYPE_STATUS_UPDATE\"}"
+          }
+        }
+      ]
+    },
+    {
+      "name": "Receive event and notify callback - lock - BIO - IRIS",
+      "request": {
+        "method": "POST",
+        "urlPath": "/resident/v1/auth-lock-unlock",
+        "bodyPatterns": [
+          {
+            "matchesJsonPath": "$.request.authTypes[?(@.authType == 'bio' && @.authSubType == 'iris' && @.locked == true)]"
+          }
+        ]
+      },
+      "response": {
+        "status": 200,
+        "headers": {
+          "Content-Type": "application/json"
+        },
+        "body": "{\"id\": \"mosip.resident.auth.lock.unlock\", \"version\": \"1.0\", \"responsetime\": \"2026-10-15T04:52:44.505Z\", \"metadata\": null, \"response\": {\"status\": \"Success\", \"message\": \"The chosen authentication types have been successfully locked/unlocked.\"}, \"errors\": null}"
+      },
+      "serveEventListeners": [
+        {
+          "name": "webhook",
+          "parameters": {
+            "method": "POST",
+            "url": "http://host.docker.internal:8090/idauthentication/v1/internal/callback/authTypeCallback/mpartner-default-auth",
+            "headers": {
+              "Content-Type": "application/json",
+              "accept": "application/json",
+              "x-hub-signature": "SHA256=1fdd56823d3d143fe93d7c638b328c81bb665ff6985a68f0bb13fb0721bd77fb"
+            },
+            "body": "{\"event\":{\"data\":{\"saltedIdHash\":\"BB28A8B011094A5E9C946B90AA7B83928A4AD0AB4A1880BE9072947C76A25775\",\"tokenId\":\"F5F771199CEA34F49D85BEABF96D3F16683E640A7CB343EF9EB670A199732F33\",\"authTypeStatusList\":[{\"authType\":\"bio\",\"authSubType\":\"iris\",\"locked\":true,\"unlockForSeconds\":null}],\"expiryTimestamp\":\"2026-10-15T18:30:00.000Z\",\"transactionLimit\":null},\"id\":\"22132f67-2430-4354-95ac-e738e40e5261\",\"timestamp\":\"2026-10-13T14:05:22.808Z\",\"transactionId\":\"87103fcd-755c-4424-9615-d5281b987997\",\"type\":{\"name\":\"mosip\",\"namespace\":\"mosip\"}},\"publishedOn\":\"2026-10-13T14:05:22.808Z\",\"publisher\":\"ID_REPO\",\"topic\":\"mpartner-default-auth/AUTH_TYPE_STATUS_UPDATE\"}"
+          }
+        }
+      ]
+    },
+    {
+      "name": "Receive event and notify callback - unlock - BIO - IRIS",
+      "request": {
+        "method": "POST",
+        "urlPath": "/resident/v1/auth-lock-unlock",
+        "bodyPatterns": [
+          {
+            "matchesJsonPath": "$.request.authTypes[?(@.authType == 'bio' && @.authSubType == 'iris' && @.locked == false)]"
+          }
+        ]
+      },
+      "response": {
+        "status": 200,
+        "headers": {
+          "Content-Type": "application/json"
+        },
+        "body": "{\"id\": \"mosip.resident.auth.lock.unlock\", \"version\": \"1.0\", \"responsetime\": \"2026-10-15T04:52:44.505Z\", \"metadata\": null, \"response\": {\"status\": \"Success\", \"message\": \"The chosen authentication types have been successfully locked/unlocked.\"}, \"errors\": null}"
+      },
+      "serveEventListeners": [
+        {
+          "name": "webhook",
+          "parameters": {
+            "method": "POST",
+            "url": "http://host.docker.internal:8090/idauthentication/v1/internal/callback/authTypeCallback/mpartner-default-auth",
+            "headers": {
+              "Content-Type": "application/json",
+              "accept": "application/json",
+              "x-hub-signature": "SHA256=f35b21d5e3c26719f1d153c694f3127ef3be324de5806b4932d0997fc2a0828c"
+            },
+            "body": "{\"event\":{\"data\":{\"saltedIdHash\":\"BB28A8B011094A5E9C946B90AA7B83928A4AD0AB4A1880BE9072947C76A25775\",\"tokenId\":\"F5F771199CEA34F49D85BEABF96D3F16683E640A7CB343EF9EB670A199732F33\",\"authTypeStatusList\":[{\"authType\":\"bio\",\"authSubType\":\"iris\",\"locked\":false,\"unlockForSeconds\":null}],\"expiryTimestamp\":\"2026-10-15T18:30:00.000Z\",\"transactionLimit\":null},\"id\":\"22132f67-2430-4354-95ac-e738e40e5261\",\"timestamp\":\"2026-10-13T14:05:22.808Z\",\"transactionId\":\"87103fcd-755c-4424-9615-d5281b987997\",\"type\":{\"name\":\"mosip\",\"namespace\":\"mosip\"}},\"publishedOn\":\"2026-10-13T14:05:22.808Z\",\"publisher\":\"ID_REPO\",\"topic\":\"mpartner-default-auth/AUTH_TYPE_STATUS_UPDATE\"}"
+          }
+        }
+      ]
+    },
+    {
+      "name": "Receive event and notify callback - lock - BIO - FACE",
+      "request": {
+        "method": "POST",
+        "urlPath": "/resident/v1/auth-lock-unlock",
+        "bodyPatterns": [
+          {
+            "matchesJsonPath": "$.request.authTypes[?(@.authType == 'bio' && @.authSubType == 'face' && @.locked == true)]"
+          }
+        ]
+      },
+      "response": {
+        "status": 200,
+        "headers": {
+          "Content-Type": "application/json"
+        },
+        "body": "{\"id\": \"mosip.resident.auth.lock.unlock\", \"version\": \"1.0\", \"responsetime\": \"2026-10-15T04:52:44.505Z\", \"metadata\": null, \"response\": {\"status\": \"Success\", \"message\": \"The chosen authentication types have been successfully locked/unlocked.\"}, \"errors\": null}"
+      },
+      "serveEventListeners": [
+        {
+          "name": "webhook",
+          "parameters": {
+            "method": "POST",
+            "url": "http://host.docker.internal:8090/idauthentication/v1/internal/callback/authTypeCallback/mpartner-default-auth",
+            "headers": {
+              "Content-Type": "application/json",
+              "accept": "application/json",
+              "x-hub-signature": "SHA256=6b795fba6e2d4553a7e76387cfca55c543ec1d9f9470d91b27dcafe3067716d2"
+            },
+            "body": "{\"event\":{\"data\":{\"saltedIdHash\":\"BB28A8B011094A5E9C946B90AA7B83928A4AD0AB4A1880BE9072947C76A25775\",\"tokenId\":\"F5F771199CEA34F49D85BEABF96D3F16683E640A7CB343EF9EB670A199732F33\",\"authTypeStatusList\":[{\"authType\":\"bio\",\"authSubType\":\"face\",\"locked\":true,\"unlockForSeconds\":null}],\"expiryTimestamp\":\"2026-10-15T18:30:00.000Z\",\"transactionLimit\":null},\"id\":\"22132f67-2430-4354-95ac-e738e40e5261\",\"timestamp\":\"2026-10-13T14:05:22.808Z\",\"transactionId\":\"87103fcd-755c-4424-9615-d5281b987997\",\"type\":{\"name\":\"mosip\",\"namespace\":\"mosip\"}},\"publishedOn\":\"2026-10-13T14:05:22.808Z\",\"publisher\":\"ID_REPO\",\"topic\":\"mpartner-default-auth/AUTH_TYPE_STATUS_UPDATE\"}"
+          }
+        }
+      ]
+    },
+    {
+      "name": "Receive event and notify callback - unlock - BIO - FACE",
+      "request": {
+        "method": "POST",
+        "urlPath": "/resident/v1/auth-lock-unlock",
+        "bodyPatterns": [
+          {
+            "matchesJsonPath": "$.request.authTypes[?(@.authType == 'bio' && @.authSubType == 'face' && @.locked == false)]"
+          }
+        ]
+      },
+      "response": {
+        "status": 200,
+        "headers": {
+          "Content-Type": "application/json"
+        },
+        "body": "{\"id\": \"mosip.resident.auth.lock.unlock\", \"version\": \"1.0\", \"responsetime\": \"2026-10-15T04:52:44.505Z\", \"metadata\": null, \"response\": {\"status\": \"Success\", \"message\": \"The chosen authentication types have been successfully locked/unlocked.\"}, \"errors\": null}"
+      },
+      "serveEventListeners": [
+        {
+          "name": "webhook",
+          "parameters": {
+            "method": "POST",
+            "url": "http://host.docker.internal:8090/idauthentication/v1/internal/callback/authTypeCallback/mpartner-default-auth",
+            "headers": {
+              "Content-Type": "application/json",
+              "accept": "application/json",
+              "x-hub-signature": "SHA256=3f891c1b1ac8a1790220c21de108aee04001b024314863cce9fb811222d2a285"
+            },
+            "body": "{\"event\":{\"data\":{\"saltedIdHash\":\"BB28A8B011094A5E9C946B90AA7B83928A4AD0AB4A1880BE9072947C76A25775\",\"tokenId\":\"F5F771199CEA34F49D85BEABF96D3F16683E640A7CB343EF9EB670A199732F33\",\"authTypeStatusList\":[{\"authType\":\"bio\",\"authSubType\":\"face\",\"locked\":false,\"unlockForSeconds\":null}],\"expiryTimestamp\":\"2026-10-15T18:30:00.000Z\",\"transactionLimit\":null},\"id\":\"22132f67-2430-4354-95ac-e738e40e5261\",\"timestamp\":\"2026-10-13T14:05:22.808Z\",\"transactionId\":\"87103fcd-755c-4424-9615-d5281b987997\",\"type\":{\"name\":\"mosip\",\"namespace\":\"mosip\"}},\"publishedOn\":\"2026-10-13T14:05:22.808Z\",\"publisher\":\"ID_REPO\",\"topic\":\"mpartner-default-auth/AUTH_TYPE_STATUS_UPDATE\"}"
+          }
+        }
+      ]
+    },
+    {
+      "name": "Receive event and notify callback - lock - Demo",
+      "request": {
+        "method": "POST",
+        "urlPath": "/resident/v1/auth-lock-unlock",
+        "bodyPatterns": [
+          {
+            "matchesJsonPath": "$.request.authTypes[?(@.authType == 'Demo' && @.locked == true)]"
+          }
+        ]
+      },
+      "response": {
+        "status": 200,
+        "headers": {
+          "Content-Type": "application/json"
+        },
+        "body": "{\"id\": \"mosip.resident.auth.lock.unlock\", \"version\": \"1.0\", \"responsetime\": \"2026-10-15T04:52:44.505Z\", \"metadata\": null, \"response\": {\"status\": \"Success\", \"message\": \"The chosen authentication types have been successfully locked/unlocked.\"}, \"errors\": null}"
+      },
+      "serveEventListeners": [
+        {
+          "name": "webhook",
+          "parameters": {
+            "method": "POST",
+            "url": "http://host.docker.internal:8090/idauthentication/v1/internal/callback/authTypeCallback/mpartner-default-auth",
+            "headers": {
+              "Content-Type": "application/json",
+              "accept": "application/json",
+              "x-hub-signature": "SHA256=549e53b715a48859c0dd7acd23bba067dca6cd3a2027a8bd2d58df953c2806da"
+            },
+            "body": "{\"event\":{\"data\":{\"saltedIdHash\":\"BB28A8B011094A5E9C946B90AA7B83928A4AD0AB4A1880BE9072947C76A25775\",\"tokenId\":\"F5F771199CEA34F49D85BEABF96D3F16683E640A7CB343EF9EB670A199732F33\",\"authTypeStatusList\":[{\"authType\":\"Demo\",\"authSubType\":null,\"locked\":true,\"unlockForSeconds\":null}],\"expiryTimestamp\":\"2026-10-15T18:30:00.000Z\",\"transactionLimit\":null},\"id\":\"22132f67-2430-4354-95ac-e738e40e5261\",\"timestamp\":\"2026-10-13T14:05:22.808Z\",\"transactionId\":\"87103fcd-755c-4424-9615-d5281b987997\",\"type\":{\"name\":\"mosip\",\"namespace\":\"mosip\"}},\"publishedOn\":\"2026-10-13T14:05:22.808Z\",\"publisher\":\"ID_REPO\",\"topic\":\"mpartner-default-auth/AUTH_TYPE_STATUS_UPDATE\"}"
+          }
+        }
+      ]
+    },
+    {
+      "name": "Receive event and notify callback - unlock - Demo",
+      "request": {
+        "method": "POST",
+        "urlPath": "/resident/v1/auth-lock-unlock",
+        "bodyPatterns": [
+          {
+            "matchesJsonPath": "$.request.authTypes[?(@.authType == 'Demo' && @.locked == false)]"
+          }
+        ]
+      },
+      "response": {
+        "status": 200,
+        "headers": {
+          "Content-Type": "application/json"
+        },
+        "body": "{\"id\": \"mosip.resident.auth.lock.unlock\", \"version\": \"1.0\", \"responsetime\": \"2026-10-15T04:52:44.505Z\", \"metadata\": null, \"response\": {\"status\": \"Success\", \"message\": \"The chosen authentication types have been successfully locked/unlocked.\"}, \"errors\": null}"
+      },
+      "serveEventListeners": [
+        {
+          "name": "webhook",
+          "parameters": {
+            "method": "POST",
+            "url": "http://host.docker.internal:8090/idauthentication/v1/internal/callback/authTypeCallback/mpartner-default-auth",
+            "headers": {
+              "Content-Type": "application/json",
+              "accept": "application/json",
+              "x-hub-signature": "SHA256=e63c77b3e1dd62327ebcaeb3da7445279a32c241d23f8630f2c6093ed329b3dd"
+            },
+            "body": "{\"event\":{\"data\":{\"saltedIdHash\":\"BB28A8B011094A5E9C946B90AA7B83928A4AD0AB4A1880BE9072947C76A25775\",\"tokenId\":\"F5F771199CEA34F49D85BEABF96D3F16683E640A7CB343EF9EB670A199732F33\",\"authTypeStatusList\":[{\"authType\":\"Demo\",\"authSubType\":null,\"locked\":false,\"unlockForSeconds\":null}],\"expiryTimestamp\":\"2026-10-15T18:30:00.000Z\",\"transactionLimit\":null},\"id\":\"22132f67-2430-4354-95ac-e738e40e5261\",\"timestamp\":\"2026-10-13T14:05:22.808Z\",\"transactionId\":\"87103fcd-755c-4424-9615-d5281b987997\",\"type\":{\"name\":\"mosip\",\"namespace\":\"mosip\"}},\"publishedOn\":\"2026-10-13T14:05:22.808Z\",\"publisher\":\"ID_REPO\",\"topic\":\"mpartner-default-auth/AUTH_TYPE_STATUS_UPDATE\"}"
+          }
+        }
+      ]
+    },
+    {
+      "name": "Receive event and notify callback - lock - OTP - SMS",
+      "request": {
+        "method": "POST",
+        "urlPath": "/resident/v1/auth-lock-unlock",
+        "bodyPatterns": [
+          {
+            "matchesJsonPath": "$.request.authTypes[?(@.authType == 'otp' && @.authSubType == 'sms' && @.locked == true)]"
+          }
+        ]
+      },
+      "response": {
+        "status": 200,
+        "headers": {
+          "Content-Type": "application/json"
+        },
+        "body": "{\"id\": \"mosip.resident.auth.lock.unlock\", \"version\": \"1.0\", \"responsetime\": \"2026-10-15T04:52:44.505Z\", \"metadata\": null, \"response\": {\"status\": \"Success\", \"message\": \"The chosen authentication types have been successfully locked/unlocked.\"}, \"errors\": null}"
+      },
+      "serveEventListeners": [
+        {
+          "name": "webhook",
+          "parameters": {
+            "method": "POST",
+            "url": "http://host.docker.internal:8090/idauthentication/v1/internal/callback/authTypeCallback/mpartner-default-auth",
+            "headers": {
+              "Content-Type": "application/json",
+              "accept": "application/json",
+              "x-hub-signature": "SHA256=d158fdd5e19e5ca1d6640ae4b9493cd002bbf0ac7efda7b0361e7a9a2dbe3668"
+            },
+            "body": "{\"event\":{\"data\":{\"saltedIdHash\":\"BB28A8B011094A5E9C946B90AA7B83928A4AD0AB4A1880BE9072947C76A25775\",\"tokenId\":\"F5F771199CEA34F49D85BEABF96D3F16683E640A7CB343EF9EB670A199732F33\",\"authTypeStatusList\":[{\"authType\":\"otp\",\"authSubType\":\"sms\",\"locked\":true,\"unlockForSeconds\":null}],\"expiryTimestamp\":\"2026-10-15T18:30:00.000Z\",\"transactionLimit\":null},\"id\":\"22132f67-2430-4354-95ac-e738e40e5261\",\"timestamp\":\"2026-10-13T14:05:22.808Z\",\"transactionId\":\"87103fcd-755c-4424-9615-d5281b987997\",\"type\":{\"name\":\"mosip\",\"namespace\":\"mosip\"}},\"publishedOn\":\"2026-10-13T14:05:22.808Z\",\"publisher\":\"ID_REPO\",\"topic\":\"mpartner-default-auth/AUTH_TYPE_STATUS_UPDATE\"}"
+          }
+        }
+      ]
+    },
+    {
+      "name": "Receive event and notify callback - unlock - OTP - SMS",
+      "request": {
+        "method": "POST",
+        "urlPath": "/resident/v1/auth-lock-unlock",
+        "bodyPatterns": [
+          {
+            "matchesJsonPath": "$.request.authTypes[?(@.authType == 'otp' && @.authSubType == 'sms' && @.locked == false)]"
+          }
+        ]
+      },
+      "response": {
+        "status": 200,
+        "headers": {
+          "Content-Type": "application/json"
+        },
+        "body": "{\"id\": \"mosip.resident.auth.lock.unlock\", \"version\": \"1.0\", \"responsetime\": \"2026-10-15T04:52:44.505Z\", \"metadata\": null, \"response\": {\"status\": \"Success\", \"message\": \"The chosen authentication types have been successfully locked/unlocked.\"}, \"errors\": null}"
+      },
+      "serveEventListeners": [
+        {
+          "name": "webhook",
+          "parameters": {
+            "method": "POST",
+            "url": "http://host.docker.internal:8090/idauthentication/v1/internal/callback/authTypeCallback/mpartner-default-auth",
+            "headers": {
+              "Content-Type": "application/json",
+              "accept": "application/json",
+              "x-hub-signature": "SHA256=b88226f2179eaed2983116260dc62afac3006ee2429a36cbd94bffb5a1d53f56"
+            },
+            "body": "{\"event\":{\"data\":{\"saltedIdHash\":\"BB28A8B011094A5E9C946B90AA7B83928A4AD0AB4A1880BE9072947C76A25775\",\"tokenId\":\"F5F771199CEA34F49D85BEABF96D3F16683E640A7CB343EF9EB670A199732F33\",\"authTypeStatusList\":[{\"authType\":\"otp\",\"authSubType\":\"sms\",\"locked\":false,\"unlockForSeconds\":null}],\"expiryTimestamp\":\"2026-10-15T18:30:00.000Z\",\"transactionLimit\":null},\"id\":\"22132f67-2430-4354-95ac-e738e40e5261\",\"timestamp\":\"2026-10-13T14:05:22.808Z\",\"transactionId\":\"87103fcd-755c-4424-9615-d5281b987997\",\"type\":{\"name\":\"mosip\",\"namespace\":\"mosip\"}},\"publishedOn\":\"2026-10-13T14:05:22.808Z\",\"publisher\":\"ID_REPO\",\"topic\":\"mpartner-default-auth/AUTH_TYPE_STATUS_UPDATE\"}"
+          }
+        }
+      ]
+    },
+    {
+      "name": "Receive event and notify callback - lock - OTP - EMAIL",
+      "request": {
+        "method": "POST",
+        "urlPath": "/resident/v1/auth-lock-unlock",
+        "bodyPatterns": [
+          {
+            "matchesJsonPath": "$.request.authTypes[?(@.authType == 'otp' && @.authSubType == 'email' && @.locked == true)]"
+          }
+        ]
+      },
+      "response": {
+        "status": 200,
+        "headers": {
+          "Content-Type": "application/json"
+        },
+        "body": "{\"id\": \"mosip.resident.auth.lock.unlock\", \"version\": \"1.0\", \"responsetime\": \"2026-10-15T04:52:44.505Z\", \"metadata\": null, \"response\": {\"status\": \"Success\", \"message\": \"The chosen authentication types have been successfully locked/unlocked.\"}, \"errors\": null}"
+      },
+      "serveEventListeners": [
+        {
+          "name": "webhook",
+          "parameters": {
+            "method": "POST",
+            "url": "http://host.docker.internal:8090/idauthentication/v1/internal/callback/authTypeCallback/mpartner-default-auth",
+            "headers": {
+              "Content-Type": "application/json",
+              "accept": "application/json",
+              "x-hub-signature": "SHA256=a68d25005589df4977cf9a3db96043c9eba05e4027411e5531102724bc249241"
+            },
+            "body": "{\"event\":{\"data\":{\"saltedIdHash\":\"BB28A8B011094A5E9C946B90AA7B83928A4AD0AB4A1880BE9072947C76A25775\",\"tokenId\":\"F5F771199CEA34F49D85BEABF96D3F16683E640A7CB343EF9EB670A199732F33\",\"authTypeStatusList\":[{\"authType\":\"otp\",\"authSubType\":\"email\",\"locked\":true,\"unlockForSeconds\":null}],\"expiryTimestamp\":\"2026-10-15T18:30:00.000Z\",\"transactionLimit\":null},\"id\":\"22132f67-2430-4354-95ac-e738e40e5261\",\"timestamp\":\"2026-10-13T14:05:22.808Z\",\"transactionId\":\"87103fcd-755c-4424-9615-d5281b987997\",\"type\":{\"name\":\"mosip\",\"namespace\":\"mosip\"}},\"publishedOn\":\"2026-10-13T14:05:22.808Z\",\"publisher\":\"ID_REPO\",\"topic\":\"mpartner-default-auth/AUTH_TYPE_STATUS_UPDATE\"}"
+          }
+        }
+      ]
+    },
+    {
+      "name": "Receive event and notify callback - unlock - OTP - EMAIL",
+      "request": {
+        "method": "POST",
+        "urlPath": "/resident/v1/auth-lock-unlock",
+        "bodyPatterns": [
+          {
+            "matchesJsonPath": "$.request.authTypes[?(@.authType == 'otp' && @.authSubType == 'email' && @.locked == false)]"
+          }
+        ]
+      },
+      "response": {
+        "status": 200,
+        "headers": {
+          "Content-Type": "application/json"
+        },
+        "body": "{\"id\": \"mosip.resident.auth.lock.unlock\", \"version\": \"1.0\", \"responsetime\": \"2026-10-15T04:52:44.505Z\", \"metadata\": null, \"response\": {\"status\": \"Success\", \"message\": \"The chosen authentication types have been successfully locked/unlocked.\"}, \"errors\": null}"
+      },
+      "serveEventListeners": [
+        {
+          "name": "webhook",
+          "parameters": {
+            "method": "POST",
+            "url": "http://host.docker.internal:8090/idauthentication/v1/internal/callback/authTypeCallback/mpartner-default-auth",
+            "headers": {
+              "Content-Type": "application/json",
+              "accept": "application/json",
+              "x-hub-signature": "SHA256=43b80033ac54d08a3ac9a79ce65fd0094c70bbd8d1470e5035cf06844d385bc5"
+            },
+            "body": "{\"event\":{\"data\":{\"saltedIdHash\":\"BB28A8B011094A5E9C946B90AA7B83928A4AD0AB4A1880BE9072947C76A25775\",\"tokenId\":\"F5F771199CEA34F49D85BEABF96D3F16683E640A7CB343EF9EB670A199732F33\",\"authTypeStatusList\":[{\"authType\":\"otp\",\"authSubType\":\"email\",\"locked\":false,\"unlockForSeconds\":null}],\"expiryTimestamp\":\"2026-10-15T18:30:00.000Z\",\"transactionLimit\":null},\"id\":\"22132f67-2430-4354-95ac-e738e40e5261\",\"timestamp\":\"2026-10-13T14:05:22.808Z\",\"transactionId\":\"87103fcd-755c-4424-9615-d5281b987997\",\"type\":{\"name\":\"mosip\",\"namespace\":\"mosip\"}},\"publishedOn\":\"2026-10-13T14:05:22.808Z\",\"publisher\":\"ID_REPO\",\"topic\":\"mpartner-default-auth/AUTH_TYPE_STATUS_UPDATE\"}"
+          }
+        }
+      ]
     }
   ]
 }
