@@ -156,7 +156,7 @@ public class OTPServiceImpl implements OTPService {
 			
 			token = idAuthService.getToken(idResDTO);
 
-			validateAllowedOtpChannles(token, otpRequestDto.getOtpChannel());
+			validateAllowedOtpChannles(token, otpRequestDto);
 
 			OtpResponseDTO otpResponseDTO = doGenerateOTP(otpRequestDto, partnerId, isInternal, token, individualIdType, idResDTO);
 			IdaRequestResponsConsumerUtil.setIdVersionToResponse(requestWithMetadata, otpResponseDTO);
@@ -176,16 +176,41 @@ public class OTPServiceImpl implements OTPService {
 
 	}
 
-	private void validateAllowedOtpChannles(String token, List<String> otpChannel) throws IdAuthenticationFilterException {
+	/**
+	 * Validates the auth locks for the requested OTP channels. If the generic OTP
+	 * auth type is locked, the request is rejected. If all the requested
+	 * phone/email channels are locked, the request is rejected. If only some of
+	 * them are locked, the locked channels are removed from the request so that the
+	 * OTP is sent only through the unlocked channels.
+	 */
+	private void validateAllowedOtpChannles(String token, OtpRequestDTO otpRequestDto) throws IdAuthenticationFilterException {
+		List<String> otpChannel = otpRequestDto.getOtpChannel();
 
 		if(containsChannel(otpChannel, OTP)) {
 			checkAuthLock(token, OTP);
 		}
-		else if(containsChannel(otpChannel, PHONE)) {
-			checkAuthLock(token, OTP_SMS);
+
+		boolean phoneRequested = containsChannel(otpChannel, PHONE);
+		boolean emailRequested = containsChannel(otpChannel, EMAIL);
+		boolean phoneLocked = phoneRequested && isAuthLocked(token, OTP_SMS);
+		boolean emailLocked = emailRequested && isAuthLocked(token, OTP_EMAIL);
+
+		boolean allRequestedLocked = (phoneRequested || emailRequested)
+				&& (!phoneRequested || phoneLocked) && (!emailRequested || emailLocked);
+		if (allRequestedLocked) {
+			String lockedTypes = phoneLocked && emailLocked ? OTP_SMS + ", " + OTP_EMAIL
+					: (phoneLocked ? OTP_SMS : OTP_EMAIL);
+			throw new IdAuthenticationFilterException(
+					IdAuthenticationErrorConstants.AUTH_TYPE_LOCKED.getErrorCode(),
+					String.format(IdAuthenticationErrorConstants.AUTH_TYPE_LOCKED.getErrorMessage(), lockedTypes));
 		}
-		else if(containsChannel(otpChannel, EMAIL)) {
-			checkAuthLock(token, OTP_EMAIL);
+
+		if (phoneLocked || emailLocked) {
+			List<String> allowedChannels = otpChannel.stream()
+					.filter(channel -> !(phoneLocked && PHONE.equalsIgnoreCase(channel))
+							&& !(emailLocked && EMAIL.equalsIgnoreCase(channel)))
+					.collect(java.util.stream.Collectors.toList());
+			otpRequestDto.setOtpChannel(allowedChannels);
 		}
 	}
 
@@ -193,15 +218,17 @@ public class OTPServiceImpl implements OTPService {
 		return otpChannel.stream().anyMatch(channelItem -> channel.equalsIgnoreCase(channelItem));
 	}
 
+	private boolean isAuthLocked(String token, String authTypeCode) {
+		return authLockRepository.findByTokenAndAuthtypecode(token, authTypeCode).stream()
+				.anyMatch(authtypeLock -> "true".equalsIgnoreCase(authtypeLock.getStatuscode()));
+	}
+
 	private void checkAuthLock(String token, String authTypeCode) throws IdAuthenticationFilterException {
-		List<AuthtypeLock> authTypeLocks = authLockRepository.findByTokenAndAuthtypecode(token, authTypeCode);
-		for(AuthtypeLock authtypeLock : authTypeLocks) {
-			if(authtypeLock.getStatuscode().equalsIgnoreCase("true")){
-				throw new IdAuthenticationFilterException(
-						IdAuthenticationErrorConstants.AUTH_TYPE_LOCKED.getErrorCode(),
-						String.format(IdAuthenticationErrorConstants.AUTH_TYPE_LOCKED.getErrorMessage(),
-								authTypeCode));
-			}
+		if (isAuthLocked(token, authTypeCode)) {
+			throw new IdAuthenticationFilterException(
+					IdAuthenticationErrorConstants.AUTH_TYPE_LOCKED.getErrorCode(),
+					String.format(IdAuthenticationErrorConstants.AUTH_TYPE_LOCKED.getErrorMessage(),
+							authTypeCode));
 		}
 	}
 
