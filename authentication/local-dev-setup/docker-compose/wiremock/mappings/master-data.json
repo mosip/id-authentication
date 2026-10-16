@@ -713,6 +713,96 @@
           }
         }
       ]
+    },
+    {
+      "name": "Receive event and notify callback - Activated - UIN",
+      "request": {
+        "method": "POST",
+        "urlPath": "/idrepository/v1/identity/",
+        "bodyPatterns": [
+          { "matchesJsonPath": "$.request[?(@.status == 'ACTIVATED')]" }
+        ]
+      },
+      "response": {
+        "status": 200,
+        "headers": { "Content-Type": "application/json" },
+        "body": "{\"id\":\"mosip.id.update\",\"version\":\"v1\",\"responsetime\":\"2026-09-20T20:10:33.106Z\",\"response\":{\"status\":\"ACTIVATED\"},\"errors\":[]}"
+      },
+      "serveEventListeners": [
+          {
+          "name": "webhook",
+          "parameters": {
+            "method": "POST",
+            "url": "http://host.docker.internal:8090/idauthentication/v1/internal/callback/idchange/activate_id/mpartner-default-auth",
+            "headers": {
+              "Content-Type": "application/json",
+              "accept": "application/json",
+              "x-hub-signature": "SHA256=babc763661e26b2c3cd3e2da8adf4a7749240ede3cce9008c38ea29f99a45acf"
+            },
+            "body": "{\"event\":{\"data\":{\"TOKEN\":\"F5F771199CEA34F49D85BEABF96D3F16683E640A7CB343EF9EB670A199732F33\",\"credentialType\":\"activated-uin\",\"id_hash\":\"49C34FD7125282EBD140AB0329B6B45E29CE23ED9F9D9316306FF5AE0734806B\",\"protectionKey\":null,\"expiry_timestamp\":\"2041-10-10T14:05:22.807Z\",\"transaction_limit\":null},\"id\":\"22132f67-2430-4354-95ac-e738e40e5261\",\"timestamp\":\"2026-10-13T14:05:22.808Z\",\"transactionId\":\"87103fcd-755c-4424-9615-d5281b987997\",\"type\":{\"name\":\"mosip\",\"namespace\":\"mosip\"}},\"publishedOn\":\"2026-10-13T14:05:22.808Z\",\"publisher\":\"ID_REPO\",\"topic\":\"mpartner-default-auth/ACTIVATE_ID\"}"
+          }
+        }
+      ]
+    },
+    {
+      "name": "Receive event and notify callback - deactivated - UIN",
+      "request": {
+        "method": "POST",
+        "urlPath": "/idrepository/v1/identity/",
+        "bodyPatterns": [
+          { "matchesJsonPath": "$.request[?(@.status == 'DEACTIVATED')]" }
+        ]
+      },
+      "response": {
+        "status": 200,
+        "headers": { "Content-Type": "application/json" },
+        "body": "{\"id\":\"mosip.id.update\",\"version\":\"v1\",\"responsetime\":\"2026-09-20T20:10:33.106Z\",\"response\":{\"status\":\"DEACTIVATED\"},\"errors\":[]}"
+      },
+      "serveEventListeners": [
+        {
+          "name": "webhook",
+          "parameters": {
+            "method": "POST",
+            "url": "http://host.docker.internal:8090/idauthentication/v1/internal/callback/idchange/deactivate_id/mpartner-default-auth",
+            "headers": {
+              "Content-Type": "application/json",
+              "accept": "application/json",
+              "x-hub-signature": "SHA256=0157714ec072b19cd9c00f057b4792f1ec48c4e6bf00190157c8b3e5fb1d0337"
+            },
+            "body": "{\"event\":{\"data\":{\"TOKEN\":\"F5F771199CEA34F49D85BEABF96D3F16683E640A7CB343EF9EB670A199732F33\",\"credentialType\":\"activated-uin\",\"id_hash\":\"49C34FD7125282EBD140AB0329B6B45E29CE23ED9F9D9316306FF5AE0734806B\",\"protectionKey\":null,\"expiry_timestamp\":\"2026-10-10T14:05:22.807Z\",\"transaction_limit\":null},\"id\":\"22132f67-2430-4354-95ac-e738e40e5261\",\"timestamp\":\"2026-10-13T14:05:22.808Z\",\"transactionId\":\"87103fcd-755c-4424-9615-d5281b987997\",\"type\":{\"name\":\"mosip\",\"namespace\":\"mosip\"}},\"publishedOn\":\"2026-10-13T14:05:22.808Z\",\"publisher\":\"ID_REPO\",\"topic\":\"mpartner-default-auth/DEACTIVATE_ID\"}"
+          }
+        }
+      ]
+    },
+    {
+      "name": "Receive event and notify callback - Revoke - VID",
+      "request": {
+        "method": "POST",
+        "urlPathPattern": "/resident/v1/vid/[0-9]+",
+        "bodyPatterns": [
+          { "matchesJsonPath": "$.request[?(@.vidStatus == 'REVOKED')]" }
+        ]
+      },
+      "response": {
+        "status": 200,
+        "headers": { "Content-Type": "application/json" },
+        "body": "{\"id\":\"mosip.resident.vidstatus\",\"version\":\"v1\",\"responsetime\":\"2026-09-20T20:22:38.341Z\",\"response\":{\"message\":\"Notification has been sent to the provided contact detail(s)\"},\"errors\":[]}"
+      },
+      "serveEventListeners": [
+          {
+          "name": "webhook",
+          "parameters": {
+            "method": "POST",
+            "url": "http://host.docker.internal:8090/idauthentication/v1/internal/callback/idchange/remove_id/mpartner-default-auth",
+            "headers": {
+              "Content-Type": "application/json",
+              "accept": "application/json",
+              "x-hub-signature": "SHA256=c2b3758ca659c223c4e7155a6ab95804cd5bee396bd844c51391ea7a79aa5535"
+            },
+            "body": "{\"publisher\":\"ID_REPO\",\"topic\":\"mpartner-default-auth/REMOVE_ID\",\"publishedOn\":\"2026-10-15T10:21:34.512Z\",\"event\":{\"id\":\"6f1c0a52-3a0e-4c58-9b0a-7d6a1d2f9e11\",\"transactionId\":\"\",\"timestamp\":\"2026-10-15T10:21:34.512Z\",\"type\":{\"namespace\":\"mosip\",\"name\":\"ida\"},\"data\":{\"id_hash\":\"AEFCC60B30274854C7E82A0FFEA9D9B6BBBF0CBE420769D2F1F4258BF79560B9\",\"expiry_timestamp\":\"2026-10-15T10:21:34.512Z\",\"transaction_limit\":null}}}"
+          }
+        }
+      ]
     }
   ]
 }
