@@ -803,6 +803,426 @@
           }
         }
       ]
+    },
+    {
+      "name": "Receive event and notify callback - Hotlist - UIN",
+      "request": {
+        "method": "POST",
+        "urlPath": "/v1/hotlist/block",
+        "bodyPatterns": [
+          { "matchesJsonPath": "$.request[?(@.id == '8724928329')]" }
+        ]
+      },
+      "response": {
+        "status": 200,
+        "headers": { "Content-Type": "application/json" },
+        "body": "{\"responsetime\":\"2026-09-20T21:09:30.671Z\",\"response\":{\"id\":\"8724928329\",\"status\":\"BLOCKED\"},\"errors\":[]}"
+      },
+      "serveEventListeners": [
+        {
+          "name": "webhook",
+          "parameters": {
+            "method": "POST",
+            "url": "http://host.docker.internal:8090/idauthentication/v1/internal/callback/hotlist",
+            "headers": {
+              "Content-Type": "application/json",
+              "accept": "application/json",
+              "x-hub-signature": "SHA256=9d9f2c833f6f887ab5637f6c1652b0dad2346803a9fad8df050b2c82f19de94e"
+            },
+            "body": "{\"publisher\":\"HotList\",\"topic\":\"MOSIP_HOTLIST\",\"publishedOn\":\"2026-10-15T10:21:34.512Z\",\"event\":{\"transactionId\":\"\",\"timestamp\":\"2026-10-15T10:21:34.512Z\",\"type\":{\"namespace\":\"mosip\",\"name\":\"ida\"},\"data\":{\"id\":\"3B6779D6FDE57D68AC0F2EAD9E1EC60CE0E7C4F51EB34B6E102E36ECD4DF9626\",\"idType\":\"UIN\",\"status\":\"BLOCKED\",\"id_hash\":\"A584501AAC50D2922BE859BC927913D8D4FAE5BD31F09DF87E0B848EDFA1CD21\",\"expiry_timestamp\":\"2026-10-15T10:21:34.512Z\",\"transaction_limit\":null}}}"
+          }
+        }
+      ]
+    },
+    {
+      "name": "Receive event and notify callback - Hotlist - VID",
+      "request": {
+        "method": "POST",
+        "urlPath": "/v1/hotlist/block",
+        "bodyPatterns": [
+          { "matchesJsonPath": "$.request[?(@.id == '8564539580423608')]" }
+        ]
+      },
+      "response": {
+        "status": 200,
+        "headers": { "Content-Type": "application/json" },
+        "body": "{\"responsetime\":\"2026-09-20T21:09:30.671Z\",\"response\":{\"id\":\"8564539580423608\",\"status\":\"BLOCKED\"},\"errors\":[]}"
+      },
+      "serveEventListeners": [
+        {
+          "name": "webhook",
+          "parameters": {
+            "method": "POST",
+            "url": "http://host.docker.internal:8090/idauthentication/v1/internal/callback/hotlist",
+            "headers": {
+              "Content-Type": "application/json",
+              "accept": "application/json",
+              "x-hub-signature": "SHA256=50fe9865ed4cc637796132a0eeb93843e08fd6d5c9c2ad75aa32c96bf35c4fb4"
+            },
+            "body": "{\"publisher\":\"HotList\",\"topic\":\"MOSIP_HOTLIST\",\"publishedOn\":\"2026-10-15T10:21:34.512Z\",\"event\":{\"transactionId\":\"\",\"timestamp\":\"2026-10-15T10:21:34.512Z\",\"type\":{\"namespace\":\"mosip\",\"name\":\"ida\"},\"data\":{\"id\":\"98F132CA51D90B3DAA492164F3769392E54DC50F5732F737A437E77051E96CD6\",\"idType\":\"VID\",\"status\":\"BLOCKED\",\"id_hash\":\"DB2099ADA957AD694C41861622D375E0354E232033C006BFF208D8CA629A3A0C\",\"expiry_timestamp\":\"2026-10-15T10:21:34.512Z\",\"transaction_limit\":null}}}"
+          }
+        }
+      ]
+    },
+    {
+      "name": "Receive event and notify callback - Hotlist - UIN",
+      "request": {
+        "method": "POST",
+        "urlPath": "/v1/hotlist/unblock",
+        "bodyPatterns": [
+          { "matchesJsonPath": "$.request[?(@.id == '8724928329')]" }
+        ]
+      },
+      "response": {
+        "status": 200,
+        "headers": { "Content-Type": "application/json" },
+        "body": "{\"responsetime\":\"2026-09-20T21:09:30.671Z\",\"response\":{\"id\":\"8724928329\",\"status\":\"UNBLOCKED\"},\"errors\":[]}"
+      },
+      "serveEventListeners": [
+        {
+          "name": "webhook",
+          "parameters": {
+            "method": "POST",
+            "url": "http://host.docker.internal:8090/idauthentication/v1/internal/callback/hotlist",
+            "headers": {
+              "Content-Type": "application/json",
+              "accept": "application/json",
+              "x-hub-signature": "SHA256=4221127a7cccb83ccfbbd15028808a695f2dd6c8c2c5514cd21691b838f8eb8e"
+            },
+            "body": "{\"publisher\":\"HotList\",\"topic\":\"MOSIP_HOTLIST\",\"publishedOn\":\"2026-10-15T10:21:34.512Z\",\"event\":{\"transactionId\":\"\",\"timestamp\":\"2026-10-15T10:21:34.512Z\",\"type\":{\"namespace\":\"mosip\",\"name\":\"ida\"},\"data\":{\"id\":\"3B6779D6FDE57D68AC0F2EAD9E1EC60CE0E7C4F51EB34B6E102E36ECD4DF9626\",\"idType\":\"UIN\",\"status\":\"UNBLOCKED\",\"id_hash\":\"A584501AAC50D2922BE859BC927913D8D4FAE5BD31F09DF87E0B848EDFA1CD21\",\"expiry_timestamp\":\"2026-10-15T10:21:34.512Z\",\"transaction_limit\":null}}}"
+          }
+        }
+      ]
+    },
+    {
+      "name": "Receive event and notify callback - Hotlist - VID",
+      "request": {
+        "method": "POST",
+        "urlPath": "/v1/hotlist/unblock",
+        "bodyPatterns": [
+          { "matchesJsonPath": "$.request[?(@.id == '8564539580423608')]" }
+        ]
+      },
+      "response": {
+        "status": 200,
+        "headers": { "Content-Type": "application/json" },
+        "body": "{\"responsetime\":\"2026-09-20T21:09:30.671Z\",\"response\":{\"id\":\"8564539580423608\",\"status\":\"UNBLOCKED\"},\"errors\":[]}"
+      },
+      "serveEventListeners": [
+        {
+          "name": "webhook",
+          "parameters": {
+            "method": "POST",
+            "url": "http://host.docker.internal:8090/idauthentication/v1/internal/callback/hotlist",
+            "headers": {
+              "Content-Type": "application/json",
+              "accept": "application/json",
+              "x-hub-signature": "SHA256=5d5d4e185dbcaa6ad79c467b494fb259049a833be98909afb232879dd8663b27"
+            },
+            "body": "{\"publisher\":\"HotList\",\"topic\":\"MOSIP_HOTLIST\",\"publishedOn\":\"2026-10-15T10:21:34.512Z\",\"event\":{\"transactionId\":\"\",\"timestamp\":\"2026-10-15T10:21:34.512Z\",\"type\":{\"namespace\":\"mosip\",\"name\":\"ida\"},\"data\":{\"id\":\"98F132CA51D90B3DAA492164F3769392E54DC50F5732F737A437E77051E96CD6\",\"idType\":\"VID\",\"status\":\"UNBLOCKED\",\"id_hash\":\"DB2099ADA957AD694C41861622D375E0354E232033C006BFF208D8CA629A3A0C\",\"expiry_timestamp\":\"2026-10-15T10:21:34.512Z\",\"transaction_limit\":null}}}"
+          }
+        }
+      ]
+    },
+    {
+      "name": "Receive event and notify callback - Hotlist - PARTNERID",
+      "request": {
+        "method": "POST",
+        "urlPath": "/v1/hotlist/block",
+        "bodyPatterns": [
+          { "matchesJsonPath": "$.request[?(@.id == 'auth_v1z0816154432')]" }
+        ]
+      },
+      "response": {
+        "status": 200,
+        "headers": { "Content-Type": "application/json" },
+        "body": "{\"responsetime\":\"2026-09-20T21:09:30.671Z\",\"response\":{\"id\":\"auth_v1z0816154432\",\"status\":\"BLOCKED\"},\"errors\":[]}"
+      },
+      "serveEventListeners": [
+        {
+          "name": "webhook",
+          "parameters": {
+            "method": "POST",
+            "url": "http://host.docker.internal:8090/idauthentication/v1/internal/callback/hotlist",
+            "headers": {
+              "Content-Type": "application/json",
+              "accept": "application/json",
+              "x-hub-signature": "SHA256=5d0917bec8bac124456a963c23eaf96dc25ae8c7df71451a77ed488470ed054d"
+            },
+            "body": "{\"publisher\":\"HotList\",\"topic\":\"MOSIP_HOTLIST\",\"publishedOn\":\"2026-10-15T10:21:34.512Z\",\"event\":{\"transactionId\":\"\",\"timestamp\":\"2026-10-15T10:21:34.512Z\",\"type\":{\"namespace\":\"mosip\",\"name\":\"ida\"},\"data\":{\"id\":\"6656F8B5AD9F4BB915FC799B011BB8F9E023176509B553695BF963E82CFF2E0C\",\"idType\":\"PARTNER_ID\",\"status\":\"BLOCKED\",\"id_hash\":null,\"expiry_timestamp\":\"2026-10-15T10:21:34.512Z\",\"transaction_limit\":null}}}"
+          }
+        }
+      ]
+    },
+    {
+      "name": "Receive event and notify callback - Hotlist - PARTNERID",
+      "request": {
+        "method": "POST",
+        "urlPath": "/v1/hotlist/unblock",
+        "bodyPatterns": [
+          { "matchesJsonPath": "$.request[?(@.id == 'auth_v1z0816154432')]" }
+        ]
+      },
+      "response": {
+        "status": 200,
+        "headers": { "Content-Type": "application/json" },
+        "body": "{\"responsetime\":\"2026-09-20T21:09:30.671Z\",\"response\":{\"id\":\"auth_v1z0816154432\",\"status\":\"UNBLOCKED\"},\"errors\":[]}"
+      },
+      "serveEventListeners": [
+        {
+          "name": "webhook",
+          "parameters": {
+            "method": "POST",
+            "url": "http://host.docker.internal:8090/idauthentication/v1/internal/callback/hotlist",
+            "headers": {
+              "Content-Type": "application/json",
+              "accept": "application/json",
+              "x-hub-signature": "SHA256=97ed3fc898bb9bdf07feb8f75c74c97ad00c69209826f075d3b73d3aeb84a86f"
+            },
+            "body": "{\"publisher\":\"HotList\",\"topic\":\"MOSIP_HOTLIST\",\"publishedOn\":\"2026-10-15T10:21:34.512Z\",\"event\":{\"transactionId\":\"\",\"timestamp\":\"2026-10-15T10:21:34.512Z\",\"type\":{\"namespace\":\"mosip\",\"name\":\"ida\"},\"data\":{\"id\":\"6656F8B5AD9F4BB915FC799B011BB8F9E023176509B553695BF963E82CFF2E0C\",\"idType\":\"PARTNER_ID\",\"status\":\"UNBLOCKED\",\"id_hash\":null,\"expiry_timestamp\":\"2026-10-15T10:21:34.512Z\",\"transaction_limit\":null}}}"
+          }
+        }
+      ]
+    },
+    {
+      "name": "Receive event and notify callback - Hotlist - MISP",
+      "request": {
+        "method": "POST",
+        "urlPath": "/v1/hotlist/block",
+        "bodyPatterns": [
+          { "matchesJsonPath": "$.request[?(@.id == 'vM1BA8RosNt3kemNGpsneYgcelZwNmsOoKJQgMm92DltqtJh4p')]" }
+        ]
+      },
+      "response": {
+        "status": 200,
+        "headers": { "Content-Type": "application/json" },
+        "body": "{\"responsetime\":\"2026-09-20T21:09:30.671Z\",\"response\":{\"id\":\"vM1BA8RosNt3kemNGpsneYgcelZwNmsOoKJQgMm92DltqtJh4p\",\"status\":\"BLOCKED\"},\"errors\":[]}"
+      },
+      "serveEventListeners": [
+        {
+          "name": "webhook",
+          "parameters": {
+            "method": "POST",
+            "url": "http://host.docker.internal:8090/idauthentication/v1/internal/callback/hotlist",
+            "headers": {
+              "Content-Type": "application/json",
+              "accept": "application/json",
+              "x-hub-signature": "SHA256=49660a74cfcf3aef4dd41cb0fa2a8fe6b43a27b2540d4e03e259bd8ba1269f88"
+            },
+            "body": "{\"publisher\":\"HotList\",\"topic\":\"MOSIP_HOTLIST\",\"publishedOn\":\"2026-10-15T10:21:34.512Z\",\"event\":{\"transactionId\":\"\",\"timestamp\":\"2026-10-15T10:21:34.512Z\",\"type\":{\"namespace\":\"mosip\",\"name\":\"ida\"},\"data\":{\"id\":\"F33BC718C5618AF0428D6F4EC5AFDFC205CCF23000F915F265E11776DF4B6DFA\",\"idType\":\"PARTNER_ID\",\"status\":\"BLOCKED\",\"id_hash\":null,\"expiry_timestamp\":\"2026-10-15T10:21:34.512Z\",\"transaction_limit\":null}}}"
+          }
+        }
+      ]
+    },
+    {
+      "name": "Receive event and notify callback - Hotlist - MISP",
+      "request": {
+        "method": "POST",
+        "urlPath": "/v1/hotlist/unblock",
+        "bodyPatterns": [
+          { "matchesJsonPath": "$.request[?(@.id == 'vM1BA8RosNt3kemNGpsneYgcelZwNmsOoKJQgMm92DltqtJh4p')]" }
+        ]
+      },
+      "response": {
+        "status": 200,
+        "headers": { "Content-Type": "application/json" },
+        "body": "{\"responsetime\":\"2026-09-20T21:09:30.671Z\",\"response\":{\"id\":\"vM1BA8RosNt3kemNGpsneYgcelZwNmsOoKJQgMm92DltqtJh4p\",\"status\":\"UNBLOCKED\"},\"errors\":[]}"
+      },
+      "serveEventListeners": [
+        {
+          "name": "webhook",
+          "parameters": {
+            "method": "POST",
+            "url": "http://host.docker.internal:8090/idauthentication/v1/internal/callback/hotlist",
+            "headers": {
+              "Content-Type": "application/json",
+              "accept": "application/json",
+              "x-hub-signature": "SHA256=d4e6c4f8c5b3100ee947f0e6e5e3a5f0cbf4658dfe01fa52609f53f3abd1817e"
+            },
+            "body": "{\"publisher\":\"HotList\",\"topic\":\"MOSIP_HOTLIST\",\"publishedOn\":\"2026-10-15T10:21:34.512Z\",\"event\":{\"transactionId\":\"\",\"timestamp\":\"2026-10-15T10:21:34.512Z\",\"type\":{\"namespace\":\"mosip\",\"name\":\"ida\"},\"data\":{\"id\":\"F33BC718C5618AF0428D6F4EC5AFDFC205CCF23000F915F265E11776DF4B6DFA\",\"idType\":\"PARTNER_ID\",\"status\":\"UNBLOCKED\",\"id_hash\":null,\"expiry_timestamp\":\"2026-10-15T10:21:34.512Z\",\"transaction_limit\":null}}}"
+          }
+        }
+      ]
+    },
+    {
+      "name": "Receive event and notify callback - Hotlist - API Key",
+      "request": {
+        "method": "POST",
+        "urlPath": "/v1/hotlist/block",
+        "bodyPatterns": [
+          { "matchesJsonPath": "$.request[?(@.id == '198833')]" }
+        ]
+      },
+      "response": {
+        "status": 200,
+        "headers": { "Content-Type": "application/json" },
+        "body": "{\"responsetime\":\"2026-09-20T21:09:30.671Z\",\"response\":{\"id\":\"198833\",\"status\":\"BLOCKED\"},\"errors\":[]}"
+      },
+      "serveEventListeners": [
+        {
+          "name": "webhook",
+          "parameters": {
+            "method": "POST",
+            "url": "http://host.docker.internal:8090/idauthentication/v1/internal/callback/hotlist",
+            "headers": {
+              "Content-Type": "application/json",
+              "accept": "application/json",
+              "x-hub-signature": "SHA256=df22eda7591e947c639656dbc0cf1a729f40a4f32332a12eaab9da87b21b85ba"
+            },
+            "body": "{\"publisher\":\"HotList\",\"topic\":\"MOSIP_HOTLIST\",\"publishedOn\":\"2026-10-15T10:21:34.512Z\",\"event\":{\"transactionId\":\"\",\"timestamp\":\"2026-10-15T10:21:34.512Z\",\"type\":{\"namespace\":\"mosip\",\"name\":\"ida\"},\"data\":{\"id\":\"CAEB479ED6FEC12DFC5734F606E77599B462868973667C684B1A25FF08DCDDA2\",\"idType\":\"PARTNER_ID\",\"status\":\"BLOCKED\",\"id_hash\":null,\"expiry_timestamp\":\"2026-10-15T10:21:34.512Z\",\"transaction_limit\":null}}}"
+          }
+        }
+      ]
+    },
+    {
+      "name": "Receive event and notify callback - Hotlist - API Key",
+      "request": {
+        "method": "POST",
+        "urlPath": "/v1/hotlist/unblock",
+        "bodyPatterns": [
+          { "matchesJsonPath": "$.request[?(@.id == '198833')]" }
+        ]
+      },
+      "response": {
+        "status": 200,
+        "headers": { "Content-Type": "application/json" },
+        "body": "{\"responsetime\":\"2026-09-20T21:09:30.671Z\",\"response\":{\"id\":\"198833\",\"status\":\"UNBLOCKED\"},\"errors\":[]}"
+      },
+      "serveEventListeners": [
+        {
+          "name": "webhook",
+          "parameters": {
+            "method": "POST",
+            "url": "http://host.docker.internal:8090/idauthentication/v1/internal/callback/hotlist",
+            "headers": {
+              "Content-Type": "application/json",
+              "accept": "application/json",
+              "x-hub-signature": "SHA256=15762b50b02afadb37bd0064aa9a7aff0a22a4e63b59c010b49b75e6b3515804"
+            },
+            "body": "{\"publisher\":\"HotList\",\"topic\":\"MOSIP_HOTLIST\",\"publishedOn\":\"2026-10-15T10:21:34.512Z\",\"event\":{\"transactionId\":\"\",\"timestamp\":\"2026-10-15T10:21:34.512Z\",\"type\":{\"namespace\":\"mosip\",\"name\":\"ida\"},\"data\":{\"id\":\"CAEB479ED6FEC12DFC5734F606E77599B462868973667C684B1A25FF08DCDDA2\",\"idType\":\"PARTNER_ID\",\"status\":\"UNBLOCKED\",\"id_hash\":null,\"expiry_timestamp\":\"2026-10-15T10:21:34.512Z\",\"transaction_limit\":null}}}"
+          }
+        }
+      ]
+    },
+    {
+      "name": "Receive event and notify callback - Hotlist - Device Provided",
+      "request": {
+        "method": "POST",
+        "urlPath": "/v1/hotlist/block",
+        "bodyPatterns": [
+          { "matchesJsonPath": "$.request[?(@.id == 'MOSIPMOSIP.PROXY.SBI')]" }
+        ]
+      },
+      "response": {
+        "status": 200,
+        "headers": { "Content-Type": "application/json" },
+        "body": "{\"responsetime\":\"2026-09-20T21:09:30.671Z\",\"response\":{\"id\":\"MOSIPMOSIP.PROXY.SBI\",\"status\":\"BLOCKED\"},\"errors\":[]}"
+      },
+      "serveEventListeners": [
+        {
+          "name": "webhook",
+          "parameters": {
+            "method": "POST",
+            "url": "http://host.docker.internal:8090/idauthentication/v1/internal/callback/hotlist",
+            "headers": {
+              "Content-Type": "application/json",
+              "accept": "application/json",
+              "x-hub-signature": "SHA256=d24d83f45a002ab048b4623a67946776ea2ad5b4e46018ede70fdd70df7a7eac"
+            },
+            "body": "{\"publisher\":\"HotList\",\"topic\":\"MOSIP_HOTLIST\",\"publishedOn\":\"2026-10-15T10:21:34.512Z\",\"event\":{\"transactionId\":\"\",\"timestamp\":\"2026-10-15T10:21:34.512Z\",\"type\":{\"namespace\":\"mosip\",\"name\":\"ida\"},\"data\":{\"id\":\"ED95B155210C39B5BA6B5609789C427CCE53E271975A73FE5E3592F9C832B44F\",\"idType\":\"DEVICE_PROVIDER\",\"status\":\"BLOCKED\",\"id_hash\":null,\"expiry_timestamp\":\"2026-10-15T10:21:34.512Z\",\"transaction_limit\":null}}}"
+          }
+        }
+      ]
+    },
+    {
+      "name": "Receive event and notify callback - Hotlist - Device Provider",
+      "request": {
+        "method": "POST",
+        "urlPath": "/v1/hotlist/unblock",
+        "bodyPatterns": [
+          { "matchesJsonPath": "$.request[?(@.id == 'MOSIPMOSIP.PROXY.SBI')]" }
+        ]
+      },
+      "response": {
+        "status": 200,
+        "headers": { "Content-Type": "application/json" },
+        "body": "{\"responsetime\":\"2026-09-20T21:09:30.671Z\",\"response\":{\"id\":\"MOSIPMOSIP.PROXY.SBI\",\"status\":\"UNBLOCKED\"},\"errors\":[]}"
+      },
+      "serveEventListeners": [
+        {
+          "name": "webhook",
+          "parameters": {
+            "method": "POST",
+            "url": "http://host.docker.internal:8090/idauthentication/v1/internal/callback/hotlist",
+            "headers": {
+              "Content-Type": "application/json",
+              "accept": "application/json",
+              "x-hub-signature": "SHA256=ec10e877589c436fc7d6ecda8ce2de5e8f0c765bd98f0b993e75f80350c2c7cf"
+            },
+            "body": "{\"publisher\":\"HotList\",\"topic\":\"MOSIP_HOTLIST\",\"publishedOn\":\"2026-10-15T10:21:34.512Z\",\"event\":{\"transactionId\":\"\",\"timestamp\":\"2026-10-15T10:21:34.512Z\",\"type\":{\"namespace\":\"mosip\",\"name\":\"ida\"},\"data\":{\"id\":\"ED95B155210C39B5BA6B5609789C427CCE53E271975A73FE5E3592F9C832B44F\",\"idType\":\"DEVICE_PROVIDER\",\"status\":\"UNBLOCKED\",\"id_hash\":null,\"expiry_timestamp\":\"2026-10-15T10:21:34.512Z\",\"transaction_limit\":null}}}"
+          }
+        }
+      ]
+    },
+    {
+      "name": "Receive event and notify callback - Hotlist - Device",
+      "request": {
+        "method": "POST",
+        "urlPath": "/v1/hotlist/block",
+        "bodyPatterns": [
+          { "matchesJsonPath": "$.request[?(@.id == '1234567990MOSIPSINGLE01')]" }
+        ]
+      },
+      "response": {
+        "status": 200,
+        "headers": { "Content-Type": "application/json" },
+        "body": "{\"responsetime\":\"2026-09-20T21:09:30.671Z\",\"response\":{\"id\":\"1234567990MOSIPSINGLE01\",\"status\":\"BLOCKED\"},\"errors\":[]}"
+      },
+      "serveEventListeners": [
+        {
+          "name": "webhook",
+          "parameters": {
+            "method": "POST",
+            "url": "http://host.docker.internal:8090/idauthentication/v1/internal/callback/hotlist",
+            "headers": {
+              "Content-Type": "application/json",
+              "accept": "application/json",
+              "x-hub-signature": "SHA256=83b6f9de7d24011f0a98c0ad6faafa8b37ab27854c5d8fc5ce4e0446bd8bdc0c"
+            },
+            "body": "{\"publisher\":\"HotList\",\"topic\":\"MOSIP_HOTLIST\",\"publishedOn\":\"2026-10-15T10:21:34.512Z\",\"event\":{\"transactionId\":\"\",\"timestamp\":\"2026-10-15T10:21:34.512Z\",\"type\":{\"namespace\":\"mosip\",\"name\":\"ida\"},\"data\":{\"id\":\"46C9322AC55CF4785E203793C1C05BB516E1D55B3EAC17509D11651A6C40A72C\",\"idType\":\"DEVICE\",\"status\":\"BLOCKED\",\"id_hash\":null,\"expiry_timestamp\":\"2026-10-15T10:21:34.512Z\",\"transaction_limit\":null}}}"
+          }
+        }
+      ]
+    },
+    {
+      "name": "Receive event and notify callback - Hotlist - Device",
+      "request": {
+        "method": "POST",
+        "urlPath": "/v1/hotlist/unblock",
+        "bodyPatterns": [
+          { "matchesJsonPath": "$.request[?(@.id == '1234567990MOSIPSINGLE01')]" }
+        ]
+      },
+      "response": {
+        "status": 200,
+        "headers": { "Content-Type": "application/json" },
+        "body": "{\"responsetime\":\"2026-09-20T21:09:30.671Z\",\"response\":{\"id\":\"1234567990MOSIPSINGLE01\",\"status\":\"UNBLOCKED\"},\"errors\":[]}"
+      },
+      "serveEventListeners": [
+        {
+          "name": "webhook",
+          "parameters": {
+            "method": "POST",
+            "url": "http://host.docker.internal:8090/idauthentication/v1/internal/callback/hotlist",
+            "headers": {
+              "Content-Type": "application/json",
+              "accept": "application/json",
+              "x-hub-signature": "SHA256=417fa5fd103f933fde6554cfca95f36f159f31c47fdc0f00a09815281f68b329"
+            },
+            "body": "{\"publisher\":\"HotList\",\"topic\":\"MOSIP_HOTLIST\",\"publishedOn\":\"2026-10-15T10:21:34.512Z\",\"event\":{\"transactionId\":\"\",\"timestamp\":\"2026-10-15T10:21:34.512Z\",\"type\":{\"namespace\":\"mosip\",\"name\":\"ida\"},\"data\":{\"id\":\"46C9322AC55CF4785E203793C1C05BB516E1D55B3EAC17509D11651A6C40A72C\",\"idType\":\"DEVICE\",\"status\":\"UNBLOCKED\",\"id_hash\":null,\"expiry_timestamp\":\"2026-10-15T10:21:34.512Z\",\"transaction_limit\":null}}}"
+          }
+        }
+      ]
     }
   ]
 }
