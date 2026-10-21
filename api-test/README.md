@@ -101,8 +101,13 @@ To execute the tests using Jar, use the following steps:
    ```
 
 2. Run the automation test suite JAR file:
+   ```sh
+   # Linux / macOS / Git Bash
+   java -Dmodules=auth -Denv.user=api-internal.<env_name> -Denv.endpoint=<base_env> -Denv.testLevel=smokeAndRegression -jar apitest-auth-*-jar-with-dependencies.jar
    ```
-   java -Dmodules=auth -Denv.user=api-internal.<env_name> -Denv.endpoint=<base_env> -Denv.testLevel=smokeAndRegression -jar apitest-auth-1.4.0-jar-with-dependencies.jar
+   ```powershell
+   # Windows PowerShell (does not expand * for java, so resolve the file first)
+   java -Dmodules=auth -Denv.user=api-internal.<env_name> -Denv.endpoint=<base_env> -Denv.testLevel=smokeAndRegression -jar (Get-ChildItem apitest-auth-*-jar-with-dependencies.jar).Name
    ```
    
 # Using Eclipse IDE
@@ -180,7 +185,7 @@ This section describes the meaning of each column in the test report:
 - **env.user**: Replace `<env_name>` with the appropriate environment name (e.g., `dev`, `qa`, etc.).
 - **env.endpoint**: The environment where the application under test is deployed. Replace `<base_env>` with the correct base URL for the environment (e.g., `https://api-internal.<env_name>.mosip.net`).
 - **env.testLevel**: Set this to `smoke` to run only smoke test cases, or `smokeAndRegression` to run both smoke and regression tests.
-- **jar**: Specify the name of the JAR file to execute. The version will change according to the development code version. For example, the current version may look like `apitest-auth-1.4.0-jar-with-dependencies.jar`.
+- **jar**: The JAR built in `target/`, named `apitest-auth-<version>-jar-with-dependencies.jar`, where `<version>` is the `<version>` in `pom.xml`. The `apitest-auth-*-jar-with-dependencies.jar` pattern above picks it up, so the command does not change when the version does.
 
 ### Build and Run Info
 
