@@ -1,5 +1,6 @@
 package io.mosip.authentication.core.util;
 
+import java.util.Locale;
 import java.util.Map;
 import java.util.Objects;
 
@@ -57,11 +58,33 @@ public class IdTypeUtil {
 		}
 	}
 
+	/**
+	 * Handles are stored in ID Repo in lower case, so the individual id must be
+	 * lower cased before it is validated, hashed or looked up. The id is treated as
+	 * a handle when the id type is HANDLE, or when no id type is given and the id
+	 * contains a handle type suffix marker ('@').
+	 *
+	 * @param individualId     the individual id
+	 * @param individualIdType the individual id type, can be null
+	 * @return the lower cased id if it is a handle, otherwise the id as it is
+	 */
+	public String normalizeHandle(String individualId, String individualIdType) {
+		if (StringUtils.isEmpty(individualId))
+			return individualId;
+
+		boolean isHandle = StringUtils.isBlank(individualIdType)
+				? individualId.lastIndexOf("@") > 0
+				: IdType.HANDLE.getType().equalsIgnoreCase(individualIdType);
+		return isHandle ? individualId.toLowerCase(Locale.ROOT) : individualId;
+	}
+
 	public boolean validateHandle(String handle) {
 		try {
 			if(Objects.nonNull(handleTypesRegex)) {
 				if(StringUtils.isEmpty(handle))
 					return false;
+
+				handle = handle.toLowerCase(Locale.ROOT);
 
 				int index = handle.lastIndexOf("@");
 				if(index <= 0)
