@@ -720,7 +720,7 @@
         "method": "PATCH",
         "urlPath": "/idrepository/v1/identity/",
         "bodyPatterns": [
-          { "matchesJsonPath": "$.request[?(@.status == 'ACTIVATED')]" }
+          { "matchesJsonPath": "$.request[?(@.status == 'ACTIVATED' && @.identity.UIN == '8354720784')]" }
         ]
       },
       "response": {
@@ -750,7 +750,7 @@
         "method": "PATCH",
         "urlPath": "/idrepository/v1/identity/",
         "bodyPatterns": [
-          { "matchesJsonPath": "$.request[?(@.status == 'DEACTIVATED')]" }
+          { "matchesJsonPath": "$.request[?(@.status == 'DEACTIVATED' && @.identity.UIN == '8354720784')]" }
         ]
       },
       "response": {
