@@ -116,6 +116,8 @@ public class InternalAuthTxnController {
 			throws IdAuthenticationAppException, IdAuthenticationBusinessException {
 		AutnTxnResponseDto autnTxnResponseDto = new AutnTxnResponseDto();
 		AutnTxnRequestDto authtxnrequestdto = new AutnTxnRequestDto();
+		// Handles are stored in lower case, so normalize the path variable (no filter hook for GET).
+		individualId = idTypeUtil.normalizeHandle(individualId, individualIdType);
 		authtxnrequestdto.setIndividualId(individualId);
 		authtxnrequestdto.setIndividualIdType(
 				Objects.isNull(individualIdType) ? idTypeUtil.getIdType(individualId).getType() : individualIdType);
