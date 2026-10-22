@@ -67,6 +67,7 @@ import io.mosip.authentication.core.spi.indauth.match.MatchType;
 import io.mosip.authentication.core.spi.partner.service.PartnerService;
 import io.mosip.authentication.core.util.BytesUtil;
 import io.mosip.authentication.core.util.CryptoUtil;
+import io.mosip.authentication.core.util.IdTypeUtil;
 import io.mosip.kernel.biometrics.constant.BiometricType;
 import io.mosip.kernel.core.logger.spi.Logger;
 import io.mosip.kernel.core.util.JsonUtils;
@@ -96,6 +97,8 @@ public abstract class IdAuthFilter extends BaseAuthFilter {
 	/** The Constant TRANSACTION_ID. */
 	private static final String TRANSACTION_ID = "transactionId";
 
+	private static final String INDIVIDUAL_ID_TYPE = "individualIdType";
+
 	private static final String PERIOD = "\\.";
 
 	private static final String JWT_HEADER_CERT_KEY = "x5c";
@@ -105,6 +108,8 @@ public abstract class IdAuthFilter extends BaseAuthFilter {
 	
 	/** The id mapping config. */
 	private IDAMappingConfig idMappingConfig;
+
+	private IdTypeUtil idTypeUtil;
 
 	/** The Authentication Methods Reference Values */
 	private AuthContextClazzRefProvider authContextClazzRefProvider; 
@@ -130,6 +135,7 @@ public abstract class IdAuthFilter extends BaseAuthFilter {
 		} catch (NoSuchBeanDefinitionException ex) {
 			//
 		}
+		idTypeUtil = context.getBean(IdTypeUtil.class);
 		authContextClazzRefProvider = context.getBean(AuthContextClazzRefProvider.class);
 		authMethodsRefValues = authContextClazzRefProvider.getAuthMethodsRefValues();
 	}
@@ -186,11 +192,25 @@ public abstract class IdAuthFilter extends BaseAuthFilter {
 	@SuppressWarnings("unchecked")
 	@Override
 	protected Map<String, Object> processDecipheredReqeuest(Map<String, Object> decipheredRequest) {
+		normalizeHandleIndividualId(decipheredRequest);
 		Map<String, Object> request = (Map<String, Object>) decipheredRequest.get(REQUEST);
 		if (request != null && request.get(DEMOGRAPHICS) instanceof Map) {
 			setDymanicDemograpicData((Map<String, Object>) request.get(DEMOGRAPHICS));
 		}
 		return decipheredRequest;
+	}
+
+	/**
+	 * Handles are stored in lower case in ID Repo, so lower case the individual id
+	 * in the request before any validation, hotlist check or hashing happens.
+	 */
+	private void normalizeHandleIndividualId(Map<String, Object> decipheredRequest) {
+		Object individualId = decipheredRequest.get(IdAuthCommonConstants.INDIVIDUAL_ID);
+		if (individualId instanceof String) {
+			Object individualIdType = decipheredRequest.get(INDIVIDUAL_ID_TYPE);
+			decipheredRequest.put(IdAuthCommonConstants.INDIVIDUAL_ID, idTypeUtil.normalizeHandle(
+					(String) individualId, individualIdType instanceof String ? (String) individualIdType : null));
+		}
 	}
 
 	/**

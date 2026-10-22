@@ -717,10 +717,10 @@
     {
       "name": "Receive event and notify callback - Activated - UIN",
       "request": {
-        "method": "POST",
+        "method": "PATCH",
         "urlPath": "/idrepository/v1/identity/",
         "bodyPatterns": [
-          { "matchesJsonPath": "$.request[?(@.status == 'ACTIVATED')]" }
+          { "matchesJsonPath": "$.request[?(@.status == 'ACTIVATED' && @.identity.UIN == '8354720784')]" }
         ]
       },
       "response": {
@@ -747,10 +747,10 @@
     {
       "name": "Receive event and notify callback - deactivated - UIN",
       "request": {
-        "method": "POST",
+        "method": "PATCH",
         "urlPath": "/idrepository/v1/identity/",
         "bodyPatterns": [
-          { "matchesJsonPath": "$.request[?(@.status == 'DEACTIVATED')]" }
+          { "matchesJsonPath": "$.request[?(@.status == 'DEACTIVATED' && @.identity.UIN == '8354720784')]" }
         ]
       },
       "response": {
@@ -767,9 +767,35 @@
             "headers": {
               "Content-Type": "application/json",
               "accept": "application/json",
-              "x-hub-signature": "SHA256=0157714ec072b19cd9c00f057b4792f1ec48c4e6bf00190157c8b3e5fb1d0337"
+              "x-hub-signature": "SHA256=6916162cd41cbcfa8f8b078ee613848264994428e0ae05544a70f7e2fd7c0670"
             },
-            "body": "{\"event\":{\"data\":{\"TOKEN\":\"F5F771199CEA34F49D85BEABF96D3F16683E640A7CB343EF9EB670A199732F33\",\"credentialType\":\"activated-uin\",\"id_hash\":\"49C34FD7125282EBD140AB0329B6B45E29CE23ED9F9D9316306FF5AE0734806B\",\"protectionKey\":null,\"expiry_timestamp\":\"2026-10-10T14:05:22.807Z\",\"transaction_limit\":null},\"id\":\"22132f67-2430-4354-95ac-e738e40e5261\",\"timestamp\":\"2026-10-13T14:05:22.808Z\",\"transactionId\":\"87103fcd-755c-4424-9615-d5281b987997\",\"type\":{\"name\":\"mosip\",\"namespace\":\"mosip\"}},\"publishedOn\":\"2026-10-13T14:05:22.808Z\",\"publisher\":\"ID_REPO\",\"topic\":\"mpartner-default-auth/DEACTIVATE_ID\"}"
+            "body": "{\"event\":{\"data\":{\"TOKEN\":\"F5F771199CEA34F49D85BEABF96D3F16683E640A7CB343EF9EB670A199732F33\",\"credentialType\":\"deactivated-uin\",\"id_hash\":\"49C34FD7125282EBD140AB0329B6B45E29CE23ED9F9D9316306FF5AE0734806B\",\"protectionKey\":null,\"expiry_timestamp\":\"2026-10-10T14:05:22.807Z\",\"transaction_limit\":null},\"id\":\"22132f67-2430-4354-95ac-e738e40e5261\",\"timestamp\":\"2026-10-13T14:05:22.808Z\",\"transactionId\":\"87103fcd-755c-4424-9615-d5281b987997\",\"type\":{\"name\":\"mosip\",\"namespace\":\"mosip\"}},\"publishedOn\":\"2026-10-13T14:05:22.808Z\",\"publisher\":\"ID_REPO\",\"topic\":\"mpartner-default-auth/DEACTIVATE_ID\"}"
+          }
+        },
+        {
+          "name": "webhook",
+          "parameters": {
+            "method": "POST",
+            "url": "http://host.docker.internal:8090/idauthentication/v1/internal/callback/idchange/deactivate_id/mpartner-default-auth",
+            "headers": {
+              "Content-Type": "application/json",
+              "accept": "application/json",
+              "x-hub-signature": "SHA256=955cdacee19d90d1282157f4485a88c597c711d2f1d7933a37eef38abe67d5cf"
+            },
+            "body": "{\"event\":{\"data\":{\"TOKEN\":\"F5F771199CEA34F49D85BEABF96D3F16683E640A7CB343EF9EB670A199732F33\",\"credentialType\":\"deactivated-vid\",\"id_hash\":\"BB28A8B011094A5E9C946B90AA7B83928A4AD0AB4A1880BE9072947C76A25775\",\"protectionKey\":null,\"expiry_timestamp\":\"2026-10-10T14:05:22.807Z\",\"transaction_limit\":null},\"id\":\"22132f67-2430-4354-95ac-e738e40e5461\",\"timestamp\":\"2026-10-13T14:05:22.808Z\",\"transactionId\":\"87103fcd-755c-4424-9615-d5281b987987\",\"type\":{\"name\":\"mosip\",\"namespace\":\"mosip\"}},\"publishedOn\":\"2026-10-13T14:05:22.808Z\",\"publisher\":\"ID_REPO\",\"topic\":\"mpartner-default-auth/DEACTIVATE_ID\"}"
+          }
+        },
+        {
+          "name": "webhook",
+          "parameters": {
+            "method": "POST",
+            "url": "http://host.docker.internal:8090/idauthentication/v1/internal/callback/idchange/deactivate_id/mpartner-default-auth",
+            "headers": {
+              "Content-Type": "application/json",
+              "accept": "application/json",
+              "x-hub-signature": "SHA256=aa74d096371eef74335fa5563b3cfa3ee001d6733d52f0a404f15fcc246221bd"
+            },
+            "body": "{\"event\":{\"data\":{\"TOKEN\":\"F5F771199CEA34F49D85BEABF96D3F16683E640A7CB343EF9EB670A199732F33\",\"credentialType\":\"deactivated-vid\",\"id_hash\":\"AEFCC60B30274854C7E82A0FFEA9D9B6BBBF0CBE420769D2F1F4258BF79560B9\",\"protectionKey\":null,\"expiry_timestamp\":\"2026-10-10T14:05:22.807Z\",\"transaction_limit\":null},\"id\":\"22132f67-2430-4354-95ac-e738e40e5661\",\"timestamp\":\"2026-10-13T14:05:22.808Z\",\"transactionId\":\"87103fcd-755c-4424-9615-d5281b987897\",\"type\":{\"name\":\"mosip\",\"namespace\":\"mosip\"}},\"publishedOn\":\"2026-10-13T14:05:22.808Z\",\"publisher\":\"ID_REPO\",\"topic\":\"mpartner-default-auth/DEACTIVATE_ID\"}"
           }
         }
       ]
@@ -777,7 +803,7 @@
     {
       "name": "Receive event and notify callback - Revoke - VID",
       "request": {
-        "method": "POST",
+        "method": "PATCH",
         "urlPathPattern": "/resident/v1/vid/[0-9]+",
         "bodyPatterns": [
           { "matchesJsonPath": "$.request[?(@.vidStatus == 'REVOKED')]" }
