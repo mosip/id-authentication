@@ -3,6 +3,7 @@ package io.mosip.authentication.internal.service.controller;
 import java.util.Objects;
 import java.util.Optional;
 
+import io.mosip.authentication.core.indauth.dto.IdType;
 import jakarta.servlet.http.HttpServletRequest;
 
 import io.swagger.v3.oas.annotations.Parameter;
@@ -138,6 +139,10 @@ public class InternalAuthController {
 			try {
 				String idType = Objects.nonNull(authRequestDTO.getIndividualIdType()) ? authRequestDTO.getIndividualIdType()
 						: idTypeUtil.getIdType(authRequestDTO.getIndividualId()).getType();
+                if (IdType.HANDLE.getType().equalsIgnoreCase(idType)
+                        && authRequestDTO.getIndividualId() != null) {
+                    authRequestDTO.setIndividualId(authRequestDTO.getIndividualId().toLowerCase());
+                }
 				authRequestDTO.setIndividualIdType(idType);
 				internalAuthRequestValidator.validateIdvId(authRequestDTO.getIndividualId(), idType, errors);
 				
