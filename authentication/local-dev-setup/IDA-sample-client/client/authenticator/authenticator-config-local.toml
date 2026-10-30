@@ -4,11 +4,17 @@ ida_auth_version = '1.0'
 ida_auth_request_id = 'mosip.identity.auth'
 ida_otp_request_id = 'mosip.identity.otp'
 ida_kyc_request_id = 'mosip.identity.kyc'
+ida_kyc_auth_request_id = 'mosip.identity.kycauth'
+ida_kyc_exchange_request_id = 'mosip.identity.kycexchange'
 ida_auth_env = 'Staging'
 authorization_header_constant = 'Authorization'
 partner_apikey = '198833'
 partner_misp_lk = 'vM1BA8RosNt3kemNGpsneYgcelZwNmsOoKJQgMm92DltqtJh4p'
 partner_id = 'auth_v1z0816154432'
+# kyc-auth / kyc-exchange (v1) path parameters: {IdP-LK}/{Auth-Partner-ID}/{OIDC-Client-Id}
+idp_misp_lk = 'B1FF84Flf7CY9zmQmDxRsbMbpsAIWwyyNIa8wFu4FYsmSig7UU'
+auth_partner_id = 'mpartner-default-demo-oidc'
+oidc_client_id = 'xedG72yecDpJcQbzn6Q8LDplTVGZPhLRXi1ssAh1oW4'
 
 
 [mosip_auth_server]
@@ -16,6 +22,8 @@ ida_auth_domain_uri = 'localhost'
 ida_auth_url = 'http://localhost:8090/idauthentication/v1/auth'
 ida_otp_url = 'http://localhost:8090/idauthentication/v1/otp'
 ida_ekyc_url = 'http://localhost:8090/idauthentication/v1/kyc'
+ida_kyc_auth_url = 'http://localhost:8090/idauthentication/v1/kyc-auth/delegated'
+ida_kyc_exchange_url = 'http://localhost:8090/idauthentication/v1/kyc-exchange/delegated'
 
 [crypto_encrypt]
 algorithm = '@none'
