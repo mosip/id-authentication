@@ -6,6 +6,9 @@ from authenticator import MOSIPAuthenticator
 
 BASE_DIR = Path(__file__).resolve().parents[2]
 
+DEFAULT_CONSENT_CLAIMS = "name,address,gender,birthdate,email,phone"
+DEFAULT_LOCALES = "eng"
+
 BIOMETRIC_OPTIONS = [
     ("Face", "Face", ""),
     ("Finger_Left IndexFinger", "Finger", "Left IndexFinger"),
@@ -81,13 +84,39 @@ def _print_kyc_response(raw_response: str) -> None:
     print(f"sessionKey: {response_data.get('sessionKey')}")
 
 
+def _print_kyc_auth_response(raw_response: str) -> None:
+    try:
+        parsed_response = json.loads(raw_response)
+    except Exception:
+        print("\nResponse (raw):")
+        print(raw_response)
+        return
+
+    response_data = parsed_response.get("response") or {}
+
+    print("\nResponse:")
+    print(f"transactionID: {parsed_response.get('transactionID')}")
+    print(f"response.kycStatus: {response_data.get('kycStatus')}")
+    print(f"response.kycToken: {response_data.get('kycToken')}")
+    print(f"response.authToken: {response_data.get('authToken')}")
+    _print_errors(parsed_response)
+
+
+def _print_errors(parsed_response: dict) -> None:
+    errors = parsed_response.get("errors") or []
+    if isinstance(errors, list) and errors:
+        print("errors:")
+        for error in errors:
+            print(f"- errorCode: {error.get('errorCode')}, errorMessage: {error.get('errorMessage')}")
+    else:
+        print("errors: []")
+
+
 MAIN_MENU_OPTIONS = {
-    "1": {"label": "Auth", "use_ekyc": False, "show_submenu": True},
-    "2": {"label": "eKYC", "use_ekyc": True, "show_submenu": True},
-    "3": {"label": "kyc-auth (v1)", "use_ekyc": False, "show_submenu": False},
-    "4": {"label": "kyc-exchange (v1)", "use_ekyc": False, "show_submenu": False},
-    "5": {"label": "kyc-auth (v2)", "use_ekyc": False, "show_submenu": False},
-    "6": {"label": "kyc-exchange (v2)", "use_ekyc": False, "show_submenu": False},
+    "1": {"label": "Auth", "use_ekyc": False, "use_kyc_auth": False, "show_submenu": True},
+    "2": {"label": "eKYC", "use_ekyc": True, "use_kyc_auth": False, "show_submenu": True},
+    "3": {"label": "kyc-auth & kyc-exchange (v1)", "use_ekyc": False, "use_kyc_auth": True, "show_submenu": True},
+    "4": {"label": "kyc-auth & kyc-exchange (v2)", "use_ekyc": False, "use_kyc_auth": False, "show_submenu": False},
 }
 
 
@@ -95,21 +124,30 @@ def _print_main_menu() -> None:
     print("\nMain Menu:")
     print("1. Auth (True/False)")
     print("2. eKYC")
-    print("3. kyc-auth (v1)")
-    print("4. kyc-exchange (v1)")
-    print("5. kyc-auth (v2)")
-    print("6. kyc-exchange (v2)")
+    print("3. kyc-auth & kyc-exchange (v1)")
+    print("4. kyc-auth & kyc-exchange (v2)")
     print("0. Exit")
 
 
-def _print_submenu(category_label: str) -> None:
+def _print_submenu(category_label: str, include_kyc_exchange: bool = False) -> None:
     print(f"\n{category_label} - Choose an option:")
     print("1. Demo auth")
     print("2. Send OTP request")
     print("3. OTP auth")
     print("4. Demo + OTP")
     print("5. Biometric auth")
+    if include_kyc_exchange:
+        print("6. kyc-exchange")
     print("0. Back to main menu")
+
+
+def _print_auth_result(raw_response: str, use_ekyc: bool, use_kyc_auth: bool) -> None:
+    if use_kyc_auth:
+        _print_kyc_auth_response(raw_response)
+    elif use_ekyc:
+        _print_kyc_response(raw_response)
+    else:
+        _print_readable_response(raw_response)
 
 
 def _get_sample_files(samples_dir: Path) -> list[Path]:
@@ -157,7 +195,7 @@ def _select_sample_file(samples_dir: Path) -> Path | None:
         print("Invalid selection. Please enter a valid number.")
 
 
-def _run_demo_auth(mosip_authenticator: MOSIPAuthenticator, use_ekyc: bool = False) -> None:
+def _run_demo_auth(mosip_authenticator: MOSIPAuthenticator, use_ekyc: bool = False, use_kyc_auth: bool = False) -> None:
     sample_file = _select_sample_file(BASE_DIR / "samples")
     if not sample_file:
         return
@@ -165,29 +203,26 @@ def _run_demo_auth(mosip_authenticator: MOSIPAuthenticator, use_ekyc: bool = Fal
     try:
         with sample_file.open("r", encoding="utf-8") as file:
             json_data = json.load(file)
-        auth_resp = mosip_authenticator.do_auth(json_data, use_ekyc=use_ekyc)
-        if use_ekyc:
-            _print_kyc_response(auth_resp)
-        else:
-            _print_readable_response(auth_resp)
+        auth_resp = mosip_authenticator.do_auth(json_data, use_ekyc=use_ekyc, use_kyc_auth=use_kyc_auth)
+        _print_auth_result(auth_resp, use_ekyc, use_kyc_auth)
     except Exception as exc:
         print(f"Failed to run demo auth: {exc}")
 
 
-def _run_send_otp(mosip_authenticator: MOSIPAuthenticator) -> None:
+def _run_send_otp(mosip_authenticator: MOSIPAuthenticator, use_kyc_auth: bool = False) -> None:
     idvid = input("Enter UIN/VID: ").strip()
     if not idvid:
         print("UIN/VID cannot be empty.")
         return
 
     try:
-        otp_resp = mosip_authenticator.send_otp_request(idvid)
+        otp_resp = mosip_authenticator.send_otp_request(idvid, use_kyc_auth=use_kyc_auth)
         _print_readable_response(otp_resp)
     except Exception as exc:
         print(f"Failed to send OTP request: {exc}")
 
 
-def _run_otp_auth(mosip_authenticator: MOSIPAuthenticator, use_ekyc: bool = False) -> None:
+def _run_otp_auth(mosip_authenticator: MOSIPAuthenticator, use_ekyc: bool = False, use_kyc_auth: bool = False) -> None:
     idvid = input("Enter UIN/VID: ").strip()
     if not idvid:
         print("UIN/VID cannot be empty.")
@@ -204,16 +239,13 @@ def _run_otp_auth(mosip_authenticator: MOSIPAuthenticator, use_ekyc: bool = Fals
         return
 
     try:
-        otp_auth_resp = mosip_authenticator.do_otp_auth(idvid, otp, transaction_id, use_ekyc=use_ekyc)
-        if use_ekyc:
-            _print_kyc_response(otp_auth_resp)
-        else:
-            _print_readable_response(otp_auth_resp)
+        otp_auth_resp = mosip_authenticator.do_otp_auth(idvid, otp, transaction_id, use_ekyc=use_ekyc, use_kyc_auth=use_kyc_auth)
+        _print_auth_result(otp_auth_resp, use_ekyc, use_kyc_auth)
     except Exception as exc:
         print(f"Failed to run OTP auth: {exc}")
 
 
-def _run_bio_auth(mosip_authenticator: MOSIPAuthenticator, use_ekyc: bool = False) -> None:
+def _run_bio_auth(mosip_authenticator: MOSIPAuthenticator, use_ekyc: bool = False, use_kyc_auth: bool = False) -> None:
     idvid = input("Enter UIN/VID: ").strip()
     if not idvid:
         print("UIN/VID cannot be empty.")
@@ -226,17 +258,14 @@ def _run_bio_auth(mosip_authenticator: MOSIPAuthenticator, use_ekyc: bool = Fals
     label, bio_type, bio_sub_type = selected_biometric
 
     try:
-        bio_auth_resp = mosip_authenticator.do_bio_auth(idvid, bio_type, bio_sub_type, use_ekyc=use_ekyc)
+        bio_auth_resp = mosip_authenticator.do_bio_auth(idvid, bio_type, bio_sub_type, use_ekyc=use_ekyc, use_kyc_auth=use_kyc_auth)
         print(f"\nSelected biometric: {label}")
-        if use_ekyc:
-            _print_kyc_response(bio_auth_resp)
-        else:
-            _print_readable_response(bio_auth_resp)
+        _print_auth_result(bio_auth_resp, use_ekyc, use_kyc_auth)
     except Exception as exc:
         print(f"Failed to run biometric auth: {exc}")
 
 
-def _run_demo_otp_auth(mosip_authenticator: MOSIPAuthenticator, use_ekyc: bool = False) -> None:
+def _run_demo_otp_auth(mosip_authenticator: MOSIPAuthenticator, use_ekyc: bool = False, use_kyc_auth: bool = False) -> None:
     idvid = input("Enter UIN/VID: ").strip()
     if not idvid:
         print("UIN/VID cannot be empty.")
@@ -259,30 +288,72 @@ def _run_demo_otp_auth(mosip_authenticator: MOSIPAuthenticator, use_ekyc: bool =
     try:
         with sample_file.open("r", encoding="utf-8") as file:
             json_data = json.load(file)
-        demo_otp_resp = mosip_authenticator.do_demo_otp_auth(json_data, idvid, otp, transaction_id, use_ekyc=use_ekyc)
-        if use_ekyc:
-            _print_kyc_response(demo_otp_resp)
-        else:
-            _print_readable_response(demo_otp_resp)
+        demo_otp_resp = mosip_authenticator.do_demo_otp_auth(json_data, idvid, otp, transaction_id, use_ekyc=use_ekyc, use_kyc_auth=use_kyc_auth)
+        _print_auth_result(demo_otp_resp, use_ekyc, use_kyc_auth)
     except Exception as exc:
         print(f"Failed to run Demo + OTP auth: {exc}")
 
 
-def _run_submenu(mosip_authenticator: MOSIPAuthenticator, category_label: str, use_ekyc: bool = False) -> None:
+def _run_kyc_exchange(mosip_authenticator: MOSIPAuthenticator) -> None:
+    idvid = input("Enter UIN/VID: ").strip()
+    if not idvid:
+        print("UIN/VID cannot be empty.")
+        return
+
+    transaction_id = input("Enter Transaction Id from kyc-auth request: ").strip()
+    if not transaction_id:
+        print("Transaction Id cannot be empty.")
+        return
+
+    kyc_token = input("Enter kycToken from kyc-auth response: ").strip()
+    if not kyc_token:
+        print("kycToken cannot be empty.")
+        return
+
+    claims_input = input(f"Enter consented claims, comma separated [{DEFAULT_CONSENT_CLAIMS}]: ").strip() or DEFAULT_CONSENT_CLAIMS
+    locales_input = input(f"Enter locales, comma separated [{DEFAULT_LOCALES}]: ").strip() or DEFAULT_LOCALES
+    consent_obtained = [c.strip() for c in claims_input.split(",") if c.strip()]
+    locales = [l.strip() for l in locales_input.split(",") if l.strip()]
+
+    try:
+        resp = mosip_authenticator.send_kyc_exchange_request(idvid, kyc_token, consent_obtained, locales, transaction_id)
+        _print_kyc_exchange_response(resp)
+    except Exception as exc:
+        print(f"Failed to run kyc-exchange: {exc}")
+
+
+def _print_kyc_exchange_response(raw_response: str) -> None:
+    try:
+        parsed_response = json.loads(raw_response)
+    except Exception:
+        print("\nResponse (raw):")
+        print(raw_response)
+        return
+
+    response_data = parsed_response.get("response") or {}
+    print("\nResponse:")
+    print(f"transactionID: {parsed_response.get('transactionID')}")
+    print(f"response.encryptedKyc: {response_data.get('encryptedKyc')}")
+    _print_errors(parsed_response)
+
+
+def _run_submenu(mosip_authenticator: MOSIPAuthenticator, category_label: str, use_ekyc: bool = False, use_kyc_auth: bool = False) -> None:
     while True:
-        _print_submenu(category_label)
+        _print_submenu(category_label, include_kyc_exchange=use_kyc_auth)
         selected_option = input("Enter option: ").strip()
 
         if selected_option == "1":
-            _run_demo_auth(mosip_authenticator, use_ekyc)
+            _run_demo_auth(mosip_authenticator, use_ekyc, use_kyc_auth)
         elif selected_option == "2":
-            _run_send_otp(mosip_authenticator)
+            _run_send_otp(mosip_authenticator, use_kyc_auth)
         elif selected_option == "3":
-            _run_otp_auth(mosip_authenticator, use_ekyc)
+            _run_otp_auth(mosip_authenticator, use_ekyc, use_kyc_auth)
         elif selected_option == "4":
-            _run_demo_otp_auth(mosip_authenticator, use_ekyc)
+            _run_demo_otp_auth(mosip_authenticator, use_ekyc, use_kyc_auth)
         elif selected_option == "5":
-            _run_bio_auth(mosip_authenticator, use_ekyc)
+            _run_bio_auth(mosip_authenticator, use_ekyc, use_kyc_auth)
+        elif selected_option == "6" and use_kyc_auth:
+            _run_kyc_exchange(mosip_authenticator)
         elif selected_option == "0":
             return
         else:
@@ -297,7 +368,7 @@ def run_cli(mosip_authenticator: MOSIPAuthenticator) -> None:
         if selected_option in MAIN_MENU_OPTIONS:
             category = MAIN_MENU_OPTIONS[selected_option]
             if category["show_submenu"]:
-                _run_submenu(mosip_authenticator, category["label"], category["use_ekyc"])
+                _run_submenu(mosip_authenticator, category["label"], category["use_ekyc"], category["use_kyc_auth"])
             else:
                 print(f"\n{category['label']} is not implemented yet.")
         elif selected_option == "0":
