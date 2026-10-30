@@ -6,7 +6,7 @@ from authenticator import MOSIPAuthenticator
 
 BASE_DIR = Path(__file__).resolve().parents[2]
 
-DEFAULT_CONSENT_CLAIMS = "name,address,gender,birthdate,email,phone"
+DEFAULT_CONSENT_CLAIMS = "name,address,gender,birthdate,email,phone_number"
 DEFAULT_LOCALES = "eng"
 
 BIOMETRIC_OPTIONS = [
