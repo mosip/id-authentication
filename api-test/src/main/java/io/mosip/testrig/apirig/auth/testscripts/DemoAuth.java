@@ -68,14 +68,15 @@ public class DemoAuth extends IdAuthenticationUtil implements ITest {
 		String ymlFile = context.getCurrentXmlTest().getLocalParameters().get("ymlFile");
 		idKeyName = context.getCurrentXmlTest().getLocalParameters().get("idKeyName");
 		logger.info("Started executing yml: " + ymlFile);
-		return getYmlTestData(ymlFile);
+		return IdAuthenticationUtil.filterLocalTestCases(getYmlTestData(ymlFile), context);
 	}
 	
 	@Test(dataProvider = "testcaselist")
 	public void test(TestCaseDTO testCaseDTO) throws AuthenticationTestException, AdminTestException, SecurityXSSException {		
 		testCaseName = testCaseDTO.getTestCaseName();
 		testCaseName = IdAuthenticationUtil.isTestCaseValidForExecution(testCaseDTO);
-		
+		testCaseDTO.setInput(IdAuthenticationUtil.applyLocalTestCaseOverrides(testCaseDTO.getInput(), testCaseName));
+
 		String partnerKeyUrl = PartnerRegistration.mispLicKey + "/" + PartnerRegistration.partnerId + "/" + PartnerRegistration.apiKey;
 		String partialPartnerKeyUrl = PartnerRegistration.mispLicKey + "/" + PartnerRegistration.partnerId;
 		String ekycPartnerKeyURL = PartnerRegistration.mispLicKey + "/" + PartnerRegistration.ekycPartnerId + "/" + PartnerRegistration.kycApiKey;
@@ -101,9 +102,12 @@ public class DemoAuth extends IdAuthenticationUtil implements ITest {
 					PartnerRegistration.updatedpartnerKeyUrl));
 		}
 		JSONObject request = new JSONObject(testCaseDTO.getInput());
-		String identityRequest = null, identityRequestTemplate = null; 
+		String identityRequest = null, identityRequestTemplate = null;
+		String localIndividualId = null;
 		if(request.has("identityRequest")) {
 			identityRequest = request.get("identityRequest").toString();
+			localIndividualId = request.has("individualId") ? request.optString("individualId", null) : null;
+			identityRequest = IdAuthenticationUtil.applyLocalSubstitutions(identityRequest, localIndividualId);
 			request.remove("identityRequest");
 		}
 		
@@ -111,12 +115,15 @@ public class DemoAuth extends IdAuthenticationUtil implements ITest {
 			identityRequest = identityRequest.replace("$PRIMARYLANG$", BaseTestCase.languageList.get(0));
 		
 		if (identityRequest.contains("name") & testCaseDTO.getTestCaseName().contains("titleFromAdmin")) {
-			identityRequest = AdminTestUtil.inputTitleHandler(identityRequest);
+			identityRequest = IdAuthConfigManager.isLocalRun()
+					? IdAuthenticationUtil.resolveLocalTitles(identityRequest)
+					: AdminTestUtil.inputTitleHandler(identityRequest);
 		}
 
 		if (identityRequest.contains("$NAMEPRIMARYLANG$")) {
 			String name = propsMap.getProperty("fullName");
 			identityRequest = identityRequest.replace("$NAMEPRIMARYLANG$", name + BaseTestCase.languageList.get(0));
+			identityRequest = IdAuthenticationUtil.applyLocalSubstitutions(identityRequest, localIndividualId);
 		}
 		
 		JSONObject identityReqJson = new JSONObject(identityRequest);
@@ -156,6 +163,9 @@ public class DemoAuth extends IdAuthenticationUtil implements ITest {
 		}
 		authRequestTemp.remove("env");
 		authRequestTemp.put("env", "Staging");
+		if (IdAuthConfigManager.isLocalRun()) {
+			authRequestTemp.put("domainUri", BaseTestCase.domain);
+		}
 		authRequest = authRequestTemp.toString();
 		testCaseDTO.setInput(authRequest);
 		

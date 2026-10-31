@@ -115,7 +115,7 @@ AddIdentity:
       output: '{
   "status":"ACTIVATED"
 }'
-   auth_AddIdentity_withValidParameters_with_Infant_which_locked_Pos:
+   auth_AddIdentity_withValidParameters_with_Infant_which_locked_smoke_Pos:
       endPoint: /idrepository/v1/identity/
       uniqueIdentifier: TC_DependentModule_IdRepo_05
       description: Validate that the Add Identity API successfully creates an infant identity with a locked status when valid parameters are provided
@@ -1511,7 +1511,7 @@ AddIdentity:
       output: '{
   "status":"ACTIVATED"
 }'
-   auth_AddIdentity_ValidParameters_toLock_email_perfromOtpEmail_auth_Pos:
+   auth_AddIdentity_ValidParameters_toLock_email_perfromOtpEmail_auth_smoke_Pos:
       endPoint: /idrepository/v1/identity/
       uniqueIdentifier: TC_DependentModule_IdRepo_51
       description: Validate that an identity’s email is locked and OTP email authentication is successfully performed using valid parameters
@@ -1540,7 +1540,7 @@ AddIdentity:
       output: '{
   "status":"ACTIVATED"
 }'
-   auth_AddIdentity_ValidParameters_toLock_phone_Pos:
+   auth_AddIdentity_ValidParameters_toLock_phone_smoke_Pos:
       endPoint: /idrepository/v1/identity/
       uniqueIdentifier: TC_DependentModule_IdRepo_52
       description: Validate that an identity's phone number is locked using valid parameters
@@ -2237,7 +2237,7 @@ AddIdentity:
       output: '{
   "status":"ACTIVATED"
 }'
-   auth_AddIdentity_withValidParameters_forOtpDelegated_Pos:
+   auth_AddIdentity_withValidParameters_forOtpDelegated_smoke_Pos:
       endPoint: /idrepository/v1/identity/
       uniqueIdentifier: TC_DependentModule_IdRepo_Delegated_10
       description: create  UIN with valid parameters for otp auth delegate
@@ -2266,7 +2266,7 @@ AddIdentity:
       output: '{
   "status":"ACTIVATED"
 }'
-   auth_AddIdentity_withValidParameters_forLockedUIN_DemoDelegated_Pos:
+   auth_AddIdentity_withValidParameters_forLockedUIN_DemoDelegated_smoke_Pos:
       endPoint: /idrepository/v1/identity/
       uniqueIdentifier: TC_DependentModule_IdRepo_Delegated_11
       description: create  UIN with valid parameters for demo auth delegate

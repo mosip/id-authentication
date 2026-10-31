@@ -27,7 +27,7 @@ AuthInternalLock:
       inputTemplate: ida/AuthInternalLock/authInternalLock
       outputTemplate: ida/AuthInternalLock/authInternalLockResult
       input: '{
-    "individualId": "$ID:AddIdentity_withValidParameters_with_Infant_which_locked_Pos_UIN$",
+    "individualId": "$ID:AddIdentity_withValidParameters_with_Infant_which_locked_smoke_Pos_UIN$",
     "individualIdType": "UIN",
     "authType": "Bio",
     "authSubType": "Iris",
@@ -206,7 +206,7 @@ AuthInternalLock:
       inputTemplate: ida/AuthInternalLock/authInternalLock
       outputTemplate: ida/AuthInternalLock/authInternalLockResult
       input: '{
-    "individualId": "$ID:AddIdentity_withValidParameters_forLockedUIN_DemoDelegated_Pos_UIN$",
+    "individualId": "$ID:AddIdentity_withValidParameters_forLockedUIN_DemoDelegated_smoke_Pos_UIN$",
     "individualIdType": "UIN",
     "authType": "Demo",
     "authSubType": "",

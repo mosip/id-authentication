@@ -441,7 +441,7 @@ GenerateVID:
         "maskedEmail": "$IGNORE$"
     }
 }'
-   auth_GenerateVID_for_kycDelegated_bio_sid:
+   auth_GenerateVID_for_kycDelegated_bio_smoke_sid:
       endPoint: /resident/v1/vid
       uniqueIdentifier: TC_IDA_GenerateVID_14
       description: Verify that VID generation succeeds for a valid SID and can be used for delegated KYC biometric authentication
@@ -475,7 +475,7 @@ GenerateVID:
         "maskedEmail": "$IGNORE$"
     }
 }'
-   auth_GenerateVID_for_kycDelegated_bio_rightIris_sid:
+   auth_GenerateVID_for_kycDelegated_bio_rightIris_smoke_sid:
       endPoint: /resident/v1/vid
       uniqueIdentifier: TC_IDA_GenerateVID_16
       description: Verify that VID generation succeeds for a valid SID and can be used for delegated KYC authentication using right iris biometric data

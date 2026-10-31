@@ -64,7 +64,7 @@ public class SimplePost extends IdAuthenticationUtil implements ITest {
 	public Object[] getTestCaseList(ITestContext context) {
 		String ymlFile = context.getCurrentXmlTest().getLocalParameters().get("ymlFile");
 		logger.info("Started executing yml: " + ymlFile);
-		return getYmlTestData(ymlFile);
+		return IdAuthenticationUtil.filterLocalTestCases(getYmlTestData(ymlFile), context);
 	}
 
 	/**
@@ -80,6 +80,7 @@ public class SimplePost extends IdAuthenticationUtil implements ITest {
 	public void test(TestCaseDTO testCaseDTO) throws AuthenticationTestException, AdminTestException, SecurityXSSException {
 		testCaseName = testCaseDTO.getTestCaseName();
 		testCaseName = IdAuthenticationUtil.isTestCaseValidForExecution(testCaseDTO);
+		testCaseDTO.setInput(IdAuthenticationUtil.applyLocalTestCaseOverrides(testCaseDTO.getInput(), testCaseName));
 		auditLogCheck = testCaseDTO.isAuditLogCheck();
 		String[] templateFields = testCaseDTO.getTemplateFields();
 		if (HealthChecker.signalTerminateExecution) {

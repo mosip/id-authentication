@@ -119,15 +119,6 @@
 		</classes>
 	</test>
 
-	<test name="UpdateIdentity">
-		<parameter name="ymlFile"
-			value="ida/UpdateIdentity/UpdateIdentity.yml" />
-		<classes>
-			<class
-				name="io.mosip.testrig.apirig.auth.testscripts.UpdateIdentity" />
-		</classes>
-	</test>
-
 	<test name="BlockHotlist">
 		<parameter name="ymlFile"
 			value="ida/BlockHotlistAPI/BlockHotlistAPI.yml" />
@@ -287,6 +278,18 @@
 			value="ida/BlockHotlistStatus/BlockHotlistStatus.yml" />
 		<classes>
 			<class name="io.mosip.testrig.apirig.auth.testscripts.GetWithParam" />
+		</classes>
+	</test>
+
+	<!-- Moved to end of suite: this test permanently mutates a shared identity's
+		dateOfBirth (AddIdentity_ValidParam_smoke_Pos_UIN), which broke earlier
+		DOB-dependent tests (e.g. TC_IDA_DemoAuth_04) when it ran mid-suite. -->
+	<test name="UpdateIdentity">
+		<parameter name="ymlFile"
+			value="ida/UpdateIdentity/UpdateIdentity.yml" />
+		<classes>
+			<class
+				name="io.mosip.testrig.apirig.auth.testscripts.UpdateIdentity" />
 		</classes>
 	</test>
 

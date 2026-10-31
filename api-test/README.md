@@ -158,6 +158,111 @@ To execute the tests using Eclipse IDE, use the following steps:
 
 ---
 
+## Running Against a Local IDA (Local Run Mode)
+
+Local run mode points the rig at a locally running IDA and skips every other
+MOSIP service. Only `/idauthentication/**` endpoints are exercised; the data the
+prerequisite suite would normally create through idrepo, resident,
+partner-management and policy-manager is read from seeded files instead.
+
+Local run mode is **off by default**. With the flag unset the rig behaves
+exactly as it does against a deployed environment.
+
+### Prerequisites
+
+1. The local IDA stack from `authentication/local-dev-setup` is up
+   (`docker compose up -d`).
+2. `authentication-service` is running on port **8090**. The OTP service is
+   merged into it, so this one process serves `/auth`, `/otp`, `/kyc` and
+   `/kyc-exchange`.
+3. A TCP relay forwards port **8080** to **8090** (any simple TCP proxy, e.g. a
+   few lines of Node `net`). The endpoint below carries no port, so REST-Assured
+   sends to 8080.
+
+### Switch the rig to the local files
+
+Two files have a local variant that must be copied over the environment one
+before a local run (run from `api-test/`):
+
+```
+cp application-local.properties application.properties
+cp src/main/resources/testCaseSkippedList-local.txt src/main/resources/testCaseSkippedList.txt
+```
+
+| File | Environment version | Local version |
+|---|---|---|
+| `application.properties` | Mock SBI config for a deployed env | Mock SBI config for local IDA (Auth devices, localhost URLs, local keys) |
+| `testCaseSkippedList.txt` | Known issues for env runs | Known issues for local runs |
+
+To go back to an environment run, restore the originals:
+
+```
+git checkout -- application.properties src/main/resources/testCaseSkippedList.txt
+```
+
+Do not commit the copied files.
+
+### Run
+
+```
+java -DlocalRun=yes -Denv.user=local -Denv.endpoint=http://localhost -DtransactionId=1234567890 -Denv.testLevel=smoke io.mosip.testrig.apirig.auth.testrunner.MosipTestRunner
+```
+
+Use `-Denv.testLevel=smokeAndRegression` for the full run. Wait for one run to
+exit before starting the next: each run clears the staged test resources at
+start-up.
+
+> **Why no port in the endpoint.** The rig names its certificate directory and
+> builds the request `domainUri` from the endpoint host, and the local IDA only
+> accepts the bare host `localhost` as the domain. `IdAuthConfigManager` also
+> rewrites `BaseTestCase.domain` to a filesystem-safe form in local mode, since a
+> colon in the directory name is invalid on Windows.
+>
+> **Why `-DtransactionId`.** An Auth biometric capture binds its encryption to
+> the transactionId, and some yml files hardcode `1234567890`, so the value is
+> pinned for the whole run.
+
+From an IDE, use the same values as VM arguments with main class
+`io.mosip.testrig.apirig.auth.testrunner.MosipTestRunner`.
+
+`localRun` can also be set as an environment variable or in `Ida.properties`.
+
+### What local mode changes
+
+| | Environment run | Local run |
+|---|---|---|
+| Config | `Ida.properties` | `Ida.properties` + `Ida-local.properties` overlay |
+| Suite | `authMasterTestSuite.xml` | `authLocalSuite.xml` |
+| Partner registration | PMS + policy-manager (~11 calls) | seeded values from the local profile |
+| IDA certificate | `/idauthentication/v1/internal/getCertificate` | `config/local/ida-partner-local.cer` |
+| Request signing key | generated, uploaded to PMS for signing | `config/local/partner-mosip-signed.p12` |
+| UIN / VID | created via idrepo + resident | `config/local/seed-ids.properties` |
+| OTP | mock-SMTP WebSocket listener | fixed OTP via `usePreConfiguredOtp` |
+| Keycloak users | created and deleted via admin API | skipped |
+| DB cleanup | mosip_keymgr, mosip_ida, mosip_master | skipped |
+
+### Seeded data
+
+The values in `config/Ida-local.properties` and `config/local/seed-ids.properties`
+mirror `local-dev-setup/docker-compose/init.sql`. If that file changes, these
+must be updated to match — in particular the partner id, API key, MISP licence
+key and the test UIN.
+
+### Known limitations
+
+The idrepo, resident and hotlist calls the suite needs (deactivate / activate
+UIN, revoke VID, update identity, block / unblock) are served by the WireMock
+stubs of the local stack, which also post the matching events to IDA.
+
+Tests excluded from `authLocalSuite.xml` because the local stack cannot serve
+them: the delegated and KYC-exchange flows (the seeded OIDC client belongs to a
+different partner), and anything served by `authentication-internal-service`,
+which is not part of the local compose stack. Individual testcases that need a
+full environment are listed in `local.skipTestCases` in `Ida-local.properties`
+and reported as skipped.
+
+---
+
 ## Test Report Column Definitions
 This section describes the meaning of each column in the test report:
 - **Total (T)**

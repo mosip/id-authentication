@@ -69,12 +69,13 @@ public class BioAuth extends IdAuthenticationUtil implements ITest {
 		idKeyName = context.getCurrentXmlTest().getLocalParameters().get("idKeyName");
 		isInternal = Boolean.parseBoolean(context.getCurrentXmlTest().getLocalParameters().get("isInternal"));
 		logger.info("Started executing yml: " + ymlFile);
-		return getYmlTestData(ymlFile);
+		return IdAuthenticationUtil.filterLocalTestCases(getYmlTestData(ymlFile), context);
 	}
 	@Test(dataProvider = "testcaselist")
 	public void test(TestCaseDTO testCaseDTO) throws AuthenticationTestException, AdminTestException, SecurityXSSException {
 		testCaseName = testCaseDTO.getTestCaseName();
 		testCaseName = IdAuthenticationUtil.isTestCaseValidForExecution(testCaseDTO);
+		testCaseDTO.setInput(IdAuthenticationUtil.applyLocalTestCaseOverrides(testCaseDTO.getInput(), testCaseName));
 	
 		String partnerKeyUrl = PartnerRegistration.mispLicKey + "/" + PartnerRegistration.partnerId + "/" + PartnerRegistration.apiKey;
 		
@@ -106,6 +107,8 @@ public class BioAuth extends IdAuthenticationUtil implements ITest {
 			identityRequest = request.get("identityRequest").toString();
 			request.remove("identityRequest");
 		}
+		String individualId = request.has("individualId") ? request.optString("individualId", null) : null;
+		identityRequest = IdAuthenticationUtil.applyLocalSubstitutions(identityRequest, individualId);
 		identityRequest = buildIdentityRequest(identityRequest);
 		
 		JSONObject identityReqJson = new JSONObject(identityRequest);
@@ -115,12 +118,11 @@ public class BioAuth extends IdAuthenticationUtil implements ITest {
 		identityReqJson.remove("identityRequestEncUrl");
 		identityRequest = getJsonFromTemplate(identityReqJson.toString(), identityRequestTemplate);
 		logger.info(identityRequest);
+		String domainUrl = IdAuthConfigManager.isLocalRun() ? BaseTestCase.domain : BaseTestCase.ApplnURI;
 		if (identityRequest.contains("baseurl")) {
-			String domainUrl =  BaseTestCase.ApplnURI;
 			identityRequest = identityRequest.replace("baseurl", domainUrl);
 		}
 		if (identityRequest.contains("$DOMAINURI$")) {
-			String domainUrl =  BaseTestCase.ApplnURI;
 			identityRequest = identityRequest.replace("$DOMAINURI$", domainUrl);
 		}
 		logger.info(identityRequest);
@@ -148,6 +150,9 @@ public class BioAuth extends IdAuthenticationUtil implements ITest {
 		JSONObject authRequestTemp = new JSONObject(authRequest);
 		authRequestTemp.remove("env");
 		authRequestTemp.put("env", "Staging");
+		if (IdAuthConfigManager.isLocalRun()) {
+			authRequestTemp.put("domainUri", BaseTestCase.domain);
+		}
 		authRequest = authRequestTemp.toString();
 		testCaseDTO.setInput(authRequest);
 
