@@ -1,0 +1,303 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE suite SYSTEM "http://testng.org/testng-1.0.dtd">
+
+<!--
+	LOCAL RUN SUITE
+
+	Selected by MosipTestRunner when local run mode is enabled. Contains the tests
+	that address /idauthentication/** and that the local stack can satisfy: data
+	seeded by local-dev-setup/docker-compose/init.sql (config/local/seed-ids.properties)
+	plus the WireMock stand-ins for idrepo, resident and hotlist (master-data.json),
+	reached through mosip_components_base_urls in Ida-local.properties.
+
+	authMasterTestSuite.xml is left untouched so environment runs are unaffected.
+	Every block below uses the env yml and class unchanged, except AuthLockNewLocal /
+	AuthUnLockNewLocal and DemoAuthLocalTempVid (local-only).
+
+	DELIBERATELY EXCLUDED
+	  - authPrerequisiteSuite.xml  : idrepo / resident / idgenerator. Replaced by
+	                                 config/local/seed-ids.properties, except the
+	                                 Phase 0b blocks, which run against local mocks.
+	  - *Delegated*, *KycExchange* : need an OIDC client mapped to the seeded auth
+	                                 partner; init.sql seeds one against a
+	                                 different partner. See feature.md Phase 5.
+	  - AuthTransaction, *Internal*: served by authentication-internal-service,
+	                                 which is not in the local compose stack.
+	  - AuthLock, AuthUnLock       : deprecated resident APIs. Replaced here by
+	                                 AuthLockNewLocal / AuthUnLockNewLocal (new
+	                                 /resident/v1/auth-lock-unlock, local mock).
+	  - UpdateIdentity             : idrepo identity update with demographic data.
+-->
+<suite name="Authentication API Test - Local">
+
+	<listeners>
+		<listener class-name="io.mosip.testrig.apirig.report.EmailableReport" />
+	</listeners>
+
+	<!-- ==================== Phase 0 : local-only temporary VID ==================== -->
+	<!-- Consumes the one-time temporary VID so TC_IDA_DemoAuth_28 and _49 find it
+	     spent, as they find it expired in an environment run. Keep this block
+	     before the DemoAuth block. -->
+	<test name="DemoAuthLocalTempVid">
+		<parameter name="ymlFile" value="ida/DemoAuth/DemoAuthLocalOnly.yml" />
+		<parameter name="idKeyName" value="authToken" />
+		<classes>
+			<class name="io.mosip.testrig.apirig.auth.testscripts.DemoAuth" />
+		</classes>
+	</test>
+
+	<!-- ==================== Phase 0b : prerequisites served by local mocks ==================== -->
+	<!-- Same order as authPrerequisiteSuite.xml: UpdateIdentityForUin -> UpdateIdentityToActivate
+	     -> DeactivateVIDs -> RevokeVID -> AuthLock -> ReactivateVIDs. Their idrepo / resident
+	     calls reach the WireMock stubs. DeactivateVIDs / ReactivateVIDs use the env ymls and
+	     class unchanged. UpdateIdentityForUin / UpdateIdentityToActivate / RevokeVID use
+	     ida/LocalMockRequests: the same tests as env, sent as the plain PATCH the mock takes
+	     (no send-OTP before revoke, identity body without the ID-schema fields).
+	     AuthLock uses the new resident API (the env suite keeps the deprecated one). -->
+	<test name="UpdateIdentityForUin">
+		<parameter name="ymlFile" value="ida/LocalMockRequests/UpdateIdentityForUinLocal.yml" />
+		<classes>
+			<class name="io.mosip.testrig.apirig.auth.testscripts.SimplePatchForAutoGenId" />
+		</classes>
+	</test>
+
+	<!-- Deactivated-UIN auth tests, run while 8354720784 and its VIDs are deactivated
+	     (Ida-local.properties points them there). Their main blocks below exclude them. -->
+	<test name="DeactivatedUinDemoAuth">
+		<parameter name="ymlFile" value="ida/DemoAuth/DemoAuth2.yml" />
+		<parameter name="idKeyName" value="authToken" />
+		<parameter name="localIncludeTestCases" value="TC_IDA_DemoAuth_61" />
+		<classes>
+			<class name="io.mosip.testrig.apirig.auth.testscripts.DemoAuth" />
+		</classes>
+	</test>
+
+	<test name="DeactivatedUinEkycBio">
+		<parameter name="ymlFile" value="ida/EkycBio/EkycBio2.yml" />
+		<parameter name="isInternal" value="false" />
+		<parameter name="localIncludeTestCases" value="TC_IDA_EkycBio_49" />
+		<classes>
+			<class name="io.mosip.testrig.apirig.auth.testscripts.BioAuth" />
+		</classes>
+	</test>
+
+	<test name="DeactivatedUinSendOTP">
+		<parameter name="ymlFile" value="ida/SendOTP/createSendOTP.yml" />
+		<parameter name="localIncludeTestCases" value="TC_IDA_SendOTP_04" />
+		<classes>
+			<class name="io.mosip.testrig.apirig.auth.testscripts.SimplePost" />
+		</classes>
+	</test>
+
+	<test name="UpdateIdentityToActivate">
+		<parameter name="ymlFile" value="ida/LocalMockRequests/ActivateDeactivatedUINLocal.yml" />
+		<classes>
+			<class name="io.mosip.testrig.apirig.auth.testscripts.SimplePatchForAutoGenId" />
+		</classes>
+	</test>
+
+	<test name="DeactivateVIDs">
+		<parameter name="ymlFile" value="ida/DeactivateUin/DeactivateUin.yml" />
+		<classes>
+			<class name="io.mosip.testrig.apirig.auth.testscripts.SimplePostForAutoGenId" />
+		</classes>
+	</test>
+
+	<test name="RevokeVID">
+		<parameter name="ymlFile" value="ida/LocalMockRequests/RevokeVIDLocal.yml" />
+		<classes>
+			<class name="io.mosip.testrig.apirig.auth.testscripts.SimplePatchForAutoGenId" />
+		</classes>
+	</test>
+
+	<test name="AuthLockNewLocal">
+		<parameter name="ymlFile" value="ida/AuthLockUnlockNew/AuthLockNewLocal.yml" />
+		<classes>
+			<class name="io.mosip.testrig.apirig.auth.testscripts.AuthLockUnlockNewLocal" />
+		</classes>
+	</test>
+
+	<test name="ReactivateVIDs">
+		<parameter name="ymlFile" value="ida/ReactivateVIDsForUIN/ReactivateVIDsForUIN.yml" />
+		<classes>
+			<class name="io.mosip.testrig.apirig.auth.testscripts.SimplePostForAutoGenId" />
+		</classes>
+	</test>
+
+	<!-- ==================== Phase 1 : demographic auth ==================== -->
+	<test name="DemoAuth">
+		<parameter name="ymlFile" value="ida/DemoAuth/DemoAuth2.yml" />
+		<parameter name="idKeyName" value="authToken" />
+		<parameter name="localExcludeTestCases" value="TC_IDA_DemoAuth_61" />
+		<classes>
+			<class name="io.mosip.testrig.apirig.auth.testscripts.DemoAuth" />
+		</classes>
+	</test>
+
+	<!-- ==================== Phase 2 : OTP ==================== -->
+	<test name="SendOTP">
+		<parameter name="ymlFile" value="ida/SendOTP/createSendOTP.yml" />
+		<parameter name="localExcludeTestCases" value="TC_IDA_SendOTP_04" />
+		<classes>
+			<class name="io.mosip.testrig.apirig.auth.testscripts.SimplePost" />
+		</classes>
+	</test>
+
+	<test name="OtpAuth">
+		<parameter name="ymlFile" value="ida/OtpAuth/OtpAuth2.yml" />
+		<parameter name="isInternal" value="false" />
+		<classes>
+			<class name="io.mosip.testrig.apirig.auth.testscripts.OtpAuthNew" />
+		</classes>
+	</test>
+
+	<test name="MultiFactorAuth">
+		<parameter name="ymlFile" value="ida/MultiFactorAuth/MultiFactorAuth2.yml" />
+		<classes>
+			<class name="io.mosip.testrig.apirig.auth.testscripts.MultiFactorAuthNew" />
+		</classes>
+	</test>
+
+	<!-- ==================== Phase 3 : biometric auth ==================== -->
+	<test name="BioAuth">
+		<!-- Uses the original BioAuth2.yml. ida/BioAuth/BioAuth2Local.yml (extra
+		     per-finger tests tagged _Smoke_) is kept in the repo but not used. -->
+		<parameter name="ymlFile" value="ida/BioAuth/BioAuth2.yml" />
+		<parameter name="isInternal" value="false" />
+		<classes>
+			<class name="io.mosip.testrig.apirig.auth.testscripts.BioAuth" />
+		</classes>
+	</test>
+
+	<!-- ==================== Phase 4 : eKYC ==================== -->
+	<test name="EkycDemo">
+		<parameter name="ymlFile" value="ida/EkycDemo/EkycDemo2.yml" />
+		<classes>
+			<class name="io.mosip.testrig.apirig.auth.testscripts.DemoAuth" />
+		</classes>
+	</test>
+
+	<test name="EkycBio">
+		<!-- Uses the original EkycBio2.yml. ida/EkycBio/EkycBio2Local.yml (extra
+		     per-finger tests tagged _Smoke_) is kept in the repo but not used. -->
+		<parameter name="ymlFile" value="ida/EkycBio/EkycBio2.yml" />
+		<parameter name="isInternal" value="false" />
+		<parameter name="localExcludeTestCases" value="TC_IDA_EkycBio_49" />
+		<classes>
+			<class name="io.mosip.testrig.apirig.auth.testscripts.BioAuth" />
+		</classes>
+	</test>
+
+	<test name="EkycOtp">
+		<parameter name="ymlFile" value="ida/EkycOtp/EkycOtp2.yml" />
+		<parameter name="isInternal" value="false" />
+		<classes>
+			<class name="io.mosip.testrig.apirig.auth.testscripts.OtpAuthNew" />
+		</classes>
+	</test>
+
+	<!-- ==================== Phase 5 : hotlist UIN / VID / device + auth unlock ==================== -->
+	<!-- Same order as authSuite.xml: BlockHotlist -> hotlist consumers -> AuthUnLock ->
+	     UnBlockHotlist. Kept after the main blocks: Sanjay's UIN/VID are blocked until
+	     UnBlockHotlist runs. The Logitech device of the env ymls is mapped to the mock SBI
+	     device provider (local.literalReplacements). -->
+	<test name="BlockHotlist">
+		<parameter name="ymlFile" value="ida/BlockHotlistAPI/BlockHotlistAPI.yml" />
+		<classes>
+			<class name="io.mosip.testrig.apirig.auth.testscripts.SimplePostForAutoGenId" />
+		</classes>
+	</test>
+
+	<test name="LockUINVIDTestcasesDEMOAuth">
+		<parameter name="ymlFile" value="ida/HotlistTestcases/HotlistTestcases.yml" />
+		<classes>
+			<class name="io.mosip.testrig.apirig.auth.testscripts.DemoAuth" />
+		</classes>
+	</test>
+
+	<test name="LockUINVIDTestcasesEKYCDEMO">
+		<parameter name="ymlFile" value="ida/HotlistTestcases/HotlistTestcasesKyc.yml" />
+		<parameter name="isInternal" value="false" />
+		<classes>
+			<class name="io.mosip.testrig.apirig.auth.testscripts.DemoAuth" />
+		</classes>
+	</test>
+
+	<test name="LockUINVIDTestcasesAUTHEKYCBIO">
+		<parameter name="ymlFile" value="ida/BioAuthHotListLock/BioAuth.yml" />
+		<parameter name="isInternal" value="false" />
+		<classes>
+			<class name="io.mosip.testrig.apirig.auth.testscripts.BioAuth" />
+		</classes>
+	</test>
+
+	<!-- Replaces the env AuthUnLock (deprecated /resident/v1/req/auth-unlock), in its env position. -->
+	<test name="AuthUnLockNewLocal">
+		<parameter name="ymlFile" value="ida/AuthLockUnlockNew/AuthUnLockNewLocal.yml" />
+		<classes>
+			<class name="io.mosip.testrig.apirig.auth.testscripts.AuthLockUnlockNewLocal" />
+		</classes>
+	</test>
+
+	<test name="UnBlockHotlist">
+		<parameter name="ymlFile" value="ida/UnBlockHotlistAPI/UnBlockHotlistAPI.yml" />
+		<classes>
+			<class name="io.mosip.testrig.apirig.auth.testscripts.SimplePostForAutoGenId" />
+		</classes>
+	</test>
+
+	<!-- ==================== Phase 6 : hotlist partner / MISP ==================== -->
+	<!-- Same order as authSuite.xml. Every auth fails while the partner is blocked,
+	     so nothing else runs between BlockPartnerId and UnBlockPartnerId. -->
+	<test name="BlockPartnerId">
+		<parameter name="ymlFile" value="ida/BlockHotlistAPI/BlockPartnerId.yml" />
+		<classes>
+			<class name="io.mosip.testrig.apirig.auth.testscripts.SimplePostForAutoGenId" />
+		</classes>
+	</test>
+
+	<test name="HotlistTestcasesPartnerId">
+		<parameter name="ymlFile" value="ida/HotlistTestcases/HotlistTestcasesPartnerId.yml" />
+		<classes>
+			<class name="io.mosip.testrig.apirig.auth.testscripts.DemoAuth" />
+		</classes>
+	</test>
+
+	<test name="BioAuthHotListPartner">
+		<parameter name="ymlFile" value="ida/BioAuthHotListPartner/BioAuth.yml" />
+		<classes>
+			<class name="io.mosip.testrig.apirig.auth.testscripts.BioAuth" />
+		</classes>
+	</test>
+
+	<test name="HotlistTestcasesOtpAuth">
+		<parameter name="ymlFile" value="ida/OtpAuth/OtpAuthHotlisted.yml" />
+		<parameter name="isInternal" value="false" />
+		<classes>
+			<class name="io.mosip.testrig.apirig.auth.testscripts.OtpAuthNew" />
+		</classes>
+	</test>
+
+	<test name="UnBlockPartnerId">
+		<parameter name="ymlFile" value="ida/UnBlockHotlistAPI/UnBlockHotlistAPIForPartnerId.yml" />
+		<classes>
+			<class name="io.mosip.testrig.apirig.auth.testscripts.SimplePostForAutoGenId" />
+		</classes>
+	</test>
+
+	<test name="HotlistTestcasesOtpAuthWithUnblockedPartner">
+		<parameter name="ymlFile" value="ida/OtpAuth/OtpAuthHotlistedUnblocked.yml" />
+		<parameter name="isInternal" value="false" />
+		<classes>
+			<class name="io.mosip.testrig.apirig.auth.testscripts.OtpAuthNew" />
+		</classes>
+	</test>
+
+	<test name="BlockHotlistStatus">
+		<parameter name="ymlFile" value="ida/BlockHotlistStatus/BlockHotlistStatus.yml" />
+		<classes>
+			<class name="io.mosip.testrig.apirig.auth.testscripts.GetWithParam" />
+		</classes>
+	</test>
+
+</suite>

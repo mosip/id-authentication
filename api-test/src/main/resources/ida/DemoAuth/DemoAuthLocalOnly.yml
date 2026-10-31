@@ -1,0 +1,26 @@
+DemoAuthLocalOnly:
+  auth_DemoAuth_DOB_Valid_Pos_Temp_VID_LocalOnly:
+      endPoint: /idauthentication/v1/auth/$partnerKeyURL$
+      uniqueIdentifier: TC_IDA_DemoAuth_LocalOnly_01
+      description: LOCAL RUN ONLY. Uses the one-time temporary VID once, successfully, so that TC_IDA_DemoAuth_28 and TC_IDA_DemoAuth_49 find it spent. An environment run reaches that state by the VID expiring during the long run (IDA-MLC-023); locally there is no idrepo/resident to mint a short-lived VID, so the seeded one-time VID is consumed instead (IDA-MLC-018). Also proves a temporary VID authenticates, which no environment test checks. Must stay ahead of DemoAuth2.yml in authLocalSuite.xml.
+      role: resident
+      restMethod: post
+      inputTemplate: ida/DemoAuth/DemoAuth
+      outputTemplate: ida/DemoAuth/DemoAuthResult
+      input: '{
+        "requestTime": "$TIMESTAMP$",
+        "individualId": "$ID:GenerateVID_All_Valid_Smoke_Temp_VID_sid_vid$",
+        "transactionId": "1234567890",
+        "individualIdType": "VID",
+        "bio": false,
+        "demo": true,
+        "otp": false,
+        "identityRequest":{
+    "value": "1970/07/08",
+"key": "dob",
+    "identityRequestTemplate": "ida/DemoAuth/DemoIdentityEncrypt"
+    }
+    }'
+      output: '{
+  "authStatus": "true"
+}'

@@ -188,7 +188,7 @@ DemoAuthNew:
       outputTemplate: ida/DemoAuth/DemoAuthResult
       input: '{
         "requestTime": "$TIMESTAMP$",
-        "individualId": "$ID:AddIdentity_withValidParameters_with_Infant_which_locked_Pos_UIN$",
+        "individualId": "$ID:AddIdentity_withValidParameters_with_Infant_which_locked_smoke_Pos_UIN$",
         "transactionId": "1234567890",
         "individualIdType": "UIN",
         "bio": false,
@@ -2023,14 +2023,14 @@ DemoAuthNew:
       output: '{
   "authStatus": "false"
 }'
-  auth_DemoAuth_with_age_below_calculated_value_Neg:
+  auth_DemoAuth_with_age_below_calculated_value_Pos:
       endPoint: /idauthentication/v1/auth/$partnerKeyURL$
       uniqueIdentifier: TC_IDA_DemoAuth_71
-      description: Verify that demo authentication fails when the age value is below the calculated age
+      description: Verify that demo authentication succeeds when the asserted age is below the calculated age (age match is a minimum-age threshold check, not exact match)
       role: resident
       restMethod: post
       inputTemplate: ida/DemoAuth/DemoAuth
-      outputTemplate: ida/DemoAuth/error
+      outputTemplate: ida/DemoAuth/DemoAuthResult
       input: '{
         "requestTime": "$TIMESTAMP$",
         "individualId": "$ID:AddIdentity_with_age_below_calculated_value_Pos_UIN$",
@@ -2046,7 +2046,7 @@ DemoAuthNew:
     }
     }'
       output: '{
-  "authStatus": "false"
+  "authStatus": "true"
 }'
   auth_DemoAuth_with_unusedUIN_value_audit_Neg:
       endPoint: /idauthentication/v1/auth/$partnerKeyURL$

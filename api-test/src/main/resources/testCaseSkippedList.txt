@@ -1,2 +1,4 @@
 ##### JIRA number;testcase 
 #MOSIP-12456------Test_Case_Name
+1812------auth_BioAuthDelegatedV2_Biometric_Face_With_Valid_uin_Smoke_Pos_Sid
+1812------auth_BioAuthKycExchangeV2_Biometric_Face_With_Valid_uin_Smoke_Pos

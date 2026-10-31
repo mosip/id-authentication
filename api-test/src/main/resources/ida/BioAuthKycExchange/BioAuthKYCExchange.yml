@@ -34,7 +34,7 @@ BioAuthKycExchange:
       outputTemplate: ida/BioAuthKycExchange/BioAuthKYCExchangeResult
       input: '{
         "requestTime": "$TIMESTAMP$",
-        "individualId": "$ID:GenerateVID_for_kycDelegated_bio_sid_vid$",
+        "individualId": "$ID:GenerateVID_for_kycDelegated_bio_smoke_sid_vid$",
         "transactionID": "$TRANSACTIONID$",
         "individualIdType": "VID",
         "id": "mosip.identity.kycexchange",
@@ -82,7 +82,7 @@ BioAuthKycExchange:
       outputTemplate: ida/BioAuthKycExchange/BioAuthKYCExchangeResult
       input: '{
         "requestTime": "$TIMESTAMP$",
-        "individualId": "$ID:GenerateVID_for_kycDelegated_bio_sid_vid$",
+        "individualId": "$ID:GenerateVID_for_kycDelegated_bio_smoke_sid_vid$",
         "transactionID": "$TRANSACTIONID$",
         "individualIdType": "VID",
         "id": "mosip.identity.kycexchange",
@@ -130,7 +130,7 @@ BioAuthKycExchange:
       outputTemplate: ida/BioAuthKycExchange/BioAuthKYCExchangeResult
       input: '{
         "requestTime": "$TIMESTAMP$",
-        "individualId": "$ID:GenerateVID_for_kycDelegated_bio_rightIris_sid_vid$",
+        "individualId": "$ID:GenerateVID_for_kycDelegated_bio_rightIris_smoke_sid_vid$",
         "transactionID": "$TRANSACTIONID$",
         "individualIdType": "VID",
         "id": "mosip.identity.kycexchange",
@@ -178,7 +178,7 @@ BioAuthKycExchange:
       outputTemplate: ida/BioAuthKycExchange/BioAuthKYCExchangeResult
       input: '{
         "requestTime": "$TIMESTAMP$",
-        "individualId": "$ID:GenerateVID_for_kycDelegated_bio_sid_vid$",
+        "individualId": "$ID:GenerateVID_for_kycDelegated_bio_smoke_sid_vid$",
         "transactionID": "$TRANSACTIONID$",
         "individualIdType": "VID",
         "id": "mosip.identity.kycexchange",
@@ -226,7 +226,7 @@ BioAuthKycExchange:
       outputTemplate: ida/BioAuthKycExchange/BioAuthKYCExchangeResult
       input: '{
         "requestTime": "$TIMESTAMP$",
-        "individualId": "$ID:GenerateVID_for_kycDelegated_bio_sid_vid$",
+        "individualId": "$ID:GenerateVID_for_kycDelegated_bio_smoke_sid_vid$",
         "transactionID": "$TRANSACTIONID$",
         "individualIdType": "VID",
         "id": "mosip.identity.kycexchange",
@@ -274,7 +274,7 @@ BioAuthKycExchange:
       outputTemplate: ida/BioAuthKycExchange/BioAuthKYCExchangeResult
       input: '{
         "requestTime": "$TIMESTAMP$",
-        "individualId": "$ID:GenerateVID_for_kycDelegated_bio_sid_vid$",
+        "individualId": "$ID:GenerateVID_for_kycDelegated_bio_smoke_sid_vid$",
         "transactionID": "$TRANSACTIONID$",
         "individualIdType": "VID",
         "id": "mosip.identity.kycexchange",
@@ -322,7 +322,7 @@ BioAuthKycExchange:
       outputTemplate: ida/BioAuthKycExchange/BioAuthKYCExchangeResult
       input: '{
         "requestTime": "$TIMESTAMP$",
-        "individualId": "$ID:GenerateVID_for_kycDelegated_bio_sid_vid$",
+        "individualId": "$ID:GenerateVID_for_kycDelegated_bio_smoke_sid_vid$",
         "transactionID": "$TRANSACTIONID$",
         "individualIdType": "VID",
         "id": "mosip.identity.kycexchange",
@@ -370,7 +370,7 @@ BioAuthKycExchange:
       outputTemplate: ida/BioAuthKycExchange/BioAuthKYCExchangeResult
       input: '{
         "requestTime": "$TIMESTAMP$",
-        "individualId": "$ID:GenerateVID_for_kycDelegated_bio_sid_vid$",
+        "individualId": "$ID:GenerateVID_for_kycDelegated_bio_smoke_sid_vid$",
         "transactionID": "$TRANSACTIONID$",
         "individualIdType": "VID",
         "id": "mosip.identity.kycexchange",
@@ -418,7 +418,7 @@ BioAuthKycExchange:
       outputTemplate: ida/BioAuthKycExchange/BioAuthKYCExchangeResult
       input: '{
         "requestTime": "$TIMESTAMP$",
-        "individualId": "$ID:GenerateVID_for_kycDelegated_bio_sid_vid$",
+        "individualId": "$ID:GenerateVID_for_kycDelegated_bio_smoke_sid_vid$",
         "transactionID": "$TRANSACTIONID$",
         "individualIdType": "VID",
         "id": "mosip.identity.kycexchange",
@@ -466,7 +466,7 @@ BioAuthKycExchange:
       outputTemplate: ida/BioAuthKycExchange/BioAuthKYCExchangeResult
       input: '{
         "requestTime": "$TIMESTAMP$",
-        "individualId": "$ID:GenerateVID_for_kycDelegated_bio_sid_vid$",
+        "individualId": "$ID:GenerateVID_for_kycDelegated_bio_smoke_sid_vid$",
         "transactionID": "$TRANSACTIONID$",
         "individualIdType": "VID",
         "id": "mosip.identity.kycexchange",
@@ -514,7 +514,7 @@ BioAuthKycExchange:
       outputTemplate: ida/BioAuthKycExchange/BioAuthKYCExchangeResult
       input: '{
         "requestTime": "$TIMESTAMP$",
-        "individualId": "$ID:GenerateVID_for_kycDelegated_bio_sid_vid$",
+        "individualId": "$ID:GenerateVID_for_kycDelegated_bio_smoke_sid_vid$",
         "transactionID": "$TRANSACTIONID$",
         "individualIdType": "VID",
         "id": "mosip.identity.kycexchange",
@@ -538,7 +538,7 @@ BioAuthKycExchange:
       outputTemplate: ida/DelegateError
       input: '{
         "requestTime": "$TIMESTAMP$",
-        "individualId": "$ID:GenerateVID_for_kycDelegated_bio_sid_vid$",
+        "individualId": "$ID:GenerateVID_for_kycDelegated_bio_smoke_sid_vid$",
         "transactionID": "$TRANSACTIONID$",
         "individualIdType": "VID",
         "id": "mosip.identity.kycexchange",
