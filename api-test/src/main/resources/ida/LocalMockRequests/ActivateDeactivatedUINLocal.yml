@@ -1,0 +1,27 @@
+# LOCAL RUN ONLY -- referenced by testNgXmlFiles/authLocalSuite.xml and by no
+# environment suite (env runs keep ida/UpdateIdentityForUin/ActivateDeactivatedUIN.yml: PATCH /idrepository/v1/identity/ built from the ID schema).
+# The local WireMock stub (master-data.json) takes a plain PATCH and sends IDA the
+# matching event, so these replicas post directly: no send-OTP step and no OTP.
+ActivateDeactivatedUINLocal:
+   auth_UpdateIdentityForUinLocal_ACTIVATE_theDeactivatedUIN_smoke:
+      endPoint: /idrepository/v1/identity/
+      uniqueIdentifier: TC_IDA_UpdateIdentityForUinLocal_04
+      description: Verify that a deactivated UIN is activated again (local-run replica of TC_IDA_UpdateIdentityForUin_04)
+      role: idrepo
+      restMethod: patch
+      inputTemplate: ida/LocalMockRequests/updateIdentityLocal
+      outputTemplate: ida/LocalMockRequests/updateIdentityLocalResult
+      input: '{
+        "id": "mosip.id.update",
+        "version": "v1",
+        "requesttime": "$TIMESTAMP$",
+        "registrationId": "$RID$",
+        "status": "ACTIVATED",
+        "IDSchemaVersion": "0.4",
+        "email": "$ID:AddIdentity_ValidParameters_toDeactivate_ReactivateUIN_smoke_Pos_EMAIL$",
+        "dateOfBirth": "1970/07/08",
+        "UIN": "$ID:LocalMock_identityStub_UIN$"
+    }'
+      output: '{
+        "status": "ACTIVATED"
+}'

@@ -1,0 +1,11 @@
+##### JIRA number;testcase 
+#MOSIP-12456------Test_Case_Name
+MOSIP-43456------auth_EkycOtp_Auth_With_Invalid_Empty_Timestamp_UIN_Neg
+MOSIP-41021------auth_SendOTP_toBlockedVID_Neg
+MOSIP-41021------auth_SendOTP_to_LockedphoneAndEmail_valid_uin_Neg
+MOSIP-41021------auth_SendOTP_to_blocked_uin_Neg
+MOSIP-41021------auth_SendOTP_to_onlyLockedEmail_valid_uin_Neg
+MOSIP-41021------auth_SendOTP_to_onlyLockedphone_valid_uin_Neg
+MOSIP-43965------auth_SendOTP_to_DeactivatedUIN_Neg
+1812------auth_BioAuthDelegatedV2_Biometric_Face_With_Valid_uin_Smoke_Pos_Sid
+1812------auth_BioAuthKycExchangeV2_Biometric_Face_With_Valid_uin_Smoke_Pos

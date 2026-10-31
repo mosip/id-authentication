@@ -1,0 +1,46 @@
+# LOCAL RUN ONLY -- referenced by testNgXmlFiles/authLocalSuite.xml and by no
+# environment suite (env runs keep the deprecated API). Replicates ida/AuthUnLock/createAuthUnLock.yml
+# (TC_IDA_AuthUnlock_01 and auth_AuthUnLock_Valid_UIN_DEMO_UNLOCK_All).
+# One test per deprecated test, same auth types, sent to the new resident API
+# POST /resident/v1/auth-lock-unlock. Locally that API is a WireMock stub
+# (mosip_components_base_urls in Ida-local.properties) acting on one hard-coded
+# identity (UIN 8354720784 / VID 8420394176306134), so the body carries no
+# individualId and no token. AuthLockUnlockNewLocal sends one request per auth
+# type because the stub reacts to one type per request.
+# Test names avoid "_AuthLock_"/"_AuthUnLock_" so IdAuthenticationUtil does not
+# skip them as resident-service tests.
+AuthUnLockNew:
+   auth_AuthUnLockNew_Valid_UIN_All:
+      endPoint: /resident/v1/auth-lock-unlock
+      uniqueIdentifier: TC_IDA_AuthUnlockNew_01
+      description: Validate unlocking demo and bio-FACE for a valid UIN (local-run replica of TC_IDA_AuthUnlock_01, which uses the deprecated resident API)
+      role: resident
+      restMethod: post
+      inputTemplate: ida/AuthLockUnlockNew/AuthLockUnlockNew
+      outputTemplate: ida/AuthLockUnlockNew/AuthLockUnlockNewResult
+      input: '{
+        "id": "mosip.resident.auth.lock.unlock",
+        "version": "v1",
+        "requesttime": "$TIMESTAMP$",
+        "authTypes": [{"authType": "Demo", "locked": "false", "unlockForSeconds": "null"}, {"authType": "bio", "authSubType": "face", "locked": "false", "unlockForSeconds": "null"}]
+    }'
+      output: '{
+        "status": "Success"
+}'
+   auth_AuthUnLockNew_Valid_UIN_DEMO_UNLOCK_All:
+      endPoint: /resident/v1/auth-lock-unlock
+      uniqueIdentifier: TC_IDA_AuthUnlockNew_02
+      description: Validate unlocking demo and bio-FACE for a valid UIN (local-run replica of auth_AuthUnLock_Valid_UIN_DEMO_UNLOCK_All, which uses the deprecated resident API)
+      role: resident
+      restMethod: post
+      inputTemplate: ida/AuthLockUnlockNew/AuthLockUnlockNew
+      outputTemplate: ida/AuthLockUnlockNew/AuthLockUnlockNewResult
+      input: '{
+        "id": "mosip.resident.auth.lock.unlock",
+        "version": "v1",
+        "requesttime": "$TIMESTAMP$",
+        "authTypes": [{"authType": "Demo", "locked": "false", "unlockForSeconds": "null"}, {"authType": "bio", "authSubType": "face", "locked": "false", "unlockForSeconds": "null"}]
+    }'
+      output: '{
+        "status": "Success"
+}'
