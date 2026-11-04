@@ -6,12 +6,15 @@ ida_otp_request_id = 'mosip.identity.otp'
 ida_kyc_request_id = 'mosip.identity.kyc'
 ida_kyc_auth_request_id = 'mosip.identity.kycauth'
 ida_kyc_exchange_request_id = 'mosip.identity.kycexchange'
+ida_key_binding_request_id = 'mosip.identity.keybinding'
+ida_vci_exchange_request_id = 'mosip.identity.vciexchange'
+ida_key_binding_auth_factor_type = 'WLA'
 ida_auth_env = 'Staging'
 authorization_header_constant = 'Authorization'
 partner_apikey = '198833'
 partner_misp_lk = 'vM1BA8RosNt3kemNGpsneYgcelZwNmsOoKJQgMm92DltqtJh4p'
 partner_id = 'auth_v1z0816154432'
-# kyc-auth / kyc-exchange (v1) path parameters: {IdP-LK}/{Auth-Partner-ID}/{OIDC-Client-Id}
+# Path parameters for kyc-auth, kyc-exchange, vci-exchange, otp (kyc) and key binding: {IdP-LK}/{Auth-Partner-ID}/{OIDC-Client-Id}
 idp_misp_lk = 'B1FF84Flf7CY9zmQmDxRsbMbpsAIWwyyNIa8wFu4FYsmSig7UU'
 auth_partner_id = 'mpartner-default-demo-oidc'
 oidc_client_id = 'xedG72yecDpJcQbzn6Q8LDplTVGZPhLRXi1ssAh1oW4'
@@ -24,6 +27,8 @@ ida_otp_url = 'http://localhost:8090/idauthentication/v1/otp'
 ida_ekyc_url = 'http://localhost:8090/idauthentication/v1/kyc'
 ida_kyc_auth_url = 'http://localhost:8090/idauthentication/v1/kyc-auth/delegated'
 ida_kyc_exchange_url = 'http://localhost:8090/idauthentication/v1/kyc-exchange/delegated'
+ida_vci_exchange_url = 'http://localhost:8090/idauthentication/v1/vci-exchange/delegated'
+ida_key_binding_url = 'http://localhost:8090/idauthentication/v1/identity-key-binding/delegated'
 
 [crypto_encrypt]
 algorithm = '@none'
@@ -37,6 +42,11 @@ encrypt_cert_path = 'new-keys/ida-partner-local.cer'
 algorithm = 'RS256'
 sign_p12_file_path = 'new-keys/partner-mosip-signed.p12'
 sign_p12_file_password = '1234'
+
+[key_binding]
+# One p12 per UIN/VID (file name = hex SHA-1 of the id) is stored here. Deleted on a clean exit.
+bound_keys_dir = 'new-keys/bound'
+bound_p12_password = 'qwerty@123'
 
 [MockMDS]
 mock_mds_capture_url = 'http://localhost:4501/capture'

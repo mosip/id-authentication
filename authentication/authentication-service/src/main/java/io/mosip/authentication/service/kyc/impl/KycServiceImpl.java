@@ -443,7 +443,7 @@ public class KycServiceImpl implements KycService {
 
 	@Override
 	public boolean isKycTokenExpire(LocalDateTime tokenIssuedDateTime, String kycToken) throws IdAuthenticationBusinessException {
-		LocalDateTime currentTime = LocalDateTime.now();
+		LocalDateTime currentTime = DateUtils2.getUTCCurrentDateTime();
 		
 		long diffSeconds = ChronoUnit.SECONDS.between(tokenIssuedDateTime, currentTime);
 		
