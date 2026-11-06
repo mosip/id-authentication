@@ -1,0 +1,182 @@
+# LOCAL RUN ONLY -- referenced by testNgXmlFiles/authLocalSuite.xml and by no
+# environment suite (env runs keep the deprecated API). Replicates ida/AuthLock/createAuthLock.yml
+# (TC_IDA_AuthLock_01-10).
+# One test per deprecated test, same auth types, sent to the new resident API
+# POST /resident/v1/auth-lock-unlock. Locally that API is a WireMock stub
+# (mosip_components_base_urls in Ida-local.properties) acting on one hard-coded
+# identity (UIN 8354720784 / VID 8420394176306134), so the body carries no
+# individualId and no token. AuthLockUnlockNewLocal sends one request per auth
+# type because the stub reacts to one type per request.
+# Test names avoid "_AuthLock_"/"_AuthUnLock_" so IdAuthenticationUtil does not
+# skip them as resident-service tests.
+AuthLockNew:
+   auth_AuthLockNew_Valid_UIN_All:
+      endPoint: /resident/v1/auth-lock-unlock
+      uniqueIdentifier: TC_IDA_AuthLockNew_01
+      description: Validate locking demo and bio-FACE for a valid UIN (local-run replica of TC_IDA_AuthLock_01, which uses the deprecated resident API)
+      role: resident
+      restMethod: post
+      inputTemplate: ida/AuthLockUnlockNew/AuthLockUnlockNew
+      outputTemplate: ida/AuthLockUnlockNew/AuthLockUnlockNewResult
+      input: '{
+        "id": "mosip.resident.auth.lock.unlock",
+        "version": "v1",
+        "requesttime": "$TIMESTAMP$",
+        "authTypes": [{"authType": "Demo", "locked": "true", "unlockForSeconds": "null"}, {"authType": "bio", "authSubType": "face", "locked": "true", "unlockForSeconds": "null"}]
+    }'
+      output: '{
+        "status": "Success"
+}'
+   auth_AuthLockNew_Valid_UIN_locked_All:
+      endPoint: /resident/v1/auth-lock-unlock
+      uniqueIdentifier: TC_IDA_AuthLockNew_10
+      description: Validate locking demo and bio-FACE again for a UIN that is already locked (local-run replica of TC_IDA_AuthLock_10, which uses the deprecated resident API)
+      role: resident
+      restMethod: post
+      inputTemplate: ida/AuthLockUnlockNew/AuthLockUnlockNew
+      outputTemplate: ida/AuthLockUnlockNew/AuthLockUnlockNewResult
+      input: '{
+        "id": "mosip.resident.auth.lock.unlock",
+        "version": "v1",
+        "requesttime": "$TIMESTAMP$",
+        "authTypes": [{"authType": "Demo", "locked": "true", "unlockForSeconds": "null"}, {"authType": "bio", "authSubType": "face", "locked": "true", "unlockForSeconds": "null"}]
+    }'
+      output: '{
+        "status": "Success"
+}'
+   auth_AuthLockNew_Valid_UIN_for_bio_auth:
+      endPoint: /resident/v1/auth-lock-unlock
+      uniqueIdentifier: TC_IDA_AuthLockNew_02
+      description: Validate locking bio-Finger for a valid UIN (local-run replica of TC_IDA_AuthLock_02, which uses the deprecated resident API)
+      role: resident
+      restMethod: post
+      inputTemplate: ida/AuthLockUnlockNew/AuthLockUnlockNew
+      outputTemplate: ida/AuthLockUnlockNew/AuthLockUnlockNewResult
+      input: '{
+        "id": "mosip.resident.auth.lock.unlock",
+        "version": "v1",
+        "requesttime": "$TIMESTAMP$",
+        "authTypes": [{"authType": "bio", "authSubType": "finger", "locked": "true", "unlockForSeconds": "null"}]
+    }'
+      output: '{
+        "status": "Success"
+}'
+   auth_AuthLockNew_Valid_UIN_for_audit_bioIris_auth:
+      endPoint: /resident/v1/auth-lock-unlock
+      uniqueIdentifier: TC_IDA_AuthLockNew_03
+      description: Validate locking bio-Iris for a valid UIN (local-run replica of TC_IDA_dependentTC_AuthTransaction_AuthLock_03, which uses the deprecated resident API)
+      role: resident
+      restMethod: post
+      inputTemplate: ida/AuthLockUnlockNew/AuthLockUnlockNew
+      outputTemplate: ida/AuthLockUnlockNew/AuthLockUnlockNewResult
+      input: '{
+        "id": "mosip.resident.auth.lock.unlock",
+        "version": "v1",
+        "requesttime": "$TIMESTAMP$",
+        "authTypes": [{"authType": "bio", "authSubType": "iris", "locked": "true", "unlockForSeconds": "null"}]
+    }'
+      output: '{
+        "status": "Success"
+}'
+   auth_AuthLockNew_Valid_UIN_for_audit_Face_auth:
+      endPoint: /resident/v1/auth-lock-unlock
+      uniqueIdentifier: TC_IDA_AuthLockNew_04
+      description: Validate locking bio-Face for a valid UIN (local-run replica of TC_IDA_dependentTC_AuthTransaction_AuthLock_04, which uses the deprecated resident API)
+      role: resident
+      restMethod: post
+      inputTemplate: ida/AuthLockUnlockNew/AuthLockUnlockNew
+      outputTemplate: ida/AuthLockUnlockNew/AuthLockUnlockNewResult
+      input: '{
+        "id": "mosip.resident.auth.lock.unlock",
+        "version": "v1",
+        "requesttime": "$TIMESTAMP$",
+        "authTypes": [{"authType": "bio", "authSubType": "face", "locked": "true", "unlockForSeconds": "null"}]
+    }'
+      output: '{
+        "status": "Success"
+}'
+   auth_AuthLockNew_Valid_UIN_for_audit_Demo_auth:
+      endPoint: /resident/v1/auth-lock-unlock
+      uniqueIdentifier: TC_IDA_AuthLockNew_05
+      description: Validate locking bio-Face for a valid UIN (the deprecated test locks bio-Face too) (local-run replica of TC_IDA_dependentTC_AuthTransaction_AuthLock_05, which uses the deprecated resident API)
+      role: resident
+      restMethod: post
+      inputTemplate: ida/AuthLockUnlockNew/AuthLockUnlockNew
+      outputTemplate: ida/AuthLockUnlockNew/AuthLockUnlockNewResult
+      input: '{
+        "id": "mosip.resident.auth.lock.unlock",
+        "version": "v1",
+        "requesttime": "$TIMESTAMP$",
+        "authTypes": [{"authType": "bio", "authSubType": "face", "locked": "true", "unlockForSeconds": "null"}]
+    }'
+      output: '{
+        "status": "Success"
+}'
+   auth_AuthLockNew_Valid_UIN_audit_All:
+      endPoint: /resident/v1/auth-lock-unlock
+      uniqueIdentifier: TC_IDA_AuthLockNew_06
+      description: Validate locking demo and bio-FACE for a valid UIN (local-run replica of TC_IDA_dependentTC_AuthTransaction_AuthLock_06, which uses the deprecated resident API)
+      role: resident
+      restMethod: post
+      inputTemplate: ida/AuthLockUnlockNew/AuthLockUnlockNew
+      outputTemplate: ida/AuthLockUnlockNew/AuthLockUnlockNewResult
+      input: '{
+        "id": "mosip.resident.auth.lock.unlock",
+        "version": "v1",
+        "requesttime": "$TIMESTAMP$",
+        "authTypes": [{"authType": "Demo", "locked": "true", "unlockForSeconds": "null"}, {"authType": "bio", "authSubType": "face", "locked": "true", "unlockForSeconds": "null"}]
+    }'
+      output: '{
+        "status": "Success"
+}'
+   auth_AuthLockNew_Valid_UIN_for_otp-email_otp_auth:
+      endPoint: /resident/v1/auth-lock-unlock
+      uniqueIdentifier: TC_IDA_AuthLockNew_07
+      description: Validate locking otp-email for a valid UIN (local-run replica of TC_IDA_AuthLock_07, which uses the deprecated resident API)
+      role: resident
+      restMethod: post
+      inputTemplate: ida/AuthLockUnlockNew/AuthLockUnlockNew
+      outputTemplate: ida/AuthLockUnlockNew/AuthLockUnlockNewResult
+      input: '{
+        "id": "mosip.resident.auth.lock.unlock",
+        "version": "v1",
+        "requesttime": "$TIMESTAMP$",
+        "authTypes": [{"authType": "otp", "authSubType": "email", "locked": "true", "unlockForSeconds": "null"}]
+    }'
+      output: '{
+        "status": "Success"
+}'
+   auth_AuthLockNew_Valid_UIN_for_otp-phone_otp_auth:
+      endPoint: /resident/v1/auth-lock-unlock
+      uniqueIdentifier: TC_IDA_AuthLockNew_08
+      description: Validate locking otp-phone for a valid UIN (local-run replica of TC_IDA_AuthLock_08, which uses the deprecated resident API)
+      role: resident
+      restMethod: post
+      inputTemplate: ida/AuthLockUnlockNew/AuthLockUnlockNew
+      outputTemplate: ida/AuthLockUnlockNew/AuthLockUnlockNewResult
+      input: '{
+        "id": "mosip.resident.auth.lock.unlock",
+        "version": "v1",
+        "requesttime": "$TIMESTAMP$",
+        "authTypes": [{"authType": "otp", "authSubType": "sms", "locked": "true", "unlockForSeconds": "null"}]
+    }'
+      output: '{
+        "status": "Success"
+}'
+   auth_AuthLockNew_Valid_UIN_for_otp-phone_And_otp-email_otp_auth:
+      endPoint: /resident/v1/auth-lock-unlock
+      uniqueIdentifier: TC_IDA_AuthLockNew_09
+      description: Validate locking otp-phone and otp-email together for a valid UIN (local-run replica of TC_IDA_AuthLock_09, which uses the deprecated resident API)
+      role: resident
+      restMethod: post
+      inputTemplate: ida/AuthLockUnlockNew/AuthLockUnlockNew
+      outputTemplate: ida/AuthLockUnlockNew/AuthLockUnlockNewResult
+      input: '{
+        "id": "mosip.resident.auth.lock.unlock",
+        "version": "v1",
+        "requesttime": "$TIMESTAMP$",
+        "authTypes": [{"authType": "otp", "authSubType": "sms", "locked": "true", "unlockForSeconds": "null"}, {"authType": "otp", "authSubType": "email", "locked": "true", "unlockForSeconds": "null"}]
+    }'
+      output: '{
+        "status": "Success"
+}'

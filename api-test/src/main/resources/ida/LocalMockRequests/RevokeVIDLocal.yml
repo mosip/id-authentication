@@ -1,0 +1,45 @@
+# LOCAL RUN ONLY -- referenced by testNgXmlFiles/authLocalSuite.xml and by no
+# environment suite (env runs keep ida/RevokeVID/createRevokeVID.yml: PATCH /resident/v1/vid/{vid} after a send-OTP).
+# The local WireMock stub (master-data.json) takes a plain PATCH and sends IDA the
+# matching event, so these replicas post directly: no send-OTP step and no OTP.
+RevokeVIDLocal:
+   auth_RevokeVIDLocal_Valid_UIN_smoke:
+      endPoint: /resident/v1/vid/$ID:GenerateVID_to_revoke_smoke_Perpetual_sid_vid$
+      uniqueIdentifier: TC_IDA_RevokeVIDLocal_01
+      description: Verify that a perpetual VID is revoked (local-run replica of TC_IDA_RevokeVID_01)
+      role: resident
+      checkErrorsOnlyInResponse: true
+      restMethod: patch
+      inputTemplate: ida/LocalMockRequests/revokeVIDLocal
+      outputTemplate: ida/LocalMockRequests/revokeVIDLocalResult
+      input: '{
+        "id": "mosip.resident.vidstatus",
+        "version": "v1",
+        "requesttime": "$TIMESTAMP$",
+        "transactionID": "$TRANSACTIONID$",
+        "individualId": "$ID:AddIdentity_create_vid_using_uin_for_revoke_smoke_Pos_UIN$",
+        "individualIdType": "UIN",
+        "vidStatus": "REVOKED"
+    }'
+      output: '{
+}'
+   auth_RevokeVIDLocal_Valid_UIN_audit_smoke:
+      endPoint: /resident/v1/vid/$ID:GenerateVID_torevoke_audit_Smoke_sid_vid$
+      uniqueIdentifier: TC_IDA_RevokeVIDLocal_02
+      description: Verify that revoking a VID succeeds for the audit flow (local-run replica of TC_IDA_RevokeVID_02)
+      role: resident
+      checkErrorsOnlyInResponse: true
+      restMethod: patch
+      inputTemplate: ida/LocalMockRequests/revokeVIDLocal
+      outputTemplate: ida/LocalMockRequests/revokeVIDLocalResult
+      input: '{
+        "id": "mosip.resident.vidstatus",
+        "version": "v1",
+        "requesttime": "$TIMESTAMP$",
+        "transactionID": "$TRANSACTIONID$",
+        "individualId": "$ID:AddIdentity_ValidParameters_VID_revoke_auditLog_smoke_Pos_UIN$",
+        "individualIdType": "UIN",
+        "vidStatus": "REVOKED"
+    }'
+      output: '{
+}'

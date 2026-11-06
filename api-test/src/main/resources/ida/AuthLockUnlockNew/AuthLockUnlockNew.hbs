@@ -1,0 +1,18 @@
+{
+  "id": "{{id}}",
+  "version": "{{version}}",
+  "requesttime": "{{requesttime}}",
+  "request": {
+    "authTypes": [
+      {{#each authTypes}}
+      {
+        "authType": "{{authType}}",
+        "authSubType": {{#if authSubType}}"{{authSubType}}"{{else}}null{{/if}},
+        "locked": {{locked}},
+        "unlockForSeconds": {{unlockForSeconds}}
+      }
+      {{#unless @last}},{{/unless}}
+      {{/each}}
+    ]
+  }
+}

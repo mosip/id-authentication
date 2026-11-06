@@ -23,6 +23,7 @@ import com.nimbusds.jose.jwk.RSAKey;
 
 import io.mosip.testrig.apirig.auth.utils.IdAuthConfigManager;
 import io.mosip.testrig.apirig.auth.utils.IdAuthenticationUtil;
+import io.mosip.testrig.apirig.auth.utils.LocalRunBootstrap;
 import io.mosip.testrig.apirig.dataprovider.BiometricDataProvider;
 import io.mosip.testrig.apirig.dbaccess.DBManager;
 import io.mosip.testrig.apirig.testrunner.BaseTestCase;
@@ -94,6 +95,19 @@ public class MosipTestRunner {
 			GlobalMethods.setModuleNameAndReCompilePattern(IdAuthConfigManager.getproperty("moduleNamePattern"));
 			setLogLevels();
 
+			if (IdAuthConfigManager.isLocalRun()) {
+				LocalRunBootstrap.initialize();
+				String mdsPurpose = IdAuthConfigManager.getproperty("local.mds.purpose");
+				if (mdsPurpose == null || mdsPurpose.isBlank()) {
+					mdsPurpose = "Auth";
+				}
+				LOGGER.info("Local run - generating biometric test data with purpose: " + mdsPurpose);
+				BiometricDataProvider.generateBiometricTestData(mdsPurpose);
+				startTestRunner();
+				shutdown(watchdog);
+				return;
+			}
+
 			HealthChecker healthcheck = new HealthChecker();
 			healthcheck.setCurrentRunningModule(GlobalConstants.AUTH);
 			Thread trigger = new Thread(healthcheck);
@@ -161,6 +175,21 @@ public class MosipTestRunner {
 
 	}
 	
+	/**
+	 * Teardown for a local run. The environment teardown below deletes Keycloak
+	 * users and certificate rows from mosip_keymgr / mosip_master, none of which
+	 * exist locally, and would delete the seeded partner and policy rows from
+	 * mosip_ida that init.sql created.
+	 */
+	private static void shutdown(Watchdog watchdog) {
+		OTPListener.bTerminate = true;
+		HealthChecker.bTerminate = true;
+		if (watchdog != null) {
+			watchdog.stop();
+		}
+		System.exit(0);
+	}
+
 	public static void suiteSetup(String runType) {
 		if (IdAuthConfigManager.IsDebugEnabled())
 			LOGGER.setLevel(Level.ALL);
@@ -178,6 +207,12 @@ public class MosipTestRunner {
 		IdAuthenticationUtil.dbCleanUp();
 
 		AuthTestsUtil.initiateAuthTest();
+
+		if (IdAuthConfigManager.isLocalFlagEnabled("local.skipOtpListener")) {
+			LOGGER.info("Local run - skipping the OTP WebSocket listener");
+			return;
+		}
+
 		BaseTestCase.otpListener = new OTPListener();
 		BaseTestCase.otpListener.run();
 	}
@@ -217,12 +252,15 @@ public class MosipTestRunner {
 			homeDir = new File(dir.getParent() + "/mosip/testNgXmlFiles");
 			LOGGER.info("ELSE :" + homeDir);
 		}
+		String suiteMarker = IdAuthConfigManager.isLocalRun() ? "authlocalsuite" : "mastertestsuite";
+		LOGGER.info("Selecting suite file matching: " + suiteMarker);
+
 		File[] files = homeDir.listFiles();
 		if (files != null) {
 			for (File file : files) {
 				TestNG runner = new TestNG();
 				List<String> suitefiles = new ArrayList<>();
-				if (file.getName().toLowerCase().contains("mastertestsuite")) {
+				if (file.getName().toLowerCase().contains(suiteMarker)) {
 					BaseTestCase.setReportName(GlobalConstants.AUTH);
 					suitefiles.add(file.getAbsolutePath());
 					runner.setTestSuites(suitefiles);

@@ -75,11 +75,28 @@
 		<fileName>apitest-auth-1.4.0-SNAPSHOT-jar-with-dependencies</fileName>
 	</properties>
 
+	<!--
+		apitest-commons binds SLF4J through slf4j-reload4j 2.0.12, but a transitive
+		dependency drags slf4j-api down to 1.7.30. Nearest-wins picks 1.7.30, whose
+		StaticLoggerBinder lookup the 2.0.12 binding does not provide, so SLF4J falls
+		back to its NOP logger and every SLF4J log line is silently discarded -
+		including the Mock SBI client and the mock-mds library itself.
+	-->
+	<dependencyManagement>
+		<dependencies>
+			<dependency>
+				<groupId>org.slf4j</groupId>
+				<artifactId>slf4j-api</artifactId>
+				<version>2.0.12</version>
+			</dependency>
+		</dependencies>
+	</dependencyManagement>
+
 	<dependencies>
 		<dependency>
 			<groupId>io.mosip.testrig.apitest.commons</groupId>
 			<artifactId>apitest-commons</artifactId>
-			<version>1.7.0-SNAPSHOT</version>
+			<version>1.8.0-SNAPSHOT</version>
 		</dependency>
 	</dependencies>
 	<distributionManagement>

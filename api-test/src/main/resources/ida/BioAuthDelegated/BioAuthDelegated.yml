@@ -49,7 +49,7 @@ BioAuthDelegated:
       outputTemplate: ida/BioAuthDelegated/BioAuthDelegatedResult
       input: '{
         "requestTime": "$TIMESTAMP$",
-        "individualId": "$ID:GenerateVID_for_kycDelegated_bio_sid_vid$",
+        "individualId": "$ID:GenerateVID_for_kycDelegated_bio_smoke_sid_vid$",
         "transactionId": "$TRANSACTIONID$",
         "individualIdType": "VID",
         "bio": true,
@@ -129,7 +129,7 @@ BioAuthDelegated:
       outputTemplate: ida/BioAuthDelegated/BioAuthDelegatedResult
       input: '{
         "requestTime": "$TIMESTAMP$",
-        "individualId": "$ID:GenerateVID_for_kycDelegated_bio_sid_vid$",
+        "individualId": "$ID:GenerateVID_for_kycDelegated_bio_smoke_sid_vid$",
         "transactionId": "$TRANSACTIONID$",
         "individualIdType": "VID",
         "bio": true,
@@ -209,7 +209,7 @@ BioAuthDelegated:
       outputTemplate: ida/BioAuthDelegated/BioAuthDelegatedResult
       input: '{
         "requestTime": "$TIMESTAMP$",
-        "individualId": "$ID:GenerateVID_for_kycDelegated_bio_rightIris_sid_vid$",
+        "individualId": "$ID:GenerateVID_for_kycDelegated_bio_rightIris_smoke_sid_vid$",
         "transactionId": "$TRANSACTIONID$",
         "individualIdType": "VID",
         "bio": true,
@@ -289,7 +289,7 @@ BioAuthDelegated:
       outputTemplate: ida/BioAuthDelegated/BioAuthDelegatedResult
       input: '{
         "requestTime": "$TIMESTAMP$",
-        "individualId": "$ID:GenerateVID_for_kycDelegated_bio_sid_vid$",
+        "individualId": "$ID:GenerateVID_for_kycDelegated_bio_smoke_sid_vid$",
         "transactionId": "$TRANSACTIONID$",
         "individualIdType": "VID",
         "bio": true,
@@ -369,7 +369,7 @@ BioAuthDelegated:
       outputTemplate: ida/BioAuthDelegated/BioAuthDelegatedResult
       input: '{
         "requestTime": "$TIMESTAMP$",
-        "individualId": "$ID:GenerateVID_for_kycDelegated_bio_sid_vid$",
+        "individualId": "$ID:GenerateVID_for_kycDelegated_bio_smoke_sid_vid$",
         "transactionId": "$TRANSACTIONID$",
         "individualIdType": "VID",
         "bio": true,
@@ -449,7 +449,7 @@ BioAuthDelegated:
       outputTemplate: ida/BioAuthDelegated/BioAuthDelegatedResult
       input: '{
         "requestTime": "$TIMESTAMP$",
-        "individualId": "$ID:GenerateVID_for_kycDelegated_bio_sid_vid$",
+        "individualId": "$ID:GenerateVID_for_kycDelegated_bio_smoke_sid_vid$",
         "transactionId": "$TRANSACTIONID$",
         "individualIdType": "VID",
         "bio": true,
@@ -529,7 +529,7 @@ BioAuthDelegated:
       outputTemplate: ida/BioAuthDelegated/BioAuthDelegatedResult
       input: '{
         "requestTime": "$TIMESTAMP$",
-        "individualId": "$ID:GenerateVID_for_kycDelegated_bio_sid_vid$",
+        "individualId": "$ID:GenerateVID_for_kycDelegated_bio_smoke_sid_vid$",
         "transactionId": "$TRANSACTIONID$",
         "individualIdType": "VID",
         "bio": true,
@@ -609,7 +609,7 @@ BioAuthDelegated:
       outputTemplate: ida/BioAuthDelegated/BioAuthDelegatedResult
       input: '{
         "requestTime": "$TIMESTAMP$",
-        "individualId": "$ID:GenerateVID_for_kycDelegated_bio_sid_vid$",
+        "individualId": "$ID:GenerateVID_for_kycDelegated_bio_smoke_sid_vid$",
         "transactionId": "$TRANSACTIONID$",
         "individualIdType": "VID",
         "bio": true,
@@ -689,7 +689,7 @@ BioAuthDelegated:
       outputTemplate: ida/BioAuthDelegated/BioAuthDelegatedResult
       input: '{
         "requestTime": "$TIMESTAMP$",
-        "individualId": "$ID:GenerateVID_for_kycDelegated_bio_sid_vid$",
+        "individualId": "$ID:GenerateVID_for_kycDelegated_bio_smoke_sid_vid$",
         "transactionId": "$TRANSACTIONID$",
         "individualIdType": "VID",
         "bio": true,
@@ -769,7 +769,7 @@ BioAuthDelegated:
       outputTemplate: ida/BioAuthDelegated/BioAuthDelegatedResult
       input: '{
         "requestTime": "$TIMESTAMP$",
-        "individualId": "$ID:GenerateVID_for_kycDelegated_bio_sid_vid$",
+        "individualId": "$ID:GenerateVID_for_kycDelegated_bio_smoke_sid_vid$",
         "transactionId": "$TRANSACTIONID$",
         "individualIdType": "VID",
         "bio": true,
@@ -849,7 +849,7 @@ BioAuthDelegated:
       outputTemplate: ida/BioAuthDelegated/BioAuthDelegatedResult
       input: '{
         "requestTime": "$TIMESTAMP$",
-        "individualId": "$ID:GenerateVID_for_kycDelegated_bio_sid_vid$",
+        "individualId": "$ID:GenerateVID_for_kycDelegated_bio_smoke_sid_vid$",
         "transactionId": "$TRANSACTIONID$",
         "individualIdType": "VID",
         "bio": true,
@@ -969,7 +969,7 @@ BioAuthDelegated:
       outputTemplate: ida/BioAuthDelegated/BioAuthDelegatedResult
       input: '{
         "requestTime": "$TIMESTAMP$",
-        "individualId": "$ID:GenerateVID_for_kycDelegated_bio_sid_vid$",
+        "individualId": "$ID:GenerateVID_for_kycDelegated_bio_smoke_sid_vid$",
         "transactionId": "$TRANSACTIONID$",
         "individualIdType": "VID",
         "bio": true,
