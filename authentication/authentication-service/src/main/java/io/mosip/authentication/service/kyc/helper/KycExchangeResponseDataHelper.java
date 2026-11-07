@@ -12,6 +12,7 @@ import org.springframework.stereotype.Component;
 
 import io.mosip.authentication.common.service.helper.IdInfoHelper;
 import io.mosip.authentication.common.service.impl.match.BioMatchType;
+import io.mosip.authentication.common.service.util.EntityInfoUtil;
 import io.mosip.authentication.common.service.util.EnvUtil;
 import io.mosip.authentication.core.constant.IdAuthCommonConstants;
 import io.mosip.authentication.core.constant.IdAuthenticationErrorConstants;
@@ -69,6 +70,9 @@ public class KycExchangeResponseDataHelper {
 	/** The demo helper. */
 	@Autowired
 	private IdInfoHelper idInfoHelper;
+
+	@Autowired
+	private EntityInfoUtil entityInfoUtil;
 
 	@Autowired
 	private CbeffUtil cbeffUtil;
@@ -158,7 +162,7 @@ public class KycExchangeResponseDataHelper {
 			return;
 		}
 
-		Map<String, String> faceEntityInfoMap = idInfoHelper.getIdEntityInfoMap(BioMatchType.FACE, idInfo, null);
+		Map<String, String> faceEntityInfoMap = entityInfoUtil.getIdEntityInfoMap(BioMatchType.FACE, idInfo, null);
 		if (Objects.isNull(faceEntityInfoMap)) {
 			return;
 		}

@@ -390,7 +390,7 @@ public class KycControllerTest {
 
 		Mockito.doAnswer(invocation -> {
 			throw ex;
-		}).when(authRequestValidator).validateIdvId(Mockito.anyString(), Mockito.anyString(), Mockito.any());
+		}).when(authRequestValidator).validateIdvId(Mockito.anyString(), Mockito.anyString(), Mockito.any(), Mockito.anyString());
 
 		Mockito.when(authTransactionHelper.createDataValidationException(Mockito.any(), Mockito.any(), Mockito.any()))
 				.thenReturn(new IdAuthenticationAppException());
@@ -472,7 +472,7 @@ public class KycControllerTest {
 		// Use doAnswer instead of doThrow
 		Mockito.doAnswer(invocation -> { throw ex; })
 				.when(kycExchangeValidator)
-				.validateIdvId(Mockito.anyString(), Mockito.anyString(), Mockito.any());
+				.validateIdvId(Mockito.anyString(), Mockito.anyString(), Mockito.any(), Mockito.anyString());
 
 		Mockito.when(authTransactionHelper.createDataValidationException(Mockito.any(), Mockito.any(), Mockito.any()))
 				.thenReturn(new IdAuthenticationAppException());

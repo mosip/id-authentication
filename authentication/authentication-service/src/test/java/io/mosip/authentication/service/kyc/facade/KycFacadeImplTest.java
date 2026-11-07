@@ -964,14 +964,18 @@ public class KycFacadeImplTest {
 		when(kycService.generateAndSaveKycToken(anyString(), anyString(), anyString(), anyString(), anyString(), anyString()))
 				.thenReturn("kyc-token-123");
 		ReflectionTestUtils.setField(kycFacade, "kycService", kycService);
+		IdService<AutnTxn> idService = mock(IdService.class);
+		Map<String, Object> idResDTO = new HashMap<>();
+		when(idService.getIdHash(idResDTO)).thenReturn(idHash);
+		ReflectionTestUtils.setField(kycFacade, "idService", idService);
 
-		Map.Entry<KycAuthResponseDTO, Boolean> result = ReflectionTestUtils.invokeMethod(
-				kycFacade, "doProcessKycAuth", kycAuthRequestDTO, authResponseDTO, partnerId, oidcClientId, idHash);
+		Map.Entry<BaseAuthResponseDTO, Boolean> result = ReflectionTestUtils.invokeMethod(
+				kycFacade, "doProcessKycAuth", kycAuthRequestDTO, authResponseDTO, partnerId, oidcClientId, idResDTO, false);
 
 		assertNotNull(result);
 		assertTrue(result.getValue());
 		assertNotNull(result.getKey());
-		assertEquals("kyc-token-123", result.getKey().getResponse().getKycToken());
+		assertEquals("kyc-token-123", ((KycAuthResponseDTO) result.getKey()).getResponse().getKycToken());
 	}
 
 	@Test

@@ -119,6 +119,9 @@ public class KycServiceImpl implements KycService {
 	@Autowired
 	private IdInfoHelper idInfoHelper;
 
+	@Autowired
+	private EntityInfoUtil entityInfoUtil;
+
 	/** The mapping config. */
 	@Autowired
 	private MappingConfig mappingConfig;
@@ -532,7 +535,7 @@ public class KycServiceImpl implements KycService {
 					"Face Bio not found in DB. So not adding to response claims.");
 				return;
 			}
-			Map<String, String> faceEntityInfoMap = idInfoHelper.getIdEntityInfoMap(BioMatchType.FACE, idInfo, null);
+			Map<String, String> faceEntityInfoMap = entityInfoUtil.getIdEntityInfoMap(BioMatchType.FACE, idInfo, null);
 			if (Objects.nonNull(faceEntityInfoMap)) {
 				try {
 					String face = convertJP2ToJpeg(getFaceBDB(faceEntityInfoMap.get(CbeffDocType.FACE.getType().value())));

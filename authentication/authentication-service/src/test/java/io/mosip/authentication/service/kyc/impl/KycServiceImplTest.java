@@ -154,7 +154,6 @@ public class KycServiceImplTest {
 		ReflectionTestUtils.setField(kycServiceImpl2, "mapper", mapper);
 		ReflectionTestUtils.setField(kycServiceImpl2, "mappingConfig", idMappingConfig);
 		ReflectionTestUtils.setField(idInfoHelper2, "env", env);
-		ReflectionTestUtils.setField(idInfoHelper2, "idInfoFetcher", idinfoFetcher);
 		ReflectionTestUtils.setField(idInfoHelper2, "idMappingConfig", idMappingConfig);
 		ReflectionTestUtils.setField(idinfoFetcher, "cbeffUtil", new CbeffImpl());
 		ReflectionTestUtils.setField(idinfoFetcher, "environment", env);

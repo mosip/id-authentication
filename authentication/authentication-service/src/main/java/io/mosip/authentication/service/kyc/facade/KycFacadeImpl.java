@@ -7,6 +7,7 @@ import static io.mosip.authentication.core.constant.IdAuthCommonConstants.EMPTY;
 import static io.mosip.authentication.core.constant.IdAuthCommonConstants.VERIFIED_CLAIMS_ATTRIBS;
 
 import java.util.AbstractMap.SimpleEntry;
+import java.util.ArrayList;
 import java.util.Collection;
 import java.util.HashSet;
 import java.util.List;
@@ -197,6 +198,7 @@ public class KycFacadeImpl implements KycFacade {
 			String partnerId, Map<String, Object>  metadata) throws IdAuthenticationBusinessException {
 		boolean status;
 		String token = null;
+		String idHash = null;
 		
 		EKycAuthResponseDTO kycAuthResponseDTO = null;
 		try {
@@ -376,7 +378,6 @@ public class KycFacadeImpl implements KycFacade {
 			String kycToken = null;
 			if (Objects.nonNull(authResponse) && authResponse.isAuthStatus()) {
 				kycToken = kycService.generateAndSaveKycToken(idHash, authResponse.getAuthToken(), oidcClientId, requestTime, responseTime, kycAuthRequestDTO.getTransactionID());
-				response.setKycToken(kycToken);
 			}
 			if (Objects.nonNull(authResponse) && Objects.nonNull(authResponseDTO)) {
 				baseAuthResponseDTO.setId(authResponseDTO.getId());
