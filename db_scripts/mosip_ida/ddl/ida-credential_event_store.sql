@@ -1,14 +1,14 @@
 -- -------------------------------------------------------------------------------------------------
--- Database Name: mosip_ida
+-- Database Name: :mosipdbname
 -- Table Name 	: ida.credential_event_store
--- Purpose    	: 
---           
+-- Purpose    	:
+--
 -- Create By   	: Sadanandegowda DM
 -- Created Date	: Jan-2021
--- 
+--
 -- Modified Date        Modified By         Comments / Remarks
 -- ------------------------------------------------------------------------------------------
--- Jan-2021		Ram Bhatt	    Set is_deleted flag to not null and default false 
+-- Jan-2021		Ram Bhatt	    Set is_deleted flag to not null and default false
 -- Mar-2021		Ram Bhatt	    Reverting is_deleted not null changes
 -- Sep-2021		Ram Bhatt	    Added index to cr_dtimes column
 -- ------------------------------------------------------------------------------------------
