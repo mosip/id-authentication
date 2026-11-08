@@ -26,7 +26,6 @@ import io.mosip.authentication.common.service.impl.match.BioAuthType;
 import io.mosip.authentication.common.service.impl.match.BioMatchType;
 import io.mosip.authentication.common.service.impl.match.IdaIdMapping;
 import io.mosip.authentication.common.service.integration.MasterDataManager;
-import io.mosip.authentication.common.service.integration.OTPManager;
 import io.mosip.authentication.common.service.integration.PasswordComparator;
 import io.mosip.authentication.common.service.util.BioMatcherUtil;
 import io.mosip.authentication.common.service.util.EnvUtil;
@@ -65,10 +64,6 @@ import io.mosip.kernel.core.cbeffutil.jaxbclasses.BIRType;
 @Service
 public class IdInfoFetcherImpl implements IdInfoFetcher {
 	
-	/**  The OTPManager. */
-	@Autowired
-	private OTPManager otpManager;
-
 	/** The Cbeff Util. */
 	@Autowired
 	private CbeffUtil cbeffUtil;
@@ -253,7 +248,7 @@ public class IdInfoFetcherImpl implements IdInfoFetcher {
 	 */
 	@Override
 	public ValidateOtpFunction getValidateOTPFunction() {
-		return otpManager::validateOtp;
+		return validateOtpHelper::validateOtp;
 	}
 
 	/**
