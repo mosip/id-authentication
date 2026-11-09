@@ -1,0 +1,57 @@
+THIRD-PARTY NOTICES
+
+Copyright © MOSIP.
+All rights reserved.
+
+This project includes third-party components whose licenses require
+attribution. The following components are included in this product.
+
+===============================
+ Mozilla Public License 2.0
+===============================
+• MOSIP Platform Components  
+  (Kernel, ID Repository, Authentication Modules, Demographics & Biometrics APIs,  
+   WebSub Client, Template Manager, ID Generators, Key Manager, CBEFF Utilities,  
+   Data Access, OpenID Bridge APIs)
+
+• MOSIP e-Signet Components  
+  (esignet-core, esignet-integration-api)
+
+• MOSIP SDKs & Utilities  
+  (biosdk-client, demosdk, biometrics-util, testrig apitest commons)
+
+===============================
+ BSD / BSD-Style Licenses
+===============================
+• PostgreSQL JDBC Driver  
+  License: PostgreSQL License (BSD-style)
+
+• OpenCV Java (org.openpnp:opencv)  
+  License: BSD 3-Clause
+
+===============================
+ JSON License
+===============================
+• JSON.org Library  
+  License: JSON License (attribution required)
+
+===============================
+ MIT License
+===============================
+• Project Lombok  
+• Mockito  
+• ByteBuddy  
+• Objenesis  
+• TensorFlow Java (MIT portions if applicable)
+
+===============================
+ Eclipse Public License
+===============================
+• JUnit 4 (EPL-1.0)  
+• JUnit Vintage (EPL-2.0)  
+• H2 Database (EPL-1.0)
+
+------------------------------------------------------------
+Full license texts for these components are available in the
+`license/` directory of this repository.
+------------------------------------------------------------
