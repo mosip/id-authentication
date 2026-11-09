@@ -83,7 +83,7 @@ public class VerifiedClaimsServiceImpl implements VerifiedClaimsService {
 	@Value("${mosip.ida.idp.consented.address.subset.attributes:}")
 	private String[] addressSubsetAttributes;
 
-	@Value("${ida.idp.jwe.response.type.constant:JWE}")
+	@Value("${mosip.ida.idp.jwe.response.type.constant:JWE}")
 	private String jweResponseType;
 
 	@Value("${mosip.ida.oidc4ida.ignore.standard.claims.list}")

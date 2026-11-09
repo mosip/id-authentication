@@ -245,7 +245,8 @@ public class KycFacadeImpl implements KycFacade {
 								RequestType.KYC_AUTH_REQUEST.getRequestType() : RequestType.KYC_AUTH_REQUEST_V2.getRequestType();
 							autnTxn.setAuthTypeCode(requestType
 								+ (authTypeCode == null ? "" : AuthTransactionBuilder.REQ_TYPE_DELIM + authTypeCode));
-							autnTxn.setStatusComment(RequestType.KYC_AUTH_REQUEST.getMessage() + (statusComment == null ? ""
+							autnTxn.setStatusComment((authRequestDTO instanceof KycAuthRequestDTO) ?  
+								RequestType.KYC_AUTH_REQUEST.getMessage() : RequestType.KYC_AUTH_REQUEST_V2.getMessage() + (statusComment == null ? ""
 								: AuthTransactionBuilder.REQ_TYPE_MSG_DELIM + statusComment));
 						} else {
 							autnTxn.setAuthTypeCode(RequestType.EKYC_AUTH_REQUEST.getRequestType()
@@ -634,7 +635,7 @@ public class KycFacadeImpl implements KycFacade {
 								IdAuthCommonConstants.KYC_EXCHANGE_CONSUME_VID_DEFAULT, policyAllowedAttributes);
 			Map<String, List<IdentityInfoDTO>> idInfo = IdInfoFetcher.getIdInfo(idResDTO, mapper);
 
-			List<String> locales = kycExchangeRequestDTOV2.getLocales();
+			List<String> locales = kycExchangeRequestDTOV2.getLocales() == null ? new ArrayList<>() : kycExchangeRequestDTOV2.getLocales();
 			if (locales.size() == 0) {
 				locales.add(EnvUtil.getKycExchangeDefaultLanguage());
 			}
