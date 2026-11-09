@@ -11,7 +11,7 @@ TRUNCATE TABLE batch_step_execution_context CASCADE;
 
 GRANT usage, SELECT ON ALL SEQUENCES
    IN SCHEMA ida
-   TO idauser;
+   TO :dbuname;
 
 -- Revert ALTER on BATCH_STEP_EXECUTION
 ALTER TABLE BATCH_STEP_EXECUTION DROP COLUMN CREATE_TIME;  -- Remove the column added
