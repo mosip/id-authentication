@@ -336,7 +336,7 @@ public class KycExchangeResponseDataHelper {
 			convertRequestDto.setInputBytes(CryptoUtil.decodeBase64(jp2Image));
 			byte[] image = FaceDecoder.convertFaceISOToImageBytes(convertRequestDto);
 			return CryptoUtil.encodeBase64(image);
-		} catch(Exception exp) {
+		} catch(Exception | LinkageError exp) {
 			mosipLogger.error(IdAuthCommonConstants.SESSION_ID, this.getClass().getSimpleName(), "convertJP2ToJpeg",
 					"Error Converting JP2 To JPEG. " + exp.getMessage(), exp);
 		}

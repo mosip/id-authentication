@@ -69,6 +69,7 @@ import io.mosip.authentication.core.spi.indauth.match.MappingConfig;
 import io.mosip.authentication.core.util.CryptoUtil;
 import io.mosip.authentication.service.kyc.helper.KycExchangeResponseDataHelper;
 import io.mosip.kernel.cbeffutil.impl.CbeffImpl;
+import io.mosip.kernel.core.util.DateUtils2;
 
 /**
  * Test class for KycServiceImpl.
@@ -849,7 +850,7 @@ public class KycServiceImplTest {
 
 	@Test
 	public void isKycTokenExpireTest() {
-		LocalDateTime currentTime = LocalDateTime.now();
+		LocalDateTime currentTime = DateUtils2.getUTCCurrentDateTime();
 		LocalDateTime tokenIssuedTime = currentTime.minusSeconds(20);
 		String dummyToken  = "dummyToken";
 		boolean valid = ReflectionTestUtils.invokeMethod(kycServiceImpl2, "isKycTokenExpire", tokenIssuedTime, dummyToken);
