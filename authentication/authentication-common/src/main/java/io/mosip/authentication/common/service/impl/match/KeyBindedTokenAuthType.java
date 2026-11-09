@@ -3,6 +3,7 @@ package io.mosip.authentication.common.service.impl.match;
 import io.mosip.authentication.common.service.impl.AuthTypeImpl;
 import io.mosip.authentication.core.indauth.dto.AuthRequestDTO;
 import io.mosip.authentication.core.indauth.dto.KycAuthRequestDTO;
+import io.mosip.authentication.core.indauth.dto.KycAuthRequestDTOV2;
 import io.mosip.authentication.core.spi.indauth.match.AuthType;
 import io.mosip.authentication.core.spi.indauth.match.IdInfoFetcher;
 import io.mosip.authentication.core.spi.indauth.match.MatchType;
@@ -37,6 +38,12 @@ public enum KeyBindedTokenAuthType implements AuthType {
                     kycAuthRequestDTO.getRequest().getKeyBindedTokens().get(0).getToken() != null &&
                     kycAuthRequestDTO.getRequest().getKeyBindedTokens().get(0).getFormat() != null &&
                     kycAuthRequestDTO.getRequest().getKeyBindedTokens().get(0).getType() != null;
+        } else if (authRequestDTO instanceof KycAuthRequestDTOV2) {
+            KycAuthRequestDTOV2 kycAuthRequestDTOV2 = (KycAuthRequestDTOV2) authRequestDTO;
+            return !CollectionUtils.isEmpty(kycAuthRequestDTOV2.getRequest().getKeyBindedTokens()) &&
+                    kycAuthRequestDTOV2.getRequest().getKeyBindedTokens().get(0).getToken() != null &&
+                    kycAuthRequestDTOV2.getRequest().getKeyBindedTokens().get(0).getFormat() != null &&
+                    kycAuthRequestDTOV2.getRequest().getKeyBindedTokens().get(0).getType() != null;
         }
         return false;
     }

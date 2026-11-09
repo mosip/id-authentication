@@ -12,7 +12,9 @@ import io.mosip.authentication.core.indauth.dto.AuthResponseDTO;
 import io.mosip.authentication.core.indauth.dto.EKycAuthResponseDTO;
 import io.mosip.authentication.core.indauth.dto.EkycAuthRequestDTO;
 import io.mosip.authentication.core.indauth.dto.KycAuthResponseDTO;
+import io.mosip.authentication.core.indauth.dto.KycAuthResponseDTOV2;
 import io.mosip.authentication.core.indauth.dto.KycExchangeRequestDTO;
+import io.mosip.authentication.core.indauth.dto.KycExchangeRequestDTOV2;
 import io.mosip.authentication.core.indauth.dto.KycExchangeResponseDTO;
 
 /**
@@ -65,8 +67,6 @@ public interface KycFacade {
 	AuthResponseDTO authenticateIndividual(AuthRequestDTO authRequest, boolean request, String partnerId, String partnerApiKey, 
 						ObjectWithMetadata requestWithMetadata, boolean markVidConsumed)
 			throws IdAuthenticationBusinessException, IdAuthenticationDaoException;
-
-	
 	
 	/**
 	 * Process the KycAuthRequestDTO to integrate with KYCService.
@@ -82,7 +82,6 @@ public interface KycFacade {
 	KycAuthResponseDTO processKycAuth(@Nonnull AuthRequestDTO kycAuthRequestDTO, AuthResponseDTO authResponseDTO,
 			String partnerId, String oidcClientId, Map<String, Object>  metadata) throws IdAuthenticationBusinessException;
 
-
 	/**
 	 * Process the KycExchangeRequestDTO to integrate with KYCService.
 	 *
@@ -96,6 +95,34 @@ public interface KycFacade {
 	 *                                           exception
 	 */
 	KycExchangeResponseDTO processKycExchange(KycExchangeRequestDTO kycExchangeRequestDTO, 
+			String partnerId, String oidcClientId, Map<String, Object>  metadata, ObjectWithMetadata requestWithMetadata) throws IdAuthenticationBusinessException;
+
+	/**
+	 * Process the KycAuthRequestDTOV2 to integrate with KYCService for OIDC4IDA.
+	 *
+	 * @param kycAuthRequestDtoV2 is DTO of KycAuthRequestDTOV2
+	 * @param authResponseDTO   the auth response DTO
+	 * @param partnerId the partner id
+	 * @param metadata the metadata
+	 * @return the kyc auth response V2 DTO
+	 * @throws IdAuthenticationBusinessException the id authentication business exception
+	 */
+	KycAuthResponseDTOV2 processKycAuthV2(@Nonnull AuthRequestDTO kycAuthRequestDtoV2, AuthResponseDTO authResponseDTO,
+			String partnerId, String oidcClientId, Map<String, Object>  metadata) throws IdAuthenticationBusinessException;
+	
+	/**
+	 * Process the KycExchangeRequestDTOV2 to integrate with KYCService for OIDC4IDA.
+	 *
+	 * @param kycExchangeRequestDTOV2 is DTO of KycExchangeRequestDTOV2
+	 * @param partnerId the partner id
+	 * @param oidcClientId the client id
+	 * @param metadata the metadata
+	 * @param requestWithMetadata the request with metadata
+	 * @return the kyc auth response DTO
+	 * @throws IdAuthenticationBusinessException the id authentication business
+	 *                                           exception
+	 */
+	KycExchangeResponseDTO processKycExchangeV2(KycExchangeRequestDTOV2 kycExchangeRequestDTOV2, 
 			String partnerId, String oidcClientId, Map<String, Object>  metadata, ObjectWithMetadata requestWithMetadata) throws IdAuthenticationBusinessException;
 
 }

@@ -262,12 +262,14 @@ public class AuthTransactionBuilder {
 			autnTxn.setAuthTknId(authTokenId);
 			autnTxn.setCrDTimes(DateUtils2.getUTCCurrentDateTime());
 			LocalDateTime strUTCDate = DateUtils2.getUTCCurrentDateTime();
-			try {
-				strUTCDate = DateUtils2.parseToLocalDateTime(DateUtils2.getUTCTimeFromDate(
-						DateUtils2.parseToDate(reqTime, EnvUtil.getDateTimePattern())));
-			} catch (ParseException e) {
-				mosipLogger.warn(IdAuthCommonConstants.SESSION_ID, this.getClass().getName(), e.getMessage(),
-						"Invalid Request Time - setting to current date time");
+			if (reqTime != null && !reqTime.trim().isEmpty()) {
+				try {
+					strUTCDate = DateUtils2.parseToLocalDateTime(DateUtils2.getUTCTimeFromDate(
+							DateUtils2.parseToDate(reqTime, EnvUtil.getDateTimePattern())));
+				} catch (ParseException e) {
+					mosipLogger.warn(IdAuthCommonConstants.SESSION_ID, this.getClass().getName(), e.getMessage(),
+							"Invalid Request Time - setting to current date time");
+				}
 			}
 			autnTxn.setRequestDTimes(strUTCDate);
 			autnTxn.setResponseDTimes(DateUtils2.getUTCCurrentDateTime());

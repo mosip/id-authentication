@@ -67,7 +67,9 @@ import io.mosip.authentication.core.indauth.dto.IdentityInfoDTO;
 import io.mosip.authentication.core.indauth.dto.KycExchangeRequestDTO;
 import io.mosip.authentication.core.spi.indauth.match.MappingConfig;
 import io.mosip.authentication.core.util.CryptoUtil;
+import io.mosip.authentication.service.kyc.helper.KycExchangeResponseDataHelper;
 import io.mosip.kernel.cbeffutil.impl.CbeffImpl;
+import io.mosip.kernel.core.util.DateUtils2;
 
 /**
  * Test class for KycServiceImpl.
@@ -143,7 +145,7 @@ public class KycServiceImplTest {
 
 
 	@Before
-	public void before() throws IdAuthenticationDaoException, IdAuthenticationBusinessException {
+	public void before() throws IdAuthenticationDaoException {
 		ReflectionTestUtils.setField(kycServiceImpl, "env", env);
 		ReflectionTestUtils.setField(kycServiceImpl, "idInfoHelper", idInfoHelper);
 		ReflectionTestUtils.setField(kycServiceImpl, "mapper", mapper);
@@ -156,7 +158,10 @@ public class KycServiceImplTest {
 		ReflectionTestUtils.setField(idInfoHelper2, "idMappingConfig", idMappingConfig);
 		ReflectionTestUtils.setField(idinfoFetcher, "cbeffUtil", new CbeffImpl());
 		ReflectionTestUtils.setField(idinfoFetcher, "environment", env);
+		ReflectionTestUtils.setField(kycServiceImpl2, "kycExchangeResponseDataHelper", new KycExchangeResponseDataHelper());
+
 		idInfo = getIdInfo("12232323121");
+
 	}
 
 	@Test
@@ -845,7 +850,7 @@ public class KycServiceImplTest {
 
 	@Test
 	public void isKycTokenExpireTest() {
-		LocalDateTime currentTime = LocalDateTime.now();
+		LocalDateTime currentTime = DateUtils2.getUTCCurrentDateTime();
 		LocalDateTime tokenIssuedTime = currentTime.minusSeconds(20);
 		String dummyToken  = "dummyToken";
 		boolean valid = ReflectionTestUtils.invokeMethod(kycServiceImpl2, "isKycTokenExpire", tokenIssuedTime, dummyToken);
@@ -880,7 +885,7 @@ public class KycServiceImplTest {
 		Map<String, String> faceMap = prepareFaceData(idInfo);
 		Mockito.when(entityInfoUtil.getIdEntityInfoMap(Mockito.any(), Mockito.any(), Mockito.any())).thenReturn(faceMap);
 
-		String response = kycServiceImpl2.buildKycExchangeResponse(dummySubject, idInfo, consentedAttributes, consentedLocales, idVid, kycExchangeRequestDTO);
+		String response = kycServiceImpl2.buildKycExchangeResponse(dummySubject, idInfo, consentedAttributes, consentedLocales, idVid, "DUMMY-OIDC-CLIENT-ID", kycExchangeRequestDTO);
 		assertEquals(response, resKycToken);
 	}
 
@@ -914,7 +919,7 @@ public class KycServiceImplTest {
 		Map<String, String> faceMap = prepareFaceData(idInfo);
 		Mockito.when(entityInfoUtil.getIdEntityInfoMap(Mockito.any(), Mockito.any(), Mockito.any())).thenReturn(faceMap);
 
-		String response = kycServiceImpl2.buildKycExchangeResponse(dummySubject, idInfo, consentedAttributes, consentedLocales, idVid, kycExchangeRequestDTO);
+		String response = kycServiceImpl2.buildKycExchangeResponse(dummySubject, idInfo, consentedAttributes, consentedLocales, idVid, "DUMMY-OIDC-CLIENT-ID", kycExchangeRequestDTO);
 		assertEquals(response, resKycToken);
 	}
 
@@ -943,7 +948,7 @@ public class KycServiceImplTest {
 		Mockito.when(entityInfoUtil.getIdEntityInfoMap(Mockito.any(), Mockito.any(), Mockito.any())).thenReturn(faceMap);
 		Mockito.when(securityManager.jwtEncrypt(Mockito.anyString(), Mockito.anyString())).thenReturn(resKycToken);
 		
-		String response = kycServiceImpl2.buildKycExchangeResponse(dummySubject, idInfo, consentedAttributes, consentedLocales, idVid, kycExchangeRequestDTO);
+		String response = kycServiceImpl2.buildKycExchangeResponse(dummySubject, idInfo, consentedAttributes, consentedLocales, idVid, "DUMMY-OIDC-CLIENT-ID", kycExchangeRequestDTO);
 		assertEquals(response, resKycToken);
 	}
 	
@@ -958,7 +963,7 @@ public class KycServiceImplTest {
 		
 		String resKycToken = "responseJWTToken";
 		Mockito.when(securityManager.signWithPayload(Mockito.anyString())).thenReturn(resKycToken); 
-		String response = kycServiceImpl2.buildKycExchangeResponse(dummySubject, idInfo, consentedAttributes, consentedLocales, idVid, kycExchangeRequestDTO);
+		String response = kycServiceImpl2.buildKycExchangeResponse(dummySubject, idInfo, consentedAttributes, consentedLocales, idVid, "DUMMY-OIDC-CLIENT-ID", kycExchangeRequestDTO);
 		assertEquals(response, resKycToken);
 	}
 
@@ -979,7 +984,7 @@ public class KycServiceImplTest {
 		String resKycToken = "responseJWTToken";
 		Mockito.when(securityManager.signWithPayload(Mockito.anyString())).thenReturn(resKycToken); 
 		
-		String response = kycServiceImpl2.buildKycExchangeResponse(dummySubject, idInfo, consentedAttributes, consentedLocales, idVid, kycExchangeRequestDTO);
+		String response = kycServiceImpl2.buildKycExchangeResponse(dummySubject, idInfo, consentedAttributes, consentedLocales, idVid, "DUMMY-OIDC-CLIENT-ID", kycExchangeRequestDTO);
 		assertEquals(response, resKycToken);
 	}
 
@@ -1003,7 +1008,7 @@ public class KycServiceImplTest {
 		Map<String, String> faceMap = prepareFaceData(idInfo);
 		Mockito.when(entityInfoUtil.getIdEntityInfoMap(Mockito.any(), Mockito.any(), Mockito.any())).thenReturn(faceMap);
 		
-		String response = kycServiceImpl2.buildKycExchangeResponse(dummySubject, idInfo, consentedAttributes, consentedLocales, idVid, kycExchangeRequestDTO);
+		String response = kycServiceImpl2.buildKycExchangeResponse(dummySubject, idInfo, consentedAttributes, consentedLocales, idVid, "DUMMY-OIDC-CLIENT-ID", kycExchangeRequestDTO);
 		assertEquals(response, resKycToken);
 	}
 
@@ -1026,7 +1031,7 @@ public class KycServiceImplTest {
 		Map<String, String> faceMap = prepareFaceData(idInfo);
 		Mockito.when(entityInfoUtil.getIdEntityInfoMap(Mockito.any(), Mockito.any(), Mockito.any())).thenReturn(faceMap);
 
-		String response = kycServiceImpl2.buildKycExchangeResponse(dummySubject, idInfo, consentedAttributes, consentedLocales, idVid, kycExchangeRequestDTO);
+		String response = kycServiceImpl2.buildKycExchangeResponse(dummySubject, idInfo, consentedAttributes, consentedLocales, idVid, "DUMMY-OIDC-CLIENT-ID", kycExchangeRequestDTO);
 		assertEquals(response, resKycToken);
 	}
 
@@ -1049,7 +1054,7 @@ public class KycServiceImplTest {
 		Map<String, String> faceMap = prepareFaceData(idInfo);
 		Mockito.when(entityInfoUtil.getIdEntityInfoMap(Mockito.any(), Mockito.any(), Mockito.any())).thenReturn(faceMap);
 
-		String response = kycServiceImpl2.buildKycExchangeResponse(dummySubject, idInfo, consentedAttributes, consentedLocales, idVid, kycExchangeRequestDTO);
+		String response = kycServiceImpl2.buildKycExchangeResponse(dummySubject, idInfo, consentedAttributes, consentedLocales, idVid, "DUMMY-OIDC-CLIENT-ID", kycExchangeRequestDTO);
 		assertEquals(response, resKycToken);
 	}
 
@@ -1069,7 +1074,7 @@ public class KycServiceImplTest {
 		String resKycToken = "responseJWTToken";
 		Mockito.when(securityManager.signWithPayload(Mockito.anyString())).thenReturn(resKycToken); 
 
-		String response = kycServiceImpl2.buildKycExchangeResponse(dummySubject, idInfo, consentedAttributes, consentedLocales, idVid, kycExchangeRequestDTO);
+		String response = kycServiceImpl2.buildKycExchangeResponse(dummySubject, idInfo, consentedAttributes, consentedLocales, idVid, "DUMMY-OIDC-CLIENT-ID", kycExchangeRequestDTO);
 		assertEquals(response, resKycToken);
 	}
 
@@ -1092,7 +1097,7 @@ public class KycServiceImplTest {
 		List<String> attributes = List.of("middleName", "lastName");
 		Mockito.when(idInfoHelper.getIdentityAttributesForIdName(Mockito.anyString())).thenReturn(attributes);
 		
-		String response = kycServiceImpl2.buildKycExchangeResponse(dummySubject, idInfo, consentedAttributes, consentedLocales, idVid, kycExchangeRequestDTO);
+		String response = kycServiceImpl2.buildKycExchangeResponse(dummySubject, idInfo, consentedAttributes, consentedLocales, idVid, "DUMMY-OIDC-CLIENT-ID", kycExchangeRequestDTO);
 		assertEquals(response, resKycToken);
 	}
 
@@ -1115,7 +1120,7 @@ public class KycServiceImplTest {
 		List<String> attributes = List.of("middleName", "lastName");
 		Mockito.when(idInfoHelper.getIdentityAttributesForIdName(Mockito.anyString())).thenReturn(attributes);
 		
-		String response = kycServiceImpl2.buildKycExchangeResponse(dummySubject, idInfo, consentedAttributes, consentedLocales, idVid, kycExchangeRequestDTO);
+		String response = kycServiceImpl2.buildKycExchangeResponse(dummySubject, idInfo, consentedAttributes, consentedLocales, idVid, "DUMMY-OIDC-CLIENT-ID", kycExchangeRequestDTO);
 		assertEquals(response, resKycToken);
 	}
 

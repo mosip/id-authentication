@@ -24,8 +24,6 @@ import io.mosip.authentication.common.service.impl.match.BioMatchType;
 import io.mosip.authentication.common.service.impl.match.DOBType;
 import io.mosip.authentication.common.service.impl.match.DemoAuthType;
 import io.mosip.authentication.common.service.impl.match.DemoMatchType;
-import io.mosip.authentication.common.service.impl.match.KeyBindedTokenAuthType;
-import io.mosip.authentication.common.service.impl.match.KeyBindedTokenMatchType;
 import io.mosip.authentication.common.service.impl.match.PasswordMatchType;
 import io.mosip.authentication.common.service.impl.match.PinMatchType;
 import io.mosip.authentication.common.service.util.AuthTypeUtil;
@@ -40,7 +38,9 @@ import io.mosip.authentication.core.indauth.dto.IdentityDTO;
 import io.mosip.authentication.core.indauth.dto.IdentityInfoDTO;
 import io.mosip.authentication.core.indauth.dto.KeyBindedTokenDTO;
 import io.mosip.authentication.core.indauth.dto.KycAuthRequestDTO;
+import io.mosip.authentication.core.indauth.dto.KycAuthRequestDTOV2;
 import io.mosip.authentication.core.indauth.dto.KycRequestDTO;
+import io.mosip.authentication.core.indauth.dto.KycRequestDTOV2;
 import io.mosip.authentication.core.indauth.dto.RequestDTO;
 import io.mosip.authentication.core.logger.IdaLogger;
 import io.mosip.authentication.core.spi.indauth.match.AuthType;
@@ -200,8 +200,16 @@ public abstract class BaseAuthRequestValidator extends IdAuthValidator {
 	private void validatePasswordDetails(AuthRequestDTO authRequestDTO, Errors errors) {
 		
 		if (isMatchtypeEnabled(PasswordMatchType.PASSWORD)) {
-			KycAuthRequestDTO kycAuthRequestDTO = (KycAuthRequestDTO) authRequestDTO;
-			Optional<String> passwordOpt = Optional.ofNullable(kycAuthRequestDTO.getRequest()).map(KycRequestDTO::getPassword);
+			Optional<String> passwordOpt = Optional.empty();
+			if (authRequestDTO instanceof KycAuthRequestDTO) {
+				KycAuthRequestDTO kycAuthRequestDTO = (KycAuthRequestDTO) authRequestDTO;
+				passwordOpt = Optional.ofNullable(kycAuthRequestDTO.getRequest()).map(KycRequestDTO::getPassword);
+			} else if (authRequestDTO instanceof KycAuthRequestDTOV2) {
+				KycAuthRequestDTOV2 kycAuthRequestDTOV2 = (KycAuthRequestDTOV2) authRequestDTO;
+				passwordOpt = Optional.ofNullable(kycAuthRequestDTOV2.getRequest()).map(KycRequestDTOV2::getPassword);
+			} else {
+				return;
+			}
 			if (!passwordOpt.isPresent()) {
 				mosipLogger.error(IdAuthCommonConstants.SESSION_ID, this.getClass().getSimpleName(),
 						IdAuthCommonConstants.VALIDATE, "Missing Password value in the request");
@@ -222,11 +230,19 @@ public abstract class BaseAuthRequestValidator extends IdAuthValidator {
 	}
 
 	private void validateKBTDetails(AuthRequestDTO authRequestDTO, Errors errors) {
-		if(authRequestDTO instanceof KycAuthRequestDTO) {
-            KycAuthRequestDTO kycAuthRequestDTO = (KycAuthRequestDTO)authRequestDTO;
-			boolean isKbt = CollectionUtils.isEmpty(kycAuthRequestDTO.getRequest().getKeyBindedTokens());
-			if (!isKbt) {
-				KeyBindedTokenDTO kbtDto = kycAuthRequestDTO.getRequest().getKeyBindedTokens().get(0);
+		List<KeyBindedTokenDTO> keyBindedTokens = null;
+		if (authRequestDTO instanceof KycAuthRequestDTO) {
+			KycAuthRequestDTO kycAuthRequestDTO = (KycAuthRequestDTO) authRequestDTO;
+			keyBindedTokens = Optional.ofNullable(kycAuthRequestDTO.getRequest()).map(KycRequestDTO::getKeyBindedTokens)
+					.orElse(null);
+		} else if (authRequestDTO instanceof KycAuthRequestDTOV2) {
+			KycAuthRequestDTOV2 kycAuthRequestDTOV2 = (KycAuthRequestDTOV2) authRequestDTO;
+			keyBindedTokens = Optional.ofNullable(kycAuthRequestDTOV2.getRequest()).map(KycRequestDTOV2::getKeyBindedTokens)
+					.orElse(null);
+		}
+
+		if (!CollectionUtils.isEmpty(keyBindedTokens)) {
+			KeyBindedTokenDTO kbtDto = keyBindedTokens.get(0);
 				if (Objects.isNull(kbtDto.getFormat()) || kbtDto.getFormat().isBlank()) {
 					mosipLogger.error(SESSION_ID, this.getClass().getSimpleName(), "validateKBTDetails",
 							"INVALID_INPUT_PARAMETER - KBT value -> " + kbtDto.getFormat());
@@ -248,7 +264,6 @@ public abstract class BaseAuthRequestValidator extends IdAuthValidator {
 							new Object[] { "KeyBindedTokens.Type" },
 							IdAuthenticationErrorConstants.INVALID_INPUT_PARAMETER.getErrorMessage());
 				}
-			}
 		}
 	}
 

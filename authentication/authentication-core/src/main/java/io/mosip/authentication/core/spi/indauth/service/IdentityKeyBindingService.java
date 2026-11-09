@@ -25,7 +25,7 @@ public interface IdentityKeyBindingService {
 	 * @throws IdAuthenticationBusinessException the id authentication business exception
      * 
 	 */
-	boolean isPublicKeyBinded(String idVid, Map<String, Object> publicKeyJWK) throws IdAuthenticationBusinessException;
+	boolean isPublicKeyBinded(String idVid, Map<String, Object> publicKeyJWK, String idvIdType) throws IdAuthenticationBusinessException;
 
     /**
 	 * Method used to create certificate for the input public key for key binding

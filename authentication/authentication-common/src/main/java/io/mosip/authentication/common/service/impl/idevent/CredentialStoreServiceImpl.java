@@ -346,6 +346,17 @@ public class CredentialStoreServiceImpl implements CredentialStoreService {
 					String demoKey = (String) additionalData.get(DEMO_KEY);
 					String bioKeyIndex = (String) additionalData.get(BIO_KEY_INDEX);
 					String bioKey = (String) additionalData.get(BIO_KEY);
+
+					saveSalt(modulo, salt);
+
+					if (demoKeyIndex != null && demoKey != null) {
+						securityManager.reEncryptAndStoreRandomKey(demoKeyIndex, demoKey);
+					}
+
+					if (bioKeyIndex != null && bioKey != null) {
+						securityManager.reEncryptAndStoreRandomKey(bioKeyIndex, bioKey);
+					}
+
 					String idHash = (String) additionalData.get(ID_HASH);
 					Integer transactionLimit = (Integer) additionalData.get(TRANSACTION_LIMIT);
 					String expiryTime = (String) additionalData.get(EXPIRY_TIME);

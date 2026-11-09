@@ -56,7 +56,7 @@ public class IdentityKeyBindingFacadeImplTest {
         when(keyBindingRequest.getIdentityKeyBinding()).thenReturn(keyBindingDTO);
         when(keyBindingDTO.getPublicKeyJWK()).thenReturn(pubKeyMap);
         doNothing().when(idService).checkIdKeyBindingPermitted(anyString(), anyString());
-        when(keyBindingService.isPublicKeyBinded(anyString(), any())).thenReturn(true);
+        when(keyBindingService.isPublicKeyBinded(anyString(), any(), any())).thenReturn(true);
 
         ObjectWithMetadata meta = mock(ObjectWithMetadata.class);
 

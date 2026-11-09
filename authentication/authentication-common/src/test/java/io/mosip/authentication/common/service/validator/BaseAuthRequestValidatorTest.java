@@ -49,6 +49,9 @@ import io.mosip.authentication.core.indauth.dto.DataDTO;
 import io.mosip.authentication.core.indauth.dto.DigitalId;
 import io.mosip.authentication.core.indauth.dto.IdentityDTO;
 import io.mosip.authentication.core.indauth.dto.IdentityInfoDTO;
+import io.mosip.authentication.core.indauth.dto.KeyBindedTokenDTO;
+import io.mosip.authentication.core.indauth.dto.KycAuthRequestDTOV2;
+import io.mosip.authentication.core.indauth.dto.KycRequestDTOV2;
 import io.mosip.authentication.core.indauth.dto.RequestDTO;
 import io.mosip.kernel.core.pinvalidator.exception.InvalidPinException;
 import io.mosip.kernel.core.util.DateUtils2;
@@ -60,6 +63,7 @@ import io.mosip.kernel.templatemanager.velocity.builder.TemplateManagerBuilderIm
  *
  * @author Rakesh Roshan
  */
+
 @RunWith(SpringRunner.class)
 @WebMvcTest
 @Import({ IDAMappingConfig.class, EnvUtil.class })
@@ -2353,5 +2357,47 @@ public class BaseAuthRequestValidatorTest {
 		list.add("Test");
 		map.put(EnvUtil.getMandatoryLanguages(), list);
 		return map;
+	}
+
+	@Test
+	public void testValidatePasswordDetails_KycV2_MissingPassword_HasError_NoClassCastException() {
+		// Enable password match type in mapping config (not present in test mapping json by default)
+		ReflectionTestUtils.setField(idMappingConfig, "password", List.of("password"));
+
+		KycAuthRequestDTOV2 authRequest = new KycAuthRequestDTOV2();
+		authRequest.setId("id");
+		authRequest.setTransactionID("1234567890");
+		authRequest.setRequestTime(Instant.now().atOffset(ZoneOffset.of("+0530"))
+				.format(DateTimeFormatter.ofPattern(EnvUtil.getDateTimePattern())).toString());
+
+		KycRequestDTOV2 request = new KycRequestDTOV2();
+		request.setPassword(null);
+		authRequest.setRequest(request);
+
+		Errors errors = new BeanPropertyBindingResult(authRequest, "authRequest");
+		ReflectionTestUtils.invokeMethod(AuthRequestValidator, "validatePasswordDetails", authRequest, errors);
+		assertTrue(errors.hasErrors());
+	}
+
+	@Test
+	public void testValidateKBTDetails_KycV2_MissingFormat_HasError() {
+		KycAuthRequestDTOV2 authRequest = new KycAuthRequestDTOV2();
+		authRequest.setId("id");
+		authRequest.setTransactionID("1234567890");
+		authRequest.setRequestTime(Instant.now().atOffset(ZoneOffset.of("+0530"))
+				.format(DateTimeFormatter.ofPattern(EnvUtil.getDateTimePattern())).toString());
+
+		KeyBindedTokenDTO tokenDTO = new KeyBindedTokenDTO();
+		tokenDTO.setToken("token");
+		tokenDTO.setType("type");
+		tokenDTO.setFormat(null);
+
+		KycRequestDTOV2 request = new KycRequestDTOV2();
+		request.setKeyBindedTokens(List.of(tokenDTO));
+		authRequest.setRequest(request);
+
+		Errors errors = new BeanPropertyBindingResult(authRequest, "authRequest");
+		ReflectionTestUtils.invokeMethod(AuthRequestValidator, "validateKBTDetails", authRequest, errors);
+		assertTrue(errors.hasErrors());
 	}
 }

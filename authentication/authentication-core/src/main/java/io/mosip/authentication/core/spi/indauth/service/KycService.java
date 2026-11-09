@@ -8,6 +8,7 @@ import java.util.Set;
 import io.mosip.authentication.core.exception.IdAuthenticationBusinessException;
 import io.mosip.authentication.core.indauth.dto.IdentityInfoDTO;
 import io.mosip.authentication.core.indauth.dto.KycExchangeRequestDTO;
+import io.mosip.authentication.core.indauth.dto.KycExchangeRequestDTOV2;
 import io.mosip.authentication.core.indauth.dto.EKycResponseDTO;
 
 /**
@@ -76,6 +77,6 @@ public interface KycService {
 	 * @throws IdAuthenticationBusinessException the id authentication business
 	 *                                           exception
 	 */
-	String buildKycExchangeResponse(String subject, Map<String, List<IdentityInfoDTO>> idInfo, 
-				List<String> consentedAttributes, List<String> locales, String idVid, KycExchangeRequestDTO kycExchangeRequestDTO) throws IdAuthenticationBusinessException;
+	String buildKycExchangeResponse(String subject, Map<String, List<IdentityInfoDTO>> idInfo,
+				List<String> consentedAttributes, List<String> locales, String idVid, String oidcClientId, KycExchangeRequestDTO kycExchangeRequestDTO) throws IdAuthenticationBusinessException;
 }

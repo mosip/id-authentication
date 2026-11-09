@@ -29,6 +29,7 @@ import io.mosip.authentication.common.service.integration.MasterDataManager;
 import io.mosip.authentication.common.service.integration.PasswordComparator;
 import io.mosip.authentication.common.service.util.BioMatcherUtil;
 import io.mosip.authentication.common.service.util.EnvUtil;
+import io.mosip.authentication.core.constant.IdAuthCommonConstants;
 import io.mosip.authentication.core.constant.IdAuthConfigKeyConstants;
 import io.mosip.authentication.core.constant.IdAuthenticationErrorConstants;
 import io.mosip.authentication.core.exception.IdAuthUncheckedException;
@@ -51,6 +52,8 @@ import io.mosip.kernel.biometrics.constant.BiometricType;
 import io.mosip.kernel.biometrics.entities.BDBInfo;
 import io.mosip.kernel.biometrics.entities.BIR;
 import io.mosip.kernel.biometrics.spi.CbeffUtil;
+import io.mosip.kernel.core.cbeffutil.jaxbclasses.BDBInfoType;
+import io.mosip.kernel.core.cbeffutil.jaxbclasses.BIRType;
 
 /**
  * Helper class to fetch identity values from request.
@@ -60,7 +63,7 @@ import io.mosip.kernel.biometrics.spi.CbeffUtil;
  */
 @Service
 public class IdInfoFetcherImpl implements IdInfoFetcher {
-
+	
 	/** The Cbeff Util. */
 	@Autowired
 	private CbeffUtil cbeffUtil;
@@ -333,10 +336,13 @@ public class IdInfoFetcherImpl implements IdInfoFetcher {
 			List<BIR> birDataFromXMLType = cbeffUtil.getBIRDataFromXMLType(biometricCbeff.getBytes(), type.getName());
 			Function<? super BIR, ? extends String> keyFunction = bir -> {
 				BDBInfo bdbInfo = bir.getBdbInfo();
-				return bdbInfo.getType().get(0).toString() + "_"
-						+ (bdbInfo.getSubtype() == null || bdbInfo.getSubtype().isEmpty()? "" : bdbInfo.getSubtype().get(0))
-						+ (bdbInfo.getSubtype().size() > 1 ?  " "  + bdbInfo.getSubtype().get(1) : "") + "_"
-						+ bdbInfo.getFormat().getType();
+				String modality = bdbInfo.getType().get(0).toString();
+				if (modality.equalsIgnoreCase("face")) {
+					return modality + "__" + bdbInfo.getFormat().getType();
+				}
+				return modality + "_" + (bdbInfo.getSubtype() == null || bdbInfo.getSubtype().isEmpty() ? "" : bdbInfo.getSubtype().get(0))
+						+ (bdbInfo.getSubtype() != null && bdbInfo.getSubtype().size() > 1 ? " " + bdbInfo.getSubtype().get(1) : "")
+						+ "_" + bdbInfo.getFormat().getType();
 			};
 			if(birDataFromXMLType.size() == 1) {
 				//This is the segmented cbeff
@@ -463,6 +469,21 @@ public class IdInfoFetcherImpl implements IdInfoFetcher {
 			}
 		}
 		return Optional.ofNullable(threshold);
+	}
+
+	/**
+	 * Gets the type for id name.
+	 *
+	 * @param idName the id name
+	 * @param idMappings the id mappings
+	 * @return the type for id name
+	 */
+	public Optional<String> getTypeForIdName(String idName, IdMapping[] idMappings) {
+		return Stream.of(idMappings).filter(idmap -> {
+			String thisId = idName.replaceAll("\\d", "");
+			String thatId = idmap.getIdname().replace(IdAuthCommonConstants.UNKNOWN_COUNT_PLACEHOLDER, "");
+			return thisId.equalsIgnoreCase(thatId);
+		}).map(IdMapping::getType).findFirst();
 	}
 
 	/**
