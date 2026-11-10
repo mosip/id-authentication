@@ -8,6 +8,9 @@
 		<listener class-name="io.mosip.testrig.apirig.report.EmailableReport" />
 	</listeners>
 
+	<!-- runMode: a <test> block with runMode=local runs only with -DlocalRun=yes, one with runMode=env
+		runs only on env runs, and a block without it runs in both (RunModeSuiteFilter). -->
+
 	<test name="BioAuth">
 		<parameter name="ymlFile" value="ida/BioAuth/BioAuth2.yml" />
 		<parameter name="isInternal" value="false" />
@@ -40,11 +43,21 @@
 			<class name="io.mosip.testrig.apirig.auth.testscripts.KycExchange" />
 		</classes>
 	</test>
+	<test name="IdentityKeyBinding">
+		<parameter name="ymlFile"
+			value="ida/IdentityKeyBinding/IdentityKeyBinding.yml" />
+		<parameter name="isInternal" value="false" />
+		<parameter name="idKeyName" value="identityCertificate,authToken" />
+		<classes>
+			<class name="io.mosip.testrig.apirig.auth.testscripts.BioAuth" />
+		</classes>
+	</test>
 	<test name="BioAuthDelegatedV2">
 		<parameter name="ymlFile"
 			value="ida/BioAuthDelegatedV2/BioAuthDelegatedV2.yml" />
 		<parameter name="isInternal" value="false" />
 		<parameter name="idKeyName" value="kycToken" />
+		<parameter name="localExcludeTestCases" value="TC_IDA_BioAuthDelegatedV2Neg_31" />
 		<classes>
 			<class name="io.mosip.testrig.apirig.auth.testscripts.BioAuth" />
 		</classes>
@@ -56,9 +69,28 @@
 			<class name="io.mosip.testrig.apirig.auth.testscripts.KycExchange" />
 		</classes>
 	</test>
+	<test name="DemoAuthDelegatedV2">
+		<parameter name="ymlFile"
+			value="ida/DemoAuthDelegatedV2/DemoAuthDelegatedV2.yml" />
+		<parameter name="isInternal" value="false" />
+		<parameter name="idKeyName" value="kycToken" />
+		<classes>
+			<class name="io.mosip.testrig.apirig.auth.testscripts.DemoAuth" />
+		</classes>
+	</test>
+	<test name="OtpAuthDelegatedV2">
+		<parameter name="ymlFile"
+			value="ida/OtpAuthDelegatedV2/OtpAuthDelegatedV2.yml" />
+		<parameter name="isInternal" value="false" />
+		<parameter name="idKeyName" value="kycToken" />
+		<classes>
+			<class name="io.mosip.testrig.apirig.auth.testscripts.OtpAuthNew" />
+		</classes>
+	</test>
 	<test name="EkycBio">
 		<parameter name="ymlFile" value="ida/EkycBio/EkycBio2.yml" />
 		<parameter name="isInternal" value="false" />
+		<parameter name="localExcludeTestCases" value="TC_IDA_EkycBio_49" />
 		<classes>
 			<class name="io.mosip.testrig.apirig.auth.testscripts.BioAuth" />
 		</classes>
@@ -112,19 +144,11 @@
 	</test>
 
 	<test name="AuthTransaction">
+		<parameter name="runMode" value="env" />
 		<parameter name="ymlFile"
 			value="ida/AuthTransaction/AuthTransaction.yml" />
 		<classes>
 			<class name="io.mosip.testrig.apirig.auth.testscripts.GetWithParam" />
-		</classes>
-	</test>
-
-	<test name="UpdateIdentity">
-		<parameter name="ymlFile"
-			value="ida/UpdateIdentity/UpdateIdentity.yml" />
-		<classes>
-			<class
-				name="io.mosip.testrig.apirig.auth.testscripts.UpdateIdentity" />
 		</classes>
 	</test>
 
@@ -163,7 +187,18 @@
 		</classes>
 	</test>
 
+	<test name="BioAuthKYCDelegatedNegHotlisted">
+		<parameter name="ymlFile"
+			value="ida/BioAuthDelegatedNeg/BioAuthDelegatedNegHotlisted.yml" />
+		<parameter name="isInternal" value="false" />
+		<parameter name="idKeyName" value="kycToken" />
+		<classes>
+			<class name="io.mosip.testrig.apirig.auth.testscripts.BioAuth" />
+		</classes>
+	</test>
+
 	<test name="AuthUnLock">
+		<parameter name="runMode" value="env" />
 		<parameter name="ymlFile"
 			value="ida/AuthUnLock/createAuthUnLock.yml" />
 		<classes>
@@ -183,6 +218,8 @@
 
 	<test name="DemoAuth">
 		<parameter name="ymlFile" value="ida/DemoAuth/DemoAuth2.yml" />
+		<parameter name="idKeyName" value="authToken" />
+		<parameter name="localExcludeTestCases" value="TC_IDA_DemoAuth_61" />
 		<classes>
 			<class name="io.mosip.testrig.apirig.auth.testscripts.DemoAuth" />
 		</classes>
@@ -216,10 +253,28 @@
 		</classes>
 	</test>
 
+	<test name="KycExchangeNeg">
+		<parameter name="ymlFile"
+			value="ida/KycExchangeNeg/KycExchangeNeg.yml" />
+		<classes>
+			<class name="io.mosip.testrig.apirig.auth.testscripts.KycExchange" />
+		</classes>
+	</test>
+
 	<test name="EkycDemo">
 		<parameter name="ymlFile" value="ida/EkycDemo/EkycDemo2.yml" />
 		<classes>
 			<class name="io.mosip.testrig.apirig.auth.testscripts.DemoAuth" />
+		</classes>
+	</test>
+
+	<!-- Local only: runs after EkycDemo, because locally the lock tests share one seeded UIN and
+		EkycDemo_48/49 need its DOB still locked. Env runs are not affected (runMode=local). -->
+	<test name="AuthUnLockNewLocal">
+		<parameter name="runMode" value="local" />
+		<parameter name="ymlFile" value="ida/AuthLockUnlockNew/AuthUnLockNewLocal.yml" />
+		<classes>
+			<class name="io.mosip.testrig.apirig.auth.testscripts.AuthLockUnlockNewLocal" />
 		</classes>
 	</test>
 
@@ -277,6 +332,7 @@
 	<test name="SendOTP">
 		<parameter name="ymlFile"
 			value="ida/SendOTP/createSendOTP.yml" />
+		<parameter name="localExcludeTestCases" value="TC_IDA_SendOTP_04" />
 		<classes>
 			<class name="io.mosip.testrig.apirig.auth.testscripts.SimplePost" />
 		</classes>
@@ -290,5 +346,17 @@
 		</classes>
 	</test>
 
+	<!-- Moved to end of suite: this test permanently mutates a shared identity's
+		dateOfBirth (AddIdentity_ValidParam_smoke_Pos_UIN), which broke earlier
+		DOB-dependent tests (e.g. TC_IDA_DemoAuth_04) when it ran mid-suite. -->
+	<test name="UpdateIdentity">
+		<parameter name="runMode" value="env" />
+		<parameter name="ymlFile"
+			value="ida/UpdateIdentity/UpdateIdentity.yml" />
+		<classes>
+			<class
+				name="io.mosip.testrig.apirig.auth.testscripts.UpdateIdentity" />
+		</classes>
+	</test>
 
 </suite>

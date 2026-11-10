@@ -568,6 +568,14 @@ On Windows, put the same `-D` arguments in a `.bat` file (use `^` for line conti
 
 ---
 
+## 8. Run the API Test Rig Against This Setup
+
+With the stack and `authentication-service` from sections 4 and 5 running, the IDA API test rig (`api-test/`) can run its smoke and regression suites against this local IDA. The rig needs a few more local settings on top of this guide (extra `mosip-config` values, a WireMock token with roles, BouncyCastle order in `authentication-service/pom.xml`) and an 8080 → 8090 port relay.
+
+Follow **[api-test/README.md → Running Against a Local IDA (Local Run Mode)](../../api-test/README.md#running-against-a-local-ida-local-run-mode)** for the step-by-step setup, the run command and troubleshooting. The rig starts its own mock SBI, so MockMDS from section 7 is not needed for it.
+
+---
+
 ## Local Services Reference
 
 | Service | URL |

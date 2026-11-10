@@ -8,7 +8,20 @@
 		<listener class-name="io.mosip.testrig.apirig.report.EmailableReport" />
 	</listeners>
 
+	<!-- runMode: a <test> block with runMode=local runs only with -DlocalRun=yes, one with runMode=env
+		runs only on env runs, and a block without it runs in both (RunModeSuiteFilter). -->
+
+	<test name="DemoAuthLocalTempVid">
+		<parameter name="runMode" value="local" />
+		<parameter name="ymlFile" value="ida/DemoAuth/DemoAuthLocalOnly.yml" />
+		<parameter name="idKeyName" value="authToken" />
+		<classes>
+			<class name="io.mosip.testrig.apirig.auth.testscripts.DemoAuth" />
+		</classes>
+	</test>
+
 	<test name="AddIdentity">
+		<parameter name="runMode" value="env" />
 		<parameter name="ymlFile"
 			value="ida/AddIdentity/AddIdentity.yml" />
 		<classes>
@@ -17,6 +30,7 @@
 	</test>
 
 	<test name="OIDCClient">
+		<parameter name="runMode" value="env" />
 		<parameter name="ymlFile"
 			value="ida/OidcClient/OIDCClient.yml" />
 		<parameter name="idKeyName" value="clientId" />
@@ -28,6 +42,7 @@
 	</test>
 
 	<test name="CreateVID">
+		<parameter name="runMode" value="env" />
 		<parameter name="ymlFile" value="ida/CreateVID/CreateVid.yml" />
 		<parameter name="idKeyName" value="VID" />
 		<classes>
@@ -37,6 +52,7 @@
 	</test>
 
 	<test name="GenerateVidForSendOtpAndDeactivateUIN">
+		<parameter name="runMode" value="env" />
 		<parameter name="ymlFile"
 			value="ida/GenerateVID/GenVidForSendOtpAndDeactivateUIN.yml" />
 		<parameter name="idKeyName" value="vid" />
@@ -47,6 +63,7 @@
 	</test>
 
 	<test name="UpdateIdentityForUin">
+		<parameter name="runMode" value="env" />
 		<parameter name="ymlFile"
 			value="ida/UpdateIdentityForUin/UpdateIdentity.yml" />
 		<classes>
@@ -55,7 +72,55 @@
 		</classes>
 	</test>
 
+	<test name="UpdateIdentityForUinLocal">
+		<parameter name="runMode" value="local" />
+		<parameter name="ymlFile" value="ida/LocalMockRequests/UpdateIdentityForUinLocal.yml" />
+		<classes>
+			<class name="io.mosip.testrig.apirig.auth.testscripts.SimplePatchForAutoGenId" />
+		</classes>
+	</test>
+
+	<test name="DeactivatedUinDemoAuth">
+		<parameter name="runMode" value="local" />
+		<parameter name="ymlFile" value="ida/DemoAuth/DemoAuth2.yml" />
+		<parameter name="idKeyName" value="authToken" />
+		<parameter name="localIncludeTestCases" value="TC_IDA_DemoAuth_61" />
+		<classes>
+			<class name="io.mosip.testrig.apirig.auth.testscripts.DemoAuth" />
+		</classes>
+	</test>
+
+	<test name="DeactivatedUinEkycBio">
+		<parameter name="runMode" value="local" />
+		<parameter name="ymlFile" value="ida/EkycBio/EkycBio2.yml" />
+		<parameter name="isInternal" value="false" />
+		<parameter name="localIncludeTestCases" value="TC_IDA_EkycBio_49" />
+		<classes>
+			<class name="io.mosip.testrig.apirig.auth.testscripts.BioAuth" />
+		</classes>
+	</test>
+
+	<test name="DeactivatedUinBioAuthDelegatedV2">
+		<parameter name="runMode" value="local" />
+		<parameter name="ymlFile" value="ida/BioAuthDelegatedV2/BioAuthDelegatedV2.yml" />
+		<parameter name="isInternal" value="false" />
+		<parameter name="localIncludeTestCases" value="TC_IDA_BioAuthDelegatedV2Neg_31" />
+		<classes>
+			<class name="io.mosip.testrig.apirig.auth.testscripts.BioAuth" />
+		</classes>
+	</test>
+
+	<test name="DeactivatedUinSendOTP">
+		<parameter name="runMode" value="local" />
+		<parameter name="ymlFile" value="ida/SendOTP/createSendOTP.yml" />
+		<parameter name="localIncludeTestCases" value="TC_IDA_SendOTP_04" />
+		<classes>
+			<class name="io.mosip.testrig.apirig.auth.testscripts.SimplePost" />
+		</classes>
+	</test>
+
 	<test name="UpdateIdentityToActivate">
+		<parameter name="runMode" value="env" />
 		<parameter name="ymlFile"
 			value="ida/UpdateIdentityForUin/ActivateDeactivatedUIN.yml" />
 		<classes>
@@ -64,7 +129,16 @@
 		</classes>
 	</test>
 
+	<test name="UpdateIdentityToActivateLocal">
+		<parameter name="runMode" value="local" />
+		<parameter name="ymlFile" value="ida/LocalMockRequests/ActivateDeactivatedUINLocal.yml" />
+		<classes>
+			<class name="io.mosip.testrig.apirig.auth.testscripts.SimplePatchForAutoGenId" />
+		</classes>
+	</test>
+
 	<test name="CreateDraft">
+		<parameter name="runMode" value="env" />
 		<parameter name="ymlFile" value="ida/CreateDraft/CreateDraft.yml" />
 		<classes>
 			<class
@@ -73,6 +147,7 @@
 	</test>
 
 	<test name="GetDraft">
+		<parameter name="runMode" value="env" />
 		<parameter name="ymlFile" value="ida/GetDraft/GetDraft.yml" />
 		<parameter name="idKeyName" value="UIN" />
 		<classes>
@@ -82,6 +157,7 @@
 	</test>
 
 	<test name="CreateDraftVID">
+		<parameter name="runMode" value="env" />
 		<parameter name="ymlFile" value="ida/CreateDraftVID/CreateDraftVID.yml" />
 		<classes>
 			<class
@@ -90,6 +166,7 @@
 	</test>
 
 	<test name="UpdateDraft">
+		<parameter name="runMode" value="env" />
 		<parameter name="ymlFile" value="ida/UpdateDraft/UpdateDraft.yml" />
 		<parameter name="pathParams" value="registrationId" />
 		<classes>
@@ -98,6 +175,7 @@
 	</test>
 
 	<test name="PublishDraft">
+		<parameter name="runMode" value="env" />
 		<parameter name="ymlFile" value="ida/PublishDraft/PublishDraft.yml" />
 		<classes>
 			<class name="io.mosip.testrig.apirig.auth.testscripts.GetWithParam" />
@@ -105,6 +183,7 @@
 	</test>
 
 	<test name="GenerateVID">
+		<parameter name="runMode" value="env" />
 		<parameter name="ymlFile"
 			value="ida/GenerateVID/createGenerateVID.yml" />
 		<parameter name="idKeyName" value="vid" />
@@ -123,6 +202,7 @@
 	</test>
 
 	<test name="RevokeVID">
+		<parameter name="runMode" value="env" />
 		<parameter name="ymlFile"
 			value="ida/RevokeVID/createRevokeVID.yml" />
 		<classes>
@@ -131,7 +211,16 @@
 		</classes>
 	</test>
 
+	<test name="RevokeVIDLocal">
+		<parameter name="runMode" value="local" />
+		<parameter name="ymlFile" value="ida/LocalMockRequests/RevokeVIDLocal.yml" />
+		<classes>
+			<class name="io.mosip.testrig.apirig.auth.testscripts.SimplePatchForAutoGenId" />
+		</classes>
+	</test>
+
 	<test name="AuthInternalLock">
+		<parameter name="runMode" value="env" />
 		<parameter name="ymlFile"
 			value="ida/AuthInternalLock/AuthInternalLock.yml" />
 		<classes>
@@ -140,11 +229,20 @@
 	</test>
 
 	<test name="AuthLock">
+		<parameter name="runMode" value="env" />
 		<parameter name="ymlFile"
 			value="ida/AuthLock/createAuthLock.yml" />
 		<classes>
 			<class
 				name="io.mosip.testrig.apirig.auth.testscripts.PostWithBodyWithOtpGenerate" />
+		</classes>
+	</test>
+
+	<test name="AuthLockNewLocal">
+		<parameter name="runMode" value="local" />
+		<parameter name="ymlFile" value="ida/AuthLockUnlockNew/AuthLockNewLocal.yml" />
+		<classes>
+			<class name="io.mosip.testrig.apirig.auth.testscripts.AuthLockUnlockNewLocal" />
 		</classes>
 	</test>
 
@@ -158,6 +256,7 @@
 	</test>
 
 	<test name="RegenerateVid">
+		<parameter name="runMode" value="env" />
 		<parameter name="ymlFile" value="ida/RegenerateVid/RegenerateVid.yml" />
 		<parameter name="idKeyName" value="vid" />
 		<classes>
@@ -167,6 +266,7 @@
 	</test>
 
 	<test name="RetrieveAuthTypeStatus">
+		<parameter name="runMode" value="env" />
 		<parameter name="ymlFile"
 			value="ida/RetrieveAuthTypeStatus/RetrieveAuthTypeStatus.yml" />
 		<classes>
@@ -175,6 +275,7 @@
 	</test>
 
 	<test name="RetrieveIdentityByUin">
+		<parameter name="runMode" value="env" />
 		<parameter name="ymlFile"
 			value="ida/RetrieveIdentityByUin/RetrieveIdentityByUin.yml" />
 		<classes>
@@ -183,6 +284,7 @@
 	</test>
 
 	<test name="RetrieveVIDByUIN">
+		<parameter name="runMode" value="env" />
 		<parameter name="ymlFile"
 			value="ida/RetrieveVIDByUIN/RetrieveVIDByUIN.yml" />
 		<classes>
@@ -191,6 +293,7 @@
 	</test>
 
 	<test name="GetUnusedUIN">
+		<parameter name="runMode" value="env" />
 		<parameter name="ymlFile" value="ida/GetUnusedUIN/getUnusedUIN.yml" />
 		<parameter name="idKeyName" value="uin" />
 		<classes>

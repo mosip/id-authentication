@@ -1,0 +1,35 @@
+AuthUnLockNew:
+   auth_AuthUnLockNew_Valid_UIN_All:
+      endPoint: /resident/v1/auth-lock-unlock
+      uniqueIdentifier: TC_IDA_AuthUnlockNew_01
+      description: Validate unlocking demo and bio-FACE for a valid UIN (local-run replica of TC_IDA_AuthUnlock_01, which uses the deprecated resident API)
+      role: resident
+      restMethod: post
+      inputTemplate: ida/AuthLockUnlockNew/AuthLockUnlockNew
+      outputTemplate: ida/AuthLockUnlockNew/AuthLockUnlockNewResult
+      input: '{
+        "id": "mosip.resident.auth.lock.unlock",
+        "version": "v1",
+        "requesttime": "$TIMESTAMP$",
+        "authTypes": [{"authType": "Demo", "locked": "false", "unlockForSeconds": "null"}, {"authType": "bio", "authSubType": "face", "locked": "false", "unlockForSeconds": "null"}]
+    }'
+      output: '{
+        "status": "Success"
+}'
+   auth_AuthUnLockNew_Valid_UIN_DEMO_UNLOCK_All:
+      endPoint: /resident/v1/auth-lock-unlock
+      uniqueIdentifier: TC_IDA_AuthUnlockNew_02
+      description: Validate unlocking demo and bio-FACE for a valid UIN (local-run replica of auth_AuthUnLock_Valid_UIN_DEMO_UNLOCK_All, which uses the deprecated resident API)
+      role: resident
+      restMethod: post
+      inputTemplate: ida/AuthLockUnlockNew/AuthLockUnlockNew
+      outputTemplate: ida/AuthLockUnlockNew/AuthLockUnlockNewResult
+      input: '{
+        "id": "mosip.resident.auth.lock.unlock",
+        "version": "v1",
+        "requesttime": "$TIMESTAMP$",
+        "authTypes": [{"authType": "Demo", "locked": "false", "unlockForSeconds": "null"}, {"authType": "bio", "authSubType": "face", "locked": "false", "unlockForSeconds": "null"}]
+    }'
+      output: '{
+        "status": "Success"
+}'
