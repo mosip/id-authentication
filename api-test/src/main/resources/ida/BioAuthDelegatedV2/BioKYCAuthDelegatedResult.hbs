@@ -1,5 +1,8 @@
 {
     "response": {
-        "kycStatus": "{{kycStatus}}"
+        "kycStatus": "{{kycStatus}}"{{#if kycToken}},
+        "kycToken": "{{kycToken}}"{{/if}}{{#if authToken}},
+        "authToken": "{{authToken}}"{{/if}}{{#if verifiedClaimsMetadata}},
+        "verifiedClaimsMetadata": "{{verifiedClaimsMetadata}}"{{/if}}
     }
 }

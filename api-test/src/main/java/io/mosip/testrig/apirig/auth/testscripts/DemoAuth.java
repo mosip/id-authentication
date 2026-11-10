@@ -1,6 +1,6 @@
 package io.mosip.testrig.apirig.auth.testscripts;
 
-
+import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
@@ -68,16 +68,18 @@ public class DemoAuth extends IdAuthenticationUtil implements ITest {
 		String ymlFile = context.getCurrentXmlTest().getLocalParameters().get("ymlFile");
 		idKeyName = context.getCurrentXmlTest().getLocalParameters().get("idKeyName");
 		logger.info("Started executing yml: " + ymlFile);
-		return getYmlTestData(ymlFile);
+		return IdAuthenticationUtil.filterLocalTestCases(getYmlTestData(ymlFile), context);
 	}
 	
 	@Test(dataProvider = "testcaselist")
 	public void test(TestCaseDTO testCaseDTO) throws AuthenticationTestException, AdminTestException, SecurityXSSException {		
 		testCaseName = testCaseDTO.getTestCaseName();
 		testCaseName = IdAuthenticationUtil.isTestCaseValidForExecution(testCaseDTO);
-		
+		testCaseDTO.setInput(IdAuthenticationUtil.applyLocalTestCaseOverrides(testCaseDTO.getInput(), testCaseName));
+
 		String partnerKeyUrl = PartnerRegistration.mispLicKey + "/" + PartnerRegistration.partnerId + "/" + PartnerRegistration.apiKey;
-		String partialPartnerKeyUrl = PartnerRegistration.mispLicKey + "/" + PartnerRegistration.partnerId;
+		String partialPartnerKeyUrl = IdAuthenticationUtil.resolvePartialPartnerKeyUrl(
+				PartnerRegistration.mispLicKey + "/" + PartnerRegistration.partnerId);
 		String ekycPartnerKeyURL = PartnerRegistration.mispLicKey + "/" + PartnerRegistration.ekycPartnerId + "/" + PartnerRegistration.kycApiKey;
 		
 		if(testCaseDTO.getEndPoint().contains("$partnerKeyURL$"))
@@ -100,23 +102,73 @@ public class DemoAuth extends IdAuthenticationUtil implements ITest {
 			testCaseDTO.setEndPoint(testCaseDTO.getEndPoint().replace("$UpdatedPartnerKeyURL$",
 					PartnerRegistration.updatedpartnerKeyUrl));
 		}
+		if (testCaseDTO.getEndPoint().contains("$PolicyTokenPartnerKeyURL$")) {
+			testCaseDTO.setEndPoint(testCaseDTO.getEndPoint().replace("$PolicyTokenPartnerKeyURL$",
+					policyTokenPartnerKeyUrl));
+		}
+		if (testCaseDTO.getEndPoint().contains("$PolicyToken2PartnerKeyURL$")) {
+			testCaseDTO.setEndPoint(testCaseDTO.getEndPoint().replace("$PolicyToken2PartnerKeyURL$",
+					policyToken2PartnerKeyUrl));
+		}
+		if (testCaseDTO.getEndPoint().contains("$PolicyToken3PartnerKeyURL$")) {
+			testCaseDTO.setEndPoint(testCaseDTO.getEndPoint().replace("$PolicyToken3PartnerKeyURL$",
+					policyToken3PartnerKeyUrl));
+		}
+		if (testCaseDTO.getEndPoint().contains("$PartnerToken2KeyURL$")) {
+			testCaseDTO.setEndPoint(testCaseDTO.getEndPoint().replace("$PartnerToken2KeyURL$",
+					partnerToken2KeyUrl));
+		}
+		if (testCaseDTO.getEndPoint().contains("$RandomTokenPartnerKeyURL$")) {
+			testCaseDTO.setEndPoint(testCaseDTO.getEndPoint().replace("$RandomTokenPartnerKeyURL$",
+					randomTokenPartnerKeyUrl));
+		}
+		if (testCaseDTO.getEndPoint().contains("$RandomToken2PartnerKeyURL$")) {
+			testCaseDTO.setEndPoint(testCaseDTO.getEndPoint().replace("$RandomToken2PartnerKeyURL$",
+					randomToken2PartnerKeyUrl));
+		}
+		if (testCaseDTO.getEndPoint().contains("$RandomToken3PartnerKeyURL$")) {
+			testCaseDTO.setEndPoint(testCaseDTO.getEndPoint().replace("$RandomToken3PartnerKeyURL$",
+					randomToken3PartnerKeyUrl));
+		}
 		JSONObject request = new JSONObject(testCaseDTO.getInput());
-		String identityRequest = null, identityRequestTemplate = null; 
+		String identityRequest = null, identityRequestTemplate = null;
+		String localIndividualId = null;
 		if(request.has("identityRequest")) {
 			identityRequest = request.get("identityRequest").toString();
+			localIndividualId = request.has("individualId") ? request.optString("individualId", null) : null;
+			identityRequest = IdAuthenticationUtil.applyLocalSubstitutions(identityRequest, localIndividualId);
 			request.remove("identityRequest");
+		}
+		String invalidThumbprint = null;
+		if (request.has("invalidThumbprint")) {
+			invalidThumbprint = request.getString("invalidThumbprint");
+			request.remove("invalidThumbprint");
+		}
+		// Same override as invalidThumbprint above, for requestHMAC/requestSessionKey.
+		String invalidRequestHMAC = null;
+		if (request.has("invalidRequestHMAC")) {
+			invalidRequestHMAC = request.getString("invalidRequestHMAC");
+			request.remove("invalidRequestHMAC");
+		}
+		String invalidRequestSessionKey = null;
+		if (request.has("invalidRequestSessionKey")) {
+			invalidRequestSessionKey = request.getString("invalidRequestSessionKey");
+			request.remove("invalidRequestSessionKey");
 		}
 		
 		if (identityRequest.contains("$PRIMARYLANG$"))
 			identityRequest = identityRequest.replace("$PRIMARYLANG$", BaseTestCase.languageList.get(0));
 		
 		if (identityRequest.contains("name") & testCaseDTO.getTestCaseName().contains("titleFromAdmin")) {
-			identityRequest = AdminTestUtil.inputTitleHandler(identityRequest);
+			identityRequest = IdAuthConfigManager.isLocalRun()
+					? IdAuthenticationUtil.resolveLocalTitles(identityRequest)
+					: AdminTestUtil.inputTitleHandler(identityRequest);
 		}
 
 		if (identityRequest.contains("$NAMEPRIMARYLANG$")) {
 			String name = propsMap.getProperty("fullName");
 			identityRequest = identityRequest.replace("$NAMEPRIMARYLANG$", name + BaseTestCase.languageList.get(0));
+			identityRequest = IdAuthenticationUtil.applyLocalSubstitutions(identityRequest, localIndividualId);
 		}
 		
 		JSONObject identityReqJson = new JSONObject(identityRequest);
@@ -135,6 +187,18 @@ public class DemoAuth extends IdAuthenticationUtil implements ITest {
 		 identityRequest = inputJsonKeyWordHandeler(identityRequest, testCaseName);
 		identityRequest = JsonPrecondtion.parseAndReturnJsonContent(identityRequest, generateCurrentUTCTimeStamp(), "timestamp");
 		Map<String, String> demoAuthTempMap = encryptDecryptUtil.getEncryptSessionKeyValue(identityRequest);
+		if (invalidThumbprint != null || invalidRequestHMAC != null || invalidRequestSessionKey != null) {
+			demoAuthTempMap = new HashMap<>(demoAuthTempMap);
+			if (invalidThumbprint != null) {
+				demoAuthTempMap.put("thumbprint", invalidThumbprint);
+			}
+			if (invalidRequestHMAC != null) {
+				demoAuthTempMap.put("hmac", invalidRequestHMAC);
+			}
+			if (invalidRequestSessionKey != null) {
+				demoAuthTempMap.put("key", invalidRequestSessionKey);
+			}
+		}
 		String authRequest = getJsonFromTemplate(request.toString(), testCaseDTO.getInputTemplate());
 		logger.info("************* Modification of demo auth request ******************");
 		Reporter.log("<b><u>Modification of demo auth request</u></b>");
@@ -149,18 +213,19 @@ public class DemoAuth extends IdAuthenticationUtil implements ITest {
 		
 		authRequest = modifyRequest(authRequest, demoAuthTempMap, getResourcePath()+props.getProperty("idaMappingPath"));
 		
-		
 		authRequestTemp = new JSONObject(authRequest);
 		if (originalRequestTime != null) {
 		    authRequestTemp.put("requestTime", originalRequestTime);
 		}
 		authRequestTemp.remove("env");
 		authRequestTemp.put("env", "Staging");
+		if (IdAuthConfigManager.isLocalRun()) {
+			authRequestTemp.put("domainUri", BaseTestCase.domain);
+		}
 		authRequest = authRequestTemp.toString();
 		testCaseDTO.setInput(authRequest);
 		
-				
-		logger.info("******Post request Json to EndPointUrl: " + ApplnURI + testCaseDTO.getEndPoint() + " *******");		
+		logger.info("Posting demo authentication request");
 		
 		response = postRequestWithCookieAuthHeaderAndSignature(ApplnURI + testCaseDTO.getEndPoint(), authRequest, COOKIENAME, testCaseDTO.getRole(), testCaseDTO.getTestCaseName());
 		
@@ -168,8 +233,12 @@ public class DemoAuth extends IdAuthenticationUtil implements ITest {
 			writeAutoGeneratedId(response, idKeyName, testCaseName);
 		}
 		
+		String expectedOutput = testCaseDTO.getOutput();
+		if (expectedOutput.contains("$ID:")) {
+			expectedOutput = inputJsonKeyWordHandeler(expectedOutput, testCaseName);
+		}
 		Map<String, List<OutputValidationDto>> ouputValid = OutputValidationUtil
-				.doJsonOutputValidation(response.asString(), getJsonFromTemplate(testCaseDTO.getOutput(), testCaseDTO.getOutputTemplate()));
+				.doJsonOutputValidation(response.asString(), getJsonFromTemplate(expectedOutput, testCaseDTO.getOutputTemplate()));
 		Reporter.log(ReportUtil.getOutputValidationReport(ouputValid));
 		
 		if (!OutputValidationUtil.publishOutputResult(ouputValid))
