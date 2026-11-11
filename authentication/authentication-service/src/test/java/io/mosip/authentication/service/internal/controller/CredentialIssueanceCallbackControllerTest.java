@@ -1,18 +1,21 @@
 package io.mosip.authentication.service.internal.controller;
 
 
+import org.mockito.quality.Strictness;
+import org.mockito.junit.jupiter.MockitoSettings;
+import org.mockito.junit.jupiter.MockitoExtension;
 import io.mosip.authentication.core.exception.IdAuthenticationBusinessException;
 import io.mosip.authentication.core.spi.idevent.service.IdChangeEventHandlerService;
 import io.mosip.kernel.core.http.ResponseWrapper;
-import org.junit.Assert;
-import org.junit.Test;
-import org.junit.runner.RunWith;
+import org.junit.jupiter.api.Assertions;
+import org.junit.jupiter.api.Test;
+import org.junit.jupiter.api.extension.ExtendWith;
 import org.mockito.InjectMocks;
 import org.mockito.Mock;
-import org.springframework.boot.test.autoconfigure.web.servlet.WebMvcTest;
+import org.springframework.boot.webmvc.test.autoconfigure.WebMvcTest;
 import org.springframework.test.context.ContextConfiguration;
 import org.springframework.test.context.TestContext;
-import org.springframework.test.context.junit4.SpringRunner;
+import org.springframework.test.context.junit.jupiter.SpringExtension;
 import org.springframework.validation.BindException;
 import org.springframework.validation.Errors;
 import org.springframework.web.bind.WebDataBinder;
@@ -23,7 +26,8 @@ import io.mosip.kernel.core.websub.model.EventModel;
 
 @WebMvcTest
 @ContextConfiguration(classes = {TestContext.class, WebApplicationContext.class})
-@RunWith(SpringRunner.class)
+@ExtendWith({SpringExtension.class, MockitoExtension.class})
+@MockitoSettings(strictness = Strictness.LENIENT)
 public class CredentialIssueanceCallbackControllerTest {
 
     @InjectMocks
@@ -54,7 +58,7 @@ public class CredentialIssueanceCallbackControllerTest {
         Errors error = new BindException(eventModel, "eventModel");
         ResponseWrapper  rWrapper= new ResponseWrapper<>();
         rWrapper = credentialIssueanceCallbackController.handleCredentialIssuedEvent(partnerId, eventModel, error);
-        Assert.assertEquals(null, rWrapper.getId());
+        Assertions.assertEquals(null, rWrapper.getId());
     }
 
     /**
@@ -69,7 +73,7 @@ public class CredentialIssueanceCallbackControllerTest {
         Errors errors = new BindException(eventModel, "eventModel");
         ResponseWrapper  rWrapper= new ResponseWrapper<>();
         rWrapper = credentialIssueanceCallbackController.handleRemoveIdEvent(partnerId, eventModel, errors);
-        Assert.assertEquals(null, rWrapper.getId());
+        Assertions.assertEquals(null, rWrapper.getId());
     }
 
     /**
@@ -84,7 +88,7 @@ public class CredentialIssueanceCallbackControllerTest {
         Errors errors = new BindException(eventModel, "eventModel");
         ResponseWrapper  rWrapper= new ResponseWrapper<>();
         rWrapper = credentialIssueanceCallbackController.handleDeactivateIdEvent(partnerId, eventModel, errors);
-        Assert.assertEquals(null, rWrapper.getId());
+        Assertions.assertEquals(null, rWrapper.getId());
     }
 
     /**
@@ -99,6 +103,6 @@ public class CredentialIssueanceCallbackControllerTest {
         Errors errors = new BindException(eventModel, "eventModel");
         ResponseWrapper  rWrapper= new ResponseWrapper<>();
         rWrapper = credentialIssueanceCallbackController.handleActivateIdEvent(partnerId, eventModel, errors);
-        Assert.assertEquals(null, rWrapper.getId());
+        Assertions.assertEquals(null, rWrapper.getId());
     }
 }

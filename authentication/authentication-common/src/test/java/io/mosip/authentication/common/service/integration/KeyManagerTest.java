@@ -1,8 +1,12 @@
 package io.mosip.authentication.common.service.integration;
 
-import static org.junit.Assert.assertEquals;
-import static org.junit.Assert.assertNotNull;
-import static org.junit.Assert.assertTrue;
+import org.mockito.quality.Strictness;
+import org.mockito.junit.jupiter.MockitoSettings;
+import org.mockito.junit.jupiter.MockitoExtension;
+import static org.junit.jupiter.api.Assertions.assertThrows;
+import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertNotNull;
+import static org.junit.jupiter.api.Assertions.assertTrue;
 import static org.mockito.Mockito.when;
 
 import java.io.IOException;
@@ -10,18 +14,18 @@ import java.util.HashMap;
 import java.util.Map;
 
 import org.apache.commons.codec.binary.Base64;
-import org.junit.Before;
-import org.junit.Ignore;
-import org.junit.Test;
-import org.junit.runner.RunWith;
+import org.junit.jupiter.api.BeforeEach;
+import org.junit.jupiter.api.Disabled;
+import org.junit.jupiter.api.Test;
+import org.junit.jupiter.api.extension.ExtendWith;
 import org.mockito.InjectMocks;
 import org.mockito.Mock;
 import org.mockito.Mockito;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.boot.test.autoconfigure.web.servlet.WebMvcTest;
+import org.springframework.boot.webmvc.test.autoconfigure.WebMvcTest;
 import org.springframework.test.context.ContextConfiguration;
 import org.springframework.test.context.TestContext;
-import org.springframework.test.context.junit4.SpringRunner;
+import org.springframework.test.context.junit.jupiter.SpringExtension;
 import org.springframework.test.util.ReflectionTestUtils;
 import org.springframework.web.context.WebApplicationContext;
 
@@ -41,7 +45,8 @@ import io.mosip.authentication.core.exception.IdAuthenticationBusinessException;
  * 
  * @author M1046368 Arun Bose S
  */
-@RunWith(SpringRunner.class)
+@ExtendWith({SpringExtension.class, MockitoExtension.class})
+@MockitoSettings(strictness = Strictness.LENIENT)
 @ContextConfiguration(classes = { TestContext.class, WebApplicationContext.class })
 @WebMvcTest
 public class KeyManagerTest {
@@ -56,7 +61,7 @@ public class KeyManagerTest {
 	@InjectMocks
 	private KeyManager keyManager;
 
-	@Before
+	@BeforeEach
 	public void before() throws IdAuthenticationBusinessException {
 		ReflectionTestUtils.setField(keyManager, "keySplitter", "#KEY_SPLITTER#");
 		ReflectionTestUtils.setField(keyManager, "partnerId", "PARTNER");
@@ -92,14 +97,16 @@ public class KeyManagerTest {
 	 * @throws IdAuthenticationBusinessException
 	 */
 
-	@Test(expected = IdAuthenticationAppException.class)
+	@Test
 	public void requestDataMapperTest()
 			throws IdAuthenticationAppException, JsonProcessingException, IdAuthenticationBusinessException {
+		assertThrows(IdAuthenticationAppException.class, () -> {
 		Map<String, Object> reqMap = createRequest();
 		when(securityManager.decrypt(Mockito.any(), Mockito.any(), Mockito.any(), Mockito.any(), Mockito.any()))
 				.thenReturn("-CAj77ZNbtHjmCOSlPUsb4IgqnqHSv0MS5FeLMj".getBytes());
 		keyManager.requestData(reqMap, mapper, "PARTNER", "", false, a -> {
 		});
+			});
 	}
 
 	/**
@@ -109,13 +116,15 @@ public class KeyManagerTest {
 	 * @throws IdAuthenticationBusinessException
 	 */
 
-	@Test(expected = IdAuthenticationAppException.class)
+	@Test
 	public void requestInvalidDataTest1() throws IdAuthenticationAppException, IdAuthenticationBusinessException {
+		assertThrows(IdAuthenticationAppException.class, () -> {
 		Map<String, Object> reqMap = createRequest();
 		when(securityManager.decrypt(Mockito.any(), Mockito.any(), Mockito.any(), Mockito.any(), Mockito.any()))
 				.thenThrow(new IdAuthenticationBusinessException(IdAuthenticationErrorConstants.PUBLICKEY_EXPIRED));
 		keyManager.requestData(reqMap, mapper, "PARTNER", "", false, a -> {
 		});
+			});
 	}
 
 	/**
@@ -127,14 +136,16 @@ public class KeyManagerTest {
 	 * @throws IdAuthenticationBusinessException
 	 */
 
-	@Test(expected = IdAuthenticationAppException.class)
+	@Test
 	public void requestInvalidDataTest2()
 			throws IdAuthenticationAppException, IOException, IdAuthenticationBusinessException {
+		assertThrows(IdAuthenticationAppException.class, () -> {
 		Map<String, Object> reqMap = createRequest();
 		when(securityManager.decrypt(Mockito.any(), Mockito.any(), Mockito.any(), Mockito.any(), Mockito.any()))
 				.thenThrow(new IdAuthenticationBusinessException(IdAuthenticationErrorConstants.PUBLICKEY_EXPIRED));
 		keyManager.requestData(reqMap, mapper, "PARTNER", "", false, a -> {
 		});
+			});
 	}
 
 	@Test
@@ -171,44 +182,54 @@ public class KeyManagerTest {
 		}
 	}
 
-	@Test(expected = IdAuthenticationAppException.class)
+	@Test
 	public void invalidKernelErrorRequest()
 			throws IdAuthenticationAppException, IOException, IdAuthenticationBusinessException {
+		assertThrows(IdAuthenticationAppException.class, () -> {
 		Map<String, Object> reqMap = createRequest();
 		when(securityManager.decrypt(Mockito.any(), Mockito.any(), Mockito.any(), Mockito.any(), Mockito.any()))
 				.thenThrow(new IdAuthenticationBusinessException(IdAuthenticationErrorConstants.INVALID_ENCRYPTION));
 		keyManager.requestData(reqMap, mapper, "PARTNER", "", false, a -> {
 		});
+			});
 	}
 
-	@Test(expected = IdAuthenticationAppException.class)
+	@Test
 	public void requestInvalidDataIOException() throws IdAuthenticationAppException, IdAuthenticationBusinessException {
+		assertThrows(IdAuthenticationAppException.class, () -> {
 		Map<String, Object> reqMap = createRequest();
 		when(securityManager.decrypt(Mockito.any(), Mockito.any(), Mockito.any(), Mockito.any(), Mockito.any()))
 				.thenThrow(new IdAuthenticationBusinessException(IdAuthenticationErrorConstants.PUBLICKEY_EXPIRED));
 		Mockito.when(keyManager.requestData(reqMap, mapper, "PARTNER", "", false, a -> {
 		})).thenThrow(IOException.class);
+			});
 	}
 
 	/*
-	 * @Test(expected = IdAuthenticationAppException.class) public void
-	 * TestTspIdisNullorEmpty() throws IdAuthenticationAppException { Map<String,
+	 * @Test public void
+	 * TestTspIdisNullorEmpty() throws IdAuthenticationAppException {
+		assertThrows(IdAuthenticationAppException.class, () -> { Map<String,
 	 * Object> requestBody = new HashMap<>(); keyManager.requestData(requestBody,
-	 * mapper); }
+	 * mapper); 		});
+	}
 	 * 
-	 * @Ignore
+	 * @Disabled
 	 * 
-	 * @Test(expected = IdAuthenticationAppException.class) public void
-	 * TestTspIdisNull() throws IdAuthenticationAppException { Map<String, Object>
+	 * @Test public void
+	 * TestTspIdisNull() throws IdAuthenticationAppException {
+		assertThrows(IdAuthenticationAppException.class, () -> { Map<String, Object>
 	 * requestBody = new HashMap<>(); requestBody.put("tspID", null);
-	 * keyManager.requestData(requestBody, mapper); }
+	 * keyManager.requestData(requestBody, mapper); 		});
+	}
 	 */
 
 	/*
-	 * @Test(expected = IdAuthenticationAppException.class) public void
-	 * TestTspIdisEmpty() throws IdAuthenticationAppException { Map<String, Object>
+	 * @Test public void
+	 * TestTspIdisEmpty() throws IdAuthenticationAppException {
+		assertThrows(IdAuthenticationAppException.class, () -> { Map<String, Object>
 	 * requestBody = new HashMap<>(); requestBody.put("tspID", "");
-	 * keyManager.requestData(requestBody, mapper); }
+	 * keyManager.requestData(requestBody, mapper); 		});
+	}
 	 */
 
 	// ====================================================================
@@ -248,11 +269,13 @@ public class KeyManagerTest {
 		assertNotNull(keyManager.encryptData(createIdentity(), mapper));
 	}
 
-	@Test(expected = IdAuthenticationAppException.class)
+	@Test
 	public void encryptDataTest2() throws IdAuthenticationAppException, IdAuthenticationBusinessException {
+		assertThrows(IdAuthenticationAppException.class, () -> {
 		when(securityManager.encrypt(Mockito.any(), Mockito.any(), Mockito.any(), Mockito.any()))
 				.thenThrow(new IdAuthenticationBusinessException(IdAuthenticationErrorConstants.PUBLICKEY_EXPIRED));
 		keyManager.encryptData(createIdentity(), mapper);
+			});
 	}
 
 	private Map<String, Object> createIdentity() {
@@ -269,10 +292,12 @@ public class KeyManagerTest {
 		assertNotNull(keyManager.signResponse("qweewq"));
 	}
 
-	@Ignore
-	@Test(expected = IdAuthenticationAppException.class)
+	@Disabled
+	@Test
 	public void SignResponseTest2() throws IDDataValidationException, IdAuthenticationAppException {
+		assertThrows(IdAuthenticationAppException.class, () -> {
 		keyManager.signResponse("qweewq");
+			});
 	}
 
 }

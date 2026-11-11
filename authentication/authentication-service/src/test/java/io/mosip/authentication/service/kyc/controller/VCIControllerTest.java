@@ -1,5 +1,9 @@
 package io.mosip.authentication.service.kyc.controller;
 
+import org.mockito.quality.Strictness;
+import org.mockito.junit.jupiter.MockitoSettings;
+import org.mockito.junit.jupiter.MockitoExtension;
+import static org.junit.jupiter.api.Assertions.assertThrows;
 import io.mosip.authentication.common.service.builder.AuthTransactionBuilder;
 import io.mosip.authentication.common.service.helper.AuthTransactionHelper;
 import io.mosip.authentication.common.service.util.EnvUtil;
@@ -19,19 +23,18 @@ import io.mosip.authentication.core.util.IdTypeUtil;
 import io.mosip.authentication.service.kyc.controller.VCIController;
 import io.mosip.authentication.service.kyc.validator.VciExchangeRequestValidator;
 import jakarta.servlet.http.HttpServletRequest;
-import org.apache.struts.mock.MockHttpServletRequest;
-import org.junit.Assert;
-import org.junit.Ignore;
-import org.junit.Test;
-import org.junit.runner.RunWith;
+import org.junit.jupiter.api.Assertions;
+import org.junit.jupiter.api.Disabled;
+import org.junit.jupiter.api.Test;
+import org.junit.jupiter.api.extension.ExtendWith;
 import org.mockito.InjectMocks;
 import org.mockito.Mock;
 import org.mockito.Mockito;
-import org.springframework.boot.test.autoconfigure.web.servlet.WebMvcTest;
+import org.springframework.boot.webmvc.test.autoconfigure.WebMvcTest;
 import org.springframework.context.annotation.Import;
 import org.springframework.test.context.ContextConfiguration;
 import org.springframework.test.context.TestContext;
-import org.springframework.test.context.junit4.SpringRunner;
+import org.springframework.test.context.junit.jupiter.SpringExtension;
 import org.springframework.validation.BeanPropertyBindingResult;
 import org.springframework.validation.Errors;
 import org.springframework.web.context.WebApplicationContext;
@@ -42,7 +45,8 @@ import java.time.format.DateTimeFormatter;
 import java.util.Arrays;
 import java.util.Optional;
 
-@RunWith(SpringRunner.class)
+@ExtendWith({SpringExtension.class, MockitoExtension.class})
+@MockitoSettings(strictness = Strictness.LENIENT)
 @WebMvcTest(value = VCIController.class)
 @ContextConfiguration(classes = { TestContext.class, WebApplicationContext.class })
 @Import(EnvUtil.class)
@@ -100,20 +104,23 @@ public class VCIControllerTest {
         vciExchangeResponseDTO = vciController.vciExchange(vciExchangeRequestDTO, errors, "license-key", "auth-partner-id",
                 "oidc-client-id", requestWithMetadata);
 
-        Assert.assertNotNull(vciExchangeResponseDTO);
+        Assertions.assertNotNull(vciExchangeResponseDTO);
     }
 
-    @Ignore
-    @Test(expected = IdAuthenticationBusinessException.class)
+    @Disabled
+    @Test
     public void delegatedVCExchange_withInvalidInput_thenFail() throws Exception {
+		assertThrows(IdAuthenticationBusinessException.class, () -> {
         VciExchangeRequestDTO vciExchangeRequestDTO = new VciExchangeRequestDTO();
         Errors errors = new BeanPropertyBindingResult(vciExchangeRequestDTO, "vciExchangeRequestDTO");
         vciController.vciExchange(vciExchangeRequestDTO, errors, "license-key", "auth-partner-id",
                 "oidc-client-id", new TestHttpServletRequest());
-    }
+    		});
+	}
 
-    @Test(expected = IdAuthenticationAppException.class)
+    @Test
     public void delegatedVCExchange_withInternalError_thenFail() throws Exception {
+		assertThrows(IdAuthenticationAppException.class, () -> {
         VciExchangeRequestDTO vciExchangeRequestDTO = new VciExchangeRequestDTO();
         Errors errors = new BeanPropertyBindingResult(vciExchangeRequestDTO, "vciExchangeRequestDTO");
         TestHttpServletRequest requestWithMetadata = new TestHttpServletRequest();
@@ -136,10 +143,12 @@ public class VCIControllerTest {
 
         vciController.vciExchange(vciExchangeRequestDTO, errors, "license-key", "auth-partner-id",
                 "oidc-client-id", requestWithMetadata);
-    }
+    		});
+	}
 
-    @Test(expected = IdAuthenticationAppException.class)
+    @Test
     public void delegatedVCIExchange_withInternalError2_thenFail() throws Exception {
+		assertThrows(IdAuthenticationAppException.class, () -> {
         VciExchangeRequestDTO vciExchangeRequestDTO = new VciExchangeRequestDTO();
         Errors errors = new BeanPropertyBindingResult(vciExchangeRequestDTO, "vciExchangeRequestDTO");
         TestHttpServletRequest requestWithMetadata = new TestHttpServletRequest();
@@ -159,5 +168,6 @@ public class VCIControllerTest {
 
         vciController.vciExchange(vciExchangeRequestDTO, errors, "license-key", "auth-partner-id",
                 "oidc-client-id", requestWithMetadata);
-    }
+    		});
+	}
 }

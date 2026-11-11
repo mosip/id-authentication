@@ -1,10 +1,10 @@
 package io.mosip.authentication.service.internal.manager;
 
-import static org.junit.Assert.assertEquals;
-import static org.junit.Assert.assertNull;
+import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertNull;
 
-import org.junit.Ignore;
-import org.junit.Test;
+import org.junit.jupiter.api.Disabled;
+import org.junit.jupiter.api.Test;
 import org.mockito.Mockito;
 import org.springframework.security.core.Authentication;
 import org.springframework.security.core.context.SecurityContext;
@@ -23,7 +23,7 @@ public class InternalAuthSecurityManagerTest {
 	InternalAuthSecurityManager authSecurityManager = new InternalAuthSecurityManager();
 
 	@Test
-	@Ignore
+	@Disabled
 	public void testGetUser() throws IdAuthenticationBusinessException, RestServiceException {
 		SecurityContext context = Mockito.mock(SecurityContext.class);
 		SecurityContextHolder.setContext(context);
@@ -34,7 +34,7 @@ public class InternalAuthSecurityManagerTest {
 	}
 
 	@Test
-	@Ignore
+	@Disabled
 	public void testGetUserWrongPrincipal() throws IdAuthenticationBusinessException, RestServiceException {
 		SecurityContext context = Mockito.mock(SecurityContext.class);
 		SecurityContextHolder.setContext(context);
@@ -46,7 +46,7 @@ public class InternalAuthSecurityManagerTest {
 	}
 
 	@Test
-	@Ignore
+	@Disabled
 	public void testGetUserNullPrincipal() throws IdAuthenticationBusinessException, RestServiceException {
 		SecurityContext context = Mockito.mock(SecurityContext.class);
 		SecurityContextHolder.setContext(context);
@@ -58,7 +58,7 @@ public class InternalAuthSecurityManagerTest {
 	}
 
 	@Test
-	@Ignore
+	@Disabled
 	public void testGetUserNullAuthentication() throws IdAuthenticationBusinessException, RestServiceException {
 		SecurityContext context = Mockito.mock(SecurityContext.class);
 		SecurityContextHolder.setContext(context);
@@ -68,7 +68,7 @@ public class InternalAuthSecurityManagerTest {
 	}
 
 	@Test
-	@Ignore
+	@Disabled
 	public void testGetUserNullContext() throws IdAuthenticationBusinessException, RestServiceException {
 		assertNull(authSecurityManager.getUser());
 	}

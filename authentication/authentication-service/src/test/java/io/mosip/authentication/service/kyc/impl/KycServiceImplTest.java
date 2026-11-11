@@ -1,9 +1,13 @@
 package io.mosip.authentication.service.kyc.impl;
 
-import static org.junit.Assert.assertEquals;
-import static org.junit.Assert.assertFalse;
-import static org.junit.Assert.assertNotNull;
-import static org.junit.Assert.assertTrue;
+import org.mockito.quality.Strictness;
+import org.mockito.junit.jupiter.MockitoSettings;
+import org.mockito.junit.jupiter.MockitoExtension;
+import static org.junit.jupiter.api.Assertions.assertThrows;
+import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertFalse;
+import static org.junit.jupiter.api.Assertions.assertNotNull;
+import static org.junit.jupiter.api.Assertions.assertTrue;
 
 import java.io.File;
 import java.io.IOException;
@@ -28,19 +32,19 @@ import io.mosip.authentication.common.service.util.EntityInfoUtil;
 import io.mosip.authentication.common.service.helper.IdentityAttributesForMatchTypeHelper;
 import io.mosip.authentication.common.service.util.LanguageUtil;
 import org.apache.commons.codec.DecoderException;
-import org.junit.Before;
-import org.junit.Test;
-import org.junit.runner.RunWith;
+import org.junit.jupiter.api.BeforeEach;
+import org.junit.jupiter.api.Test;
+import org.junit.jupiter.api.extension.ExtendWith;
 import org.mockito.InjectMocks;
 import org.mockito.Mock;
 import org.mockito.Mockito;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
-import org.springframework.boot.test.autoconfigure.web.servlet.WebMvcTest;
+import org.springframework.boot.webmvc.test.autoconfigure.WebMvcTest;
 import org.springframework.context.annotation.Import;
 import org.springframework.test.context.ContextConfiguration;
 import org.springframework.test.context.TestContext;
-import org.springframework.test.context.junit4.SpringRunner;
+import org.springframework.test.context.junit.jupiter.SpringExtension;
 import org.springframework.test.util.ReflectionTestUtils;
 import org.springframework.web.context.WebApplicationContext;
 
@@ -79,7 +83,8 @@ import io.mosip.kernel.core.util.DateUtils2;
 @ContextConfiguration(classes = { TestContext.class, WebApplicationContext.class, IDAMappingFactory.class,
 		IDAMappingConfig.class })
 
-@RunWith(SpringRunner.class)
+@ExtendWith({SpringExtension.class, MockitoExtension.class})
+@MockitoSettings(strictness = Strictness.LENIENT)
 @Import(EnvUtil.class)
 @WebMvcTest
 public class KycServiceImplTest {
@@ -144,7 +149,7 @@ public class KycServiceImplTest {
 	private LanguageUtil languageUtil;
 
 
-	@Before
+	@BeforeEach
 	public void before() throws IdAuthenticationDaoException {
 		ReflectionTestUtils.setField(kycServiceImpl, "env", env);
 		ReflectionTestUtils.setField(kycServiceImpl, "idInfoHelper", idInfoHelper);
@@ -278,13 +283,15 @@ public class KycServiceImplTest {
 		}
 	}
 	
-	@Test(expected = IdAuthenticationBusinessException.class)
+	@Test
 	public void testValidUINWithFace()
 			throws JsonParseException, JsonMappingException, IOException, IdAuthenticationBusinessException {
+		assertThrows(IdAuthenticationBusinessException.class, () -> {
 		Set<String> langCodes = new HashSet<>();
 		langCodes.add("ara");
 		EKycResponseDTO k = kycServiceImpl2.retrieveKycInfo(limitedList(), langCodes, idInfo);
 		assertNotNull(mapper.readValue(k.getIdentity().getBytes(), Map.class).get("Face"));
+			});
 	}
 	
 	@Test
@@ -1168,7 +1175,7 @@ public class KycServiceImplTest {
 
         // Assertions
         String respKey = "consentedAddressAttributeName_en"; // because addLocale = true
-        assertTrue("Response map should contain the expected key", respMap.containsKey(respKey));
+        assertTrue(respMap.containsKey(respKey), "Response map should contain the expected key");
 
         Map<String, String> addressMap = (Map<String, String>) respMap.get(respKey);
         assertEquals("123 Main St", addressMap.get("addressLine1_en"));

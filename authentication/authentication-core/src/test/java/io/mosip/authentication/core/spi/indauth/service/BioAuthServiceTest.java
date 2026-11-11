@@ -1,12 +1,12 @@
 package io.mosip.authentication.core.spi.indauth.service;
 
-import static org.junit.Assert.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertEquals;
 
 import java.util.List;
 import java.util.Map;
 
-import org.junit.Before;
-import org.junit.Test;
+import org.junit.jupiter.api.BeforeEach;
+import org.junit.jupiter.api.Test;
 
 import io.mosip.authentication.core.exception.IdAuthenticationBusinessException;
 import io.mosip.authentication.core.indauth.dto.AuthRequestDTO;
@@ -17,7 +17,7 @@ public class BioAuthServiceTest {
 	
 	private AuthStatusInfo authStatusInfo;
 	
-	@Before
+	@BeforeEach
 	public void init() {
 		authStatusInfo = new AuthStatusInfo();
 	}

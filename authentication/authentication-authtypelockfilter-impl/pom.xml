@@ -19,12 +19,10 @@
 		<!-- maven -->
 		<maven.compiler.source>21</maven.compiler.source>
 		<maven.compiler.target>21</maven.compiler.target>
-		<maven.compiler.version>3.8.0</maven.compiler.version>
 
 		<maven.jar.plugin.version>3.0.2</maven.jar.plugin.version>
 		<maven.war.plugin.version>3.1.0</maven.war.plugin.version>
 		<maven.javadoc.version>3.2.0</maven.javadoc.version>
-		<maven-shade-plugin.version>2.3</maven-shade-plugin.version>
 		<central.publishing.maven.plugin.version>0.7.0</central.publishing.maven.plugin.version>
 		<!-- spring -->
 		<spring.security.test.version>5.0.5.RELEASE</spring.security.test.version>
@@ -46,22 +44,13 @@
 		<glassfish.javax.el>2.2.6</glassfish.javax.el>
 
 		<!-- data -->
-		<h2.version>1.4.197</h2.version>
 		<mysql.connector.version>5.1.46</mysql.connector.version>
-		<postgresql.version>42.2.2</postgresql.version>
 		<eclipselink.version>2.5.0</eclipselink.version>
-		<hibernate.version>5.2.17.Final</hibernate.version>
 		<hibernate.validator.version>6.0.12.Final</hibernate.validator.version>
 
 		<!-- test -->
-		<junit.version>4.12</junit.version>
-		<mockito.version>2.23.4</mockito.version>
-		<powermock.version>1.7.4</powermock.version>
-		<powermock.beta.version>2.0.7</powermock.beta.version>
 
 		<!-- logger -->
-		<logback.version>1.2.3</logback.version>
-		<slf4j.version>1.7.19</slf4j.version>
 		<log4j-over-slf4j>1.7.7</log4j-over-slf4j>
 		<jcl.to.slf4j.version>1.7.25</jcl.to.slf4j.version>
 
@@ -84,7 +73,6 @@
 		<itextcore.version>7.1.0</itextcore.version>
 		<itexthtml2pdf.version>2.0.0</itexthtml2pdf.version>
 		<itext.version>5.5.13</itext.version>
-		<freemarker.version>2.3.23</freemarker.version>
 		<velocity.version>1.7</velocity.version>
 		<velocity.tool.version>2.0</velocity.tool.version>
 		<datamapper.orika>1.5.2</datamapper.orika>
@@ -107,14 +95,11 @@
 		<micrometer.registry.prometheus.version>1.4.2</micrometer.registry.prometheus.version>
 		<project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
 
-	    <maven.surefire.plugin.version>2.22.0</maven.surefire.plugin.version>
 
 		<maven.jar.plugin.version>3.0.2</maven.jar.plugin.version>
 		<maven.war.plugin.version>3.1.0</maven.war.plugin.version>
-	    <jacoco.maven.plugin.version>0.8.11</jacoco.maven.plugin.version>
 		<!-- <maven.sonar.plugin.version>3.7.0.1746</maven.sonar.plugin.version> -->
 		<maven.javadoc.version>3.2.0</maven.javadoc.version>
-		<maven-shade-plugin.version>2.3</maven-shade-plugin.version>
 		<central.publishing.maven.plugin.version>0.7.0</central.publishing.maven.plugin.version>
 
 		<!-- spring -->
@@ -137,22 +122,13 @@
 		<glassfish.javax.el>2.2.6</glassfish.javax.el>
 
 		<!-- data -->
-		<h2.version>1.4.197</h2.version>
 		<mysql.connector.version>5.1.46</mysql.connector.version>
-		<postgresql.version>42.2.2</postgresql.version>
 		<eclipselink.version>2.5.0</eclipselink.version>
-		<hibernate.version>5.2.17.Final</hibernate.version>
 		<hibernate.validator.version>6.0.12.Final</hibernate.validator.version>
 
 		<!-- test -->
-		<junit.version>4.12</junit.version>
-		<mockito.version>2.23.4</mockito.version>
-		<powermock.version>1.7.4</powermock.version>
-		<powermock.beta.version>2.0.7</powermock.beta.version>
 
 		<!-- logger -->
-		<logback.version>1.2.3</logback.version>
-		<slf4j.version>1.7.19</slf4j.version>
 		<log4j-over-slf4j>1.7.7</log4j-over-slf4j>
 		<jcl.to.slf4j.version>1.7.25</jcl.to.slf4j.version>
 
@@ -172,13 +148,11 @@
 		<commons.configuration2.version>2.2</commons.configuration2.version>
 		<apache.httpcomponents.version>4.5.6</apache.httpcomponents.version>
 		<guava.version>19.0</guava.version>
-		<lombok.version>1.18.8</lombok.version>
 		<jsch.version>0.1.54</jsch.version>
 		<sshd.version>1.4.0</sshd.version>
 		<itextcore.version>7.1.0</itextcore.version>
 		<itexthtml2pdf.version>2.0.0</itexthtml2pdf.version>
 		<itext.version>5.5.13</itext.version>
-		<freemarker.version>2.3.23</freemarker.version>
 		<velocity.version>1.7</velocity.version>
 		<velocity.tool.version>2.0</velocity.tool.version>
 		<datamapper.orika>1.5.2</datamapper.orika>
@@ -278,23 +252,6 @@
 			</exclusions>
 		</dependency>
 		<dependency>
-			<groupId>io.mosip.kernel</groupId>
-			<artifactId>kernel-logger-logback</artifactId>
-			<version>${kernel-logger-logback.version}</version>
-			<exclusions>
-				<exclusion>
-					<groupId>org.springframework.boot</groupId>
-					<artifactId>
-						spring-boot-starter-security
-					</artifactId>
-				</exclusion>
-				<exclusion>
-					<groupId>com.fasterxml.jackson.core</groupId>
-					<artifactId>jackson-databind</artifactId>
-				</exclusion>
-			</exclusions>
-		</dependency>
-		<dependency>
 			<groupId>com.fasterxml.jackson.module</groupId>
 			<artifactId>jackson-module-jaxb-annotations</artifactId>
 			<exclusions>
@@ -327,17 +284,6 @@
 				<exclusion>
 					<groupId>com.fasterxml.jackson.core</groupId>
 					<artifactId>jackson-core</artifactId>
-				</exclusion>
-			</exclusions>
-		</dependency>
-		<dependency>
-			<groupId>io.mosip.kernel</groupId>
-			<artifactId>kernel-openid-bridge-api</artifactId>
-			<version>${kernel-openid-bridge-api.version}</version>
-			<exclusions>
-				<exclusion>
-					<groupId>com.fasterxml.jackson.core</groupId>
-					<artifactId>jackson-databind</artifactId>
 				</exclusion>
 			</exclusions>
 		</dependency>
@@ -394,7 +340,7 @@
 			  <plugin>
 				  <groupId>org.apache.maven.plugins</groupId>
 				  <artifactId>maven-surefire-plugin</artifactId>
-				  <version>2.22.0</version>
+				  <version>${maven.surefire.plugin.version}</version>
 				  <configuration>
 					  <skipTests>false</skipTests>
 					  <skip>false</skip>

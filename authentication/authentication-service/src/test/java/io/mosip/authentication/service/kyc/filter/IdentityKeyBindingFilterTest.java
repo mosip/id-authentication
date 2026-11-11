@@ -1,21 +1,22 @@
 package io.mosip.authentication.service.kyc.filter;
 
 
+import static org.junit.jupiter.api.Assertions.assertThrows;
 import io.mosip.authentication.common.service.filter.IdAuthFilter;
 import io.mosip.authentication.common.service.filter.ResettableStreamHttpServletRequest;
 import io.mosip.authentication.common.service.util.EnvUtil;
 import io.mosip.authentication.core.exception.IdAuthenticationAppException;
 import io.mosip.authentication.core.partner.dto.AuthPolicy;
 import io.mosip.authentication.core.partner.dto.MispPolicyDTO;
-import org.junit.Assert;
-import org.junit.Test;
-import org.junit.runner.RunWith;
+import org.junit.jupiter.api.Assertions;
+import org.junit.jupiter.api.Test;
+import org.junit.jupiter.api.extension.ExtendWith;
 import org.mockito.Mockito;
-import org.springframework.boot.test.autoconfigure.web.servlet.WebMvcTest;
+import org.springframework.boot.webmvc.test.autoconfigure.WebMvcTest;
 import org.springframework.context.annotation.Import;
 import org.springframework.test.context.ContextConfiguration;
 import org.springframework.test.context.TestContext;
-import org.springframework.test.context.junit4.SpringRunner;
+import org.springframework.test.context.junit.jupiter.SpringExtension;
 import org.springframework.web.context.WebApplicationContext;
 
 import java.lang.reflect.Method;
@@ -23,7 +24,7 @@ import java.util.Collections;
 import java.util.List;
 import java.util.Map;
 
-@RunWith(SpringRunner.class)
+@ExtendWith(SpringExtension.class)
 @WebMvcTest
 @ContextConfiguration(classes = { TestContext.class, WebApplicationContext.class })
 @Import(EnvUtil.class)
@@ -33,7 +34,7 @@ public class IdentityKeyBindingFilterTest {
 
     @Test
     public void testIsPartnerCertificateNeeded() {
-        Assert.assertTrue(filterSpy.isPartnerCertificateNeeded());
+        Assertions.assertTrue(filterSpy.isPartnerCertificateNeeded());
     }
 
     @Test
@@ -48,7 +49,7 @@ public class IdentityKeyBindingFilterTest {
 
         boolean allowed = (boolean) method.invoke(filter, authType, authPolicies);
 
-        Assert.assertFalse(allowed);
+        Assertions.assertFalse(allowed);
     }
 
 
@@ -62,8 +63,9 @@ public class IdentityKeyBindingFilterTest {
         }
     }
 
-    @Test(expected = IdAuthenticationAppException.class)
+    @Test
     public void testCheckAllowedAuthTypeBasedOnPolicy_NotAllowed() throws Exception {
+		assertThrows(IdAuthenticationAppException.class, () -> {
         IdentityKeyBindingFilter filter = new IdentityKeyBindingFilter() {
             @Override
             protected boolean isAllowedAuthType(String authType, List<AuthPolicy> authPolicies) {
@@ -71,7 +73,8 @@ public class IdentityKeyBindingFilterTest {
             }
         };
         filter.checkAllowedAuthTypeBasedOnPolicy(Map.of(), Collections.emptyList());
-    }
+    		});
+	}
 
     @Test
     public void testCheckMandatoryAuthTypeBasedOnPolicy_NoOp() throws Exception {
@@ -80,21 +83,21 @@ public class IdentityKeyBindingFilterTest {
 
     @Test
     public void testBooleanOverrides() {
-        Assert.assertTrue(filterSpy.isSigningRequired());
-        Assert.assertTrue(filterSpy.isSignatureVerificationRequired());
-        Assert.assertTrue(filterSpy.isTrustValidationRequired());
-        Assert.assertTrue(filterSpy.needStoreAuthTransaction());
-        Assert.assertTrue(filterSpy.needStoreAnonymousProfile());
-        Assert.assertTrue(filterSpy.isMispPolicyValidationRequired());
-        Assert.assertTrue(filterSpy.isCertificateValidationRequired());
-        Assert.assertFalse(filterSpy.isAMRValidationRequired());
+        Assertions.assertTrue(filterSpy.isSigningRequired());
+        Assertions.assertTrue(filterSpy.isSignatureVerificationRequired());
+        Assertions.assertTrue(filterSpy.isTrustValidationRequired());
+        Assertions.assertTrue(filterSpy.needStoreAuthTransaction());
+        Assertions.assertTrue(filterSpy.needStoreAnonymousProfile());
+        Assertions.assertTrue(filterSpy.isMispPolicyValidationRequired());
+        Assertions.assertTrue(filterSpy.isCertificateValidationRequired());
+        Assertions.assertFalse(filterSpy.isAMRValidationRequired());
     }
 
     @Test
     public void testFetchId() {
         ResettableStreamHttpServletRequest req = Mockito.mock(ResettableStreamHttpServletRequest.class);
         String result = filterSpy.fetchId(req, "attr");
-        Assert.assertEquals("attrkeybinding", result);
+        Assertions.assertEquals("attrkeybinding", result);
     }
 
     @Test
@@ -104,10 +107,12 @@ public class IdentityKeyBindingFilterTest {
         filterSpy.checkMispPolicyAllowed(dto);
     }
 
-    @Test(expected = IdAuthenticationAppException.class)
+    @Test
     public void testCheckMispPolicyAllowed_NotAllowed() throws Exception {
+		assertThrows(IdAuthenticationAppException.class, () -> {
         MispPolicyDTO dto = new MispPolicyDTO();
         dto.setAllowKeyBindingDelegation(false);
         filterSpy.checkMispPolicyAllowed(dto);
-    }
+    		});
+	}
 }

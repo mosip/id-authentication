@@ -1,5 +1,9 @@
 package io.mosip.authentication.common.service.impl;
 
+import org.mockito.quality.Strictness;
+import org.mockito.junit.jupiter.MockitoSettings;
+import org.mockito.junit.jupiter.MockitoExtension;
+import static org.junit.jupiter.api.Assertions.assertThrows;
 import static org.mockito.Mockito.when;
 
 import java.util.ArrayList;
@@ -7,16 +11,16 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
-import org.junit.Before;
-import org.junit.Test;
-import org.junit.runner.RunWith;
+import org.junit.jupiter.api.BeforeEach;
+import org.junit.jupiter.api.Test;
+import org.junit.jupiter.api.extension.ExtendWith;
 import org.mockito.InjectMocks;
 import org.mockito.Mock;
 import org.mockito.Mockito;
-import org.springframework.boot.test.autoconfigure.web.servlet.WebMvcTest;
+import org.springframework.boot.webmvc.test.autoconfigure.WebMvcTest;
 import org.springframework.test.context.ContextConfiguration;
 import org.springframework.test.context.TestContext;
-import org.springframework.test.context.junit4.SpringRunner;
+import org.springframework.test.context.junit.jupiter.SpringExtension;
 import org.springframework.test.util.ReflectionTestUtils;
 import org.springframework.web.context.WebApplicationContext;
 
@@ -28,7 +32,8 @@ import io.mosip.authentication.core.autntxn.dto.AutnTxnRequestDto;
 import io.mosip.authentication.core.exception.IdAuthenticationBusinessException;
 import io.mosip.authentication.core.indauth.dto.IdType;
 
-@RunWith(SpringRunner.class)
+@ExtendWith({SpringExtension.class, MockitoExtension.class})
+@MockitoSettings(strictness = Strictness.LENIENT)
 @WebMvcTest
 @ContextConfiguration(classes = { TestContext.class, WebApplicationContext.class })
 public class AuthTxnServiceImplTest {
@@ -48,7 +53,7 @@ public class AuthTxnServiceImplTest {
 	@Mock
 	private IdaUinHashSaltRepo uinHashSaltRepo;
 
-	@Before
+	@BeforeEach
 	public void before() throws IdAuthenticationBusinessException {
 		ReflectionTestUtils.setField(authTxnServiceImpl, "authtxnRepo", authtxnRepo);
 		when(securityManager.hash(Mockito.any())).thenReturn("1234");
@@ -137,8 +142,9 @@ public class AuthTxnServiceImplTest {
 
 	}
 
-	@Test(expected = IdAuthenticationBusinessException.class)
+	@Test
 	public void TestfetchAuthTxnDetailsInvalidIdType() throws IdAuthenticationBusinessException {
+		assertThrows(IdAuthenticationBusinessException.class, () -> {
 		AutnTxnRequestDto authtxnrequestdto = getAuthTxnDto();
 		authtxnrequestdto.setIndividualIdType("USERID");
 		authtxnrequestdto.setPageStart(null);
@@ -152,10 +158,12 @@ public class AuthTxnServiceImplTest {
 		Mockito.when(authtxnRepo.findByToken(Mockito.anyString(), Mockito.any())).thenReturn(valueList);
 		authTxnServiceImpl.fetchAuthTxnDetails(authtxnrequestdto);
 
+			});
 	}
 
-	@Test(expected = IdAuthenticationBusinessException.class)
+	@Test
 	public void TestfetchAuthTxnDetailsInvalidPageStart() throws IdAuthenticationBusinessException {
+		assertThrows(IdAuthenticationBusinessException.class, () -> {
 		AutnTxnRequestDto authtxnrequestdto = getAuthTxnDto();
 		authtxnrequestdto.setPageStart(-1);
 		authtxnrequestdto.setPageFetch(null);
@@ -168,10 +176,12 @@ public class AuthTxnServiceImplTest {
 		Mockito.when(authtxnRepo.findByToken(Mockito.anyString(), Mockito.any())).thenReturn(valueList);
 		authTxnServiceImpl.fetchAuthTxnDetails(authtxnrequestdto);
 
+			});
 	}
 
-	@Test(expected = IdAuthenticationBusinessException.class)
+	@Test
 	public void TestfetchAuthTxnDetailsInvalidPageFetch() throws IdAuthenticationBusinessException {
+		assertThrows(IdAuthenticationBusinessException.class, () -> {
 		AutnTxnRequestDto authtxnrequestdto = getAuthTxnDto();
 		authtxnrequestdto.setPageFetch(-1);
 		Map<String, Object> value = new HashMap<>();
@@ -183,5 +193,6 @@ public class AuthTxnServiceImplTest {
 		Mockito.when(authtxnRepo.findByToken(Mockito.anyString(), Mockito.any())).thenReturn(valueList);
 		authTxnServiceImpl.fetchAuthTxnDetails(authtxnrequestdto);
 
+			});
 	}
 }

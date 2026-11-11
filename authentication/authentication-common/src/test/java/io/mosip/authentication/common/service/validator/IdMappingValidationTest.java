@@ -1,7 +1,10 @@
 package io.mosip.authentication.common.service.validator;
 
-import static org.junit.Assert.assertFalse;
-import static org.junit.Assert.assertTrue;
+import org.mockito.quality.Strictness;
+import org.mockito.junit.jupiter.MockitoSettings;
+import org.mockito.junit.jupiter.MockitoExtension;
+import static org.junit.jupiter.api.Assertions.assertFalse;
+import static org.junit.jupiter.api.Assertions.assertTrue;
 
 import java.time.Instant;
 import java.time.ZoneOffset;
@@ -12,17 +15,17 @@ import java.util.List;
 import java.util.Set;
 
 import io.mosip.authentication.common.service.helper.IdentityAttributesForMatchTypeHelper;
-import org.junit.Before;
-import org.junit.Ignore;
-import org.junit.Test;
-import org.junit.runner.RunWith;
+import org.junit.jupiter.api.BeforeEach;
+import org.junit.jupiter.api.Disabled;
+import org.junit.jupiter.api.Test;
+import org.junit.jupiter.api.extension.ExtendWith;
 import org.mockito.InjectMocks;
 import org.mockito.Mock;
 import org.mockito.Mockito;
-import org.springframework.boot.test.autoconfigure.web.servlet.WebMvcTest;
+import org.springframework.boot.webmvc.test.autoconfigure.WebMvcTest;
 import org.springframework.test.context.ContextConfiguration;
 import org.springframework.test.context.TestContext;
-import org.springframework.test.context.junit4.SpringRunner;
+import org.springframework.test.context.junit.jupiter.SpringExtension;
 import org.springframework.test.util.ReflectionTestUtils;
 import org.springframework.validation.BeanPropertyBindingResult;
 import org.springframework.validation.Errors;
@@ -52,7 +55,8 @@ import io.mosip.authentication.common.service.helper.RestHelper;
 import io.mosip.kernel.core.util.DateUtils2;
 import io.mosip.kernel.pinvalidator.impl.PinValidatorImpl;
 
-@RunWith(SpringRunner.class)
+@ExtendWith({SpringExtension.class, MockitoExtension.class})
+@MockitoSettings(strictness = Strictness.LENIENT)
 @WebMvcTest
 @ContextConfiguration(classes = { TestContext.class, WebApplicationContext.class })
 public class IdMappingValidationTest {
@@ -93,7 +97,7 @@ public class IdMappingValidationTest {
 	@Mock
 	private IdentityAttributesForMatchTypeHelper identityAttributesForMatchTypeHelper;
 
-	@Before
+	@BeforeEach
 	public void before() throws IdAuthenticationDaoException {
 		ReflectionTestUtils.setField(authRequestValidator, "idInfoHelper", idinfoHelper);
 	}
@@ -178,7 +182,7 @@ public class IdMappingValidationTest {
 		assertFalse(errors.hasErrors());
 	}
 
-	@Ignore
+	@Disabled
 	@Test
 	public void TestBioMetricNotValidated() {
 		AuthRequestDTO authRequestDTO = getBioFingerDetails();
@@ -192,7 +196,7 @@ public class IdMappingValidationTest {
 		assertFalse(errors.hasErrors());
 	}
 
-	@Ignore
+	@Disabled
 	@Test
 	public void TestBioMetricValidationsforFingerPrint() {
 		AuthRequestDTO authRequestDTO = getBioFingerDetails();

@@ -289,7 +289,7 @@ public abstract class BaseIDAFilter implements Filter {
 
 		response.getWriter().write(responseAsString);
 		responseWrapper.setResponse(response);
-		responseWrapper.setContentType(MediaType.APPLICATION_JSON_UTF8_VALUE);
+		responseWrapper.setContentType(MediaType.APPLICATION_JSON_VALUE + ";charset=UTF-8");
 
 		logTime(null, IdAuthCommonConstants.RESPONSE, requestTime);
 		return responseWrapper;

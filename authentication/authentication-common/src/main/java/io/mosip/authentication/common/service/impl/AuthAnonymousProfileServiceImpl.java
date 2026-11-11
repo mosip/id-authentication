@@ -1,5 +1,6 @@
 package io.mosip.authentication.common.service.impl;
 
+import io.mosip.authentication.common.service.util.IdaDateUtil;
 import static io.mosip.authentication.core.constant.IdAuthCommonConstants.BIOMETRICS;
 import static io.mosip.authentication.core.constant.IdAuthCommonConstants.BIO_SUB_TYPE;
 import static io.mosip.authentication.core.constant.IdAuthCommonConstants.BIO_TYPE;
@@ -220,7 +221,7 @@ public class AuthAnonymousProfileServiceImpl implements AuthAnonymousProfileServ
 	}
 
 	private String getYear(String dob) {
-		Date date = DateUtils2.parseToDate(dob, dateOfBirthPattern);
+		Date date = IdaDateUtil.parseToDate(dob, dateOfBirthPattern);
 		return String.valueOf(DateUtils2.parseDateToLocalDateTime(date).getYear());
 	}
 

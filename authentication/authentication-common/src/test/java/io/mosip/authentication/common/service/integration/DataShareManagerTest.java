@@ -1,25 +1,29 @@
 package io.mosip.authentication.common.service.integration;
 
-import static org.junit.Assert.assertEquals;
+import org.mockito.quality.Strictness;
+import org.mockito.junit.jupiter.MockitoSettings;
+import org.mockito.junit.jupiter.MockitoExtension;
+import static org.junit.jupiter.api.Assertions.assertThrows;
+import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.ArgumentMatchers.isNull;
 import static org.mockito.Mockito.when;
 
 import java.util.Map;
 
-import org.junit.After;
-import org.junit.Before;
-import org.junit.Ignore;
-import org.junit.Test;
-import org.junit.runner.RunWith;
+import org.junit.jupiter.api.AfterEach;
+import org.junit.jupiter.api.BeforeEach;
+import org.junit.jupiter.api.Disabled;
+import org.junit.jupiter.api.Test;
+import org.junit.jupiter.api.extension.ExtendWith;
 import org.mockito.InjectMocks;
 import org.mockito.Mock;
 import org.mockito.Mockito;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.boot.test.autoconfigure.web.servlet.WebMvcTest;
+import org.springframework.boot.webmvc.test.autoconfigure.WebMvcTest;
 import org.springframework.test.context.ContextConfiguration;
 import org.springframework.test.context.TestContext;
-import org.springframework.test.context.junit4.SpringRunner;
+import org.springframework.test.context.junit.jupiter.SpringExtension;
 import org.springframework.test.util.ReflectionTestUtils;
 import org.springframework.web.context.WebApplicationContext;
 
@@ -33,10 +37,11 @@ import io.mosip.authentication.core.exception.IdAuthenticationBusinessException;
 import io.mosip.idrepository.core.dto.RestRequestDTO;
 import io.mosip.authentication.common.service.helper.RestHelper;
 
-@RunWith(SpringRunner.class)
+@ExtendWith({SpringExtension.class, MockitoExtension.class})
+@MockitoSettings(strictness = Strictness.LENIENT)
 @ContextConfiguration(classes = { TestContext.class, WebApplicationContext.class })
 @WebMvcTest
-@Ignore
+@Disabled
 public class DataShareManagerTest {
 	
 	@Mock
@@ -54,14 +59,14 @@ public class DataShareManagerTest {
 	@InjectMocks
 	private DataShareManager dataShareManager;
 
-	@Before
+	@BeforeEach
 	public void setUp() throws Exception {
 		ReflectionTestUtils.setField(dataShareManager, "mapper", mapper);
 		RestRequestDTO restReqDTO = new RestRequestDTO();
 		when(restRequestFactory.buildRequest(RestServicesConstants.DATA_SHARE_GET, null, String.class)).thenReturn(restReqDTO);
 	}
 
-	@After
+	@AfterEach
 	public void tearDown() throws Exception {
 
 	}
@@ -102,8 +107,9 @@ public class DataShareManagerTest {
 		assertEquals(response, result);
 	}
 	
-	@Test(expected = IdAuthUncheckedException.class)
+	@Test
 	public void testDownloadObjectJsonStrWithErrorsNonEmpty() throws Exception {
+		assertThrows(IdAuthUncheckedException.class, () -> {
 		DataShareManager testSubject;
 		String dataShareUrl = "";
 		Class<String> clazz = String.class;
@@ -116,6 +122,7 @@ public class DataShareManagerTest {
 		when(restHelper.requestSync(any(), Mockito.any())).thenReturn(response);
 		result = testSubject.downloadObject(dataShareUrl, clazz, decryptionRequred);
 		assertEquals(response, result);
+			});
 	}
 	
 	@Test
@@ -190,8 +197,9 @@ public class DataShareManagerTest {
 		assertEquals(response, result);
 	}
 	
-	@Test(expected = IdAuthenticationBusinessException.class)
+	@Test
 	public void testDownloadObjectObjectResponseDecryptionRequiredParseException() throws Exception {
+		assertThrows(IdAuthenticationBusinessException.class, () -> {
 		DataShareManager testSubject;
 		String dataShareUrl = "";
 		Class<Map> clazz = Map.class;
@@ -207,10 +215,12 @@ public class DataShareManagerTest {
 		when(restHelper.requestSync(any(), Mockito.any())).thenReturn(encryptedResp);
 		when(securityManager.decrypt(Mockito.anyString(), Mockito.anyString(), isNull(), isNull(), Mockito.anyBoolean())).thenReturn(responseStr.getBytes());
 		testSubject.downloadObject(dataShareUrl, clazz, decryptionRequred);
+			});
 	}
 
-    @Test(expected = IdAuthUncheckedException.class)
+    @Test
     public void testDownloadObjectResponseNull() throws Exception {
+		assertThrows(IdAuthUncheckedException.class, () -> {
         DataShareManager testSubject = getTestSubject();
         String dataShareUrl = "";
         Class<String> clazz = String.class;
@@ -220,5 +230,6 @@ public class DataShareManagerTest {
         when(restHelper.requestSync(any(), any())).thenReturn(null);
 
         testSubject.downloadObject(dataShareUrl, clazz, decryptionRequired);
-    }
+    		});
+	}
 }

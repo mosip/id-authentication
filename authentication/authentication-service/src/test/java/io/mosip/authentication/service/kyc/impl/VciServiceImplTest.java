@@ -1,5 +1,8 @@
 package io.mosip.authentication.service.kyc.impl;
 
+import org.mockito.quality.Strictness;
+import org.mockito.junit.jupiter.MockitoSettings;
+import org.mockito.junit.jupiter.MockitoExtension;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import foundation.identity.jsonld.ConfigurableDocumentLoader;
 import foundation.identity.jsonld.JsonLDException;
@@ -20,16 +23,16 @@ import io.mosip.authentication.service.kyc.util.VCSchemaProviderUtil;
 import io.mosip.kernel.biometrics.entities.BIR;
 import io.mosip.kernel.biometrics.spi.CbeffUtil;
 import org.json.simple.JSONObject;
-import org.junit.Assert;
-import org.junit.Before;
-import org.junit.Test;
-import org.junit.runner.RunWith;
+import org.junit.jupiter.api.Assertions;
+import org.junit.jupiter.api.BeforeEach;
+import org.junit.jupiter.api.Test;
+import org.junit.jupiter.api.extension.ExtendWith;
 import org.mockito.InjectMocks;
 import org.mockito.Mock;
 import org.mockito.Mockito;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.annotation.Import;
-import org.springframework.test.context.junit4.SpringRunner;
+import org.springframework.test.context.junit.jupiter.SpringExtension;
 import org.springframework.test.util.ReflectionTestUtils;
 
 import java.io.IOException;
@@ -38,12 +41,13 @@ import java.nio.charset.StandardCharsets;
 import java.security.GeneralSecurityException;
 import java.util.*;
 
-import static org.junit.Assert.*;
+import static org.junit.jupiter.api.Assertions.*;
 import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.ArgumentMatchers.anyString;
 import static org.mockito.Mockito.*;
 
-@RunWith(SpringRunner.class)
+@ExtendWith({SpringExtension.class, MockitoExtension.class})
+@MockitoSettings(strictness = Strictness.LENIENT)
 @Import(EnvUtil.class)
 public class VciServiceImplTest {
 
@@ -97,7 +101,7 @@ public class VciServiceImplTest {
     private EntityInfoUtil entityInfoUtil;
 
 
-    @Before
+    @BeforeEach
     public void beforeTest(){
 
         identityInfoDTO=new IdentityInfoDTO();
@@ -135,7 +139,7 @@ public class VciServiceImplTest {
         try{
             vciServiceImpl.addCredSubjectId("12345:54321:MTIzNDU2Nzg5MA==","hash","123456789","12");
         }catch (IdAuthenticationBusinessException e){
-            Assert.assertEquals("IDA-MLC-007",e.getErrorCode());
+            Assertions.assertEquals("IDA-MLC-007",e.getErrorCode());
         }
     }
 

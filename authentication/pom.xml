@@ -3,6 +3,13 @@
 	xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
 	<modelVersion>4.0.0</modelVersion>
 
+	<parent>
+		<groupId>org.springframework.boot</groupId>
+		<artifactId>spring-boot-starter-parent</artifactId>
+		<version>4.1.1</version>
+		<relativePath/>
+	</parent>
+
 	<groupId>io.mosip.authentication</groupId>
 	<artifactId>authentication-parent</artifactId>
 	<version>1.4.0-1764-SNAPSHOT</version>
@@ -87,6 +94,12 @@
 		<authentication-authtypelockfilter-impl.version>${authentication.parent.version}</authentication-authtypelockfilter-impl.version>
 		<authentication-hotlistfilter-impl.version>${authentication.parent.version}</authentication-hotlistfilter-impl.version>
 		<project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
+		<java.version>21</java.version>
+		<spring-cloud.version>2025.1.3</spring-cloud.version>
+		<jackson2.bom.version>2.22.3</jackson2.bom.version>
+		<lombok.version>1.18.48</lombok.version>
+		<!-- empty default so ${argLine} resolves in surefire when the jacoco agent is not attached -->
+		<argLine/>
 		<sonar.sources>src/main/java</sonar.sources>
     	<sonar.tests>src/test/java</sonar.tests>
     	<sonar.inclusions>src/main/java/**/*.java</sonar.inclusions>
@@ -96,55 +109,37 @@
 
 		<!-- Kernel components -->
 		<kernel.parent.version>1.3.1-rc.1</kernel.parent.version>
-		<kernel-core.version>1.3.1-rc.1</kernel-core.version>
-		<kernel-keymanager-service.version>1.4.1-rc.1</kernel-keymanager-service.version>
-		<kernel-idgenerator-tokenid.version>1.3.1-rc.1</kernel-idgenerator-tokenid.version>
-		<kernel-idobjectvalidator.version>1.3.1-rc.1</kernel-idobjectvalidator.version>
-		<kernel-pinvalidator.version>1.3.1-rc.1</kernel-pinvalidator.version>
-		<kernel-logger-logback.version>1.3.1-rc.1</kernel-logger-logback.version>
-		<kernel-dataaccess-hibernate.version>1.3.1-rc.1</kernel-dataaccess-hibernate.version>
-		<kernel-cbeffutil-api.version>1.3.1</kernel-cbeffutil-api.version>
-		<kernel-templatemanager-velocity.version>1.3.1-rc.1</kernel-templatemanager-velocity.version>
-		<kernel-auth-adapter.version>1.3.1</kernel-auth-adapter.version>
-		<kernel-biometrics-api.version>1.3.1</kernel-biometrics-api.version>
-		<kernel-biosdk-provider.version>1.3.1</kernel-biosdk-provider.version>
-		<kernel-demographics-api.version>1.3.1-rc.1</kernel-demographics-api.version>
-		<kernel-websubclient-api.version>1.3.1-rc.1</kernel-websubclient-api.version>
-		<id-repository-core.version>1.3.1-rc.1</id-repository-core.version>
+		<kernel-core.version>1.4.1-SNAPSHOT</kernel-core.version>
+		<kernel-keymanager-service.version>1.5.1-SNAPSHOT</kernel-keymanager-service.version>
+		<kernel-cbeffutil-api.version>1.4.1-SNAPSHOT</kernel-cbeffutil-api.version>
+		<kernel-auth-adapter.version>1.4.1-SNAPSHOT</kernel-auth-adapter.version>
+		<kernel-biometrics-api.version>1.4.1-SNAPSHOT</kernel-biometrics-api.version>
+		<kernel-biosdk-provider.version>1.4.1-SNAPSHOT</kernel-biosdk-provider.version>
+		<id-repository-core.version>1.4.1-SNAPSHOT</id-repository-core.version>
 		<json.utility.version>20180130</json.utility.version>
-		<kernel-biometrics-util.version>1.3.1</kernel-biometrics-util.version>
-		<kernel-openid-bridge-api.version>1.3.1</kernel-openid-bridge-api.version>
-		<kernel-bom.version>1.3.1-rc.1</kernel-bom.version>
-		<biosdk-client.version>1.3.1</biosdk-client.version>
-		<demosdk.version>1.3.1</demosdk.version>
+		<kernel-biometrics-util.version>1.4.1-SNAPSHOT</kernel-biometrics-util.version>
+		<biosdk-client.version>1.4.1-SNAPSHOT</biosdk-client.version>
+		<demosdk.version>1.4.1-SNAPSHOT</demosdk.version>
 		<esignet-core.version>1.8.0</esignet-core.version>
 		<esignet-integration-api.version>1.8.0</esignet-integration-api.version>
 
 		<!-- Maven Plugins -->
 		<maven.compiler.source>21</maven.compiler.source>
 		<maven.compiler.target>21</maven.compiler.target>
-		<maven.compiler.version>3.8.0</maven.compiler.version>
+		<maven.compiler.version>3.16.0</maven.compiler.version>
 		<maven.javadoc.version>3.2.0</maven.javadoc.version>
 		<maven.sonar.version>3.7.0.1746</maven.sonar.version>
-		<powermock.version>2.0.9</powermock.version>
-		<maven.surefire.plugin.version>2.22.0</maven.surefire.plugin.version>
-		<jacoco.maven.plugin.version>0.8.11</jacoco.maven.plugin.version>
+		<maven.surefire.plugin.version>3.5.6</maven.surefire.plugin.version>
+		<jacoco.maven.plugin.version>0.8.15</jacoco.maven.plugin.version>
 		<central.publishing.maven.plugin.version>0.7.0</central.publishing.maven.plugin.version>
-
-		<!-- Test & Logging -->
-		<junit.version>4.13.2</junit.version>
-		<mockito.version>3.4.3</mockito.version>
-		<byte-buddy.version>1.9.3</byte-buddy.version>
 
 		<!-- Spring Boot -->
-		<spring.security.test.version>5.0.5.RELEASE</spring.security.test.version>
-		<hibernate.validator.version>6.0.12.Final</hibernate.validator.version>
-		<postgresql.version>42.2.2</postgresql.version>
-		<spring-boot-maven-plugin.version>3.2.3</spring-boot-maven-plugin.version>
+		<spring-boot-maven-plugin.version>4.1.1</spring-boot-maven-plugin.version>
 		<central.publishing.maven.plugin.version>0.7.0</central.publishing.maven.plugin.version>
-		<!-- Commons -->
-		<commons.lang.version>3.7</commons.lang.version>
-		<commons.codec.version>1.11</commons.codec.version>
+		<!-- Not managed by Spring Boot 4 (previously pinned by kernel-bom) -->
+		<json.simple.version>1.1.1</json.simple.version>
+		<org.json.version>20231013</org.json.version>
+		<apache.httpclient4.version>4.5.13</apache.httpclient4.version>
 
 		<sourceafis.version>3.4.0</sourceafis.version>
 
@@ -160,34 +155,59 @@
 
 		<maven.jar.plugin.version>3.0.2</maven.jar.plugin.version>
 		<maven.war.plugin.version>3.1.0</maven.war.plugin.version>
-		<objenesis.version>3.1</objenesis.version>
 
-		<springdoc.version>2.5.0</springdoc.version>
+		<springdoc.version>3.1.1</springdoc.version>
 		
 	</properties>
 	<dependencyManagement>
 		<dependencies>
+			<!-- kernel-biometrics-api (CbeffValidator) still uses the legacy javax.xml.bind API, so it needs the
+			     javax-namespace JAXB RI (2.3.x). The Boot 4 BOM manages 4.0.x (jakarta), which would silently replace it
+			     and make CbeffValidator fail with "Implementation of JAXB-API has not been found". Remove once the
+			     kernel moves CBEFF to jakarta.xml.bind. -->
 			<dependency>
-				<groupId>io.mosip.kernel</groupId>
-				<artifactId>kernel-bom</artifactId>
-				<version>${kernel-bom.version}</version>
+				<groupId>org.glassfish.jaxb</groupId>
+				<artifactId>jaxb-runtime</artifactId>
+				<version>2.3.9</version>
+			</dependency>
+			<dependency>
+				<groupId>org.glassfish.jaxb</groupId>
+				<artifactId>txw2</artifactId>
+				<version>2.3.9</version>
+			</dependency>
+			<dependency>
+				<groupId>org.springframework.cloud</groupId>
+				<artifactId>spring-cloud-dependencies</artifactId>
+				<version>${spring-cloud.version}</version>
 				<type>pom</type>
 				<scope>import</scope>
+			</dependency>
+			<!-- Boot 4 defaults to Jackson 3 (tools.jackson); keep Jackson 2 (com.fasterxml.jackson) -->
+			<dependency>
+				<groupId>com.fasterxml.jackson</groupId>
+				<artifactId>jackson-bom</artifactId>
+				<version>${jackson2.bom.version}</version>
+				<type>pom</type>
+				<scope>import</scope>
+			</dependency>
+			<dependency>
+				<groupId>com.googlecode.json-simple</groupId>
+				<artifactId>json-simple</artifactId>
+				<version>${json.simple.version}</version>
+			</dependency>
+			<dependency>
+				<groupId>org.json</groupId>
+				<artifactId>json</artifactId>
+				<version>${org.json.version}</version>
+			</dependency>
+			<dependency>
+				<groupId>org.apache.httpcomponents</groupId>
+				<artifactId>httpclient</artifactId>
+				<version>${apache.httpclient4.version}</version>
 			</dependency>
 		</dependencies>
 	</dependencyManagement>
 	<dependencies>
-		<!-- JUnit -->
-		<dependency>
-			<groupId>org.junit.vintage</groupId>
-			<artifactId>junit-vintage-engine</artifactId>
-		</dependency>
-		<!--<dependency>
-			<groupId>junit</groupId>
-			<artifactId>junit</artifactId>
-			<scope>test</scope>
-			<version>${junit.version}</version>
-		</dependency>-->
 		<!-- Lombok -->
 
 		<dependency>
@@ -212,25 +232,14 @@
 			<artifactId>spring-boot-starter-webflux</artifactId>
 		</dependency>
 		<dependency>
-			<groupId>javax.xml.bind</groupId>
-			<artifactId>jaxb-api</artifactId>
+			<groupId>org.springframework.boot</groupId>
+			<artifactId>spring-boot-jackson2</artifactId>
 		</dependency>
+		<!-- @WebMvcTest / @AutoConfigureMockMvc moved to this module in Boot 4 -->
 		<dependency>
-			<groupId>org.javassist</groupId>
-			<artifactId>javassist</artifactId>
-		</dependency>
-		<dependency>
-			<groupId>io.mosip.kernel</groupId>
-			<artifactId>kernel-logger-logback</artifactId>
-			<version>${kernel-logger-logback.version}</version>
-			<exclusions>
-				<exclusion>
-					<groupId>org.springframework.boot</groupId>
-					<artifactId>
-						spring-boot-starter-security
-					</artifactId>
-				</exclusion>
-			</exclusions>
+			<groupId>org.springframework.boot</groupId>
+			<artifactId>spring-boot-starter-webmvc-test</artifactId>
+			<scope>test</scope>
 		</dependency>
 
 		<dependency>
@@ -275,8 +284,8 @@
 		</dependency>
 		<dependency>
 			<groupId>io.mosip.kernel</groupId>
-			<artifactId>kernel-openid-bridge-api</artifactId>
-			<version>${kernel-openid-bridge-api.version}</version>
+			<artifactId>kernel-auth-adapter</artifactId>
+			<version>${kernel-auth-adapter.version}</version>
 			<scope>provided</scope>
 		</dependency>
 	</dependencies>
@@ -387,8 +396,13 @@
 					<skipTests>${skipTests}</skipTests>
 					<skip>false</skip>
 					<argLine>
-						${argLine} --add-opens java.xml/jdk.xml.internal=ALL-UNNAMED --illegal-access=permit
+						${argLine} --add-opens java.xml/jdk.xml.internal=ALL-UNNAMED
 					</argLine>
+					<!-- Spring Cloud 2025: config client import-check fails test contexts without spring.config.import -->
+					<systemPropertyVariables>
+						<spring.cloud.config.enabled>false</spring.cloud.config.enabled>
+						<spring.cloud.config.import-check.enabled>false</spring.cloud.config.import-check.enabled>
+					</systemPropertyVariables>
 				</configuration>
 			</plugin>
 			<plugin>

@@ -1,6 +1,10 @@
 package io.mosip.authentication.common.service.builder;
 
-import static org.junit.Assert.assertEquals;
+import org.mockito.quality.Strictness;
+import org.mockito.junit.jupiter.MockitoSettings;
+import org.mockito.junit.jupiter.MockitoExtension;
+import static org.junit.jupiter.api.Assertions.assertThrows;
+import static org.junit.jupiter.api.Assertions.assertEquals;
 
 import java.util.ArrayList;
 import java.util.HashMap;
@@ -9,15 +13,15 @@ import java.util.List;
 import java.util.Map;
 import java.util.Set;
 
-import org.junit.Before;
-import org.junit.Test;
-import org.junit.runner.RunWith;
+import org.junit.jupiter.api.BeforeEach;
+import org.junit.jupiter.api.Test;
+import org.junit.jupiter.api.extension.ExtendWith;
 import org.mockito.InjectMocks;
 import org.mockito.Mock;
 import org.mockito.Mockito;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.annotation.Import;
-import org.springframework.test.context.junit4.SpringRunner;
+import org.springframework.test.context.junit.jupiter.SpringExtension;
 import org.springframework.test.util.ReflectionTestUtils;
 
 import io.mosip.authentication.common.service.impl.match.BioAuthType;
@@ -35,7 +39,8 @@ import io.mosip.authentication.core.indauth.dto.RequestDTO;
 import io.mosip.authentication.core.spi.indauth.match.IdInfoFetcher;
 import io.mosip.authentication.core.spi.indauth.match.MappingConfig;
 
-@RunWith(SpringRunner.class)
+@ExtendWith({SpringExtension.class, MockitoExtension.class})
+@MockitoSettings(strictness = Strictness.LENIENT)
 @Import(EnvUtil.class)
 public class MatchInputBuilderTest {
 
@@ -51,7 +56,7 @@ public class MatchInputBuilderTest {
 	@InjectMocks
 	private MatchInputBuilder matchInputBuilder;
 	
-	@Before
+	@BeforeEach
 	public void setup() {
 		ReflectionTestUtils.setField(matchInputBuilder, "idInfoFetcher", idInfoFetcher);
 		ReflectionTestUtils.setField(matchInputBuilder, "environment", environment);
@@ -171,8 +176,9 @@ public class MatchInputBuilderTest {
 	}
 	
 	//io.mosip.authentication.core.exception.IdAuthUncheckedException: IDA-DEA-002 --> Unsupported Language Code - fra for attribute residenceStatus
-	@Test(expected = IdAuthUncheckedException.class)
+	@Test
 	public void checkIdentityInfoLanguageTest1() {
+		assertThrows(IdAuthUncheckedException.class, () -> {
 		AuthRequestDTO authRequestDto = new AuthRequestDTO();
 		IdentityInfoDTO identityInfoDTO1 = new IdentityInfoDTO();
 		identityInfoDTO1.setLanguage("eng");
@@ -205,11 +211,13 @@ public class MatchInputBuilderTest {
 		Mockito.when(idInfoFetcher.getIdentityInfo(DemoMatchType.DYNAMIC, "residenceStatus",authRequestDto.getRequest())).thenReturn(demoEntity);
 		Mockito.when(idInfoFetcher.getMappingConfig().getDynamicAttributes()).thenReturn(demoMetadata);
 		matchInputBuilder.buildMatchInput(authRequestDto, DemoAuthType.values(), DemoMatchType.values(), demoEntity);
+			});
 	}
 	
 	//io.mosip.authentication.core.exception.IdAuthUncheckedException: IDA-MLC-006 --> Missing Input Parameter - residenceStatus: language
-	@Test(expected = IdAuthUncheckedException.class)
+	@Test
 	public void checkIdentityInfoLanguageTest2() {
+		assertThrows(IdAuthUncheckedException.class, () -> {
 		AuthRequestDTO authRequestDto = new AuthRequestDTO();
 		IdentityInfoDTO identityInfoDTO1 = new IdentityInfoDTO();
 		identityInfoDTO1.setLanguage("eng");
@@ -253,11 +261,13 @@ public class MatchInputBuilderTest {
 		Mockito.when(idInfoFetcher.getIdentityInfo(DemoMatchType.DYNAMIC, "residenceStatus",authRequestDto.getRequest())).thenReturn(demoEntity1);
 		Mockito.when(idInfoFetcher.getMappingConfig().getDynamicAttributes()).thenReturn(demoMetadata);
 		matchInputBuilder.buildMatchInput(authRequestDto, DemoAuthType.values(), DemoMatchType.values(), demoEntity);
+			});
 	}
 
 	//io.mosip.authentication.core.exception.IdAuthUncheckedException: IDA-MLC-009 --> Invalid Input Parameter - residenceStatus: language
-	@Test(expected = IdAuthUncheckedException.class)
+	@Test
 	public void checkIdentityInfoLanguageTest3() {
+		assertThrows(IdAuthUncheckedException.class, () -> {
 		AuthRequestDTO authRequestDto = new AuthRequestDTO();
 		IdentityInfoDTO identityInfoDTO1 = new IdentityInfoDTO();
 		identityInfoDTO1.setLanguage("eng");
@@ -302,5 +312,6 @@ public class MatchInputBuilderTest {
 		Mockito.when(idInfoFetcher.getIdentityInfo(DemoMatchType.DYNAMIC, "residenceStatus",authRequestDto.getRequest())).thenReturn(demoEntity1);
 		Mockito.when(idInfoFetcher.getMappingConfig().getDynamicAttributes()).thenReturn(demoMetadata);
 		matchInputBuilder.buildMatchInput(authRequestDto, DemoAuthType.values(), DemoMatchType.values(), demoEntity);
+			});
 	}
 }

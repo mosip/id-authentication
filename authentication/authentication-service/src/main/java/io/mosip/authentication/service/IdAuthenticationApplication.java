@@ -9,7 +9,7 @@ import io.mosip.kernel.pdfgenerator.impl.PDFGeneratorImpl;
 import io.mosip.kernel.signature.util.SignatureUtil;
 import org.springframework.boot.SpringApplication;
 import org.springframework.boot.autoconfigure.SpringBootApplication;
-import org.springframework.boot.autoconfigure.security.servlet.SecurityAutoConfiguration;
+import org.springframework.boot.security.autoconfigure.SecurityAutoConfiguration;
 import org.springframework.context.annotation.ComponentScan;
 import org.springframework.context.annotation.FilterType;
 import org.springframework.context.annotation.Import;
@@ -84,7 +84,7 @@ import io.mosip.kernel.keymanager.hsm.impl.KeyStoreImpl;
 import io.mosip.kernel.keymanagerservice.controller.KeymanagerController;
 import io.mosip.kernel.keymanagerservice.helper.KeymanagerDBHelper;
 import io.mosip.kernel.keymanagerservice.helper.PrivateKeyDecryptorHelper;
-import io.mosip.kernel.keymanagerservice.helper.SessionKeyDecrytorHelper;
+import io.mosip.kernel.keymanagerservice.helper.SessionKeyDecryptorHelper;
 import io.mosip.kernel.keymanagerservice.service.impl.KeymanagerServiceImpl;
 import io.mosip.kernel.keymanagerservice.util.KeymanagerUtil;
 import io.mosip.kernel.partnercertservice.controller.PartnerCertManagerController;
@@ -107,7 +107,29 @@ import io.mosip.kernel.websub.api.config.publisher.RestTemplateHelper;
  * @author Dinesh Karuppiah
  * @author Nagarjuna
  */
-@SpringBootApplication(exclude = { SecurityAutoConfiguration.class })
+/*
+ * kernel-core 1.4.1 auto-configures every library that was merged into it (id generators/validators, QR, transliteration,
+ * applicant type, ...). IDA only needs token-id, template manager, PDF and WebSub (explicitly @Import-ed / scanned below),
+ * so the unused ones are excluded to avoid requiring their properties/beans.
+ */
+@SpringBootApplication(exclude = { SecurityAutoConfiguration.class }, excludeName = {
+			"io.mosip.kernel.idgenerator.vid.impl.VidGeneratorImpl",
+			"io.mosip.kernel.idgenerator.vid.util.VidFilterUtils",
+			"io.mosip.kernel.idgenerator.machineid.impl.MachineIdGeneratorImpl",
+			"io.mosip.kernel.idgenerator.regcenterid.impl.RegistrationCenterIdGeneratorImpl",
+			"io.mosip.kernel.idgenerator.mispid.impl.MispIdGeneratorImpl",
+			"io.mosip.kernel.idgenerator.rid.impl.RidGeneratorImpl",
+			"io.mosip.kernel.licensekeygenerator.misp.impl.MISPLicenseKeyGeneratorImpl",
+			"io.mosip.kernel.licensekeygenerator.misp.util.MISPLicenseKeyGeneratorUtil",
+			"io.mosip.kernel.idvalidator.prid.impl.PridValidatorImpl",
+			"io.mosip.kernel.idvalidator.rid.impl.RidValidatorImpl",
+			"io.mosip.kernel.idvalidator.uin.impl.UinValidatorImpl",
+			"io.mosip.kernel.idvalidator.vid.impl.VidValidatorImpl",
+			"io.mosip.kernel.idvalidator.mispid.impl.MispIdValidatorImpl",
+			"io.mosip.kernel.qrcode.generator.zxing.QrcodeGeneratorImpl",
+			"io.mosip.kernel.transliteration.icu4j.impl.TransliterationImpl",
+			"io.mosip.kernel.applicanttype.api.impl.ApplicantTypeImpl",
+			"io.mosip.kernel.idobjectvalidator.config.IdObjectValidatorConfig" })
 @Import(value = { IdValidationUtil.class, IDAMappingConfig.class, KeyBindedTokenAuthServiceImpl.class,
 		AuthContextClazzRefProvider.class, CbeffImpl.class, 
 		RestRequestFactory.class, AuditRequestFactory.class, AuditRequestFactory.class, NotificationManager.class,
@@ -128,13 +150,12 @@ import io.mosip.kernel.websub.api.config.publisher.RestTemplateHelper;
 		AuthTransactionStatusEventPublisher.class, MasterDataCacheUpdateServiceImpl.class,
 		MasterDataUpdateEventInitializer.class, DemoNormalizer.class, DemoMatcherUtil.class,
 		IdAuthFraudAnalysisEventManager.class, IdAuthFraudAnalysisEventPublisher.class, AuthFiltersValidator.class,
-		AuthAnonymousProfileServiceImpl.class, AuthAnonymousEventPublisher.class, SessionKeyDecrytorHelper.class, ExternalRestHelperConfig.class, IdaRequestResponsConsumerUtil.class,
+		AuthAnonymousProfileServiceImpl.class, AuthAnonymousEventPublisher.class, SessionKeyDecryptorHelper.class, ExternalRestHelperConfig.class, IdaRequestResponsConsumerUtil.class,
 		PartnerCACertEventServiceImpl.class, PartnerCACertEventInitializer.class, EnvUtil.class, KeyBindedTokenMatcherUtil.class,
 		HSMHealthCheck.class, TokenValidationHelper.class, VCSchemaProviderUtil.class, PrivateKeyDecryptorHelper.class, 
 		PasswordAuthServiceImpl.class, PasswordComparator.class, AuthenticationErrorEventingPublisher.class,
 		PasswordAuthServiceImpl.class, PasswordComparator.class, AuthenticationErrorEventingPublisher.class,
-		PDFGeneratorImpl.class, RestTemplateHelper.class, LanguageUtil.class, IdentityAttributesForMatchTypeHelper.class
-, TypeForIdNameHelper.class
+		PDFGeneratorImpl.class, RestTemplateHelper.class, LanguageUtil.class, IdentityAttributesForMatchTypeHelper.class, TypeForIdNameHelper.class
 		, ValidateOtpHelper.class, RequireOtpNotFrozenHelper.class, MatchIdentityDataHelper.class, MatchTypeHelper.class
 		, SeparatorHelper.class, ECKeyPairGenRequestValidator.class, SubjectAlternativeNamesHelper.class, SignatureServiceImpl.class, SignatureUtil.class,
 		// Added for internal-service controller merge (phase 2): CredentialIssueanceCallbackController,

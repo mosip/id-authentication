@@ -1,10 +1,11 @@
 package io.mosip.authentication.common.service.builder;
 
-import static org.junit.Assert.assertEquals;
-import static org.junit.Assert.assertNotNull;
-import static org.junit.Assert.assertTrue;
+import static org.junit.jupiter.api.Assertions.assertThrows;
+import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertNotNull;
+import static org.junit.jupiter.api.Assertions.assertTrue;
 
-import org.junit.Test;
+import org.junit.jupiter.api.Test;
 import org.mockito.Mock;
 import org.mockito.Mockito;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -36,15 +37,19 @@ public class AuthTransactionBuilderTest {
 		assertNotNull(authTransactionBuilder.withRequest(new OtpRequestDTO()));
 	}
 	
-	@Test(expected = IdAuthenticationBusinessException.class)
+	@Test
 	public void buildTest() throws IdAuthenticationBusinessException {
+		assertThrows(IdAuthenticationBusinessException.class, () -> {
 		ReflectionTestUtils.setField(authTransactionBuilder, "requestDTO", null);
 	authTransactionBuilder.build(env,null,null);
+			});
 	}
 	
-	@Test(expected = IdAuthenticationBusinessException.class)
+	@Test
 	public void buildTest2() throws IdAuthenticationBusinessException {
+		assertThrows(IdAuthenticationBusinessException.class, () -> {
 		authTransactionBuilder.build(env,null,null);
+			});
 	}
 	
 	@Test

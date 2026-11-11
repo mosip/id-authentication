@@ -1,17 +1,17 @@
 package io.mosip.authentication.common.service.helper;
 
-import static org.junit.Assert.*;
+import static org.junit.jupiter.api.Assertions.*;
 import static org.mockito.Mockito.*;
 
-import org.junit.Before;
-import org.junit.Test;
+import org.junit.jupiter.api.BeforeEach;
+import org.junit.jupiter.api.Test;
 import org.springframework.web.reactive.function.client.WebClient;
 
 public class InternalRestHelperConfigTest {
 
     private InternalRestHelperConfig config;
 
-    @Before
+    @BeforeEach
     public void setUp() {
         config = new InternalRestHelperConfig();
     }

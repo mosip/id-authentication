@@ -1,6 +1,9 @@
 package io.mosip.authentication.common.service.integration;
 
-import static org.junit.Assert.assertNotNull;
+import org.mockito.quality.Strictness;
+import org.mockito.junit.jupiter.MockitoSettings;
+import org.mockito.junit.jupiter.MockitoExtension;
+import static org.junit.jupiter.api.Assertions.assertNotNull;
 
 import java.io.IOException;
 import java.util.ArrayList;
@@ -9,19 +12,19 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
-import org.junit.Before;
-import org.junit.Ignore;
-import org.junit.Test;
-import org.junit.runner.RunWith;
+import org.junit.jupiter.api.BeforeEach;
+import org.junit.jupiter.api.Disabled;
+import org.junit.jupiter.api.Test;
+import org.junit.jupiter.api.extension.ExtendWith;
 import org.mockito.InjectMocks;
 import org.mockito.Mock;
 import org.mockito.Mockito;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.boot.test.autoconfigure.web.servlet.WebMvcTest;
+import org.springframework.boot.webmvc.test.autoconfigure.WebMvcTest;
 import org.springframework.context.annotation.Import;
 import org.springframework.test.context.ContextConfiguration;
 import org.springframework.test.context.TestContext;
-import org.springframework.test.context.junit4.SpringRunner;
+import org.springframework.test.context.junit.jupiter.SpringExtension;
 import org.springframework.test.util.ReflectionTestUtils;
 import org.springframework.web.context.WebApplicationContext;
 
@@ -40,11 +43,12 @@ import io.mosip.idrepository.core.dto.RestRequestDTO;
 import io.mosip.idrepository.core.exception.RestServiceException;
 import io.mosip.authentication.common.service.helper.RestHelper;
 
-@RunWith(SpringRunner.class)
+@ExtendWith({SpringExtension.class, MockitoExtension.class})
+@MockitoSettings(strictness = Strictness.LENIENT)
 @ContextConfiguration(classes = { TestContext.class, WebApplicationContext.class })
 @WebMvcTest
 @Import(EnvUtil.class)
-@Ignore
+@Disabled
 public class MasterDataManagerTest {
 	@Autowired
 	private EnvUtil env;
@@ -76,7 +80,7 @@ public class MasterDataManagerTest {
 	@InjectMocks
 	private MasterDataCache masterDataCache;
 
-	@Before
+	@BeforeEach
 	public void before() {
 		ReflectionTestUtils.setField(masterDataCache, "restHelper", restHelper);
 		ReflectionTestUtils.setField(masterDataCache, "restFactory", restFactory);
@@ -86,7 +90,7 @@ public class MasterDataManagerTest {
 	}
 
 	@Test
-	@Ignore
+	@Disabled
 	public void testTemplateForTypeCode() throws IdAuthenticationBusinessException, RestServiceException,
 			JsonParseException, JsonMappingException, IOException {
 		RestRequestDTO buildRequest = new RestRequestDTO();
@@ -218,7 +222,7 @@ public class MasterDataManagerTest {
 
 	}
 
-	@Ignore
+	@Disabled
 	@Test
 	public void fetchTemplate() throws IdAuthenticationBusinessException {
 		String langCode = "123";
@@ -236,7 +240,7 @@ public class MasterDataManagerTest {
 		masterDataManager.fetchTemplate(langCode, templateName);
 	}
 
-	@Ignore
+	@Disabled
 	@Test
 	public void fetchTemplateTest2() throws IdAuthenticationBusinessException {
 		String templateName = "Test";

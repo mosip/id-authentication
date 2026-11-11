@@ -1,17 +1,18 @@
 package io.mosip.authentication.common.service.util;
 
+import static org.junit.jupiter.api.Assertions.assertThrows;
 import java.util.AbstractMap;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
-import org.junit.Before;
-import org.junit.Test;
-import org.junit.runner.RunWith;
+import org.junit.jupiter.api.BeforeEach;
+import org.junit.jupiter.api.Test;
+import org.junit.jupiter.api.extension.ExtendWith;
 import org.mockito.InjectMocks;
 import org.mockito.Mock;
-import org.mockito.junit.MockitoJUnitRunner;
+import org.mockito.junit.jupiter.MockitoExtension;
 import org.springframework.test.util.ReflectionTestUtils;
 
 import io.mosip.authentication.common.service.helper.IdentityAttributesForMatchTypeHelper;
@@ -21,11 +22,11 @@ import io.mosip.authentication.core.indauth.dto.IdentityInfoDTO;
 import io.mosip.authentication.core.spi.indauth.match.IdInfoFetcher;
 import io.mosip.authentication.core.spi.indauth.match.MatchType;
 
-import static org.junit.Assert.*;
+import static org.junit.jupiter.api.Assertions.*;
 import static org.mockito.ArgumentMatchers.*;
 import static org.mockito.Mockito.*;
 
-@RunWith(MockitoJUnitRunner.class)
+@ExtendWith(MockitoExtension.class)
 public class LanguageUtilTest {
 
 	@Mock
@@ -37,7 +38,7 @@ public class LanguageUtilTest {
 	@InjectMocks
 	private LanguageUtil languageUtil;
 	
-	@Before
+	@BeforeEach
 	public void before() {
 		ReflectionTestUtils.setField(languageUtil, "identityAttributesForMatchTypeHelper", 
 			identityAttributesForMatchTypeHelper);
@@ -77,10 +78,10 @@ public class LanguageUtilTest {
 		
 		List<String> languages = languageUtil.getDataCapturedLanguages(matchType, identityInfos);
 		
-		assertNotNull("Languages list should not be null", languages);
-		assertEquals("Should have 2 languages", 2, languages.size());
-		assertTrue("Should contain 'eng'", languages.contains("eng"));
-		assertTrue("Should contain 'ara'", languages.contains("ara"));
+		assertNotNull(languages, "Languages list should not be null");
+		assertEquals(2, languages.size(), "Should have 2 languages");
+		assertTrue(languages.contains("eng"), "Should contain 'eng'");
+		assertTrue(languages.contains("ara"), "Should contain 'ara'");
 	}
 	
 	@Test
@@ -111,9 +112,9 @@ public class LanguageUtilTest {
 		
 		List<String> languages = languageUtil.getDataCapturedLanguages(matchType, identityInfos);
 		
-		assertNotNull("Languages list should not be null", languages);
-		assertEquals("Should have 1 language", 1, languages.size());
-		assertEquals("Should contain 'eng'", "eng", languages.get(0));
+		assertNotNull(languages, "Languages list should not be null");
+		assertEquals(1, languages.size(), "Should have 1 language");
+		assertEquals("eng", languages.get(0), "Should contain 'eng'");
 	}
 	
 	@Test
@@ -139,12 +140,13 @@ public class LanguageUtilTest {
 		
 		List<String> languages = languageUtil.getDataCapturedLanguages(matchType, identityInfos);
 		
-		assertNotNull("Languages list should not be null", languages);
-		assertTrue("Should have empty list", languages.isEmpty());
+		assertNotNull(languages, "Languages list should not be null");
+		assertTrue(languages.isEmpty(), "Should have empty list");
 	}
 	
-	@Test(expected = IdAuthenticationBusinessException.class)
+	@Test
 	public void testGetDataCapturedLanguagesWithException() throws IdAuthenticationBusinessException {
+		assertThrows(IdAuthenticationBusinessException.class, () -> {
 		MatchType matchType = mock(MatchType.class);
 		Map<String, List<IdentityInfoDTO>> identityInfos = new HashMap<>();
 		
@@ -153,6 +155,7 @@ public class LanguageUtilTest {
 			any(), any(MatchType.class))).thenThrow(new IdAuthenticationBusinessException("TEST_ERROR", "Test error"));
 		
 		languageUtil.getDataCapturedLanguages(matchType, identityInfos);
+			});
 	}
 	
 	@Test
@@ -163,8 +166,8 @@ public class LanguageUtilTest {
 		
 		String result = languageUtil.computeKey(newKey, originalKey, langCode);
 		
-		assertNotNull("Result should not be null", result);
-		assertEquals("Should append lang code with separator", "fullName_ara", result);
+		assertNotNull(result, "Result should not be null");
+		assertEquals("fullName_ara", result, "Should append lang code with separator");
 	}
 	
 	@Test
@@ -175,8 +178,8 @@ public class LanguageUtilTest {
 		
 		String result = languageUtil.computeKey(newKey, originalKey, langCode);
 		
-		assertNotNull("Result should not be null", result);
-		assertEquals("Should return original key when no separator", originalKey, result);
+		assertNotNull(result, "Result should not be null");
+		assertEquals(originalKey, result, "Should return original key when no separator");
 	}
 	
 	@Test
@@ -187,8 +190,8 @@ public class LanguageUtilTest {
 		
 		String result = languageUtil.computeKey(newKey, originalKey, langCode);
 		
-		assertNotNull("Result should not be null", result);
-		assertEquals("Should return original key when langCode is null", originalKey, result);
+		assertNotNull(result, "Result should not be null");
+		assertEquals(originalKey, result, "Should return original key when langCode is null");
 	}
 	
 	@Test
@@ -199,10 +202,10 @@ public class LanguageUtilTest {
 		
 		String result = languageUtil.computeKey(newKey, originalKey, langCode);
 		
-		assertNotNull("Result should not be null", result);
+		assertNotNull(result, "Result should not be null");
 		// Empty string is not null, so separator check still applies
 		// Should append empty langCode with separator: "fullName_"
-		assertEquals("Should append empty langCode with separator", "fullName_", result);
+		assertEquals("fullName_", result, "Should append empty langCode with separator");
 	}
 	
 	@Test
@@ -213,8 +216,8 @@ public class LanguageUtilTest {
 		
 		String result = languageUtil.computeKey(newKey, originalKey, langCode);
 		
-		assertNotNull("Result should not be null", result);
-		assertEquals("Should return original key when langCode is null", originalKey, result);
+		assertNotNull(result, "Result should not be null");
+		assertEquals(originalKey, result, "Should return original key when langCode is null");
 	}
 	
 	@Test
@@ -225,8 +228,8 @@ public class LanguageUtilTest {
 		
 		String result = languageUtil.computeKey(newKey, originalKey, langCode);
 		
-		assertNotNull("Result should not be null", result);
-		assertEquals("Should append lang code with separator", "fullName_ara", result);
+		assertNotNull(result, "Result should not be null");
+		assertEquals("fullName_ara", result, "Should append lang code with separator");
 	}
 	
 	@Test
@@ -238,10 +241,10 @@ public class LanguageUtilTest {
 		try {
 			String result = languageUtil.computeKey(newKey, originalKey, langCode);
 			// If null is handled gracefully, it might return newKey or throw NPE
-			assertNotNull("Result should be handled", result);
+			assertNotNull(result, "Result should be handled");
 		} catch (NullPointerException e) {
 			// Expected if null handling is not implemented
-			assertTrue("Null pointer exception expected for null originalKey", true);
+			assertTrue(true, "Null pointer exception expected for null originalKey");
 		}
 	}
 	
@@ -254,10 +257,10 @@ public class LanguageUtilTest {
 		try {
 			String result = languageUtil.computeKey(newKey, originalKey, langCode);
 			// Result depends on implementation
-			assertTrue("Should handle null newKey", result != null || true);
+			assertTrue(result != null || true, "Should handle null newKey");
 		} catch (Exception e) {
 			// Expected if null handling is not implemented
-			assertTrue("Exception expected for null newKey", true);
+			assertTrue(true, "Exception expected for null newKey");
 		}
 	}
 }

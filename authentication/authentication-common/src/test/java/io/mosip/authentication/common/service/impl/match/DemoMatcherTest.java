@@ -2,12 +2,12 @@ package io.mosip.authentication.common.service.impl.match;
 
 import java.lang.reflect.InvocationTargetException;
 
-import org.junit.Ignore;
-import org.junit.Test;
+import org.junit.jupiter.api.Disabled;
+import org.junit.jupiter.api.Test;
 
 public class DemoMatcherTest {
 
-	@Ignore
+	@Disabled
 	@Test
 	public void matchDemoDataTest() {
 
@@ -31,7 +31,7 @@ public class DemoMatcherTest {
 //		assertEquals(listMatchOutput, listMatchOutputExp);
 	}
 
-	@Ignore
+	@Disabled
 	@Test
 	public void matchTypeTest() throws IllegalAccessException, IllegalArgumentException, InvocationTargetException,
 			NoSuchMethodException, SecurityException {
@@ -52,7 +52,7 @@ public class DemoMatcherTest {
 //		assertEquals(matchOutputExpect, matchOutputAct);
 	}
 
-	@Ignore
+	@Disabled
 	@Test
 	public void testMatchTypeMethodFail() throws NoSuchMethodException, SecurityException, IllegalAccessException,
 			IllegalArgumentException, InvocationTargetException {

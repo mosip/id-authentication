@@ -1,6 +1,6 @@
 package io.mosip.authentication.common.service.websub.impl;
 
-import org.junit.Test;
+import org.junit.jupiter.api.Test;
 import org.mockito.Mock;
 import org.mockito.Mockito;
 import org.springframework.test.util.ReflectionTestUtils;

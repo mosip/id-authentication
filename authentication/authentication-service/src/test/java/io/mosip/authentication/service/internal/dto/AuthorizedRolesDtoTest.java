@@ -1,18 +1,18 @@
 package io.mosip.authentication.service.internal.dto;
 
-import org.junit.Before;
-import org.junit.Test;
+import org.junit.jupiter.api.BeforeEach;
+import org.junit.jupiter.api.Test;
 
 import java.util.Arrays;
 import java.util.List;
 
-import static org.junit.Assert.*;
+import static org.junit.jupiter.api.Assertions.*;
 
 public class AuthorizedRolesDtoTest {
 
 	private AuthorizedRolesDto authorizedRolesDto;
 	
-	@Before
+	@BeforeEach
 	public void before() {
 		authorizedRolesDto = new AuthorizedRolesDto();
 	}
@@ -29,12 +29,12 @@ public class AuthorizedRolesDtoTest {
 		authorizedRolesDto.setGetauthtransactionsindividualid(getAuthTransactionsRoles);
 		authorizedRolesDto.setPostotp(postOtpRoles);
 		
-		assertEquals("Post auth roles should match", postAuthRoles, authorizedRolesDto.getPostauth());
-		assertEquals("Post verify identity roles should match", postVerifyIdentityRoles, 
-			authorizedRolesDto.getPostverifyidentity());
-		assertEquals("Get auth transactions roles should match", getAuthTransactionsRoles, 
-			authorizedRolesDto.getGetauthtransactionsindividualid());
-		assertEquals("Post OTP roles should match", postOtpRoles, authorizedRolesDto.getPostotp());
+		assertEquals(postAuthRoles, authorizedRolesDto.getPostauth(), "Post auth roles should match");
+		assertEquals( postVerifyIdentityRoles, 
+			authorizedRolesDto.getPostverifyidentity(), "Post verify identity roles should match");
+		assertEquals( getAuthTransactionsRoles, 
+			authorizedRolesDto.getGetauthtransactionsindividualid(), "Get auth transactions roles should match");
+		assertEquals(postOtpRoles, authorizedRolesDto.getPostotp(), "Post OTP roles should match");
 	}
 	
 	@Test
@@ -44,10 +44,10 @@ public class AuthorizedRolesDtoTest {
 		authorizedRolesDto.setGetauthtransactionsindividualid(null);
 		authorizedRolesDto.setPostotp(null);
 		
-		assertNull("Post auth should be null", authorizedRolesDto.getPostauth());
-		assertNull("Post verify identity should be null", authorizedRolesDto.getPostverifyidentity());
-		assertNull("Get auth transactions should be null", authorizedRolesDto.getGetauthtransactionsindividualid());
-		assertNull("Post OTP should be null", authorizedRolesDto.getPostotp());
+		assertNull(authorizedRolesDto.getPostauth(), "Post auth should be null");
+		assertNull(authorizedRolesDto.getPostverifyidentity(), "Post verify identity should be null");
+		assertNull(authorizedRolesDto.getGetauthtransactionsindividualid(), "Get auth transactions should be null");
+		assertNull(authorizedRolesDto.getPostotp(), "Post OTP should be null");
 	}
 	
 	@Test
@@ -55,9 +55,9 @@ public class AuthorizedRolesDtoTest {
 		authorizedRolesDto.setPostauth(Arrays.asList());
 		authorizedRolesDto.setPostverifyidentity(Arrays.asList());
 		
-		assertNotNull("Post auth should not be null", authorizedRolesDto.getPostauth());
-		assertTrue("Post auth should be empty", authorizedRolesDto.getPostauth().isEmpty());
-		assertNotNull("Post verify identity should not be null", authorizedRolesDto.getPostverifyidentity());
-		assertTrue("Post verify identity should be empty", authorizedRolesDto.getPostverifyidentity().isEmpty());
+		assertNotNull(authorizedRolesDto.getPostauth(), "Post auth should not be null");
+		assertTrue(authorizedRolesDto.getPostauth().isEmpty(), "Post auth should be empty");
+		assertNotNull(authorizedRolesDto.getPostverifyidentity(), "Post verify identity should not be null");
+		assertTrue(authorizedRolesDto.getPostverifyidentity().isEmpty(), "Post verify identity should be empty");
 	}
 }

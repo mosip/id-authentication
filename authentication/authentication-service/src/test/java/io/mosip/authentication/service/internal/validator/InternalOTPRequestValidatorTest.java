@@ -3,8 +3,11 @@ package io.mosip.authentication.service.internal.validator;
 
 
 
-import static org.junit.Assert.assertFalse;
-import static org.junit.Assert.assertTrue;
+import org.mockito.quality.Strictness;
+import org.mockito.junit.jupiter.MockitoSettings;
+import org.mockito.junit.jupiter.MockitoExtension;
+import static org.junit.jupiter.api.Assertions.assertFalse;
+import static org.junit.jupiter.api.Assertions.assertTrue;
 
 import java.time.Instant;
 import java.time.LocalDate;
@@ -13,19 +16,19 @@ import java.time.format.DateTimeFormatter;
 import java.util.ArrayList;
 import java.util.Date;
 
-import org.junit.Before;
-import org.junit.Ignore;
-import org.junit.Test;
-import org.junit.runner.RunWith;
+import org.junit.jupiter.api.BeforeEach;
+import org.junit.jupiter.api.Disabled;
+import org.junit.jupiter.api.Test;
+import org.junit.jupiter.api.extension.ExtendWith;
 import org.mockito.InjectMocks;
 import org.mockito.Mock;
 import org.mockito.Mockito;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.boot.test.autoconfigure.web.servlet.WebMvcTest;
+import org.springframework.boot.webmvc.test.autoconfigure.WebMvcTest;
 import org.springframework.context.annotation.Import;
 import org.springframework.test.context.ContextConfiguration;
 import org.springframework.test.context.TestContext;
-import org.springframework.test.context.junit4.SpringRunner;
+import org.springframework.test.context.junit.jupiter.SpringExtension;
 import org.springframework.test.util.ReflectionTestUtils;
 import org.springframework.validation.BeanPropertyBindingResult;
 import org.springframework.validation.Errors;
@@ -47,7 +50,8 @@ import io.mosip.kernel.logger.logback.appender.RollingFileAppender;
  * @author Dinesh Karuppiah.T
  * @author Manoj SP
  */
-@RunWith(SpringRunner.class)
+@ExtendWith({SpringExtension.class, MockitoExtension.class})
+@MockitoSettings(strictness = Strictness.LENIENT)
 @WebMvcTest
 @ContextConfiguration(classes = { TestContext.class, WebApplicationContext.class })
 @Import(EnvUtil.class)
@@ -80,7 +84,7 @@ public class InternalOTPRequestValidatorTest {
 	/**
 	 * Before.
 	 */
-	@Before
+	@BeforeEach
 	public void before() {
 	}
 
@@ -103,7 +107,7 @@ public class InternalOTPRequestValidatorTest {
 	/**
 	 * Test valid uin.
 	 */
-	@Ignore
+	@Disabled
 	@Test
 	public void testValidUin() {
 		OtpRequestDTO OtpRequestDTO = new OtpRequestDTO();
@@ -145,7 +149,7 @@ public class InternalOTPRequestValidatorTest {
 	 * Test valid vid.
 	 * @throws IdAuthenticationBusinessException 
 	 */
-	@Ignore
+	@Disabled
 	@Test
 	public void testValidVid() throws IdAuthenticationBusinessException {
 		Mockito.when(idValidator.validateVID(Mockito.anyString())).thenThrow(new InvalidIDException("id", "code"));
@@ -223,7 +227,7 @@ public class InternalOTPRequestValidatorTest {
 	/**
 	 * Test invalid ver.
 	 */
-	@Ignore
+	@Disabled
 
 	@Test
 	public void testInvalidVer() {
@@ -288,7 +292,7 @@ public class InternalOTPRequestValidatorTest {
 	/**
 	 * Test otp channel.
 	 */
-	@Ignore
+	@Disabled
 	@Test
 	public void TestOtpChannel() {
 		OtpRequestDTO otpRequestDTO = new OtpRequestDTO();

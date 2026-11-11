@@ -3,9 +3,13 @@
  */
 package io.mosip.authentication.service.kyc.facade;
 
-import static org.junit.Assert.assertEquals;
-import static org.junit.Assert.assertTrue;
-import static org.junit.Assert.assertNotNull;
+import org.mockito.quality.Strictness;
+import org.mockito.junit.jupiter.MockitoSettings;
+import org.mockito.junit.jupiter.MockitoExtension;
+import static org.junit.jupiter.api.Assertions.assertThrows;
+import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertTrue;
+import static org.junit.jupiter.api.Assertions.assertNotNull;
 import static org.junit.jupiter.api.Assertions.fail;
 import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.ArgumentMatchers.anyString;
@@ -39,19 +43,19 @@ import org.bouncycastle.openssl.jcajce.JcaPEMWriter;
 import org.bouncycastle.x509.X509V3CertificateGenerator;
 import org.jose4j.jws.JsonWebSignature;
 import org.json.simple.JSONObject;
-import org.junit.Before;
-import org.junit.Test;
-import org.junit.runner.RunWith;
+import org.junit.jupiter.api.BeforeEach;
+import org.junit.jupiter.api.Test;
+import org.junit.jupiter.api.extension.ExtendWith;
 import org.mockito.InjectMocks;
 import org.mockito.Mock;
 import org.mockito.Mockito;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.boot.test.autoconfigure.web.servlet.WebMvcTest;
-import org.springframework.boot.test.mock.mockito.MockBean;
+import org.springframework.boot.webmvc.test.autoconfigure.WebMvcTest;
+import org.springframework.test.context.bean.override.mockito.MockitoBean;
 import org.springframework.context.annotation.Import;
 import org.springframework.test.context.ContextConfiguration;
 import org.springframework.test.context.TestContext;
-import org.springframework.test.context.junit4.SpringRunner;
+import org.springframework.test.context.junit.jupiter.SpringExtension;
 import org.springframework.test.util.ReflectionTestUtils;
 import org.springframework.web.context.WebApplicationContext;
 
@@ -77,7 +81,6 @@ import io.mosip.authentication.common.service.util.TestObjectWithMetadata;
 import io.mosip.authentication.common.service.validator.AuthFiltersValidator;
 import io.mosip.authentication.core.constant.AuditEvents;
 import io.mosip.authentication.core.constant.AuditModules;
-import io.mosip.authentication.core.constant.IdAuthCommonConstants;
 import io.mosip.authentication.core.constant.IdAuthenticationErrorConstants;
 import io.mosip.authentication.core.exception.IDDataValidationException;
 import io.mosip.authentication.core.exception.IdAuthenticationBusinessException;
@@ -98,7 +101,8 @@ import javax.security.auth.x500.X500Principal;
  * @author Dinesh Karuppiah.T
  *
  */
-@RunWith(SpringRunner.class)
+@ExtendWith({SpringExtension.class, MockitoExtension.class})
+@MockitoSettings(strictness = Strictness.LENIENT)
 @WebMvcTest
 @ContextConfiguration(classes = { TestContext.class, WebApplicationContext.class})
 @Import(EnvUtil.class)
@@ -113,7 +117,7 @@ public class KycFacadeImplTest {
 	@InjectMocks
 	private IdInfoHelper idInfoHelper;
 
-	@MockBean
+	@MockitoBean
 	private MatchIdentityDataHelper matchIdentityDataHelper;
 
 	@Autowired
@@ -198,7 +202,7 @@ public class KycFacadeImplTest {
 	private String audienceId = "test-ida-binding";
 
 
-	@Before
+	@BeforeEach
 	public void beforeClass() throws NoSuchAlgorithmException {
 		ReflectionTestUtils.setField(kycFacade, "authFacade", authFacadeImpl);
 		ReflectionTestUtils.setField(kycFacade, "authFacade", authFacadeImpl);
@@ -852,9 +856,10 @@ public class KycFacadeImplTest {
 		}
 	}
 
-	@Test(expected = IdAuthenticationBusinessException.class)
+	@Test
 	
 	public void processKycAuthException1() throws IdAuthenticationBusinessException, JsonProcessingException {
+		assertThrows(IdAuthenticationBusinessException.class, () -> {
 		EkycAuthRequestDTO kycAuthRequestDTO = new EkycAuthRequestDTO();
 		Map<String, Object> kycReqMetadata = new HashMap<>();
 		Set<String> langs = new HashSet<>();
@@ -936,6 +941,7 @@ public class KycFacadeImplTest {
 		doThrow(new IDDataValidationException()).when(auditHelper).audit((AuditModules) any(),
 				(AuditEvents) any(), anyString(), (IdType) any(), anyString());
 		kycFacade.processEKycAuth(kycAuthRequestDTO, authResponseDTO, "123456", authResMetadata);
+			});
 	}
 
 	@Test
@@ -1053,8 +1059,9 @@ public class KycFacadeImplTest {
 		assertEquals("kyc-token", response.getResponse().getKycToken());
 	}
 
-	@Test(expected = IdAuthenticationBusinessException.class)
+	@Test
 	public void processKycAuthV2KycTokenGenerationFailure() throws Exception {
+		assertThrows(IdAuthenticationBusinessException.class, () -> {
 		KycAuthRequestDTOV2 request = new KycAuthRequestDTOV2();
 		request.setIndividualIdType(IdType.UIN.getType());
 		request.setTransactionID("transaction-id");
@@ -1076,6 +1083,7 @@ public class KycFacadeImplTest {
 				.thenThrow(new IdAuthenticationBusinessException());
 
 		kycFacade.processKycAuthV2(request, authenticationResult, "partner-id", "oidc-client", metadata);
+			});
 	}
 
 	@Test
@@ -1124,8 +1132,9 @@ public class KycFacadeImplTest {
 		assertEquals("encrypted-claims", response.getResponse().getEncryptedKyc());
 	}
 
-	@Test(expected = IdAuthenticationBusinessException.class)
+	@Test
 	public void processKycExchangeV2RejectsDuplicateClaims() throws Exception {
+		assertThrows(IdAuthenticationBusinessException.class, () -> {
 		KycExchangeRequestDTOV2 request = new KycExchangeRequestDTOV2();
 		request.setIndividualId("5134256294");
 		request.setIndividualIdType(IdType.UIN.getType());
@@ -1149,10 +1158,12 @@ public class KycFacadeImplTest {
 
 		kycFacade.processKycExchangeV2(
 				request, "partner-id", "oidc-client", Collections.emptyMap(), new TestObjectWithMetadata());
+			});
 	}
 
-	@Test(expected = IdAuthenticationBusinessException.class)
+	@Test
 	public void processKycExchangeV2RejectsMissingPartnerPolicy() throws Exception {
+		assertThrows(IdAuthenticationBusinessException.class, () -> {
 		KycExchangeRequestDTOV2 request = new KycExchangeRequestDTOV2();
 		request.setIndividualId("5134256294");
 		request.setIndividualIdType(IdType.UIN.getType());
@@ -1167,5 +1178,6 @@ public class KycFacadeImplTest {
 
 		kycFacade.processKycExchangeV2(
 				request, "partner-id", "oidc-client", Collections.emptyMap(), new TestObjectWithMetadata());
+			});
 	}
 }

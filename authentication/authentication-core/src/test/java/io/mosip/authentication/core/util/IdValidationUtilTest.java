@@ -1,17 +1,22 @@
 package io.mosip.authentication.core.util;
 
+import org.mockito.quality.Strictness;
+import org.mockito.junit.jupiter.MockitoSettings;
+import org.mockito.junit.jupiter.MockitoExtension;
+import static org.junit.jupiter.api.Assertions.assertThrows;
 import io.mosip.authentication.core.exception.IdAuthenticationBusinessException;
-import org.junit.Test;
-import org.junit.runner.RunWith;
+import org.junit.jupiter.api.Test;
+import org.junit.jupiter.api.extension.ExtendWith;
 import org.mockito.InjectMocks;
-import org.springframework.boot.test.autoconfigure.web.servlet.WebMvcTest;
+import org.springframework.boot.webmvc.test.autoconfigure.WebMvcTest;
 import org.springframework.test.context.ContextConfiguration;
 import org.springframework.test.context.TestContext;
-import org.springframework.test.context.junit4.SpringRunner;
+import org.springframework.test.context.junit.jupiter.SpringExtension;
 import org.springframework.test.util.ReflectionTestUtils;
 import org.springframework.web.context.WebApplicationContext;
 
-@RunWith(SpringRunner.class)
+@ExtendWith({SpringExtension.class, MockitoExtension.class})
+@MockitoSettings(strictness = Strictness.LENIENT)
 @WebMvcTest
 @ContextConfiguration(classes = {TestContext.class, WebApplicationContext.class})
 public class IdValidationUtilTest {
@@ -26,11 +31,13 @@ public class IdValidationUtilTest {
      * @throws IdAuthenticationBusinessException the id authentication business
      *                                           exception
      */
-    @Test(expected = IdAuthenticationBusinessException.class)
+    @Test
     public void validateUinTest1() throws IdAuthenticationBusinessException {
+		assertThrows(IdAuthenticationBusinessException.class, () -> {
         String id=null;
         idValidationUtil.validateUIN(id);
-    }
+    		});
+	}
 
     /**
      * This class tests the validateUin method when id.length()!=uinLength
@@ -38,12 +45,14 @@ public class IdValidationUtilTest {
      * @throws IdAuthenticationBusinessException the id authentication business
      *                                           exception
      */
-    @Test(expected = IdAuthenticationBusinessException.class)
+    @Test
     public void validateUinTest2() throws IdAuthenticationBusinessException {
+		assertThrows(IdAuthenticationBusinessException.class, () -> {
         String id="id";
         ReflectionTestUtils.setField(idValidationUtil, "uinLength", 1);
         idValidationUtil.validateUIN(id);
-    }
+    		});
+	}
 
     /**
      * This class tests the validateUin method when !ChecksumUtils.validateChecksum(id) = true
@@ -51,12 +60,14 @@ public class IdValidationUtilTest {
      * @throws IdAuthenticationBusinessException the id authentication business
      *                                           exception
      */
-    @Test(expected = IdAuthenticationBusinessException.class)
+    @Test
     public void validateUinTest3() throws IdAuthenticationBusinessException {
+		assertThrows(IdAuthenticationBusinessException.class, () -> {
         String id="111";
         ReflectionTestUtils.setField(idValidationUtil, "uinLength", 3);
         idValidationUtil.validateUIN(id);
-    }
+    		});
+	}
 
     /**
      * This class tests the validateVid method when id is empty
@@ -64,11 +75,13 @@ public class IdValidationUtilTest {
      * @throws IdAuthenticationBusinessException the id authentication business
      *                                           exception
      */
-    @Test(expected = IdAuthenticationBusinessException.class)
+    @Test
     public void validateVidTest1() throws IdAuthenticationBusinessException {
+		assertThrows(IdAuthenticationBusinessException.class, () -> {
         String id=null;
         idValidationUtil.validateVID(id);
-    }
+    		});
+	}
 
     /**
      * This class tests the validateVid method when id.length()!=vidLength
@@ -76,12 +89,14 @@ public class IdValidationUtilTest {
      * @throws IdAuthenticationBusinessException the id authentication business
      *                                           exception
      */
-    @Test(expected = IdAuthenticationBusinessException.class)
+    @Test
     public void validateVidTest2() throws IdAuthenticationBusinessException {
+		assertThrows(IdAuthenticationBusinessException.class, () -> {
         String id="id";
         ReflectionTestUtils.setField(idValidationUtil, "vidLength", 1);
         idValidationUtil.validateVID(id);
-    }
+    		});
+	}
 
     /**
      * This class tests the validateVid method when !ChecksumUtils.validateChecksum(id) = true
@@ -89,10 +104,12 @@ public class IdValidationUtilTest {
      * @throws IdAuthenticationBusinessException the id authentication business
      *                                           exception
      */
-    @Test(expected = IdAuthenticationBusinessException.class)
+    @Test
     public void validateVidTest3() throws IdAuthenticationBusinessException {
+		assertThrows(IdAuthenticationBusinessException.class, () -> {
         String id="23";
         ReflectionTestUtils.setField(idValidationUtil, "vidLength", 2);
         idValidationUtil.validateVID(id);
-    }
+    		});
+	}
 }

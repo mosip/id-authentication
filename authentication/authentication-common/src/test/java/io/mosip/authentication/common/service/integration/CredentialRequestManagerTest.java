@@ -1,5 +1,9 @@
 package io.mosip.authentication.common.service.integration;
 
+import org.mockito.quality.Strictness;
+import org.mockito.junit.jupiter.MockitoSettings;
+import org.mockito.junit.jupiter.MockitoExtension;
+import static org.junit.jupiter.api.Assertions.assertThrows;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import io.mosip.authentication.common.service.factory.RestRequestFactory;
 import io.mosip.authentication.common.service.integration.dto.OtpGeneratorRequestDto;
@@ -11,19 +15,19 @@ import io.mosip.idrepository.core.dto.RestRequestDTO;
 import io.mosip.idrepository.core.exception.RestServiceException;
 import io.mosip.authentication.common.service.helper.RestHelper;
 import io.mosip.kernel.core.http.ResponseWrapper;
-import org.junit.Before;
-import org.junit.Test;
-import org.junit.runner.RunWith;
+import org.junit.jupiter.api.BeforeEach;
+import org.junit.jupiter.api.Test;
+import org.junit.jupiter.api.extension.ExtendWith;
 import org.mockito.InjectMocks;
 import org.mockito.Mock;
 import org.mockito.Mockito;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.boot.test.autoconfigure.web.servlet.WebMvcTest;
+import org.springframework.boot.webmvc.test.autoconfigure.WebMvcTest;
 import org.springframework.http.HttpMethod;
 import org.springframework.http.MediaType;
 import org.springframework.test.context.ContextConfiguration;
 import org.springframework.test.context.TestContext;
-import org.springframework.test.context.junit4.SpringRunner;
+import org.springframework.test.context.junit.jupiter.SpringExtension;
 import org.springframework.test.util.ReflectionTestUtils;
 import org.springframework.web.context.WebApplicationContext;
 
@@ -32,7 +36,8 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
-@RunWith(SpringRunner.class)
+@ExtendWith({SpringExtension.class, MockitoExtension.class})
+@MockitoSettings(strictness = Strictness.LENIENT)
 @WebMvcTest
 @ContextConfiguration(classes = {TestContext.class, WebApplicationContext.class})
 public class CredentialRequestManagerTest {
@@ -59,7 +64,7 @@ public class CredentialRequestManagerTest {
     /**
      * Before.
      */
-    @Before
+    @BeforeEach
     public void Before(){
         ReflectionTestUtils.setField(credentialRequestManager, "restRequestFactory", restRequestFactory);
         ReflectionTestUtils.setField(credentialRequestManager, "restHelper", restHelper);
@@ -100,21 +105,24 @@ public class CredentialRequestManagerTest {
      * @throws RestServiceException
      * @throws IDDataValidationException
      */
-    @Test(expected = IDDataValidationException.class)
+    @Test
     public void getMissingCredentialsPageItemsException1Test() throws RestServiceException, IDDataValidationException {
+		assertThrows(IDDataValidationException.class, () -> {
         int currentPageIndex =1;
         String effectivedtimes="effectivedtimes";
         Mockito.doThrow(IDDataValidationException.class).when(restRequestFactory).buildRequest(RestServicesConstants.CRED_REQUEST_GET_REQUEST_IDS, null, ResponseWrapper.class);
         credentialRequestManager.getMissingCredentialsPageItems(currentPageIndex, effectivedtimes);
-    }
+    		});
+	}
 
     /**
      * This class tests the getMissingCredentialsPageItems method
      * @throws RestServiceException
      * @throws IDDataValidationException
      */
-    @Test(expected = RestServiceException.class)
+    @Test
     public void getMissingCredentialsPageItemsException2Test() throws RestServiceException, IDDataValidationException {
+		assertThrows(RestServiceException.class, () -> {
         int currentPageIndex =1;
         String effectivedtimes="effectivedtimes";
         //request
@@ -127,7 +135,8 @@ public class CredentialRequestManagerTest {
         Mockito.when(restHelper.requestSync(Mockito.any(), Mockito.any())).thenThrow(new RestServiceException(
                 IdRepoErrorConstants.CLIENT_ERROR, response.toString(), response));
         credentialRequestManager.getMissingCredentialsPageItems(currentPageIndex, effectivedtimes);
-    }
+    		});
+	}
 
     /**
      * This class tests the retriggerCredentialIssuance method
@@ -153,8 +162,9 @@ public class CredentialRequestManagerTest {
      * @throws RestServiceException
      * @throws IDDataValidationException
      */
-    @Test(expected = RestServiceException.class)
+    @Test
     public void retriggerCredentialIssuanceException1Test() throws RestServiceException, IDDataValidationException {
+		assertThrows(RestServiceException.class, () -> {
         String requestId = "requestId";
         RestRequestDTO request = new RestRequestDTO();
         Mockito.when(restRequestFactory.buildRequest(
@@ -163,19 +173,22 @@ public class CredentialRequestManagerTest {
         request.setPathVariables(pathVariables);
         Mockito.doThrow(RestServiceException.class).when(restHelper).requestSync(request, MediaType.APPLICATION_JSON);
         credentialRequestManager.retriggerCredentialIssuance(requestId);
-    }
+    		});
+	}
 
     /**
      * This class tests the retriggerCredentialIssuance method
      * @throws RestServiceException
      * @throws IDDataValidationException
      */
-    @Test(expected = IDDataValidationException.class)
+    @Test
     public void retriggerCredentialIssuanceException2Test() throws RestServiceException, IDDataValidationException {
+		assertThrows(IDDataValidationException.class, () -> {
         String requestId = "requestId";
         Mockito.doThrow(IDDataValidationException.class).when(restRequestFactory).buildRequest(RestServicesConstants.CRED_REQUEST_RETRIGGER_CRED_ISSUANCE, null, ResponseWrapper.class);
         credentialRequestManager.retriggerCredentialIssuance(requestId);
-    }
+    		});
+	}
 
     private RestRequestDTO getRestRequestDTO() {
         RestRequestDTO restRequestDTO = new RestRequestDTO();

@@ -1,7 +1,7 @@
 package io.mosip.authentication.service.filter;
 
 
-import static org.junit.Assert.assertTrue;
+import static org.junit.jupiter.api.Assertions.assertTrue;
 import static org.junit.jupiter.api.Assertions.*;
 import java.util.*;
 

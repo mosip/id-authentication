@@ -13,7 +13,7 @@ import java.util.Objects;
 import java.util.concurrent.TimeoutException;
 
 import jakarta.annotation.PostConstruct;
-import javax.validation.Valid;
+import jakarta.validation.Valid;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
@@ -136,7 +136,7 @@ public class RestHelper {
 
             if (!String.class.equals(responseType)) {
                 checkErrorResponseSync(response, responseType);
-                if (response != null && RestUtil.containsError(response.toString(), mapper)) {
+                if (response != null && containsErrors(response)) {
                     mosipLogger.debug(IdRepoSecurityManager.getUser(), CLASS_REST_HELPER, METHOD_REQUEST_SYNC,
                             "Error in response {}", String.valueOf(response));
                 }
@@ -163,6 +163,19 @@ public class RestHelper {
                         THROWING_REST_SERVICE_EXCEPTION + UNKNOWN_ERROR_LOG + ExceptionUtils.getStackTrace(e));
                 throw new IdRepoRetryException(new RestServiceException(UNKNOWN_ERROR, e));
             }
+        }
+    }
+
+    /**
+     * Checks whether the deserialized response carries a non-empty "errors" entry.
+     * The response is serialized back to JSON first; {@code Object.toString()} of a Map is not
+     * JSON, so passing it to {@link RestUtil#containsError} always failed to parse.
+     */
+    private boolean containsErrors(Object response) {
+        try {
+            return RestUtil.containsError(mapper.writeValueAsString(response), mapper);
+        } catch (IOException e) {
+            return false;
         }
     }
 
@@ -341,18 +354,18 @@ public class RestHelper {
 
             mosipLogger.error(
                     IdRepoSecurityManager.getUser(), CLASS_REST_HELPER,
-                    "request failed with status code :" + e.getRawStatusCode(),
+                    "request failed with status code :" + e.getStatusCode().value(),
                     "\n\n" + responseBodyAsString);
 
             if (e.getStatusCode().is4xxClientError()) {
-                if (e.getRawStatusCode() == HttpStatus.UNAUTHORIZED.value()) {
+                if (e.getStatusCode().value() == HttpStatus.UNAUTHORIZED.value()) {
                     List<ServiceError> errorList = ExceptionUtils.getServiceErrorList(responseBodyAsString);
                     throw new AuthenticationException(errorList.get(0).getErrorCode(),
-                            errorList.get(0).getMessage(), e.getRawStatusCode());
-                } else if (e.getRawStatusCode() == HttpStatus.FORBIDDEN.value()) {
+                            errorList.get(0).getMessage(), e.getStatusCode().value());
+                } else if (e.getStatusCode().value() == HttpStatus.FORBIDDEN.value()) {
                     List<ServiceError> errorList = ExceptionUtils.getServiceErrorList(responseBodyAsString);
                     throw new IdRepoRetryException(new AuthenticationException(errorList.get(0).getErrorCode(),
-                            errorList.get(0).getMessage(), e.getRawStatusCode()));
+                            errorList.get(0).getMessage(), e.getStatusCode().value()));
                 } else {
                     mosipLogger.error(IdRepoSecurityManager.getUser(), CLASS_REST_HELPER, METHOD_HANDLE_STATUS_ERROR,
                             "Status error - returning RestServiceException - CLIENT_ERROR ");
@@ -385,18 +398,18 @@ public class RestHelper {
 
             mosipLogger.error(
                     IdRepoSecurityManager.getUser(), CLASS_REST_HELPER,
-                    "request failed with status code :" + e.getRawStatusCode(),
+                    "request failed with status code :" + e.getStatusCode().value(),
                     "\n\n" + responseBodyAsString);
 
             if (e.getStatusCode().is4xxClientError()) {
-                if (e.getRawStatusCode() == HttpStatus.UNAUTHORIZED.value()) {
+                if (e.getStatusCode().value() == HttpStatus.UNAUTHORIZED.value()) {
                     List<ServiceError> errorList = ExceptionUtils.getServiceErrorList(responseBodyAsString);
                     return new AuthenticationException(errorList.get(0).getErrorCode(),
-                            errorList.get(0).getMessage(), e.getRawStatusCode());
-                } else if (e.getRawStatusCode() == HttpStatus.FORBIDDEN.value()) {
+                            errorList.get(0).getMessage(), e.getStatusCode().value());
+                } else if (e.getStatusCode().value() == HttpStatus.FORBIDDEN.value()) {
                     List<ServiceError> errorList = ExceptionUtils.getServiceErrorList(responseBodyAsString);
                     return new IdRepoRetryException(new AuthenticationException(errorList.get(0).getErrorCode(),
-                            errorList.get(0).getMessage(), e.getRawStatusCode()));
+                            errorList.get(0).getMessage(), e.getStatusCode().value()));
                 } else {
                     mosipLogger.error(IdRepoSecurityManager.getUser(), CLASS_REST_HELPER, METHOD_HANDLE_STATUS_ERROR,
                             "Status error - returning RestServiceException - CLIENT_ERROR ");

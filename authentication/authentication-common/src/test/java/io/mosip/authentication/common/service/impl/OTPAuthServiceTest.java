@@ -1,9 +1,13 @@
 package io.mosip.authentication.common.service.impl;
 
-import static org.junit.Assert.assertEquals;
-import static org.junit.Assert.assertFalse;
-import static org.junit.Assert.assertNotNull;
-import static org.junit.Assert.assertTrue;
+import org.mockito.quality.Strictness;
+import org.mockito.junit.jupiter.MockitoSettings;
+import org.mockito.junit.jupiter.MockitoExtension;
+import static org.junit.jupiter.api.Assertions.assertThrows;
+import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertFalse;
+import static org.junit.jupiter.api.Assertions.assertNotNull;
+import static org.junit.jupiter.api.Assertions.assertTrue;
 
 import java.security.NoSuchAlgorithmException;
 import java.util.ArrayList;
@@ -14,20 +18,20 @@ import java.util.Map;
 
 import io.mosip.authentication.common.service.helper.MatchIdentityDataHelper;
 import io.mosip.authentication.common.service.integration.ValidateOtpHelper;
-import org.junit.AfterClass;
-import org.junit.Before;
-import org.junit.Ignore;
-import org.junit.Test;
-import org.junit.runner.RunWith;
+import org.junit.jupiter.api.AfterAll;
+import org.junit.jupiter.api.BeforeEach;
+import org.junit.jupiter.api.Disabled;
+import org.junit.jupiter.api.Test;
+import org.junit.jupiter.api.extension.ExtendWith;
 import org.mockito.InjectMocks;
 import org.mockito.Mock;
 import org.mockito.Mockito;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.boot.test.autoconfigure.web.servlet.WebMvcTest;
+import org.springframework.boot.webmvc.test.autoconfigure.WebMvcTest;
 import org.springframework.context.annotation.Import;
 import org.springframework.test.context.ContextConfiguration;
 import org.springframework.test.context.TestContext;
-import org.springframework.test.context.junit4.SpringRunner;
+import org.springframework.test.context.junit.jupiter.SpringExtension;
 import org.springframework.test.util.ReflectionTestUtils;
 import org.springframework.web.context.WebApplicationContext;
 
@@ -53,7 +57,8 @@ import reactor.netty.http.HttpResources;
  * @author Dinesh Karuppiah
  */
 @ContextConfiguration(classes = { TestContext.class, WebApplicationContext.class })
-@RunWith(SpringRunner.class)
+@ExtendWith({SpringExtension.class, MockitoExtension.class})
+@MockitoSettings(strictness = Strictness.LENIENT)
 @WebMvcTest
 @Import(EnvUtil.class)
 public class OTPAuthServiceTest {
@@ -88,7 +93,7 @@ public class OTPAuthServiceTest {
 	@Mock
 	private MatchIdentityDataHelper matchIdentityDataHelper;
 
-	@Before
+	@BeforeEach
 	public void before() {
 		ReflectionTestUtils.setField(otpauthserviceimpl, "matchInputBuilder", matchInputBuilder);
 		ReflectionTestUtils.setField(matchInputBuilder, "idInfoFetcher", idInfoFetcherImpl);
@@ -100,7 +105,7 @@ public class OTPAuthServiceTest {
 	/**
 	 * To close the http resources
 	 */
-	@AfterClass
+	@AfterAll
 	public static void afterClass() {
 		HttpResources.reset();
 	}
@@ -171,8 +176,9 @@ public class OTPAuthServiceTest {
 	 * Collections.emptyMap(), "123456"); assertNotNull(authStatusInfo); }
 	 */
 	/*
-	 * @Test(expected = IdValidationFailedException.class) public void
-	 * TestInvalidKey() throws IdAuthenticationBusinessException { MockEnvironment
+	 * @Test public void
+	 * TestInvalidKey() throws IdAuthenticationBusinessException {
+		assertThrows(IdValidationFailedException.class, () -> { MockEnvironment
 	 * mockenv = new MockEnvironment(); mockenv.merge(((AbstractEnvironment)
 	 * mockenv)); mockenv.setProperty("application.id", ""); AuthRequestDTO
 	 * authreqdto = new AuthRequestDTO();
@@ -181,7 +187,8 @@ public class OTPAuthServiceTest {
 	 * authreqdto.setRequest(request);
 	 * Mockito.when(otpmanager.validateOtp(Mockito.any(),
 	 * Mockito.any())).thenReturn(true); otpauthserviceimpl.authenticate(authreqdto,
-	 * "", Collections.emptyMap(), "123456"); }
+	 * "", Collections.emptyMap(), "123456"); 		});
+	}
 	 */
 	/**
 	 * method to test IDDatavalidation Exception for IDA
@@ -232,8 +239,9 @@ public class OTPAuthServiceTest {
 	 * 
 	 * @throws IdAuthenticationBusinessException
 	 */
-	@Test(expected = IdAuthenticationBusinessException.class)
+	@Test
 	public void Test_invalidPartnerId() throws IdAuthenticationBusinessException {
+		assertThrows(IdAuthenticationBusinessException.class, () -> {
 		AutnTxn autntxn = new AutnTxn();
 		autntxn.setRequestTrnId("1234567890");
 
@@ -246,10 +254,12 @@ public class OTPAuthServiceTest {
 		valueList.add("1234567890");
 		Mockito.when(repository.findByTxnId(Mockito.anyString(), Mockito.any(), Mockito.any())).thenReturn(autntxnList);
 		otpauthserviceimpl.validateTxnAndIdvidPartner("1234567890", "123456", "UIN", "PARTNER2");
+			});
 	}
 
-	@Test(expected = IDDataValidationException.class)
+	@Test
 	public void TestOtpDatavalidationException() throws IdAuthenticationBusinessException {
+		assertThrows(IDDataValidationException.class, () -> {
 		AuthRequestDTO authRequestDTO = new AuthRequestDTO();
 		RequestDTO request = new RequestDTO();
 		request.setOtp(null);
@@ -258,27 +268,32 @@ public class OTPAuthServiceTest {
 		Map<String, List<IdentityInfoDTO>> idInfo = new HashMap<>();
 		String partnerId = null;
 		otpauthserviceimpl.authenticate(authRequestDTO, uin, idInfo, partnerId);
+			});
 	}
 
 	/*
-	 * @Test(expected = IdAuthenticationBusinessException.class) public void
-	 * TestOtpbyVID() throws IdAuthenticationBusinessException { AuthRequestDTO
+	 * @Test public void
+	 * TestOtpbyVID() throws IdAuthenticationBusinessException {
+		assertThrows(IdAuthenticationBusinessException.class, () -> { AuthRequestDTO
 	 * authRequestDTO = new AuthRequestDTO();
 	 * authRequestDTO.setIndividualId("1234567890");
 	 * authRequestDTO.setIndividualIdType(IdType.VID.getType()); RequestDTO request
 	 * = new RequestDTO(); request.setOtp("123456");
 	 * authRequestDTO.setRequest(request); String uin = null; Map<String,
 	 * List<IdentityInfoDTO>> idInfo = new HashMap<>(); String partnerId = null;
-	 * otpauthserviceimpl.authenticate(authRequestDTO, uin, idInfo, partnerId); }
+	 * otpauthserviceimpl.authenticate(authRequestDTO, uin, idInfo, partnerId); 		});
+	}
 	 */
 
-	@Test(expected = IDDataValidationException.class)
+	@Test
 	public void TestIdDataValidationException() throws IdAuthenticationBusinessException {
+		assertThrows(IDDataValidationException.class, () -> {
 		AuthRequestDTO authRequestDTO = new AuthRequestDTO();
 		RequestDTO request = new RequestDTO();
 		request.setOtp(null);
 		authRequestDTO.setRequest(request);
 		otpauthserviceimpl.authenticate(authRequestDTO, null, null, null);
+			});
 	}
 
 	/**
@@ -320,11 +335,13 @@ public class OTPAuthServiceTest {
 		assertFalse(otpauthserviceimpl.isEmpty(txnId));
 	}
 
-	@Ignore
-	@Test(expected = IDDataValidationException.class)
+	@Disabled
+	@Test
 	public void TestOtpisNotPresent() throws IdAuthenticationBusinessException {
+		assertThrows(IDDataValidationException.class, () -> {
 		AuthRequestDTO authRequestDTO = new AuthRequestDTO();
 		otpauthserviceimpl.authenticate(authRequestDTO, "", Collections.emptyMap(), "123456");
+			});
 	}
 
 	/**
@@ -332,8 +349,9 @@ public class OTPAuthServiceTest {
 	 * 
 	 * @throws IdAuthenticationBusinessException
 	 */
-	@Test(expected = IdAuthenticationBusinessException.class)
+	@Test
 	public void TestValidateOtp_ValidRequest() throws IdAuthenticationBusinessException {
+		assertThrows(IdAuthenticationBusinessException.class, () -> {
 		AutnTxn autntxn = new AutnTxn();
 		autntxn.setRequestTrnId("TXN00001");
 		List<AutnTxn> autntxnList = new ArrayList<AutnTxn>();
@@ -351,6 +369,7 @@ public class OTPAuthServiceTest {
 		AuthStatusInfo authStatus = otpauthserviceimpl.authenticate(otpAuthRequestDTO, "45345435345",
 				Collections.emptyMap(), "123456");
 		assertFalse(authStatus.isStatus());
+			});
 	}
 
 	/**
@@ -360,8 +379,9 @@ public class OTPAuthServiceTest {
 	 * @throws IdAuthenticationBusinessException
 	 * @throws NoSuchAlgorithmException
 	 */
-	@Test(expected = IdAuthenticationBusinessException.class)
+	@Test
 	public void TestInvalidValidateOtp() throws IdAuthenticationBusinessException, NoSuchAlgorithmException {
+		assertThrows(IdAuthenticationBusinessException.class, () -> {
 		AutnTxn autntxn = new AutnTxn();
 		autntxn.setRequestTrnId("TXN00001");
 		autntxn.setRefId(IdAuthSecurityManager.generateHashAndDigestAsPlainText("123456".getBytes()));
@@ -380,6 +400,7 @@ public class OTPAuthServiceTest {
 		AuthStatusInfo authStatus = otpauthserviceimpl.authenticate(otpAuthRequestDTO, "45345435345",
 				Collections.emptyMap(), "123456");
 		assertFalse(authStatus.isStatus());
+			});
 	}
 
 }

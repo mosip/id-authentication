@@ -1,6 +1,10 @@
 package io.mosip.authentication.common.service.impl;
 
-import static org.junit.Assert.assertEquals;
+import org.mockito.quality.Strictness;
+import org.mockito.junit.jupiter.MockitoSettings;
+import org.mockito.junit.jupiter.MockitoExtension;
+import static org.junit.jupiter.api.Assertions.assertThrows;
+import static org.junit.jupiter.api.Assertions.assertEquals;
 
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
@@ -11,22 +15,22 @@ import java.util.Map;
 
 import io.mosip.authentication.common.service.helper.IdentityAttributesForMatchTypeHelper;
 import io.mosip.authentication.common.service.util.EntityInfoUtil;
-import org.junit.Assert;
-import org.junit.Before;
-import org.junit.Ignore;
-import org.junit.Test;
-import org.junit.runner.RunWith;
+import org.junit.jupiter.api.Assertions;
+import org.junit.jupiter.api.BeforeEach;
+import org.junit.jupiter.api.Disabled;
+import org.junit.jupiter.api.Test;
+import org.junit.jupiter.api.extension.ExtendWith;
 import org.mockito.InjectMocks;
 import org.mockito.Mock;
 import org.mockito.Mockito;
 import org.mockito.Spy;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.boot.test.autoconfigure.web.servlet.WebMvcTest;
+import org.springframework.boot.webmvc.test.autoconfigure.WebMvcTest;
 import org.springframework.context.annotation.Import;
 import org.springframework.http.HttpMethod;
 import org.springframework.test.context.ContextConfiguration;
 import org.springframework.test.context.TestContext;
-import org.springframework.test.context.junit4.SpringRunner;
+import org.springframework.test.context.junit.jupiter.SpringExtension;
 import org.springframework.test.util.ReflectionTestUtils;
 import org.springframework.web.context.WebApplicationContext;
 
@@ -71,7 +75,8 @@ import io.mosip.kernel.core.http.ResponseWrapper;
  *
  * @author Dinesh Karuppiah.T
  */
-@RunWith(SpringRunner.class)
+@ExtendWith({SpringExtension.class, MockitoExtension.class})
+@MockitoSettings(strictness = Strictness.LENIENT)
 @ContextConfiguration(classes = { TestContext.class, WebApplicationContext.class, IDAMappingConfig.class, IDAMappingFactory.class, RestRequestFactory.class})
 @WebMvcTest
 @Import(EnvUtil.class)
@@ -156,7 +161,7 @@ public class OTPServiceImplTest {
     private EntityInfoUtil entityInfoUtilMock;
 
 
-    @Before
+    @BeforeEach
     public void before() throws IdAuthenticationBusinessException {
         ReflectionTestUtils.setField(otpServiceImpl, "env", env);
         ReflectionTestUtils.setField(otpServiceImpl, "uinHashSaltRepo", uinHashSaltRepo);
@@ -257,7 +262,7 @@ public class OTPServiceImplTest {
         		Mockito.any())).thenReturn(true);
         try {
             otpServiceImpl.generateOtp(otpRequestDto, "1234567890", new TestObjectWithMetadata());
-            Assert.fail();
+            Assertions.fail();
         }
         catch(IdAuthenticationBusinessException ex) {
             assertEquals(IdAuthenticationErrorConstants.OTP_GENERATION_FAILED.getErrorCode(), ex.getErrorCode());
@@ -333,7 +338,7 @@ public class OTPServiceImplTest {
         		Mockito.any())).thenReturn(true);
         try {
             otpServiceImpl.generateOtp(otpRequestDto, "1234567890", new TestObjectWithMetadata());
-            Assert.fail();
+            Assertions.fail();
         }
         catch(IdAuthenticationBusinessException ex) {
             assertEquals(IdAuthenticationErrorConstants.OTP_GENERATION_FAILED.getErrorCode(), ex.getErrorCode());
@@ -414,7 +419,7 @@ public class OTPServiceImplTest {
                 IdRepoErrorConstants.CLIENT_ERROR, response.toString(), response));
         try {
 			otpServiceImpl.generateOtp(otpRequestDto, "1234567890", new TestObjectWithMetadata());
-            Assert.fail();
+            Assertions.fail();
 		} catch (IdAuthenticationBusinessException ex) {
 			assertEquals(IdAuthenticationErrorConstants.OTP_GENERATION_FAILED.getErrorCode(), ex.getErrorCode());
             assertEquals(IdAuthenticationErrorConstants.OTP_GENERATION_FAILED.getErrorMessage() + ". Both Phone Number and Email ID are not found in identity data.", ex.getErrorText());
@@ -455,7 +460,7 @@ public class OTPServiceImplTest {
         		Mockito.any())).thenReturn(true);
         try {
             otpServiceImpl.generateOtp(otpRequestDto, "1234567890", new TestObjectWithMetadata());
-            Assert.fail();
+            Assertions.fail();
         }
         catch(IdAuthenticationBusinessException ex) {
             assertEquals(IdAuthenticationErrorConstants.OTP_GENERATION_FAILED.getErrorCode(), ex.getErrorCode());
@@ -531,7 +536,7 @@ public class OTPServiceImplTest {
         		Mockito.any())).thenReturn(true);
         try {
             otpServiceImpl.generateOtp(otpRequestDto, "1234567890", new TestObjectWithMetadata());
-            Assert.fail();
+            Assertions.fail();
         }
         catch(IdAuthenticationBusinessException ex) {
             assertEquals(IdAuthenticationErrorConstants.OTP_GENERATION_FAILED.getErrorCode(), ex.getErrorCode());
@@ -612,19 +617,21 @@ public class OTPServiceImplTest {
                 IdRepoErrorConstants.CLIENT_ERROR, response.toString(), response));
         try {
 			otpServiceImpl.generateOtp(otpRequestDto, "1234567890", new TestObjectWithMetadata());
-            Assert.fail();
+            Assertions.fail();
 		} catch (IdAuthenticationBusinessException ex) {
 			assertEquals(IdAuthenticationErrorConstants.OTP_GENERATION_FAILED.getErrorCode(), ex.getErrorCode());
             assertEquals(IdAuthenticationErrorConstants.OTP_GENERATION_FAILED.getErrorMessage() + ". Both Phone Number and Email ID are not found in identity data.", ex.getErrorText());
 		}
     }
 
-    @Test(expected = IdAuthenticationBusinessException.class)
+    @Test
     public void TestOtpFloodException() throws IdAuthenticationBusinessException {
+		assertThrows(IdAuthenticationBusinessException.class, () -> {
         OtpRequestDTO otpRequestDTO = getOtpRequestDTO();
         otpRequestDTO.setRequestTime("2019-03-23T14:52:29.008");
         otpServiceImpl.generateOtp(otpRequestDTO, "1234567890", new TestObjectWithMetadata());
-    }
+    		});
+	}
 
     @Test
     public void TestOtpFloodisTrue() throws IdAuthenticationBusinessException {

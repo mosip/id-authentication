@@ -1,11 +1,12 @@
 package io.mosip.authentication.service.controller;
 
-import org.junit.Before;
-import org.junit.Test;
-import org.junit.runner.RunWith;
+import static org.junit.jupiter.api.Assertions.assertThrows;
+import org.junit.jupiter.api.BeforeEach;
+import org.junit.jupiter.api.Test;
+import org.junit.jupiter.api.extension.ExtendWith;
 import org.mockito.InjectMocks;
 import org.mockito.Mock;
-import org.mockito.junit.MockitoJUnitRunner;
+import org.mockito.junit.jupiter.MockitoExtension;
 import org.springframework.test.util.ReflectionTestUtils;
 
 import io.mosip.authentication.common.service.spi.websub.PartnerCACertEventService;
@@ -13,12 +14,12 @@ import io.mosip.authentication.core.exception.IdAuthenticationBusinessException;
 import io.mosip.idrepository.core.exception.RestServiceException;
 import io.mosip.kernel.core.websub.model.EventModel;
 
-import static org.junit.Assert.assertTrue;
+import static org.junit.jupiter.api.Assertions.assertTrue;
 import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.Mockito.*;
 
 
-@RunWith(MockitoJUnitRunner.class)
+@ExtendWith(MockitoExtension.class)
 public class PartnerCACertEventControllerTest {
 
 	@Mock
@@ -27,7 +28,7 @@ public class PartnerCACertEventControllerTest {
 	@InjectMocks
 	private PartnerCACertEventController partnerCACertEventController;
 
-	@Before
+	@BeforeEach
 	public void before() {
 		ReflectionTestUtils.setField(partnerCACertEventController,
 			"partnerCACertEventService", partnerCACertEventService);
@@ -48,9 +49,10 @@ public class PartnerCACertEventControllerTest {
 		verify(partnerCACertEventService, times(1)).handleCACertEvent(eventModel);
 	}
 
-	@Test(expected = IdAuthenticationBusinessException.class)
+	@Test
 	public void testHandleCACertificateWithBusinessException()
 			throws RestServiceException, IdAuthenticationBusinessException {
+		assertThrows(IdAuthenticationBusinessException.class, () -> {
 		EventModel eventModel = new EventModel();
 
 		doNothing().when(partnerCACertEventService).evictCACertCache(any(EventModel.class));
@@ -58,11 +60,13 @@ public class PartnerCACertEventControllerTest {
 			.when(partnerCACertEventService).handleCACertEvent(any(EventModel.class));
 
 		partnerCACertEventController.handleCACertificate(eventModel);
+			});
 	}
 
-	@Test(expected = RestServiceException.class)
+	@Test
 	public void testHandleCACertificateWithRestServiceException()
 			throws RestServiceException, IdAuthenticationBusinessException {
+		assertThrows(RestServiceException.class, () -> {
 		EventModel eventModel = new EventModel();
 
 		doNothing().when(partnerCACertEventService).evictCACertCache(any(EventModel.class));
@@ -70,6 +74,7 @@ public class PartnerCACertEventControllerTest {
 			.when(partnerCACertEventService).handleCACertEvent(any(EventModel.class));
 
 		partnerCACertEventController.handleCACertificate(eventModel);
+			});
 	}
 
 	@Test
@@ -85,7 +90,7 @@ public class PartnerCACertEventControllerTest {
 			verify(partnerCACertEventService, times(1)).handleCACertEvent(any());
 		} catch (Exception e) {
 			// Expected if null handling is strict
-			assertTrue("Should handle null gracefully", true);
+			assertTrue(true, "Should handle null gracefully");
 		}
 	}
 }

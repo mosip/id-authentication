@@ -12,24 +12,27 @@ import io.mosip.authentication.service.internal.listener.InternalAuthIdChangeEve
 import io.mosip.idrepository.core.dto.CredentialRequestIdsDto;
 import io.mosip.kernel.core.logger.spi.Logger;
 import org.apache.http.HttpStatus;
-import org.springframework.batch.core.*;
+import org.springframework.batch.core.job.Job;
+import org.springframework.batch.core.job.parameters.InvalidJobParametersException;
+import org.springframework.batch.core.job.parameters.JobParametersBuilder;
+import org.springframework.batch.core.step.Step;
+import org.springframework.batch.core.step.StepContribution;
 import org.springframework.batch.core.configuration.DuplicateJobException;
 import org.springframework.batch.core.configuration.JobRegistry;
-import org.springframework.batch.core.configuration.support.ReferenceJobFactory;
 import org.springframework.batch.core.job.builder.JobBuilder;
 import org.springframework.batch.core.launch.JobLauncher;
-import org.springframework.batch.core.launch.support.RunIdIncrementer;
-import org.springframework.batch.core.repository.JobExecutionAlreadyRunningException;
-import org.springframework.batch.core.repository.JobInstanceAlreadyCompleteException;
+import org.springframework.batch.core.job.parameters.RunIdIncrementer;
+import org.springframework.batch.core.launch.JobExecutionAlreadyRunningException;
+import org.springframework.batch.core.launch.JobInstanceAlreadyCompleteException;
 import org.springframework.batch.core.repository.JobRepository;
-import org.springframework.batch.core.repository.JobRestartException;
+import org.springframework.batch.core.launch.JobRestartException;
 import org.springframework.batch.core.scope.context.ChunkContext;
 import org.springframework.batch.core.step.builder.StepBuilder;
 import org.springframework.batch.core.step.tasklet.Tasklet;
 import org.springframework.batch.integration.async.AsyncItemProcessor;
 import org.springframework.batch.integration.async.AsyncItemWriter;
-import org.springframework.batch.item.ItemWriter;
-import org.springframework.batch.repeat.RepeatStatus;
+import org.springframework.batch.infrastructure.item.ItemWriter;
+import org.springframework.batch.infrastructure.repeat.RepeatStatus;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.beans.factory.annotation.Value;
@@ -126,7 +129,7 @@ public class ValidateWebSubTasklet implements Tasklet {
                 jobLauncher.run(job,
                         new JobParametersBuilder().addLong("time", System.currentTimeMillis()).toJobParameters());
             } catch (JobExecutionAlreadyRunningException | JobRestartException | JobInstanceAlreadyCompleteException
-                     | JobParametersInvalidException e) {
+                     | InvalidJobParametersException e) {
                 logger.warn("error in rescheduleJob - {}", e.getMessage());
             }
         }, new Date(System.currentTimeMillis() + EnvUtil.getDelayToPullMissingCredAfterTopicSub()));
@@ -143,7 +146,7 @@ public class ValidateWebSubTasklet implements Tasklet {
                 .end().build();
 
         try {
-            jobRegistry.register(new ReferenceJobFactory(job));
+            jobRegistry.register(job);
         } catch (DuplicateJobException e) {
             logger.warn("error in registering job: {}", e.getMessage());
         }
@@ -175,16 +178,14 @@ public class ValidateWebSubTasklet implements Tasklet {
 
     @Bean
     public <T> AsyncItemProcessor<T, T> asyncIdentityItemProcessor() {
-        AsyncItemProcessor<T, T> asyncItemProcessor = new AsyncItemProcessor<>();
-        asyncItemProcessor.setDelegate(elem -> elem);
+        AsyncItemProcessor<T, T> asyncItemProcessor = new AsyncItemProcessor<>(elem -> elem);
         asyncItemProcessor.setTaskExecutor(taskExecutor());
         return asyncItemProcessor;
     }
 
     @Bean
     public AsyncItemWriter<CredentialRequestIdsDto> asyncMissingCredentialRetriggerItemWriter() {
-        AsyncItemWriter<CredentialRequestIdsDto> asyncItemWriter = new AsyncItemWriter<>();
-        asyncItemWriter.setDelegate(missingCredentialRetriggerItemWriter());
+        AsyncItemWriter<CredentialRequestIdsDto> asyncItemWriter = new AsyncItemWriter<>(missingCredentialRetriggerItemWriter());
         return asyncItemWriter;
     }
 

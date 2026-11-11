@@ -1,17 +1,21 @@
 package io.mosip.authentication.common.service.factory;
 
-import static org.junit.Assert.assertEquals;
+import org.mockito.quality.Strictness;
+import org.mockito.junit.jupiter.MockitoSettings;
+import org.mockito.junit.jupiter.MockitoExtension;
+import static org.junit.jupiter.api.Assertions.assertThrows;
+import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.mockito.Mockito.when;
 
-import org.junit.Before;
-import org.junit.FixMethodOrder;
-import org.junit.Test;
-import org.junit.runner.RunWith;
-import org.junit.runners.MethodSorters;
+import org.junit.jupiter.api.BeforeEach;
+import org.junit.jupiter.api.TestMethodOrder;
+import org.junit.jupiter.api.Test;
+import org.junit.jupiter.api.extension.ExtendWith;
+import org.junit.jupiter.api.MethodOrderer;
 import org.mockito.InjectMocks;
 import org.mockito.Mockito;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.boot.test.autoconfigure.web.servlet.WebMvcTest;
+import org.springframework.boot.webmvc.test.autoconfigure.WebMvcTest;
 import org.springframework.context.annotation.Import;
 import org.springframework.core.env.ConfigurableEnvironment;
 import org.springframework.http.HttpHeaders;
@@ -21,7 +25,7 @@ import org.springframework.mock.env.MockEnvironment;
 import org.springframework.test.annotation.DirtiesContext;
 import org.springframework.test.context.ContextConfiguration;
 import org.springframework.test.context.TestContext;
-import org.springframework.test.context.junit4.SpringRunner;
+import org.springframework.test.context.junit.jupiter.SpringExtension;
 import org.springframework.test.util.ReflectionTestUtils;
 import org.springframework.test.web.servlet.MockMvc;
 import org.springframework.util.LinkedMultiValueMap;
@@ -47,9 +51,10 @@ import io.mosip.kernel.core.http.RequestWrapper;
  * @author Manoj SP
  */
 @ContextConfiguration(classes = { TestContext.class, WebApplicationContext.class })
-@RunWith(SpringRunner.class)
+@ExtendWith({SpringExtension.class, MockitoExtension.class})
+@MockitoSettings(strictness = Strictness.LENIENT)
 @WebMvcTest
-@FixMethodOrder(MethodSorters.NAME_ASCENDING)
+@TestMethodOrder(MethodOrderer.MethodName.class)
 @Import(EnvUtil.class)
 public class RestRequestFactoryTest {
 
@@ -75,7 +80,7 @@ public class RestRequestFactoryTest {
 	/**
 	 * Before.
 	 */
-	@Before
+	@BeforeEach
 	public void before() {
 		ReflectionTestUtils.setField(restFactory, "env", env);
 	}
@@ -122,8 +127,9 @@ public class RestRequestFactoryTest {
 	 *
 	 * @throws IDDataValidationException the ID data validation exception
 	 */
-	@Test(expected=IDDataValidationException.class)
+	@Test
 	public void testBuildRequestWithMultiValueMap() throws IDDataValidationException {
+		assertThrows(IDDataValidationException.class, () -> {
 	    
 		EnvUtil envMock = Mockito.mock(EnvUtil.class);
 		when(envMock.getProperty("audit.rest.headers.mediaType")).thenReturn("multipart/form-data");
@@ -136,6 +142,7 @@ public class RestRequestFactoryTest {
 				AuditResponseDto.class);
 
 
+			});
 	}
 
 	/**
@@ -143,8 +150,9 @@ public class RestRequestFactoryTest {
 	 *
 	 * @throws IDDataValidationException the ID data validation exception
 	 */
-	@Test(expected = IDDataValidationException.class)
+	@Test
 	public void testBuildRequestEmptyUri() throws IDDataValidationException {
+		assertThrows(IDDataValidationException.class, () -> {
 
 		EnvUtil envMock = Mockito.mock(EnvUtil.class);
 		when(envMock.getProperty("audit.rest.uri")).thenReturn("");
@@ -153,6 +161,7 @@ public class RestRequestFactoryTest {
 		restFactory.buildRequest(RestServicesConstants.AUDIT_MANAGER_SERVICE, auditFactory
 				.buildRequest(AuditModules.OTP_AUTH, AuditEvents.AUTH_REQUEST_RESPONSE, "id", IdType.UIN, "desc"),
 				AuditResponseDto.class);
+			});
 	}
 
 	/**
@@ -160,9 +169,10 @@ public class RestRequestFactoryTest {
 	 *
 	 * @throws IDDataValidationException the ID data validation exception
 	 */
-	@Test(expected = IDDataValidationException.class)
+	@Test
 	@DirtiesContext
 	public void testBuildRequestNullProperties() throws IDDataValidationException {
+		assertThrows(IDDataValidationException.class, () -> {
 
 		EnvUtil envMock = Mockito.mock(EnvUtil.class);
 		when(envMock.getProperty(Mockito.any())).thenReturn(null);
@@ -171,6 +181,7 @@ public class RestRequestFactoryTest {
 		restFactory.buildRequest(RestServicesConstants.AUDIT_MANAGER_SERVICE,
 				auditFactory.buildRequest(AuditModules.OTP_AUTH, AuditEvents.AUTH_REQUEST_RESPONSE, "id", IdType.UIN, "desc"),
 				AuditResponseDto.class);
+			});
 	}
 
 	/**
@@ -178,8 +189,9 @@ public class RestRequestFactoryTest {
 	 *
 	 * @throws IDDataValidationException the ID data validation exception
 	 */
-	@Test(expected = IDDataValidationException.class)
+	@Test
 	public void testBuildRequestEmptyHttpMethod() throws IDDataValidationException {
+		assertThrows(IDDataValidationException.class, () -> {
 		EnvUtil envMock = Mockito.mock(EnvUtil.class);
 		when(envMock.getProperty("audit.rest.httpMethod")).thenReturn("");
 		ReflectionTestUtils.setField(restFactory, "env", envMock);
@@ -187,6 +199,7 @@ public class RestRequestFactoryTest {
 		restFactory.buildRequest(RestServicesConstants.AUDIT_MANAGER_SERVICE, auditFactory
 				.buildRequest(AuditModules.OTP_AUTH, AuditEvents.AUTH_REQUEST_RESPONSE, "id", IdType.UIN, "desc"),
 				AuditResponseDto.class);
+			});
 	}
 
 	/**
@@ -194,11 +207,13 @@ public class RestRequestFactoryTest {
 	 *
 	 * @throws IDDataValidationException the ID data validation exception
 	 */
-	@Test(expected = IDDataValidationException.class)
+	@Test
 	public void testBuildRequestEmptyResponseType() throws IDDataValidationException {
+		assertThrows(IDDataValidationException.class, () -> {
 
 		restFactory.buildRequest(RestServicesConstants.AUDIT_MANAGER_SERVICE,
 				auditFactory.buildRequest(AuditModules.OTP_AUTH, AuditEvents.AUTH_REQUEST_RESPONSE, "id", IdType.UIN, "desc"), null);
+			});
 	}
 
 	/**

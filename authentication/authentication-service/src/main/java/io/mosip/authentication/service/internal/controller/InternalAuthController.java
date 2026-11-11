@@ -52,7 +52,6 @@ import io.swagger.v3.oas.annotations.responses.ApiResponses;
 import io.swagger.v3.oas.annotations.security.SecurityRequirement;
 import io.swagger.v3.oas.annotations.security.SecurityScheme;
 import io.swagger.v3.oas.annotations.tags.Tag;
-import springfox.documentation.annotations.ApiIgnore;
 
 /**
  * The {@code AuthController} used to handle all the Internal authentication
@@ -128,7 +127,7 @@ public class InternalAuthController {
 			@ApiResponse(responseCode = "401", description = "Unauthorized" ,content = @Content(schema = @Schema(hidden = true))),
 			@ApiResponse(responseCode = "403", description = "Forbidden" ,content = @Content(schema = @Schema(hidden = true))),
 			@ApiResponse(responseCode = "404", description = "Not Found" ,content = @Content(schema = @Schema(hidden = true)))})
-	public AuthResponseDTO authenticate(@Validated @RequestBody AuthRequestDTO authRequestDTO, @ApiIgnore Errors errors, HttpServletRequest request)
+	public AuthResponseDTO authenticate(@Validated @RequestBody AuthRequestDTO authRequestDTO, @Parameter(hidden = true) Errors errors, HttpServletRequest request)
 			throws IdAuthenticationAppException, IdAuthenticationBusinessException, IdAuthenticationDaoException {
 		if(request instanceof ObjectWithMetadata) {
 			ObjectWithMetadata requestWithMetadata = (ObjectWithMetadata) request;
@@ -206,7 +205,7 @@ public class InternalAuthController {
 			@ApiResponse(responseCode = "401", description = "Unauthorized" ,content = @Content(schema = @Schema(hidden = true))),
 			@ApiResponse(responseCode = "403", description = "Forbidden" ,content = @Content(schema = @Schema(hidden = true))),
 			@ApiResponse(responseCode = "404", description = "Not Found" ,content = @Content(schema = @Schema(hidden = true)))})
-	public AuthResponseDTO authenticateInternal(@Validated @RequestBody AuthRequestDTO authRequestDTO, @ApiIgnore Errors errors, HttpServletRequest request)
+	public AuthResponseDTO authenticateInternal(@Validated @RequestBody AuthRequestDTO authRequestDTO, @Parameter(hidden = true) Errors errors, HttpServletRequest request)
 			throws IdAuthenticationAppException, IdAuthenticationBusinessException, IdAuthenticationDaoException {
 		if(request instanceof ObjectWithMetadata) {
 			ObjectWithMetadata requestWithMetadata = (ObjectWithMetadata) request;

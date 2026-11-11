@@ -1,7 +1,8 @@
 package io.mosip.authentication.common.service.impl;
 
-import static org.junit.Assert.assertEquals;
-import static org.junit.Assert.assertFalse;
+import static org.junit.jupiter.api.Assertions.assertThrows;
+import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertFalse;
 
 import java.io.IOException;
 import java.time.LocalDateTime;
@@ -11,14 +12,13 @@ import java.util.Map.Entry;
 import java.util.stream.Collectors;
 
 import org.hibernate.exception.JDBCConnectionException;
-import org.junit.Assert;
-import org.junit.Test;
 import org.junit.jupiter.api.Assertions;
-import org.junit.runner.RunWith;
+import org.junit.jupiter.api.Test;
+import org.junit.jupiter.api.extension.ExtendWith;
 import org.mockito.InjectMocks;
 import org.mockito.Mock;
 import org.mockito.Mockito;
-import org.mockito.junit.MockitoJUnitRunner;
+import org.mockito.junit.jupiter.MockitoExtension;
 import org.springframework.test.util.ReflectionTestUtils;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
@@ -32,7 +32,7 @@ import io.mosip.authentication.core.exception.IdAuthenticationBusinessException;
 import io.mosip.authentication.core.indauth.dto.IdType;
 import io.mosip.kernel.core.util.DateUtils2;
 
-@RunWith(MockitoJUnitRunner.class)
+@ExtendWith(MockitoExtension.class)
 public class IdServiceImplTest {
 
 	@InjectMocks
@@ -93,14 +93,16 @@ public class IdServiceImplTest {
 		idServiceImpl.getIdentity(uin, isBio, idType, filterAttributes);
 	}
 
-	@Test(expected = IdAuthenticationBusinessException.class)
+	@Test
 	public void getIdentityTestException1() throws IdAuthenticationBusinessException {
+		assertThrows(IdAuthenticationBusinessException.class, () -> {
 		String uin = "12312312";
 		Boolean isBio = true;
 		IdType idType = IdType.UIN;
 		Set<String> filterAttributes = new HashSet<String>();
 		Mockito.doThrow(IdAuthenticationBusinessException.class).when(securityManager).hash(uin);
 		idServiceImpl.getIdentity(uin, isBio, idType, filterAttributes);
+			});
 	}
 
 	@Test
@@ -128,8 +130,9 @@ public class IdServiceImplTest {
 		idServiceImpl.getIdentity(uin, isBio, idType, filterAttributes);
 	}
 
-	@Test(expected = IdAuthenticationBusinessException.class)
+	@Test
 	public void getIdentityTestException2() throws IdAuthenticationBusinessException {
+		assertThrows(IdAuthenticationBusinessException.class, () -> {
 		String uin = "12312312";
 		Boolean isBio = false;
 		IdType idType = IdType.UIN;
@@ -141,10 +144,12 @@ public class IdServiceImplTest {
 
 		Mockito.when(identityRepo.findDemoDataById("12")).thenReturn(Collections.singletonList(data));
 		idServiceImpl.getIdentity(uin, isBio, idType, filterAttributes);
+			});
 	}
 
-	@Test(expected = IdAuthenticationBusinessException.class)
+	@Test
 	public void getIdentityTestException3() throws IdAuthenticationBusinessException {
+		assertThrows(IdAuthenticationBusinessException.class, () -> {
 		String uin = "12312312";
 		Boolean isBio = false;
 		IdType idType = IdType.UIN;
@@ -152,10 +157,12 @@ public class IdServiceImplTest {
 		Mockito.when(securityManager.hash(uin)).thenReturn("12");
 		Mockito.when(identityRepo.existsById("12")).thenReturn(false);
 		idServiceImpl.getIdentity(uin, isBio, idType, filterAttributes);
+			});
 	}
 
-	@Test(expected = IdAuthenticationBusinessException.class)
+	@Test
 	public void getIdentityTestException4() throws IdAuthenticationBusinessException, IOException {
+		assertThrows(IdAuthenticationBusinessException.class, () -> {
 		String uin = "12312312";
 		Boolean isBio = true;
 		IdType idType = IdType.UIN;
@@ -169,10 +176,12 @@ public class IdServiceImplTest {
 		Mockito.when(identityRepo.existsById("12")).thenReturn(true);
 		Mockito.when(identityRepo.getOne("12")).thenReturn(entity);
 		idServiceImpl.getIdentity(uin, isBio, idType, filterAttributes);
+			});
 	}
 
-	@Test(expected = IdAuthenticationBusinessException.class)
+	@Test
 	public void getIdentityTestException5() throws IdAuthenticationBusinessException {
+		assertThrows(IdAuthenticationBusinessException.class, () -> {
 		String uin = "12312312";
 		Boolean isBio = false;
 		IdType idType = IdType.VID;
@@ -184,6 +193,7 @@ public class IdServiceImplTest {
 
 		Mockito.when(identityRepo.findDemoDataById("12")).thenReturn(Collections.singletonList(data));
 		idServiceImpl.getIdentity(uin, isBio, idType, filterAttributes);
+			});
 	}
 
 	@Test
@@ -224,28 +234,33 @@ public class IdServiceImplTest {
 		idServiceImpl.processIdType(idvIdType, idvId, isBio, markVidConsumed, filterAttributes);
 	}
 
-	@Test(expected = IdAuthenticationBusinessException.class)
+	@Test
 	public void processIdTypeExceptionTest1() throws IdAuthenticationBusinessException, IOException {
+		assertThrows(IdAuthenticationBusinessException.class, () -> {
 		String idvIdType = "UIN";
 		String idvId = "12312312";
 		Boolean isBio = true;
 		Boolean markVidConsumed = true;
 		Set<String> filterAttributes = new HashSet<String>();
 		idServiceImpl.processIdType(idvIdType, idvId, isBio, markVidConsumed, filterAttributes);
+			});
 	}
 
-	@Test(expected = IdAuthenticationBusinessException.class)
+	@Test
 	public void processIdTypeExceptionTest2() throws IdAuthenticationBusinessException, IOException {
+		assertThrows(IdAuthenticationBusinessException.class, () -> {
 		String idvIdType = "VID";
 		String idvId = "12312312";
 		Boolean isBio = true;
 		Boolean markVidConsumed = true;
 		Set<String> filterAttributes = new HashSet<String>();
 		idServiceImpl.processIdType(idvIdType, idvId, isBio, markVidConsumed, filterAttributes);
+			});
 	}
 
-	@Test(expected = IdAuthenticationBusinessException.class)
+	@Test
 	public void processIdTypeExceptionTest3() throws IdAuthenticationBusinessException, IOException {
+		assertThrows(IdAuthenticationBusinessException.class, () -> {
 		String idvId = "12";
 		Boolean isBio = true;
 		Boolean markVidConsumed = true;
@@ -260,6 +275,7 @@ public class IdServiceImplTest {
 		String idvIdType = "VID";
 		Mockito.doThrow(JDBCConnectionException.class).when(identityRepo).deleteById("11");
 		idServiceSpy.processIdType(idvIdType, idvId, isBio, markVidConsumed, filterAttributes);
+			});
 	}
 
 	@Test
@@ -297,7 +313,7 @@ public class IdServiceImplTest {
 		Mockito.when(identityRepo.findById(vid)).thenReturn(entityOpt);
 		ReflectionTestUtils.invokeMethod(idServiceImpl, "updateVIDstatus", vid);
 		Integer result = 1;
-		Assert.assertEquals(result, identityRepo.findById(vid).get().getTransactionLimit());
+		Assertions.assertEquals(result, identityRepo.findById(vid).get().getTransactionLimit());
 	}
 
 	/**

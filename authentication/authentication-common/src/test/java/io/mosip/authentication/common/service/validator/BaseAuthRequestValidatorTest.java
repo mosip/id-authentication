@@ -1,9 +1,12 @@
 package io.mosip.authentication.common.service.validator;
 
+import org.mockito.quality.Strictness;
+import org.mockito.junit.jupiter.MockitoSettings;
+import org.mockito.junit.jupiter.MockitoExtension;
 import static io.mosip.authentication.core.constant.IdAuthCommonConstants.BIO_PATH;
-import static org.junit.Assert.assertEquals;
-import static org.junit.Assert.assertFalse;
-import static org.junit.Assert.assertTrue;
+import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertFalse;
+import static org.junit.jupiter.api.Assertions.assertTrue;
 
 import java.time.Instant;
 import java.time.ZoneOffset;
@@ -17,20 +20,20 @@ import java.util.Map;
 import java.util.Set;
 import java.util.function.Function;
 
-import org.junit.Before;
-import org.junit.Ignore;
-import org.junit.Test;
-import org.junit.runner.RunWith;
+import org.junit.jupiter.api.BeforeEach;
+import org.junit.jupiter.api.Disabled;
+import org.junit.jupiter.api.Test;
+import org.junit.jupiter.api.extension.ExtendWith;
 import org.mockito.InjectMocks;
 import org.mockito.Mock;
 import org.mockito.Mockito;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.context.properties.ConfigurationProperties;
-import org.springframework.boot.test.autoconfigure.web.servlet.WebMvcTest;
+import org.springframework.boot.webmvc.test.autoconfigure.WebMvcTest;
 import org.springframework.context.annotation.Import;
 import org.springframework.test.context.ContextConfiguration;
 import org.springframework.test.context.TestContext;
-import org.springframework.test.context.junit4.SpringRunner;
+import org.springframework.test.context.junit.jupiter.SpringExtension;
 import org.springframework.test.util.ReflectionTestUtils;
 import org.springframework.validation.BeanPropertyBindingResult;
 import org.springframework.validation.Errors;
@@ -64,7 +67,8 @@ import io.mosip.kernel.templatemanager.velocity.builder.TemplateManagerBuilderIm
  * @author Rakesh Roshan
  */
 
-@RunWith(SpringRunner.class)
+@ExtendWith({SpringExtension.class, MockitoExtension.class})
+@MockitoSettings(strictness = Strictness.LENIENT)
 @WebMvcTest
 @Import({ IDAMappingConfig.class, EnvUtil.class })
 @ConfigurationProperties("mosip.id")
@@ -102,7 +106,7 @@ public class BaseAuthRequestValidatorTest {
 	/**
 	 * Before.
 	 */
-	@Before
+	@BeforeEach
 	public void before() {
 		error = new BeanPropertyBindingResult(authRequestDTO, "authRequestDTO");
 		ReflectionTestUtils.setField(AuthRequestValidator, "idInfoHelper", idInfoHelper);
@@ -809,7 +813,7 @@ public class BaseAuthRequestValidatorTest {
 	/**
 	 * Test is duplicate bio type true.
 	 */
-	@Ignore
+	@Disabled
 	@Test
 	public void testIsDuplicateBioType_True() {
 
@@ -887,7 +891,7 @@ public class BaseAuthRequestValidatorTest {
 	/**
 	 * Test is duplicate bio type false.
 	 */
-	@Ignore
+	@Disabled
 	@Test
 	public void testIsDuplicateBioType_False() {
 		authRequestDTO = getAuthRequestDTO();
@@ -946,7 +950,7 @@ public class BaseAuthRequestValidatorTest {
 	/**
 	 * Test is duplicate bio type iris.
 	 */
-	@Ignore
+	@Disabled
 	@Test
 	public void testIsDuplicateBioTypeIris() {
 		authRequestDTO = getAuthRequestDTO();

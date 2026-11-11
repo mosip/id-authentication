@@ -1,6 +1,7 @@
 package io.mosip.authentication.core.exception;
 
-import org.junit.Test;
+import static org.junit.jupiter.api.Assertions.assertThrows;
+import org.junit.jupiter.api.Test;
 
 import io.mosip.authentication.core.constant.IdAuthenticationErrorConstants;
 import io.mosip.authentication.core.exception.ServiceTimeoutException;
@@ -17,9 +18,11 @@ public class ServiceTimeoutExceptionTest {
 	 *
 	 * @throws ServiceTimeoutException the service timeout exception
 	 */
-	@Test(expected=ServiceTimeoutException.class)
+	@Test
 	public void ServiceTimeoutExceptionDefCon() throws ServiceTimeoutException {
+		assertThrows(ServiceTimeoutException.class, () -> {
 		throw new ServiceTimeoutException();
+			});
 	}
 
 	/**
@@ -27,9 +30,11 @@ public class ServiceTimeoutExceptionTest {
 	 *
 	 * @throws ServiceTimeoutException the service timeout exception
 	 */
-	@Test(expected=ServiceTimeoutException.class)
+	@Test
 	public void ServiceTimeoutExceptionEnum() throws ServiceTimeoutException {
+		assertThrows(ServiceTimeoutException.class, () -> {
 		throw new ServiceTimeoutException(IdAuthenticationErrorConstants.OTP_GENERATION_FAILED);
+			});
 	}
 	
 	/**
@@ -37,9 +42,11 @@ public class ServiceTimeoutExceptionTest {
 	 *
 	 * @throws ServiceTimeoutException the service timeout exception
 	 */
-	@Test(expected=ServiceTimeoutException.class)
+	@Test
 	public void ServiceTimeoutExceptionEnumThrowable() throws ServiceTimeoutException {
+		assertThrows(ServiceTimeoutException.class, () -> {
 		throw new ServiceTimeoutException(IdAuthenticationErrorConstants.OTP_GENERATION_FAILED, null);
+			});
 	}
 
 }

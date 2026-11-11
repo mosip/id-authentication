@@ -1,7 +1,11 @@
 package io.mosip.authentication.common.service.integration;
 
-import static org.junit.Assert.assertNotNull;
-import static org.junit.Assert.assertTrue;
+import org.mockito.quality.Strictness;
+import org.mockito.junit.jupiter.MockitoSettings;
+import org.mockito.junit.jupiter.MockitoExtension;
+import static org.junit.jupiter.api.Assertions.assertThrows;
+import static org.junit.jupiter.api.Assertions.assertNotNull;
+import static org.junit.jupiter.api.Assertions.assertTrue;
 
 import java.io.ByteArrayOutputStream;
 import java.io.File;
@@ -15,10 +19,10 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
-import org.junit.AfterClass;
-import org.junit.Before;
-import org.junit.Test;
-import org.junit.runner.RunWith;
+import org.junit.jupiter.api.AfterAll;
+import org.junit.jupiter.api.BeforeEach;
+import org.junit.jupiter.api.Test;
+import org.junit.jupiter.api.extension.ExtendWith;
 import org.mockito.InjectMocks;
 import org.mockito.Mock;
 import org.mockito.Mockito;
@@ -30,7 +34,7 @@ import org.springframework.http.HttpMethod;
 import org.springframework.mock.env.MockEnvironment;
 import org.springframework.test.context.ContextConfiguration;
 import org.springframework.test.context.TestContext;
-import org.springframework.test.context.junit4.SpringRunner;
+import org.springframework.test.context.junit.jupiter.SpringExtension;
 import org.springframework.test.util.ReflectionTestUtils;
 import org.springframework.web.context.WebApplicationContext;
 
@@ -51,7 +55,8 @@ import io.mosip.kernel.core.pdfgenerator.spi.PDFGenerator;
 import io.mosip.kernel.core.templatemanager.spi.TemplateManager;
 import io.mosip.kernel.templatemanager.velocity.builder.TemplateManagerBuilderImpl;
 
-@RunWith(SpringRunner.class)
+@ExtendWith({SpringExtension.class, MockitoExtension.class})
+@MockitoSettings(strictness = Strictness.LENIENT)
 @SpringBootTest
 @Import(EnvUtil.class)
 @ContextConfiguration(classes = { TestContext.class, WebApplicationContext.class, TemplateManagerBuilderImpl.class })
@@ -103,7 +108,7 @@ public class IdTemplateManagerTest {
 	
 	List<String> templateLanguages = new ArrayList<String>();
 
-	@Before
+	@BeforeEach
 	public void before() {
 		ReflectionTestUtils.setField(idTemplateManager, "masterDataManager", masterDataManager);
 		ReflectionTestUtils.setField(idInfoFetcherImpl, "environment", environment);
@@ -182,8 +187,9 @@ public class IdTemplateManagerTest {
 		assertNotNull(idTemplateManager.applyTemplate(AUTH_SMS, valueMap, templateLanguages));
 	}
 
-	@Test(expected = FileNotFoundException.class)
+	@Test
 	public void testInvalidPdfGeneration() throws IOException {
+		assertThrows(FileNotFoundException.class, () -> {
 		InputStream is = new FileInputStream("dummy1.html");
 		ByteArrayOutputStream bos = (ByteArrayOutputStream) pdfGenerator.generate(is);
 		String outputPath = System.getProperty("user.dir");
@@ -196,9 +202,10 @@ public class IdTemplateManagerTest {
 		if (op != null) {
 			op.close();
 		}
+			});
 	}
 
-	@AfterClass
+	@AfterAll
 	public static void deleteOutputFile() {
 		String outputFilePath = System.getProperty("user.dir");
 		String outputFileExtension = ".pdf";

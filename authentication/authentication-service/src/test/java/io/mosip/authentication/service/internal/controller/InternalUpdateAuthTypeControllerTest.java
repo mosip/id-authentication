@@ -1,8 +1,8 @@
 //package io.mosip.authentication.service.internal.controller;
 //
-//import org.junit.Before;
-//import org.junit.Test;
-//import org.junit.runner.RunWith;
+//import org.junit.jupiter.api.BeforeEach;
+//import org.junit.jupiter.api.Test;
+//import org.junit.jupiter.api.extension.ExtendWith;
 //import org.mockito.InjectMocks;
 //import org.mockito.Mock;
 //import org.mockito.Mockito;
@@ -11,7 +11,7 @@
 //import org.springframework.core.env.EnvPropertyResolver;
 //import org.springframework.test.context.ContextConfiguration;
 //import org.springframework.test.context.TestContext;
-//import org.springframework.test.context.junit4.SpringRunner;
+//import org.springframework.test.context.junit.jupiter.SpringExtension;
 //import org.springframework.test.util.ReflectionTestUtils;
 //import org.springframework.validation.BeanPropertyBindingResult;
 //import org.springframework.validation.Errors;
@@ -35,7 +35,7 @@
 // * @author Dinesh Karuppaiah T
 // *
 // */
-//@RunWith(SpringRunner.class)
+//@ExtendWith(SpringExtension.class)
 //@SpringBootTest
 //@ContextConfiguration(classes = { TestContext.class, WebApplicationContext.class })
 //public class InternalUpdateAuthTypeControllerTest {
@@ -67,7 +67,7 @@
 //	@Mock
 //	private AuditHelper auditHelper;
 //	
-//	@Before
+//	@BeforeEach
 //	public void before() {
 //		ReflectionTestUtils.invokeMethod(internalUpdateAuthTypeController, "initBinder", binder);
 //		ReflectionTestUtils.setField(internalUpdateAuthTypeController, "environment", environment);

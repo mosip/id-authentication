@@ -1,21 +1,25 @@
 package io.mosip.authentication.common.service.impl.match;
 
-import static org.junit.Assert.assertEquals;
+import org.mockito.quality.Strictness;
+import org.mockito.junit.jupiter.MockitoSettings;
+import org.mockito.junit.jupiter.MockitoExtension;
+import static org.junit.jupiter.api.Assertions.assertThrows;
+import static org.junit.jupiter.api.Assertions.assertEquals;
 
 import java.util.HashMap;
 import java.util.Map;
 
 import io.mosip.authentication.common.service.integration.ValidateOtpHelper;
-import org.junit.Before;
-import org.junit.Test;
-import org.junit.runner.RunWith;
+import org.junit.jupiter.api.BeforeEach;
+import org.junit.jupiter.api.Test;
+import org.junit.jupiter.api.extension.ExtendWith;
 import org.mockito.InjectMocks;
 import org.mockito.Mock;
 import org.mockito.Mockito;
-import org.springframework.boot.test.autoconfigure.web.servlet.WebMvcTest;
+import org.springframework.boot.webmvc.test.autoconfigure.WebMvcTest;
 import org.springframework.test.context.ContextConfiguration;
 import org.springframework.test.context.TestContext;
-import org.springframework.test.context.junit4.SpringRunner;
+import org.springframework.test.context.junit.jupiter.SpringExtension;
 import org.springframework.test.util.ReflectionTestUtils;
 import org.springframework.web.context.WebApplicationContext;
 
@@ -33,7 +37,8 @@ import io.mosip.authentication.core.spi.indauth.match.ValidateOtpFunction;
 import io.mosip.idrepository.core.exception.RestServiceException;
 import io.mosip.authentication.common.service.helper.RestHelper;
 
-@RunWith(SpringRunner.class)
+@ExtendWith({SpringExtension.class, MockitoExtension.class})
+@MockitoSettings(strictness = Strictness.LENIENT)
 @WebMvcTest
 @ContextConfiguration(classes = { TestContext.class, WebApplicationContext.class })
 public class OtpMatchingStrategyTest {
@@ -63,7 +68,7 @@ public class OtpMatchingStrategyTest {
 	@Mock
 	EnvUtil environment;
 
-	@Before
+	@BeforeEach
 	public void before() {
 		ReflectionTestUtils.setField(otpManager, "restRequestFactory", restRequestFactory);
 		ReflectionTestUtils.setField(otpManager, "restHelper", restHelper);
@@ -97,14 +102,16 @@ public class OtpMatchingStrategyTest {
 		matchFunction.match("123456", "IDA_asdEEFAER", matchProperties);
 	}
 
-	@Test(expected = IdAuthenticationBusinessException.class)
+	@Test
 	public void TestInValidOtpMatchingStrategy() throws IdAuthenticationBusinessException {
+		assertThrows(IdAuthenticationBusinessException.class, () -> {
 		MatchFunction matchFunction = OtpMatchingStrategy.EXACT.getMatchFunction();
 		Map<String, Object> matchProperties = new HashMap<>();
 		matchProperties.put(ValidateOtpFunction.class.getSimpleName(), "");
 		matchProperties.put(IdAuthCommonConstants.IDVID, "");
 		int value = matchFunction.match("123456", "IDA_asdEEFAER", matchProperties);
 		assertEquals(0, value);
+			});
 	}
 
 	@Test

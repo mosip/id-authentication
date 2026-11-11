@@ -1,24 +1,27 @@
 package io.mosip.authentication.hotlistfilter.impl;
 
-import static org.junit.Assert.assertTrue;
-import static org.junit.Assert.fail;
+import org.mockito.quality.Strictness;
+import org.mockito.junit.jupiter.MockitoSettings;
+import org.mockito.junit.jupiter.MockitoExtension;
+import static org.junit.jupiter.api.Assertions.assertTrue;
+import static org.junit.jupiter.api.Assertions.fail;
 import static org.mockito.Mockito.when;
 
 import java.lang.reflect.UndeclaredThrowableException;
 import java.util.Collections;
 import java.util.Optional;
 
-import org.junit.Before;
-import org.junit.Test;
-import org.junit.runner.RunWith;
+import org.junit.jupiter.api.BeforeEach;
+import org.junit.jupiter.api.Test;
+import org.junit.jupiter.api.extension.ExtendWith;
 import org.mockito.InjectMocks;
 import org.mockito.Mock;
 import org.mockito.Mockito;
-import org.springframework.boot.test.autoconfigure.web.servlet.AutoConfigureMockMvc;
+import org.springframework.boot.webmvc.test.autoconfigure.AutoConfigureMockMvc;
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.test.context.ContextConfiguration;
 import org.springframework.test.context.TestContext;
-import org.springframework.test.context.junit4.SpringRunner;
+import org.springframework.test.context.junit.jupiter.SpringExtension;
 import org.springframework.test.util.ReflectionTestUtils;
 import org.springframework.web.context.WebApplicationContext;
 
@@ -33,7 +36,8 @@ import io.mosip.authentication.core.spi.hotlist.service.HotlistService;
 import io.mosip.kernel.core.hotlist.constant.HotlistIdTypes;
 import io.mosip.kernel.core.hotlist.constant.HotlistStatus;
 
-@RunWith(SpringRunner.class)
+@ExtendWith({SpringExtension.class, MockitoExtension.class})
+@MockitoSettings(strictness = Strictness.LENIENT)
 @SpringBootTest
 @AutoConfigureMockMvc
 @ContextConfiguration(classes = { TestContext.class, WebApplicationContext.class })
@@ -55,7 +59,7 @@ public class HotlistFilterImplTest {
 	@Mock
 	private HotlistService hotlistService;
 
-	@Before
+	@BeforeEach
 	public void before() {
 		HotlistDTO response = new HotlistDTO();
 		response.setStatus(HotlistStatus.UNBLOCKED);

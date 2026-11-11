@@ -4,9 +4,9 @@ import static io.mosip.authentication.core.constant.IdAuthConfigKeyConstants.DEL
 import static io.mosip.authentication.core.constant.IdAuthConfigKeyConstants.IDA_MISSING_CREDENTIAL_RETRIGGER_ENABLED;
 import static io.mosip.authentication.core.constant.IdAuthConfigKeyConstants.SUBSCRIPTIONS_DELAY_ON_STARTUP;
 
-import org.springframework.batch.core.Job;
-import org.springframework.batch.core.JobParameters;
-import org.springframework.batch.core.JobParametersBuilder;
+import org.springframework.batch.core.job.Job;
+import org.springframework.batch.core.job.parameters.JobParameters;
+import org.springframework.batch.core.job.parameters.JobParametersBuilder;
 import org.springframework.batch.core.launch.JobLauncher;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Qualifier;

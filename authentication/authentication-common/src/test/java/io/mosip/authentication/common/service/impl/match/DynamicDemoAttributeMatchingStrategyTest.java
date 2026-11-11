@@ -1,11 +1,11 @@
 package io.mosip.authentication.common.service.impl.match;
 
-import static org.junit.Assert.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertEquals;
 
 import java.util.List;
 import java.util.Map;
 
-import org.junit.Test;
+import org.junit.jupiter.api.Test;
 import org.mockito.Mockito;
 
 import io.mosip.authentication.core.spi.indauth.match.MappingConfig;

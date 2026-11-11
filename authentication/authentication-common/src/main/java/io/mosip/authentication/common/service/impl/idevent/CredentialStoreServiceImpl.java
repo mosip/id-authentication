@@ -18,10 +18,10 @@ import java.util.concurrent.CompletableFuture;
 import java.util.concurrent.CompletionException;
 import java.util.stream.Collectors;
 
-import javax.transaction.Transactional;
+import jakarta.transaction.Transactional;
 
-import org.apache.commons.lang.exception.ExceptionUtils;
-import org.springframework.batch.item.Chunk;
+import org.apache.commons.lang3.exception.ExceptionUtils;
+import org.springframework.batch.infrastructure.item.Chunk;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.beans.factory.annotation.Value;
@@ -284,7 +284,7 @@ public class CredentialStoreServiceImpl implements CredentialStoreService {
 		try {
 			auditHelper.audit(AuditModules.CREDENTIAL_STORAGE, AuditEvents.CREDENTIAL_STORED_EVENT, requestId, "request-id", desc);
 		} catch (IDDataValidationException e) {
-			mosipLogger.error(ExceptionUtils.getFullStackTrace(e));
+			mosipLogger.error(ExceptionUtils.getStackTrace(e));
 		}
 	}
 

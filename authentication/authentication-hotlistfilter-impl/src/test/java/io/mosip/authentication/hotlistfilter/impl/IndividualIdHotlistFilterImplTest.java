@@ -1,16 +1,17 @@
 package io.mosip.authentication.hotlistfilter.impl;
 
+import static org.junit.jupiter.api.Assertions.assertThrows;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
-import org.junit.Before;
-import org.junit.Test;
-import org.junit.runner.RunWith;
+import org.junit.jupiter.api.BeforeEach;
+import org.junit.jupiter.api.Test;
+import org.junit.jupiter.api.extension.ExtendWith;
 import org.mockito.InjectMocks;
 import org.mockito.Mock;
 import org.mockito.Mockito;
-import org.mockito.junit.MockitoJUnitRunner;
+import org.mockito.junit.jupiter.MockitoExtension;
 import org.springframework.test.util.ReflectionTestUtils;
 
 import io.mosip.authentication.authfilter.exception.IdAuthenticationFilterException;
@@ -22,7 +23,7 @@ import io.mosip.authentication.core.indauth.dto.IdentityInfoDTO;
 import io.mosip.authentication.core.spi.hotlist.service.HotlistService;
 import io.mosip.kernel.core.hotlist.constant.HotlistStatus;
 
-@RunWith(MockitoJUnitRunner.class)
+@ExtendWith(MockitoExtension.class)
 public class IndividualIdHotlistFilterImplTest {
 
 	@Mock
@@ -31,7 +32,7 @@ public class IndividualIdHotlistFilterImplTest {
 	@InjectMocks
 	private IndividualIdHotlistFilterImpl individualIdHotlistFilterImpl;
 	
-	@Before
+	@BeforeEach
 	public void before() {
 		ReflectionTestUtils.setField(individualIdHotlistFilterImpl, "hotlistService", hotlistService);
 	}
@@ -61,8 +62,9 @@ public class IndividualIdHotlistFilterImplTest {
 		individualIdHotlistFilterImpl.validate(authRequest, identityData, properties);
 	}
 	
-	@Test(expected = IdAuthenticationFilterException.class)
+	@Test
 	public void testValidateWithHotlistedId() throws IdAuthenticationFilterException {
+		assertThrows(IdAuthenticationFilterException.class, () -> {
 		AuthRequestDTO authRequest = new AuthRequestDTO();
 		authRequest.setIndividualId("1234567890");
 		authRequest.setIndividualIdType("UIN");
@@ -78,6 +80,7 @@ public class IndividualIdHotlistFilterImplTest {
 			.thenReturn(hotlistDTO);
 		
 		individualIdHotlistFilterImpl.validate(authRequest, identityData, properties);
+			});
 	}
 	
 	@Test

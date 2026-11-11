@@ -1,6 +1,7 @@
 package io.mosip.authentication.core.exception;
 
-import org.junit.Test;
+import static org.junit.jupiter.api.Assertions.assertThrows;
+import org.junit.jupiter.api.Test;
 
 import io.mosip.authentication.core.constant.IdAuthenticationErrorConstants;
 import io.mosip.authentication.core.exception.IDAuthenticationUnknownException;
@@ -17,9 +18,11 @@ public class IDAuthenticationUnknownExceptionTest {
 	 *
 	 * @throws IDAuthenticationUnknownException the ID authentication unknown exception
 	 */
-	@Test(expected=IDAuthenticationUnknownException.class)
+	@Test
 	public void testThrowUnknownException() throws IDAuthenticationUnknownException {
+		assertThrows(IDAuthenticationUnknownException.class, () -> {
 		throw new IDAuthenticationUnknownException();
+			});
 	}
 	
 	/**
@@ -27,9 +30,11 @@ public class IDAuthenticationUnknownExceptionTest {
 	 *
 	 * @throws IDAuthenticationUnknownException the ID authentication unknown exception
 	 */
-	@Test(expected=IDAuthenticationUnknownException.class)
+	@Test
 	public void testThrowUnknownExceptionWithParameter() throws IDAuthenticationUnknownException {
+		assertThrows(IDAuthenticationUnknownException.class, () -> {
 		throw new IDAuthenticationUnknownException(IdAuthenticationErrorConstants.DATA_VALIDATION_FAILED);
+			});
 	}
 	
 	/**
@@ -37,9 +42,11 @@ public class IDAuthenticationUnknownExceptionTest {
 	 *
 	 * @throws IDAuthenticationUnknownException the ID authentication unknown exception
 	 */
-	@Test(expected=IDAuthenticationUnknownException.class)
+	@Test
 	public void testThrowUnknownExceptionWithParameterThrowable() throws IDAuthenticationUnknownException {
+		assertThrows(IDAuthenticationUnknownException.class, () -> {
 		throw new IDAuthenticationUnknownException(IdAuthenticationErrorConstants.DATA_VALIDATION_FAILED, null);
+			});
 	}
 
 }

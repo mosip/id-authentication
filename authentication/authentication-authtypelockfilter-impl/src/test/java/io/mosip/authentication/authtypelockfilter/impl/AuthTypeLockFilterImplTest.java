@@ -1,5 +1,6 @@
 package io.mosip.authentication.authtypelockfilter.impl;
 
+import static org.junit.jupiter.api.Assertions.assertThrows;
 import java.lang.reflect.UndeclaredThrowableException;
 import java.util.ArrayList;
 import java.util.HashMap;
@@ -9,15 +10,15 @@ import java.util.Map;
 import io.mosip.authentication.authfilter.exception.IdAuthenticationFilterException;
 import io.mosip.authentication.core.constant.IdAuthenticationErrorConstants;
 import io.mosip.authentication.core.indauth.dto.*;
-import org.junit.Before;
-import org.junit.Ignore;
-import org.junit.Test;
-import org.junit.runner.RunWith;
+import org.junit.jupiter.api.BeforeEach;
+import org.junit.jupiter.api.Disabled;
+import org.junit.jupiter.api.Test;
+import org.junit.jupiter.api.extension.ExtendWith;
 import org.mockito.InjectMocks;
 import org.mockito.Mock;
 import org.mockito.Mockito;
-import org.mockito.junit.MockitoJUnitRunner;
-import org.springframework.boot.test.autoconfigure.web.servlet.WebMvcTest;
+import org.mockito.junit.jupiter.MockitoExtension;
+import org.springframework.boot.webmvc.test.autoconfigure.WebMvcTest;
 import org.springframework.test.context.ContextConfiguration;
 import org.springframework.test.context.TestContext;
 import org.springframework.test.util.ReflectionTestUtils;
@@ -34,7 +35,7 @@ import io.mosip.kernel.templatemanager.velocity.builder.TemplateManagerBuilderIm
 
 import static org.mockito.Mockito.lenient;
 
-@RunWith(MockitoJUnitRunner.class)
+@ExtendWith(MockitoExtension.class)
 @WebMvcTest
 @ContextConfiguration(classes = { TestContext.class, WebApplicationContext.class, TemplateManagerBuilderImpl.class })
 public class AuthTypeLockFilterImplTest {
@@ -50,7 +51,7 @@ public class AuthTypeLockFilterImplTest {
 	private IdInfoFetcher idInfoFetcher;
 	
 	
-	@Before
+	@BeforeEach
 	public void before() {
 	}
 	
@@ -66,8 +67,9 @@ public class AuthTypeLockFilterImplTest {
 		ReflectionTestUtils.invokeMethod(authTypeLockFilterImpl, "validateAuthTypeStatus", authRequestDTO, status,authtypeStatusList);
 	}
 
-	@Test(expected = IdAuthenticationBusinessException.class)
+	@Test
 	public void TestvalidateAuthTypeStatusDemoLocked() throws Throwable {
+		assertThrows(IdAuthenticationBusinessException.class, () -> {
 		AuthRequestDTO authRequestDTO = new AuthRequestDTO();
 		RequestDTO request = new RequestDTO();
 		IdentityDTO identityDto = new IdentityDTO();
@@ -85,10 +87,12 @@ public class AuthTypeLockFilterImplTest {
 		} catch (UndeclaredThrowableException e) {
 			throw e.getCause();
 		}
+			});
 	}
 
-	@Test(expected = IdAuthenticationBusinessException.class)
+	@Test
 	public void TestvalidateAuthTypeStatusBioLocked() throws Throwable {
+		assertThrows(IdAuthenticationBusinessException.class, () -> {
 		AuthRequestDTO authRequestDTO = new AuthRequestDTO();
 		RequestDTO request = new RequestDTO();
 		List<BioIdentityInfoDTO> list = new ArrayList<>();
@@ -116,6 +120,7 @@ public class AuthTypeLockFilterImplTest {
 		} catch (UndeclaredThrowableException e) {
 			throw e.getCause();
 		}
+			});
 	}
 
 	@Test
@@ -145,8 +150,9 @@ public class AuthTypeLockFilterImplTest {
 
 	}
 
-	@Test(expected = IdAuthenticationBusinessException.class)
+	@Test
 	public void TestvalidateAuthTypeStatusPinLocked() throws Throwable {
+		assertThrows(IdAuthenticationBusinessException.class, () -> {
 		AuthRequestDTO authRequestDTO = new AuthRequestDTO();
 		RequestDTO request = new RequestDTO();
 		request.setStaticPin("123");
@@ -164,10 +170,12 @@ public class AuthTypeLockFilterImplTest {
 						MatchType.Category.SPIN.getType()));
 		Mockito.doThrow(exception).when(authTypeStatusService).fetchAuthtypeStatus("1122");
 		authTypeLockFilterImpl.validate(authRequestDTO, identityData, properties);
+			});
 	}
 
-	@Test(expected = IdAuthenticationFilterException.class)
+	@Test
 	public void validateExceptionTest1() throws IdAuthenticationBusinessException {
+		assertThrows(IdAuthenticationFilterException.class, () -> {
 		AuthRequestDTO authRequestDTO = new AuthRequestDTO();
 		RequestDTO request = new RequestDTO();
 		request.setStaticPin("123");
@@ -183,10 +191,12 @@ public class AuthTypeLockFilterImplTest {
 		authtypeStatusList.add(status);
 		Mockito.when(authTypeStatusService.fetchAuthtypeStatus("1122")).thenReturn(authtypeStatusList);
 		authTypeLockFilterImpl.validate(authRequestDTO, identityData, properties);
+			});
 	}
 
-	@Test(expected = IdAuthenticationFilterException.class)
+	@Test
 	public void validateExceptionTest2() throws IdAuthenticationBusinessException {
+		assertThrows(IdAuthenticationFilterException.class, () -> {
 		AuthRequestDTO authRequestDTO = new AuthRequestDTO();
 		RequestDTO request = new RequestDTO();
 		request.setStaticPin("123");
@@ -205,6 +215,7 @@ public class AuthTypeLockFilterImplTest {
 		Mockito.doThrow(exception).when(authTypeStatusService).fetchAuthtypeStatus("1122");
 //		Mockito.when(authTypeStatusService.fetchAuthtypeStatus("1122")).thenReturn(authtypeStatusList);
 		authTypeLockFilterImpl.validate(authRequestDTO, identityData, properties);
+			});
 	}
 
 	@Test

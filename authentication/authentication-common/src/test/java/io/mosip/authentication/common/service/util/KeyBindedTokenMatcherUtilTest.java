@@ -1,17 +1,20 @@
 package io.mosip.authentication.common.service.util;
 
+import org.mockito.quality.Strictness;
+import org.mockito.junit.jupiter.MockitoSettings;
+import org.mockito.junit.jupiter.MockitoExtension;
 import io.mosip.authentication.core.exception.IdAuthenticationBusinessException;
 import io.mosip.kernel.keymanagerservice.util.KeymanagerUtil;
 import org.bouncycastle.util.io.pem.PemObject;
 import org.bouncycastle.util.io.pem.PemReader;
-import org.junit.Assert;
-import org.junit.Ignore;
-import org.junit.Test;
-import org.junit.runner.RunWith;
+import org.junit.jupiter.api.Assertions;
+import org.junit.jupiter.api.Disabled;
+import org.junit.jupiter.api.Test;
+import org.junit.jupiter.api.extension.ExtendWith;
 import org.mockito.InjectMocks;
 import org.mockito.Mock;
 import org.mockito.Mockito;
-import org.springframework.test.context.junit4.SpringRunner;
+import org.springframework.test.context.junit.jupiter.SpringExtension;
 import org.springframework.test.util.ReflectionTestUtils;
 
 import java.io.ByteArrayInputStream;
@@ -24,7 +27,8 @@ import java.util.HashMap;
 import java.util.Map;
 import java.util.Objects;
 
-@RunWith(SpringRunner.class)
+@ExtendWith({SpringExtension.class, MockitoExtension.class})
+@MockitoSettings(strictness = Strictness.LENIENT)
 public class KeyBindedTokenMatcherUtilTest {
 
     @Mock
@@ -63,7 +67,7 @@ public class KeyBindedTokenMatcherUtilTest {
         try{
             keyBindedTokenMatcherUtil.match(input, bindingCertificates, properties);
         }catch (IdAuthenticationBusinessException e){
-            Assert.assertEquals("IDA-KBT-002",e.getErrorCode());
+            Assertions.assertEquals("IDA-KBT-002",e.getErrorCode());
         }
     }
 
@@ -81,11 +85,11 @@ public class KeyBindedTokenMatcherUtilTest {
         try{
             keyBindedTokenMatcherUtil.match(input, bindingCertificates, properties);
         }catch (IdAuthenticationBusinessException e){
-            Assert.assertEquals("IDA-MLC-009",e.getErrorCode());
+            Assertions.assertEquals("IDA-MLC-009",e.getErrorCode());
         }
     }
 
-    @Ignore
+    @Disabled
     @Test
     public void matchTestWithInValidCerts_thenFail() throws IdAuthenticationBusinessException {
         ReflectionTestUtils.setField(keyBindedTokenMatcherUtil, "iatAdjSeconds", 30000000);
@@ -100,7 +104,7 @@ public class KeyBindedTokenMatcherUtilTest {
         try {
             keyBindedTokenMatcherUtil.match(input, bindingCertificates, properties);
         }catch (IdAuthenticationBusinessException e){
-            Assert.assertEquals("IDA-KBT-001",e.getErrorCode());
+            Assertions.assertEquals("IDA-KBT-001",e.getErrorCode());
         }
     }
 
@@ -138,7 +142,7 @@ public class KeyBindedTokenMatcherUtilTest {
         try{
             keyBindedTokenMatcherUtil.match(input, bindingCertificates, properties);
         }catch (IdAuthenticationBusinessException e){
-            Assert.assertEquals("IDA-KBT-003",e.getErrorCode());
+            Assertions.assertEquals("IDA-KBT-003",e.getErrorCode());
         }
     }
 

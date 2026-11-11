@@ -3,7 +3,7 @@ package io.mosip.authentication.core.indauth.dto;
 import java.util.Optional;
 import java.util.stream.Stream;
 
-import javax.xml.bind.annotation.XmlValue;
+import jakarta.xml.bind.annotation.XmlValue;
 
 import com.fasterxml.jackson.annotation.JsonValue;
 

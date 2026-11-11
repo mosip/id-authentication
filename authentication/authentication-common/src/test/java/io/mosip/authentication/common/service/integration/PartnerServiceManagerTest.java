@@ -1,6 +1,10 @@
 package io.mosip.authentication.common.service.integration;
 
-import static org.junit.Assert.assertEquals;
+import org.mockito.quality.Strictness;
+import org.mockito.junit.jupiter.MockitoSettings;
+import org.mockito.junit.jupiter.MockitoExtension;
+import static org.junit.jupiter.api.Assertions.assertThrows;
+import static org.junit.jupiter.api.Assertions.assertEquals;
 
 import java.lang.reflect.UndeclaredThrowableException;
 import java.time.LocalDateTime;
@@ -10,19 +14,19 @@ import java.util.Optional;
 
 import io.mosip.authentication.core.constant.IdAuthCommonConstants;
 
-import org.junit.Assert;
-import org.junit.Before;
-import org.junit.Test;
-import org.junit.runner.RunWith;
+import org.junit.jupiter.api.Assertions;
+import org.junit.jupiter.api.BeforeEach;
+import org.junit.jupiter.api.Test;
+import org.junit.jupiter.api.extension.ExtendWith;
 import org.mockito.InjectMocks;
 import org.mockito.Mock;
 import org.mockito.Mockito;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.boot.test.autoconfigure.web.servlet.WebMvcTest;
+import org.springframework.boot.webmvc.test.autoconfigure.WebMvcTest;
 import org.springframework.core.env.ConfigurableEnvironment;
 import org.springframework.test.context.ContextConfiguration;
 import org.springframework.test.context.TestContext;
-import org.springframework.test.context.junit4.SpringRunner;
+import org.springframework.test.context.junit.jupiter.SpringExtension;
 import org.springframework.test.util.ReflectionTestUtils;
 import org.springframework.web.context.WebApplicationContext;
 
@@ -56,7 +60,8 @@ import io.mosip.kernel.core.websub.model.Type;
  * @author Nagarjuna
  *
  */
-@RunWith(SpringRunner.class)
+@ExtendWith({SpringExtension.class, MockitoExtension.class})
+@MockitoSettings(strictness = Strictness.LENIENT)
 @WebMvcTest
 @ContextConfiguration(classes = { TestContext.class, WebApplicationContext.class })
 public class PartnerServiceManagerTest {
@@ -100,7 +105,7 @@ public class PartnerServiceManagerTest {
 	Type type = null;
 	
 	
-	@Before
+	@BeforeEach
 	public void before() {
 		ReflectionTestUtils.setField(partnerServiceManager, "mapper", mapper);
 		data = new HashMap<String, Object>();
@@ -161,8 +166,9 @@ public class PartnerServiceManagerTest {
 	}
 
 	// io.mosip.authentication.core.exception.IdAuthenticationBusinessException:IDA-MPA-012 --> Partner is deactivated
-	@Test(expected = IdAuthenticationBusinessException.class)
+	@Test
 	public void validateAndGetPolicyException1Test() throws IdAuthenticationBusinessException, Exception {
+		assertThrows(IdAuthenticationBusinessException.class, () -> {
 		String partnerMappingObj = "{\"partnerId\":\"1635497344579\",\"policyId\":\"21\",\"apiKeyId\":\"130956\",\"partnerData\":{\"partnerId\":\"1635497344579\",\"partnerName\":\"1635497344579\",\"isDeleted\":\"true\",\"partnerStatus\":\"ACTIVE\"},\"policyData\":{\"policyId\":\"644269\",\"policyName\":\"policy 1635497343191\",\"policyDescription\":\"Auth Policy\",\"policyStatus\":\"INACTIVE\",\"isDeleted\":true,\"policyCommenceOn\":\"2021-10-10T06:12:52.994Z\",\"policyExpiresOn\":\"2020-12-11T06:12:52.994Z\",\"policy\":{\"authPolicies\":[{\"authType\":\"otp\",\"authSubType\":\"\",\"mandatory\":true},{\"authType\":\"demo\",\"authSubType\":\"\",\"mandatory\":false},{\"authType\":\"bio\",\"authSubType\":\"FINGER\",\"mandatory\":true},{\"authType\":\"bio\",\"authSubType\":\"IRIS\",\"mandatory\":false},{\"authType\":\"bio\",\"authSubType\":\"FACE\",\"mandatory\":false},{\"authType\":\"kyc\",\"authSubType\":\"\",\"mandatory\":false}],\"allowedKycAttributes\":[{\"attributeName\":\"fullName\",\"required\":true},{\"attributeName\":\"dateOfBirth\",\"required\":true},{\"attributeName\":\"gender\",\"required\":true},{\"attributeName\":\"phone\",\"required\":true},{\"attributeName\":\"email\",\"required\":true},{\"attributeName\":\"addressLine1\",\"required\":true},{\"attributeName\":\"addressLine2\",\"required\":true},{\"attributeName\":\"addressLine3\",\"required\":true},{\"attributeName\":\"location1\",\"required\":true},{\"attributeName\":\"location2\",\"required\":true},{\"attributeName\":\"location3\",\"required\":true},{\"attributeName\":\"postalCode\",\"required\":false},{\"attributeName\":\"photo\",\"required\":true}]}},\"apiKeyData\":{\"apiKeyId\":\"591856\",\"apiKeyStatus\":\"INACTIVE\",\"isDeleted\":true,\"apiKeyCommenceOn\":\"2021-11-10T06:12:52.994Z\",\"apiKeyExpiresOn\":\"2020-12-11T06:12:52.994Z\"}}";
 		String mispLicenseDataObj = "{\"mispId\":\"1635497344579\",\"licenseKey\":\"rtaCBxYlsrWeuYpLgfUFT5ic6LetsOZzbvxBEe8yR5FCKkEsvQ\",\"mispCommenceOn\":\"2021-10-10T06:12:52.994Z\",\"mispExpiresOn\":\"2020-12-11T06:12:52.994Z\",\"mispStatus\":\"ACTIVE\"}";
 		String mispPartnerDataObj = "{\"partnerId\":\"1635497344579\",\"partnerName\":\"misp_partner\",\"certificateData\":\"certificateData\",\"partnerStatus\":\"ACTIVE\"}";
@@ -185,11 +191,13 @@ public class PartnerServiceManagerTest {
 		
 		partnerServiceManager.validateAndGetPolicy("1635497344579", "591856",
 				"rtaCBxYlsrWeuYpLgfUFT5ic6LetsOZzbvxBEe8yR5FCKkEsvQ", false, "certificateData", false);
+			});
 	}
 
 	// IdAuthenticationBusinessException: IDA-MPA-019 --> Partner policy is not active
-	@Test(expected = IdAuthenticationBusinessException.class)
+	@Test
 	public void validateAndGetPolicyException2Test() throws IdAuthenticationBusinessException, Exception {
+		assertThrows(IdAuthenticationBusinessException.class, () -> {
 		String partnerMappingObj = "{\"partnerId\":\"1635497344579\",\"policyId\":\"21\",\"apiKeyId\":\"130956\",\"partnerData\":{\"partnerId\":\"1635497344579\",\"partnerName\":\"1635497344579\",\"partnerStatus\":\"ACTIVE\",\"isDeleted\":true},\"policyData\":{\"policyId\":\"644269\",\"policyName\":\"policy 1635497343191\",\"policyDescription\":\"Auth Policy\",\"policyStatus\":\"INACTIVE\",\"isDeleted\":true,\"policyCommenceOn\":\"2021-11-10T06:12:52.994Z\",\"policyExpiresOn\":\"2020-12-11T06:12:52.994Z\",\"policy\":{\"authPolicies\":[{\"authType\":\"otp\",\"authSubType\":\"\",\"mandatory\":true},{\"authType\":\"demo\",\"authSubType\":\"\",\"mandatory\":false},{\"authType\":\"bio\",\"authSubType\":\"FINGER\",\"mandatory\":true},{\"authType\":\"bio\",\"authSubType\":\"IRIS\",\"mandatory\":false},{\"authType\":\"bio\",\"authSubType\":\"FACE\",\"mandatory\":false},{\"authType\":\"kyc\",\"authSubType\":\"\",\"mandatory\":false}],\"allowedKycAttributes\":[{\"attributeName\":\"fullName\",\"required\":true},{\"attributeName\":\"dateOfBirth\",\"required\":true},{\"attributeName\":\"gender\",\"required\":true},{\"attributeName\":\"phone\",\"required\":true},{\"attributeName\":\"email\",\"required\":true},{\"attributeName\":\"addressLine1\",\"required\":true},{\"attributeName\":\"addressLine2\",\"required\":true},{\"attributeName\":\"addressLine3\",\"required\":true},{\"attributeName\":\"location1\",\"required\":true},{\"attributeName\":\"location2\",\"required\":true},{\"attributeName\":\"location3\",\"required\":true},{\"attributeName\":\"postalCode\",\"required\":false},{\"attributeName\":\"photo\",\"required\":true}]}},\"apiKeyData\":{\"apiKeyId\":\"591856\",\"apiKeyStatus\":\"ACTIVE\",\"isDeleted\":false,\"apiKeyCommenceOn\":\"2021-11-10T06:12:52.994Z\",\"apiKeyExpiresOn\":\"2020-12-11T06:12:52.994Z\"}}";
 		String mispLicenseDataObj = "{\"mispId\":\"1635497344579\",\"licenseKey\":\"rtaCBxYlsrWeuYpLgfUFT5ic6LetsOZzbvxBEe8yR5FCKkEsvQ\",\"mispCommenceOn\":\"2021-10-10T06:12:52.994Z\",\"mispExpiresOn\":\"2020-12-11T06:12:52.994Z\",\"mispStatus\":\"ACTIVE\"}";
 		String mispPartnerDataObj = "{\"partnerId\":\"1635497344579\",\"partnerName\":\"misp_partner\",\"certificateData\":\"certificateData\",\"partnerStatus\":\"ACTIVE\"}";
@@ -209,11 +217,13 @@ public class PartnerServiceManagerTest {
 		
 		Mockito.when(mispLicDataRepo.findByLicenseKey("rtaCBxYlsrWeuYpLgfUFT5ic6LetsOZzbvxBEe8yR5FCKkEsvQ")).thenReturn(mispLicOptional);
 		partnerServiceManager.validateAndGetPolicy("1635497344579", "591856","rtaCBxYlsrWeuYpLgfUFT5ic6LetsOZzbvxBEe8yR5FCKkEsvQ", false, "certificateData", false);
+			});
 	}
 
 	// IdAuthenticationBusinessException: IDA-MPA-019 --> Partner policy is not active
-	@Test(expected = IdAuthenticationBusinessException.class)
+	@Test
 	public void validateAndGetPolicyException3Test() throws IdAuthenticationBusinessException, Exception {
+		assertThrows(IdAuthenticationBusinessException.class, () -> {
 		String partnerMappingObj = "{\"partnerId\":\"1635497344579\",\"policyId\":\"21\",\"apiKeyId\":\"130956\",\"partnerData\":{\"partnerId\":\"1635497344579\",\"partnerName\":\"1635497344579\",\"partnerStatus\":\"ACTIVE\",\"isDeleted\":true},\"policyData\":{\"policyId\":\"644269\",\"policyName\":\"policy 1635497343191\",\"policyDescription\":\"Auth Policy\",\"policyStatus\":\"ACTIVE\",\"isDeleted\":true,\"policyCommenceOn\":\"2021-11-10T06:12:52.994Z\",\"policyExpiresOn\":\"2020-12-11T06:12:52.994Z\",\"policy\":{\"authPolicies\":[{\"authType\":\"otp\",\"authSubType\":\"\",\"mandatory\":true},{\"authType\":\"demo\",\"authSubType\":\"\",\"mandatory\":false},{\"authType\":\"bio\",\"authSubType\":\"FINGER\",\"mandatory\":true},{\"authType\":\"bio\",\"authSubType\":\"IRIS\",\"mandatory\":false},{\"authType\":\"bio\",\"authSubType\":\"FACE\",\"mandatory\":false},{\"authType\":\"kyc\",\"authSubType\":\"\",\"mandatory\":false}],\"allowedKycAttributes\":[{\"attributeName\":\"fullName\",\"required\":true},{\"attributeName\":\"dateOfBirth\",\"required\":true},{\"attributeName\":\"gender\",\"required\":true},{\"attributeName\":\"phone\",\"required\":true},{\"attributeName\":\"email\",\"required\":true},{\"attributeName\":\"addressLine1\",\"required\":true},{\"attributeName\":\"addressLine2\",\"required\":true},{\"attributeName\":\"addressLine3\",\"required\":true},{\"attributeName\":\"location1\",\"required\":true},{\"attributeName\":\"location2\",\"required\":true},{\"attributeName\":\"location3\",\"required\":true},{\"attributeName\":\"postalCode\",\"required\":false},{\"attributeName\":\"photo\",\"required\":true}]}},\"apiKeyData\":{\"apiKeyId\":\"591856\",\"apiKeyStatus\":\"ACTIVE\",\"isDeleted\":false,\"apiKeyCommenceOn\":\"2021-11-10T06:12:52.994Z\",\"apiKeyExpiresOn\":\"2020-12-11T06:12:52.994Z\"}}";
 		String mispLicenseDataObj = "{\"mispId\":\"1635497344579\",\"licenseKey\":\"rtaCBxYlsrWeuYpLgfUFT5ic6LetsOZzbvxBEe8yR5FCKkEsvQ\",\"mispCommenceOn\":\"2021-11-10T06:12:52.994Z\",\"mispExpiresOn\":\"2020-12-11T06:12:52.994Z\",\"mispStatus\":\"INACTIVE\"}";
 		String mispPartnerDataObj = "{\"partnerId\":\"1635497344579\",\"partnerName\":\"misp_partner\",\"certificateData\":\"certificateData\",\"partnerStatus\":\"ACTIVE\"}";
@@ -234,11 +244,13 @@ public class PartnerServiceManagerTest {
 		
 		Mockito.when(mispLicDataRepo.findByLicenseKey("rtaCBxYlsrWeuYpLgfUFT5ic6LetsOZzbvxBEe8yR5FCKkEsvQ")).thenReturn(mispLicOptional);
 		partnerServiceManager.validateAndGetPolicy("1635497344579", "591856","rtaCBxYlsrWeuYpLgfUFT5ic6LetsOZzbvxBEe8yR5FCKkEsvQ", false, "certificateData", false);
+			});
 	}
 
 	// IdAuthenticationBusinessException: IDA-MPA-019 --> Partner policy is not active
-	@Test(expected = IdAuthenticationBusinessException.class)
+	@Test
 	public void validateAndGetPolicyException4Test() throws IdAuthenticationBusinessException, Exception {
+		assertThrows(IdAuthenticationBusinessException.class, () -> {
 		String partnerMappingObj = "{\"partnerId\":\"1635497344579\",\"policyId\":\"21\",\"apiKeyId\":\"130956\",\"partnerData\":{\"partnerId\":\"1635497344579\",\"partnerName\":\"1635497344579\",\"partnerStatus\":\"ACTIVE\",\"isDeleted\":true},\"policyData\":{\"policyId\":\"644269\",\"policyName\":\"policy 1635497343191\",\"policyDescription\":\"Auth Policy\",\"policyStatus\":\"ACTIVE\",\"isDeleted\":true,\"policyCommenceOn\":\"2021-11-10T06:12:52.994Z\",\"policyExpiresOn\":\"2020-12-11T06:12:52.994Z\",\"policy\":{\"authPolicies\":[{\"authType\":\"otp\",\"authSubType\":\"\",\"mandatory\":true},{\"authType\":\"demo\",\"authSubType\":\"\",\"mandatory\":false},{\"authType\":\"bio\",\"authSubType\":\"FINGER\",\"mandatory\":true},{\"authType\":\"bio\",\"authSubType\":\"IRIS\",\"mandatory\":false},{\"authType\":\"bio\",\"authSubType\":\"FACE\",\"mandatory\":false},{\"authType\":\"kyc\",\"authSubType\":\"\",\"mandatory\":false}],\"allowedKycAttributes\":[{\"attributeName\":\"fullName\",\"required\":true},{\"attributeName\":\"dateOfBirth\",\"required\":true},{\"attributeName\":\"gender\",\"required\":true},{\"attributeName\":\"phone\",\"required\":true},{\"attributeName\":\"email\",\"required\":true},{\"attributeName\":\"addressLine1\",\"required\":true},{\"attributeName\":\"addressLine2\",\"required\":true},{\"attributeName\":\"addressLine3\",\"required\":true},{\"attributeName\":\"location1\",\"required\":true},{\"attributeName\":\"location2\",\"required\":true},{\"attributeName\":\"location3\",\"required\":true},{\"attributeName\":\"postalCode\",\"required\":false},{\"attributeName\":\"photo\",\"required\":true}]}},\"apiKeyData\":{\"apiKeyId\":\"591856\",\"apiKeyStatus\":\"ACTIVE\",\"isDeleted\":false,\"apiKeyCommenceOn\":\"2021-11-10T06:12:52.994Z\",\"apiKeyExpiresOn\":\"2020-12-11T06:12:52.994Z\"}}";
 		String mispLicenseDataObj = "{\"mispId\":\"1635497344579\",\"licenseKey\":\"rtaCBxYlsrWeuYpLgfUFT5ic6LetsOZzbvxBEe8yR5FCKkEsvQ\",\"mispCommenceOn\":\"2021-11-10T06:12:52.994Z\",\"mispExpiresOn\":\"2020-12-11T06:12:52.994Z\",\"mispStatus\":\"INACTIVE\"}";
 		String mispPartnerDataObj = "{\"partnerId\":\"1635497344579\",\"partnerName\":\"misp_partner\",\"certificateData\":\"certificateData\",\"partnerStatus\":\"ACTIVE\"}";
@@ -256,11 +268,13 @@ public class PartnerServiceManagerTest {
 		mispLicenseData.setMispExpiresOn(plusHours);
 		Mockito.when(mispLicDataRepo.findByLicenseKey("rtaCBxYlsrWeuYpLgfUFT5ic6LetsOZzbvxBEe8yR5FCKkEsvQ")).thenReturn(mispLicOptional);
 		partnerServiceManager.validateAndGetPolicy("1635497344579", "591856","rtaCBxYlsrWeuYpLgfUFT5ic6LetsOZzbvxBEe8yR5FCKkEsvQ", false, "certificateData", false);
+			});
 	}
 
 	// io.mosip.authentication.core.exception.IdAuthenticationBusinessException: IDA-MPA-012 --> Partner is deactivated
-	@Test(expected = IdAuthenticationBusinessException.class)
+	@Test
 	public void validateAndGetPolicyException5Test() throws IdAuthenticationBusinessException, Exception {
+		assertThrows(IdAuthenticationBusinessException.class, () -> {
 		String partnerMappingObj = "{\"partnerId\":\"1635497344579\",\"policyId\":\"21\",\"apiKeyId\":\"130956\",\"partnerData\":{\"partnerId\":\"1635497344579\",\"partnerName\":\"1635497344579\",\"partnerStatus\":\"ACTIVE\",\"isDeleted\":true},\"policyData\":{\"policyId\":\"644269\",\"policyName\":\"policy 1635497343191\",\"policyDescription\":\"Auth Policy\",\"policyStatus\":\"ACTIVE\",\"isDeleted\":true,\"policyCommenceOn\":\"2021-10-10T06:12:52.994Z\",\"policyExpiresOn\":\"2020-12-11T06:12:52.994Z\",\"policy\":{\"authPolicies\":[{\"authType\":\"otp\",\"authSubType\":\"\",\"mandatory\":true},{\"authType\":\"demo\",\"authSubType\":\"\",\"mandatory\":false},{\"authType\":\"bio\",\"authSubType\":\"FINGER\",\"mandatory\":true},{\"authType\":\"bio\",\"authSubType\":\"IRIS\",\"mandatory\":false},{\"authType\":\"bio\",\"authSubType\":\"FACE\",\"mandatory\":false},{\"authType\":\"kyc\",\"authSubType\":\"\",\"mandatory\":false}],\"allowedKycAttributes\":[{\"attributeName\":\"fullName\",\"required\":true},{\"attributeName\":\"dateOfBirth\",\"required\":true},{\"attributeName\":\"gender\",\"required\":true},{\"attributeName\":\"phone\",\"required\":true},{\"attributeName\":\"email\",\"required\":true},{\"attributeName\":\"addressLine1\",\"required\":true},{\"attributeName\":\"addressLine2\",\"required\":true},{\"attributeName\":\"addressLine3\",\"required\":true},{\"attributeName\":\"location1\",\"required\":true},{\"attributeName\":\"location2\",\"required\":true},{\"attributeName\":\"location3\",\"required\":true},{\"attributeName\":\"postalCode\",\"required\":false},{\"attributeName\":\"photo\",\"required\":true}]}},\"apiKeyData\":{\"apiKeyId\":\"591856\",\"apiKeyStatus\":\"INACTIVE\",\"isDeleted\":false,\"apiKeyCommenceOn\":\"2021-11-10T06:12:52.994Z\",\"apiKeyExpiresOn\":\"2020-12-11T06:12:52.994Z\"}}";
 		String mispLicenseDataObj = "{\"mispId\":\"1635497344579\",\"licenseKey\":\"rtaCBxYlsrWeuYpLgfUFT5ic6LetsOZzbvxBEe8yR5FCKkEsvQ\",\"mispCommenceOn\":\"2021-11-10T06:12:52.994Z\",\"mispExpiresOn\":\"2020-12-11T06:12:52.994Z\",\"mispStatus\":\"INACTIVE\"}";
 		String mispPartnerDataObj = "{\"partnerId\":\"1635497344579\",\"partnerName\":\"misp_partner\",\"certificateData\":\"certificateData\",\"partnerStatus\":\"ACTIVE\"}";
@@ -278,11 +292,13 @@ public class PartnerServiceManagerTest {
 		mispLicenseData.setMispExpiresOn(plusHours);
 		Mockito.when(mispLicDataRepo.findByLicenseKey("rtaCBxYlsrWeuYpLgfUFT5ic6LetsOZzbvxBEe8yR5FCKkEsvQ")).thenReturn(mispLicOptional);
 		partnerServiceManager.validateAndGetPolicy("1635497344579", "591856","rtaCBxYlsrWeuYpLgfUFT5ic6LetsOZzbvxBEe8yR5FCKkEsvQ", false, "certificateData", false);
+			});
 	}
 
 	// io.mosip.authentication.core.exception.IdAuthenticationBusinessException: IDA-MPA-009 --> Partner is not registered
-	@Test(expected = IdAuthenticationBusinessException.class)
+	@Test
 	public void validateAndGetPolicyException6Test() throws IdAuthenticationBusinessException, Exception {
+		assertThrows(IdAuthenticationBusinessException.class, () -> {
 		String partnerMappingObj = "{\"partnerId\":\"1635497344579\",\"policyId\":\"21\",\"apiKeyId\":\"130956\",\"partnerData\":{\"partnerId\":\"1635497344579\",\"partnerName\":\"1635497344579\",\"partnerStatus\":\"ACTIVE\",\"isDeleted\":true},\"policyData\":{\"policyId\":\"644269\",\"policyName\":\"policy 1635497343191\",\"policyDescription\":\"Auth Policy\",\"policyStatus\":\"ACTIVE\",\"isDeleted\":true,\"policyCommenceOn\":\"2021-10-10T06:12:52.994Z\",\"policyExpiresOn\":\"2020-12-11T06:12:52.994Z\",\"policy\":{\"authPolicies\":[{\"authType\":\"otp\",\"authSubType\":\"\",\"mandatory\":true},{\"authType\":\"demo\",\"authSubType\":\"\",\"mandatory\":false},{\"authType\":\"bio\",\"authSubType\":\"FINGER\",\"mandatory\":true},{\"authType\":\"bio\",\"authSubType\":\"IRIS\",\"mandatory\":false},{\"authType\":\"bio\",\"authSubType\":\"FACE\",\"mandatory\":false},{\"authType\":\"kyc\",\"authSubType\":\"\",\"mandatory\":false}],\"allowedKycAttributes\":[{\"attributeName\":\"fullName\",\"required\":true},{\"attributeName\":\"dateOfBirth\",\"required\":true},{\"attributeName\":\"gender\",\"required\":true},{\"attributeName\":\"phone\",\"required\":true},{\"attributeName\":\"email\",\"required\":true},{\"attributeName\":\"addressLine1\",\"required\":true},{\"attributeName\":\"addressLine2\",\"required\":true},{\"attributeName\":\"addressLine3\",\"required\":true},{\"attributeName\":\"location1\",\"required\":true},{\"attributeName\":\"location2\",\"required\":true},{\"attributeName\":\"location3\",\"required\":true},{\"attributeName\":\"postalCode\",\"required\":false},{\"attributeName\":\"photo\",\"required\":true}]}},\"apiKeyData\":{\"apiKeyId\":\"591856\",\"apiKeyStatus\":\"ACTIVE\",\"isDeleted\":false,\"apiKeyCommenceOn\":\"2021-11-10T06:12:52.994Z\",\"apiKeyExpiresOn\":\"2020-12-11T06:12:52.994Z\"}}";
 		String mispLicenseDataObj = "{\"mispId\":\"1635497344579\",\"licenseKey\":\"rtaCBxYlsrWeuYpLgfUFT5ic6LetsOZzbvxBEe8yR5FCKkEsvQ\",\"mispCommenceOn\":\"2021-11-10T06:12:52.994Z\",\"mispExpiresOn\":\"2020-12-11T06:12:52.994Z\",\"mispStatus\":\"INACTIVE\"}";
 		String mispPartnerDataObj = "{\"partnerId\":\"1635497344579\",\"partnerName\":\"misp_partner\",\"certificateData\":\"certificateData\",\"partnerStatus\":\"ACTIVE\"}";
@@ -301,11 +317,13 @@ public class PartnerServiceManagerTest {
 		mispLicenseData.setMispExpiresOn(plusHours);
 		Mockito.when(mispLicDataRepo.findByLicenseKey("rtaCBxYlsrWeuYpLgfUFT5ic6LetsOZzbvxBEe8yR5FCKkEsvQ")).thenReturn(mispLicOptional);
 		partnerServiceManager.validateAndGetPolicy("1635497344579", "591856","rtaCBxYlsrWeuYpLgfUFT5ic6LetsOZzbvxBEe8yR5FCKkEsvQ", false, "certificateData", false);
+			});
 	}
 
 	// io.mosip.authentication.core.exception.IdAuthenticationBusinessException: IDA-MPA-017 --> License key of MISP is blocked
-	@Test(expected = IdAuthenticationBusinessException.class)
+	@Test
 	public void validateAndGetPolicyMispException1Test() throws IdAuthenticationBusinessException, Exception {
+		assertThrows(IdAuthenticationBusinessException.class, () -> {
 		String partnerMappingObj = "{\"partnerId\":\"1635497344579\",\"policyId\":\"21\",\"apiKeyId\":\"130956\",\"partnerData\":{\"partnerId\":\"1635497344579\",\"partnerName\":\"1635497344579\",\"partnerStatus\":\"ACTIVE\",\"isDeleted\":true},\"policyData\":{\"policyId\":\"644269\",\"policyName\":\"policy 1635497343191\",\"policyDescription\":\"Auth Policy\",\"policyStatus\":\"ACTIVE\",\"isDeleted\":true,\"policyCommenceOn\":\"2021-10-10T06:12:52.994Z\",\"policyExpiresOn\":\"2020-12-11T06:12:52.994Z\",\"policy\":{\"authPolicies\":[{\"authType\":\"otp\",\"authSubType\":\"\",\"mandatory\":true},{\"authType\":\"demo\",\"authSubType\":\"\",\"mandatory\":false},{\"authType\":\"bio\",\"authSubType\":\"FINGER\",\"mandatory\":true},{\"authType\":\"bio\",\"authSubType\":\"IRIS\",\"mandatory\":false},{\"authType\":\"bio\",\"authSubType\":\"FACE\",\"mandatory\":false},{\"authType\":\"kyc\",\"authSubType\":\"\",\"mandatory\":false}],\"allowedKycAttributes\":[{\"attributeName\":\"fullName\",\"required\":true},{\"attributeName\":\"dateOfBirth\",\"required\":true},{\"attributeName\":\"gender\",\"required\":true},{\"attributeName\":\"phone\",\"required\":true},{\"attributeName\":\"email\",\"required\":true},{\"attributeName\":\"addressLine1\",\"required\":true},{\"attributeName\":\"addressLine2\",\"required\":true},{\"attributeName\":\"addressLine3\",\"required\":true},{\"attributeName\":\"location1\",\"required\":true},{\"attributeName\":\"location2\",\"required\":true},{\"attributeName\":\"location3\",\"required\":true},{\"attributeName\":\"postalCode\",\"required\":false},{\"attributeName\":\"photo\",\"required\":true}]}},\"apiKeyData\":{\"apiKeyId\":\"591856\",\"apiKeyStatus\":\"ACTIVE\",\"isDeleted\":false,\"apiKeyCommenceOn\":\"2021-10-10T06:12:52.994Z\",\"apiKeyExpiresOn\":\"2020-12-11T06:12:52.994Z\"}}";
 		String mispLicenseDataObj = "{\"mispId\":\"1635497344579\",\"licenseKey\":\"rtaCBxYlsrWeuYpLgfUFT5ic6LetsOZzbvxBEe8yR5FCKkEsvQ\",\"mispCommenceOn\":\"2021-10-10T06:12:52.994Z\",\"mispExpiresOn\":\"2020-10-30T06:12:52.994Z\",\"mispStatus\":\"INACTIVE\"}";
 		String mispPartnerDataObj = "{\"partnerId\":\"1635497344579\",\"partnerName\":\"misp_partner\",\"certificateData\":\"certificateData\",\"partnerStatus\":\"ACTIVE\"}";
@@ -320,11 +338,13 @@ public class PartnerServiceManagerTest {
 
 		Mockito.when(mispLicDataRepo.findByLicenseKey("rtaCBxYlsrWeuYpLgfUFT5ic6LetsOZzbvxBEe8yR5FCKkEsvQ")).thenReturn(mispLicOptional);
 		partnerServiceManager.validateAndGetPolicy("1635497344579", "591856","rtaCBxYlsrWeuYpLgfUFT5ic6LetsOZzbvxBEe8yR5FCKkEsvQ", false, "certificateData", false);
+			});
 	}
 
 	// io.mosip.authentication.core.exception.IdAuthenticationBusinessException:IDA-MPA-008 --> License key of MISP has expired
-	@Test(expected = IdAuthenticationBusinessException.class)
+	@Test
 	public void validateAndGetPolicyMispException2Test() throws IdAuthenticationBusinessException, Exception {
+		assertThrows(IdAuthenticationBusinessException.class, () -> {
 		String partnerMappingObj = "{\"partnerId\":\"1635497344579\",\"policyId\":\"21\",\"apiKeyId\":\"130956\",\"partnerData\":{\"partnerId\":\"1635497344579\",\"partnerName\":\"1635497344579\",\"partnerStatus\":\"ACTIVE\",\"isDeleted\":true},\"policyData\":{\"policyId\":\"644269\",\"policyName\":\"policy 1635497343191\",\"policyDescription\":\"Auth Policy\",\"policyStatus\":\"ACTIVE\",\"isDeleted\":true,\"policyCommenceOn\":\"2021-10-10T06:12:52.994Z\",\"policyExpiresOn\":\"2020-12-11T06:12:52.994Z\",\"policy\":{\"authPolicies\":[{\"authType\":\"otp\",\"authSubType\":\"\",\"mandatory\":true},{\"authType\":\"demo\",\"authSubType\":\"\",\"mandatory\":false},{\"authType\":\"bio\",\"authSubType\":\"FINGER\",\"mandatory\":true},{\"authType\":\"bio\",\"authSubType\":\"IRIS\",\"mandatory\":false},{\"authType\":\"bio\",\"authSubType\":\"FACE\",\"mandatory\":false},{\"authType\":\"kyc\",\"authSubType\":\"\",\"mandatory\":false}],\"allowedKycAttributes\":[{\"attributeName\":\"fullName\",\"required\":true},{\"attributeName\":\"dateOfBirth\",\"required\":true},{\"attributeName\":\"gender\",\"required\":true},{\"attributeName\":\"phone\",\"required\":true},{\"attributeName\":\"email\",\"required\":true},{\"attributeName\":\"addressLine1\",\"required\":true},{\"attributeName\":\"addressLine2\",\"required\":true},{\"attributeName\":\"addressLine3\",\"required\":true},{\"attributeName\":\"location1\",\"required\":true},{\"attributeName\":\"location2\",\"required\":true},{\"attributeName\":\"location3\",\"required\":true},{\"attributeName\":\"postalCode\",\"required\":false},{\"attributeName\":\"photo\",\"required\":true}]}},\"apiKeyData\":{\"apiKeyId\":\"591856\",\"apiKeyStatus\":\"ACTIVE\",\"isDeleted\":false,\"apiKeyCommenceOn\":\"2021-10-10T06:12:52.994Z\",\"apiKeyExpiresOn\":\"2020-12-11T06:12:52.994Z\"}}";
 		String mispLicenseDataObj = "{\"mispId\":\"1635497344579\",\"licenseKey\":\"rtaCBxYlsrWeuYpLgfUFT5ic6LetsOZzbvxBEe8yR5FCKkEsvQ\",\"mispCommenceOn\":\"2021-10-10T06:12:52.994Z\",\"mispExpiresOn\":\"2020-10-30T06:12:52.994Z\",\"mispStatus\":\"ACTIVE\"}";
 		String mispPartnerDataObj = "{\"partnerId\":\"1635497344579\",\"partnerName\":\"misp_partner\",\"certificateData\":\"certificateData\",\"partnerStatus\":\"ACTIVE\"}";
@@ -341,16 +361,19 @@ public class PartnerServiceManagerTest {
 		mispLicenseData.setMispExpiresOn(plusHours);
 		Mockito.when(mispLicDataRepo.findByLicenseKey("rtaCBxYlsrWeuYpLgfUFT5ic6LetsOZzbvxBEe8yR5FCKkEsvQ")).thenReturn(mispLicOptional);
 		partnerServiceManager.validateAndGetPolicy("1635497344579", "591856","rtaCBxYlsrWeuYpLgfUFT5ic6LetsOZzbvxBEe8yR5FCKkEsvQ", false, "certificateData", false);
+			});
 	}
 
 	// io.mosip.authentication.core.exception.IdAuthenticationBusinessException: IDA-MPA-007 --> License key does not belong to a registered MISP
-	@Test(expected = IdAuthenticationBusinessException.class)
+	@Test
 	public void validateAndGetPolicyMispException3Test() throws IdAuthenticationBusinessException, Exception {
+		assertThrows(IdAuthenticationBusinessException.class, () -> {
 		Optional<PartnerMapping> partnerMappingDataOptional = Optional.empty();
 		Mockito.<Optional<PartnerMapping>>when(partnerMappingRepo.findByPartnerIdAndApiKeyId("1635497344579", "591856"))
 				.thenReturn(partnerMappingDataOptional);
 		partnerServiceManager.validateAndGetPolicy("1635497344579", "591856",
 				"rtaCBxYlsrWeuYpLgfUFT5ic6LetsOZzbvxBEe8yR5FCKkEsvQ", false, "", false);
+			});
 	}
 
 	@Test
@@ -1124,21 +1147,21 @@ public class PartnerServiceManagerTest {
 		//user = ""
 		eventModel.setPublisher(null);
 		Mockito.when(securityManager.getUser()).thenReturn("");
-		Assert.assertEquals(IdAuthCommonConstants.IDA, ReflectionTestUtils.invokeMethod(partnerServiceManager, "getCreatedBy", eventModel));
+		Assertions.assertEquals(IdAuthCommonConstants.IDA, ReflectionTestUtils.invokeMethod(partnerServiceManager, "getCreatedBy", eventModel));
 
 		//user = null
 		eventModel.setPublisher("");
 		Mockito.when(securityManager.getUser()).thenReturn(null);
-		Assert.assertEquals(IdAuthCommonConstants.IDA, ReflectionTestUtils.invokeMethod(partnerServiceManager, "getCreatedBy", eventModel));
+		Assertions.assertEquals(IdAuthCommonConstants.IDA, ReflectionTestUtils.invokeMethod(partnerServiceManager, "getCreatedBy", eventModel));
 
 		//publisher is not null
 		eventModel.setPublisher(IdAuthCommonConstants.IDA);
 		Mockito.when(securityManager.getUser()).thenReturn(null);
-		Assert.assertEquals(IdAuthCommonConstants.IDA, ReflectionTestUtils.invokeMethod(partnerServiceManager, "getCreatedBy", eventModel));
+		Assertions.assertEquals(IdAuthCommonConstants.IDA, ReflectionTestUtils.invokeMethod(partnerServiceManager, "getCreatedBy", eventModel));
 
 		//user not null
 		Mockito.when(securityManager.getUser()).thenReturn("IdaUser");
-		Assert.assertEquals("IdaUser", ReflectionTestUtils.invokeMethod(partnerServiceManager, "getCreatedBy", eventModel));
+		Assertions.assertEquals("IdaUser", ReflectionTestUtils.invokeMethod(partnerServiceManager, "getCreatedBy", eventModel));
 	}
 }
 

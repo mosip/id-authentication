@@ -1,6 +1,9 @@
 package io.mosip.authentication.service.kyc.controller;
 
 
+import org.mockito.quality.Strictness;
+import org.mockito.junit.jupiter.MockitoSettings;
+import org.mockito.junit.jupiter.MockitoExtension;
 import io.mosip.authentication.common.service.helper.AuditHelper;
 import io.mosip.authentication.common.service.helper.AuthTransactionHelper;
 import io.mosip.authentication.common.service.util.TestHttpServletRequest;
@@ -13,18 +16,19 @@ import io.mosip.authentication.core.spi.indauth.facade.IdentityKeyBindingFacade;
 import io.mosip.authentication.core.spi.partner.service.PartnerService;
 import io.mosip.authentication.core.util.IdTypeUtil;
 import io.mosip.authentication.service.kyc.validator.IdentityKeyBindingRequestValidator;
-import org.junit.Assert;
-import org.junit.Before;
-import org.junit.Test;
-import org.junit.runner.RunWith;
+import org.junit.jupiter.api.Assertions;
+import org.junit.jupiter.api.BeforeEach;
+import org.junit.jupiter.api.Test;
+import org.junit.jupiter.api.extension.ExtendWith;
 import org.mockito.InjectMocks;
 import org.mockito.Mock;
 import org.mockito.Mockito;
-import org.springframework.test.context.junit4.SpringRunner;
+import org.springframework.test.context.junit.jupiter.SpringExtension;
 import org.springframework.validation.BindException;
 import org.springframework.validation.Errors;
 
-@RunWith(SpringRunner.class)
+@ExtendWith({SpringExtension.class, MockitoExtension.class})
+@MockitoSettings(strictness = Strictness.LENIENT)
 public class IdentityWalletBindingControllerTest {
 
     /** The auth facade. */
@@ -63,7 +67,7 @@ public class IdentityWalletBindingControllerTest {
 
     IdentityKeyBindingRespDto identityKeyBindingRespDto;
 
-    @Before
+    @BeforeEach
     public void before() {
         identityKeyBindingDTO = new IdentityKeyBindingDTO();
         identityKeyBindingDTO.setPublicKeyJWK(null);
@@ -118,7 +122,7 @@ public class IdentityWalletBindingControllerTest {
 
         Mockito.when(keyIdentityFacade.processIdentityKeyBinding(Mockito.any(),Mockito.any(),Mockito.anyString(),Mockito.anyString(),Mockito.any())).thenReturn(keyBindingResponseDto);
         IdentityKeyBindingResponseDto identityKeyBindingResponseDto = identityWalletBindingController.processIdKeyBinding(identityKeyBindingRequestDTO, errors, "123", "123", "123", requestWithMetadata);
-        Assert.assertEquals(keyBindingResponseDto,identityKeyBindingResponseDto);
+        Assertions.assertEquals(keyBindingResponseDto,identityKeyBindingResponseDto);
     }
 
     @Test
@@ -141,7 +145,7 @@ public class IdentityWalletBindingControllerTest {
             Errors errors = new BindException(identityKeyBindingRequestDTO, "identityKeyBindingRequestDTO");
             errors.rejectValue("id", "errorCode", "defaultMessage");
             IdentityKeyBindingResponseDto identityKeyBindingResponseDto = identityWalletBindingController.processIdKeyBinding(identityKeyBindingRequestDTO, errors, "123", "123", "123", requestWithMetadata);
-            Assert.fail();
+            Assertions.fail();
         }catch (Exception e){}
 
     }
@@ -159,7 +163,7 @@ public class IdentityWalletBindingControllerTest {
         Mockito.when(keyIdentityFacade.processIdentityKeyBinding(Mockito.any(),Mockito.any(),Mockito.anyString(),Mockito.anyString(),Mockito.any())).thenReturn(keyBindingResponseDto);
         try{
             IdentityKeyBindingResponseDto identityKeyBindingResponseDto = identityWalletBindingController.processIdKeyBinding(identityKeyBindingRequestDTO, errors, "123", "123", "123", requestWithMetadata);
-            Assert.fail();
+            Assertions.fail();
         }catch (Exception e){}
     }
 

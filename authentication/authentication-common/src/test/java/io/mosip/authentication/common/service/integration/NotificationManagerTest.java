@@ -1,5 +1,9 @@
 package io.mosip.authentication.common.service.integration;
 
+import org.mockito.quality.Strictness;
+import org.mockito.junit.jupiter.MockitoSettings;
+import org.mockito.junit.jupiter.MockitoExtension;
+import static org.junit.jupiter.api.Assertions.assertThrows;
 import java.io.IOException;
 import java.util.HashSet;
 import java.util.Set;
@@ -8,9 +12,9 @@ import io.mosip.authentication.common.service.integration.dto.MailRequestDto;
 import io.mosip.authentication.core.constant.RestServicesConstants;
 import io.mosip.idrepository.core.constant.IdRepoErrorConstants;
 import io.mosip.idrepository.core.dto.RestRequestDTO;
-import org.junit.Before;
-import org.junit.Test;
-import org.junit.runner.RunWith;
+import org.junit.jupiter.api.BeforeEach;
+import org.junit.jupiter.api.Test;
+import org.junit.jupiter.api.extension.ExtendWith;
 import org.mockito.InjectMocks;
 import org.mockito.Mock;
 import org.mockito.Mockito;
@@ -21,7 +25,7 @@ import org.springframework.core.env.AbstractEnvironment;
 import org.springframework.mock.env.MockEnvironment;
 import org.springframework.test.context.ContextConfiguration;
 import org.springframework.test.context.TestContext;
-import org.springframework.test.context.junit4.SpringRunner;
+import org.springframework.test.context.junit.jupiter.SpringExtension;
 import org.springframework.test.util.ReflectionTestUtils;
 import org.springframework.web.context.WebApplicationContext;
 
@@ -36,7 +40,8 @@ import io.mosip.idrepository.core.exception.RestServiceException;
 import io.mosip.authentication.common.service.helper.RestHelper;
 import reactor.core.publisher.Mono;
 
-@RunWith(SpringRunner.class)
+@ExtendWith({SpringExtension.class, MockitoExtension.class})
+@MockitoSettings(strictness = Strictness.LENIENT)
 @SpringBootTest(classes = OTPManagerTest.class)
 @ContextConfiguration(classes = { TestContext.class, WebApplicationContext.class })
 @Import(EnvUtil.class)
@@ -60,14 +65,15 @@ public class NotificationManagerTest {
 	@Mock
 	private IdTemplateManager idTemplateManager;
 
-	@Before
+	@BeforeEach
 	public void before() {
 		ReflectionTestUtils.setField(restRequestFactory, "env", environment);
 		ReflectionTestUtils.setField(notificationManager, "restRequestFactory", restRequestFactory);
 	}
 
-	@Test(expected = IdAuthenticationBusinessException.class)
+	@Test
 	public void testInValidSendNotificationSMS() throws IdAuthenticationBusinessException, RestServiceException {
+		assertThrows(IdAuthenticationBusinessException.class, () -> {
 		Set<NotificationType> notificationtype = new HashSet<>();
 		notificationtype.add(NotificationType.SMS);
 		IDDataValidationException e = new IDDataValidationException(IdAuthenticationErrorConstants.UNABLE_TO_PROCESS);
@@ -79,10 +85,12 @@ public class NotificationManagerTest {
 				.thenThrow(idDataValidationException);
 
 		notificationManager.sendSmsNotification("9750185759", "test");
+			});
 	}
 
-	@Test(expected = IdAuthenticationBusinessException.class)
+	@Test
 	public void testInValidSendNotificationEmail() throws IdAuthenticationBusinessException, RestServiceException {
+		assertThrows(IdAuthenticationBusinessException.class, () -> {
 		Set<NotificationType> notificationtype = new HashSet<>();
 		notificationtype.add(NotificationType.EMAIL);
 		IDDataValidationException e = new IDDataValidationException(IdAuthenticationErrorConstants.UNABLE_TO_PROCESS);
@@ -91,6 +99,7 @@ public class NotificationManagerTest {
 		Mockito.when(restRequestFactory.buildRequest(Mockito.any(), Mockito.any(), Mockito.any()))
 				.thenThrow(idDataValidationException);
 		notificationManager.sendEmailNotification("test@gmail.com", "test", "test");
+			});
 	}
 
 	@Test
@@ -119,12 +128,14 @@ public class NotificationManagerTest {
 		notificationManager.sendEmailNotification("abc@test.com", "test", "test");
 	}
 
-	@Test(expected = IdAuthenticationBusinessException.class)
+	@Test
 	public void testInValidSendNotificationPhone() throws IdAuthenticationBusinessException, RestServiceException {
+		assertThrows(IdAuthenticationBusinessException.class, () -> {
 		Set<NotificationType> notificationtype = new HashSet<>();
 		notificationtype.add(NotificationType.SMS);
         Mockito.when(restHelper.requestSync(Mockito.any(), Mockito.any()))
 				.thenThrow(new RestServiceException(IdRepoErrorConstants.UNKNOWN_ERROR));
 		notificationManager.sendSmsNotification("1234567890", "test");
+			});
 	}
 }

@@ -1,9 +1,10 @@
 package io.mosip.authentication.core.dto.indauth;
 /*package org.mosip.auth.core.dto.indauth;
 
-import static org.junit.Assert.assertEquals;
-import static org.junit.Assert.assertNotEquals;
-import static org.junit.Assert.assertTrue;
+import static org.junit.jupiter.api.Assertions.assertThrows;
+import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertNotEquals;
+import static org.junit.jupiter.api.Assertions.assertTrue;
 
 import java.io.ByteArrayOutputStream;
 import java.io.IOException;
@@ -16,7 +17,7 @@ import jakarta.validation.ConstraintViolation;
 import jakarta.validation.Validation;
 import jakarta.validation.Validator;
 
-import org.junit.Test;
+import org.junit.jupiter.api.Test;
 
 import com.fasterxml.jackson.core.JsonGenerationException;
 import com.fasterxml.jackson.databind.JsonMappingException;
@@ -68,9 +69,10 @@ public class AuthRequestDTOTest {
 	 * @throws JsonMappingException
 	 * @throws IOException
 	 *//*
-	@Test(expected = InvalidFormatException.class)
+	@Test
 	public void testValidateJsonToObjectConversionWithMismatchedInput()
 			throws JsonGenerationException, JsonMappingException, IOException {
+		assertThrows(InvalidFormatException.class, () -> {
 		AuthRequestDTO authRequestDTO = new AuthRequestDTO();
 		authRequestDTO.setType(IDType.UIN);
 		authRequestDTO.setUniqueID("1234567890");
@@ -88,6 +90,7 @@ public class AuthRequestDTOTest {
 
 		assertNotEquals(authRequestDTO1, authRequestDTO);
 
+			});
 	}
 
 	*//**
@@ -125,9 +128,10 @@ public class AuthRequestDTOTest {
 	 * @throws JsonMappingException
 	 * @throws IOException
 	 *//*
-	@Test(expected = InvalidFormatException.class)
+	@Test
 	public void testValidateXMLToObjectConversionWithMismatchedInput()
 			throws JsonGenerationException, JsonMappingException, IOException {
+		assertThrows(InvalidFormatException.class, () -> {
 		AuthRequestDTO authRequestDTO = new AuthRequestDTO();
 		authRequestDTO.setType(IDType.UIN);
 		authRequestDTO.setUniqueID("1234567890");
@@ -145,6 +149,7 @@ public class AuthRequestDTOTest {
 		AuthRequestDTO authRequestDTO1 = xmlMapper.readValue(xml, AuthRequestDTO.class);
 
 		assertNotEquals(authRequestDTO1, authRequestDTO);
+			});
 	}
 
 	*//**

@@ -1,6 +1,7 @@
 package io.mosip.authentication.core.exception;
 
-import org.junit.Test;
+import static org.junit.jupiter.api.Assertions.assertThrows;
+import org.junit.jupiter.api.Test;
 
 import io.mosip.authentication.core.constant.IdAuthenticationErrorConstants;
 import io.mosip.authentication.core.exception.IdAuthenticationAppException;
@@ -17,9 +18,11 @@ public class IdAuthenticationAppExceptionTest {
 	 *
 	 * @throws IdAuthenticationAppException the id authentication app exception
 	 */
-	@Test(expected=IdAuthenticationAppException.class)
+	@Test
 	public void IdAuthenticationAppExceptionDefaultcons() throws IdAuthenticationAppException {
+		assertThrows(IdAuthenticationAppException.class, () -> {
 		throw new IdAuthenticationAppException();
+			});
 	}
 
 	/**
@@ -27,9 +30,11 @@ public class IdAuthenticationAppExceptionTest {
 	 *
 	 * @throws IdAuthenticationAppException the id authentication app exception
 	 */
-	@Test(expected=IdAuthenticationAppException.class)
+	@Test
 	public void IdAuthenticationAppException2args() throws IdAuthenticationAppException {
+		assertThrows(IdAuthenticationAppException.class, () -> {
 		throw new IdAuthenticationAppException("errorcode", "errormessage");
+			});
 	}
 	
 	/**
@@ -37,9 +42,11 @@ public class IdAuthenticationAppExceptionTest {
 	 *
 	 * @throws IdAuthenticationAppException the id authentication app exception
 	 */
-	@Test(expected=IdAuthenticationAppException.class)
+	@Test
 	public void IdAuthenticationAppException3args() throws IdAuthenticationAppException {
+		assertThrows(IdAuthenticationAppException.class, () -> {
 		throw new IdAuthenticationAppException("errorcode", "errormessage", null);
+			});
 	}
 	
 	/**
@@ -47,9 +54,11 @@ public class IdAuthenticationAppExceptionTest {
 	 *
 	 * @throws IdAuthenticationAppException the id authentication app exception
 	 */
-	@Test(expected=IdAuthenticationAppException.class)
+	@Test
 	public void IdAuthenticationAppExceptionConstant() throws IdAuthenticationAppException {
+		assertThrows(IdAuthenticationAppException.class, () -> {
 		throw new IdAuthenticationAppException(IdAuthenticationErrorConstants.OTP_GENERATION_FAILED);
+			});
 	}
 	
 	/**
@@ -57,9 +66,11 @@ public class IdAuthenticationAppExceptionTest {
 	 *
 	 * @throws IdAuthenticationAppException the id authentication app exception
 	 */
-	@Test(expected=IdAuthenticationAppException.class)
+	@Test
 	public void IdAuthenticationAppExceptionConstantThrowable() throws IdAuthenticationAppException {
+		assertThrows(IdAuthenticationAppException.class, () -> {
 		throw new IdAuthenticationAppException(IdAuthenticationErrorConstants.OTP_GENERATION_FAILED, null);
+			});
 	}
 
 }

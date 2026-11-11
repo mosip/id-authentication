@@ -1,8 +1,12 @@
 package io.mosip.authentication.common.service.impl;
 
-import static org.junit.Assert.assertEquals;
-import static org.junit.Assert.assertFalse;
-import static org.junit.Assert.assertTrue;
+import org.mockito.quality.Strictness;
+import org.mockito.junit.jupiter.MockitoSettings;
+import org.mockito.junit.jupiter.MockitoExtension;
+import static org.junit.jupiter.api.Assertions.assertThrows;
+import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertFalse;
+import static org.junit.jupiter.api.Assertions.assertTrue;
 import static org.mockito.Mockito.when;
 
 import java.time.Instant;
@@ -18,18 +22,18 @@ import java.util.Map.Entry;
 import io.mosip.authentication.common.service.helper.MatchTypeHelper;
 import io.mosip.authentication.common.service.impl.match.BioMatchType;
 import io.mosip.authentication.core.spi.indauth.match.MatchOutput;
-import org.junit.Before;
-import org.junit.Test;
-import org.junit.runner.RunWith;
+import org.junit.jupiter.api.BeforeEach;
+import org.junit.jupiter.api.Test;
+import org.junit.jupiter.api.extension.ExtendWith;
 import org.mockito.InjectMocks;
 import org.mockito.Mock;
 import org.mockito.Mockito;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.boot.test.autoconfigure.web.servlet.WebMvcTest;
+import org.springframework.boot.webmvc.test.autoconfigure.WebMvcTest;
 import org.springframework.context.annotation.Import;
 import org.springframework.test.context.ContextConfiguration;
 import org.springframework.test.context.TestContext;
-import org.springframework.test.context.junit4.SpringRunner;
+import org.springframework.test.context.junit.jupiter.SpringExtension;
 import org.springframework.test.util.ReflectionTestUtils;
 import org.springframework.web.context.WebApplicationContext;
 
@@ -63,7 +67,8 @@ import io.mosip.kernel.biometrics.spi.CbeffUtil;
 import io.mosip.kernel.core.bioapi.spi.IBioApi;
 import io.mosip.kernel.core.cbeffutil.jaxbclasses.SingleAnySubtypeType;
 
-@RunWith(SpringRunner.class)
+@ExtendWith({SpringExtension.class, MockitoExtension.class})
+@MockitoSettings(strictness = Strictness.LENIENT)
 @WebMvcTest
 @Import({ IDAMappingConfig.class, EnvUtil.class })
 @ContextConfiguration(classes = { TestContext.class, WebApplicationContext.class })
@@ -107,7 +112,7 @@ public class BioAuthServiceTest {
 	@Mock
 	private MatchTypeHelper matchTypeHelper;
 
-	@Before
+	@BeforeEach
 	public void before() throws IdAuthenticationBusinessException, RestServiceException {
 		ReflectionTestUtils.setField(bioAuthServiceImpl, "matchInputBuilder", matchInputBuilder);
 		ReflectionTestUtils.setField(bioAuthServiceImpl, "idMappingConfig", idMappingConfig);
@@ -126,11 +131,13 @@ public class BioAuthServiceTest {
 		);
 	}
 
-	@Test(expected = IdAuthenticationBusinessException.class)
+	@Test
 	public void TestInvalidateBioDetails() throws IdAuthenticationBusinessException {
+		assertThrows(IdAuthenticationBusinessException.class, () -> {
 		AuthRequestDTO authRequestDTO = new AuthRequestDTO();
 		Map<String, List<IdentityInfoDTO>> bioIdentity = null;
 		bioAuthServiceImpl.authenticate(authRequestDTO, "", bioIdentity, "");
+			});
 	}
 
 	@Test

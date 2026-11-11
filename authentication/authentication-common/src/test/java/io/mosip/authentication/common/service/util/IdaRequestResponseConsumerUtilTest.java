@@ -1,5 +1,9 @@
 package io.mosip.authentication.common.service.util;
 
+import org.mockito.quality.Strictness;
+import org.mockito.junit.jupiter.MockitoSettings;
+import org.mockito.junit.jupiter.MockitoExtension;
+import static org.junit.jupiter.api.Assertions.assertThrows;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import io.mosip.authentication.common.service.entity.AutnTxn;
 import io.mosip.authentication.common.service.websub.impl.AuthTransactionStatusEventPublisher;
@@ -10,16 +14,16 @@ import io.mosip.authentication.core.exception.IdAuthenticationBusinessException;
 import io.mosip.authentication.core.indauth.dto.AuthError;
 import io.mosip.authentication.core.spi.id.service.IdService;
 import io.mosip.authentication.core.spi.profile.AuthAnonymousProfileService;
-import org.junit.Before;
-import org.junit.Test;
-import org.junit.runner.RunWith;
+import org.junit.jupiter.api.BeforeEach;
+import org.junit.jupiter.api.Test;
+import org.junit.jupiter.api.extension.ExtendWith;
 import org.mockito.InjectMocks;
 import org.mockito.Mock;
 import org.mockito.Mockito;
-import org.springframework.boot.test.autoconfigure.web.servlet.WebMvcTest;
+import org.springframework.boot.webmvc.test.autoconfigure.WebMvcTest;
 import org.springframework.test.context.ContextConfiguration;
 import org.springframework.test.context.TestContext;
-import org.springframework.test.context.junit4.SpringRunner;
+import org.springframework.test.context.junit.jupiter.SpringExtension;
 import org.springframework.test.util.ReflectionTestUtils;
 import org.springframework.web.context.WebApplicationContext;
 
@@ -30,7 +34,8 @@ import java.util.Map;
 
 @WebMvcTest
 @ContextConfiguration(classes = {TestContext.class, WebApplicationContext.class})
-@RunWith(SpringRunner.class)
+@ExtendWith({SpringExtension.class, MockitoExtension.class})
+@MockitoSettings(strictness = Strictness.LENIENT)
 public class IdaRequestResponseConsumerUtilTest {
 
     @InjectMocks
@@ -54,7 +59,7 @@ public class IdaRequestResponseConsumerUtilTest {
 
     private ObjectWithMetadata targetObjectWithMetadata;
 
-    @Before
+    @BeforeEach
     public void Before(){
         targetObjectWithMetadata = new ObjectWithMetadata() {
             @Override
@@ -148,8 +153,9 @@ public class IdaRequestResponseConsumerUtilTest {
      *                                           exception
      * @throws IdAuthenticationAppException
      */
-    @Test(expected = Exception.class)
+    @Test
     public void storeAuthTransactionExceptionTest() throws IdAuthenticationAppException, IdAuthenticationBusinessException {
+		assertThrows(Exception.class, () -> {
         Map<String, Object> metadata = new HashMap<>();
         Object authTxnObj = new Object();
         metadata.put("AutnTxn", authTxnObj);
@@ -161,7 +167,8 @@ public class IdaRequestResponseConsumerUtilTest {
         autnTxn.setResponseSignature(responseSignature);
         Mockito.doThrow(IdAuthenticationBusinessException.class).when(idService).saveAutnTxn(autnTxn);
         idaRequestResponsConsumerUtil.storeAuthTransaction(metadata, requestSignature, responseSignature);
-    }
+    		});
+	}
 
     /**
      * This class tests the setIdVersionToResponse method

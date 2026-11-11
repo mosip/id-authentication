@@ -8,9 +8,9 @@ import java.util.Optional;
 
 import io.mosip.authentication.common.service.kafka.impl.AuthenticationErrorEventingPublisher;
 import org.springframework.test.util.ReflectionTestUtils;
-import org.junit.Before;
-import org.junit.After;
-import org.junit.Test;
+import org.junit.jupiter.api.BeforeEach;
+import org.junit.jupiter.api.AfterEach;
+import org.junit.jupiter.api.Test;
 import org.mockito.ArgumentCaptor;
 import org.mockito.Mock;
 import org.mockito.MockitoAnnotations;
@@ -23,8 +23,8 @@ import io.mosip.authentication.core.exception.IdAuthenticationBusinessException;
 import io.mosip.authentication.core.indauth.dto.BaseRequestDTO;
 import io.mosip.authentication.core.partner.dto.PartnerDTO;
 import io.mosip.kernel.core.websub.model.EventModel;
-import static org.junit.Assert.assertEquals;
-import static org.junit.Assert.assertNull;
+import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertNull;
 
 public class AuthenticationErrorEventingPublisherTest {
 
@@ -44,7 +44,7 @@ public class AuthenticationErrorEventingPublisherTest {
     private PartnerDTO partnerDTO;
     private AutoCloseable mocks;
 
-    @Before
+    @BeforeEach
     public void setup() {
         mocks = MockitoAnnotations.openMocks(this);
         publisher = new AuthenticationErrorEventingPublisher();
@@ -70,7 +70,7 @@ public class AuthenticationErrorEventingPublisherTest {
         when(securityManager.getUser()).thenReturn("test-user");
     }
 
-    @After  
+    @AfterEach  
     public void tearDown() throws Exception {  
     if(mocks != null){
     mocks.close();  

@@ -1,12 +1,13 @@
 package io.mosip.authentication.common.service.integration;
 
-import static org.junit.Assert.*;
+import static org.junit.jupiter.api.Assertions.assertThrows;
+import static org.junit.jupiter.api.Assertions.*;
 import static org.mockito.Mockito.*;
 
 import io.mosip.authentication.common.service.transaction.manager.IdAuthSecurityManager;
 import io.mosip.authentication.core.exception.IdAuthenticationBusinessException;
-import org.junit.Before;
-import org.junit.Test;
+import org.junit.jupiter.api.BeforeEach;
+import org.junit.jupiter.api.Test;
 import org.mockito.InjectMocks;
 import org.mockito.Mock;
 import org.mockito.MockitoAnnotations;
@@ -19,7 +20,7 @@ public class PasswordComparatorTest {
     @Mock
     private IdAuthSecurityManager securityManager;
 
-    @Before
+    @BeforeEach
     public void setUp() {
         MockitoAnnotations.openMocks(this);
     }
@@ -63,8 +64,9 @@ public class PasswordComparatorTest {
      * Test exception from securityManager -->
      * must rethrow IdAuthenticationBusinessException
      */
-    @Test(expected = IdAuthenticationBusinessException.class)
+    @Test
     public void testMatchPasswordException() throws Exception {
+		assertThrows(IdAuthenticationBusinessException.class, () -> {
         String password = "test123";
         String salt = "xyz";
 
@@ -72,5 +74,6 @@ public class PasswordComparatorTest {
                 .thenThrow(new RuntimeException("Hash failure"));
 
         passwordComparator.matchPasswordFunction(password, "ANY", salt);
-    }
+    		});
+	}
 }

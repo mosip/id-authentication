@@ -1,7 +1,11 @@
 package io.mosip.authentication.service.controller;
 
-import static org.junit.Assert.assertEquals;
-import static org.junit.Assert.assertTrue;
+import org.mockito.quality.Strictness;
+import org.mockito.junit.jupiter.MockitoSettings;
+import org.mockito.junit.jupiter.MockitoExtension;
+import static org.junit.jupiter.api.Assertions.assertThrows;
+import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertTrue;
 import static org.mockito.Mockito.when;
 
 import java.text.SimpleDateFormat;
@@ -17,11 +21,11 @@ import jakarta.validation.ConstraintViolation;
 import jakarta.validation.Validation;
 import jakarta.validation.Validator;
 
-import org.junit.Before;
-import org.junit.BeforeClass;
-import org.junit.Ignore;
-import org.junit.Test;
-import org.junit.runner.RunWith;
+import org.junit.jupiter.api.BeforeEach;
+import org.junit.jupiter.api.BeforeAll;
+import org.junit.jupiter.api.Disabled;
+import org.junit.jupiter.api.Test;
+import org.junit.jupiter.api.extension.ExtendWith;
 import org.mockito.InjectMocks;
 import org.mockito.Mock;
 import org.mockito.Mockito;
@@ -30,7 +34,7 @@ import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.context.annotation.Import;
 import org.springframework.test.context.ContextConfiguration;
 import org.springframework.test.context.TestContext;
-import org.springframework.test.context.junit4.SpringRunner;
+import org.springframework.test.context.junit.jupiter.SpringExtension;
 import org.springframework.test.util.ReflectionTestUtils;
 import org.springframework.validation.BeanPropertyBindingResult;
 import org.springframework.validation.BindingResult;
@@ -62,7 +66,8 @@ import io.mosip.kernel.core.logger.spi.Logger;
  *
  * @author Rakesh Roshan
  */
-@RunWith(SpringRunner.class)
+@ExtendWith({SpringExtension.class, MockitoExtension.class})
+@MockitoSettings(strictness = Strictness.LENIENT)
 @SpringBootTest
 @ContextConfiguration(classes = { TestContext.class, WebApplicationContext.class })
 @Import(EnvUtil.class)
@@ -118,14 +123,14 @@ public class OTPControllerTest {
 
 	private static Validator validator;
 
-	@Before
+	@BeforeEach
 	public void before() throws IdAuthenticationBusinessException {
 		ReflectionTestUtils.invokeMethod(otpController, "initBinder", binder);
 		ReflectionTestUtils.setField(otpController, "otpRequestValidator", otpRequestValidator);
 		when(idTypeUtil.getIdType(Mockito.any())).thenReturn(IdType.UIN);
 	}
 
-	@BeforeClass
+	@BeforeAll
 	public static void setUp() {
 		validator = Validation.buildDefaultValidatorFactory().getValidator();
 	}
@@ -147,9 +152,10 @@ public class OTPControllerTest {
 
 	}
 
-	@Ignore
-	@Test(expected = IdAuthenticationAppException.class)
+	@Disabled
+	@Test
 	public void testBindResultHasError() throws IdAuthenticationBusinessException, IdAuthenticationAppException {
+		assertThrows(IdAuthenticationAppException.class, () -> {
 
 		// Given
 		boolean hasError = true;
@@ -161,11 +167,13 @@ public class OTPControllerTest {
 		Mockito.when(result.hasErrors()).thenReturn(hasError);
 		otpController.generateOTP(otpRequestDto, result, "TEST0000001", "TEST0000001","TEST0000001", new TestHttpServletRequest());
 		assertEquals(true, result.hasErrors());
+			});
 	}
 
-	@Ignore
-	@Test(expected = IdAuthenticationAppException.class)
+	@Disabled
+	@Test
 	public void testConstraintVoilation() throws IdAuthenticationAppException, IdAuthenticationBusinessException {
+		assertThrows(IdAuthenticationAppException.class, () -> {
 		boolean hasError = true;
 		otpRequestDto = getOtpRequestDTO();
 		otpResponseDTO = getOtpResponseDTO();
@@ -175,10 +183,12 @@ public class OTPControllerTest {
 		Mockito.when(result.hasErrors()).thenReturn(hasError);
 		otpController.generateOTP(otpRequestDto, result, "TEST0000001", "TEST0000001","TEST0000001", new TestHttpServletRequest());
 		assertEquals(true, result.hasErrors());
+			});
 	}
 
-	@Test(expected = IdAuthenticationAppException.class)
+	@Test
 	public void testOtpGeneratedIsFalse() throws IdAuthenticationBusinessException, IdAuthenticationAppException {
+		assertThrows(IdAuthenticationAppException.class, () -> {
 		// Given
 		boolean hasError = false;
 		otpRequestDto = getOtpRequestDTO();
@@ -199,10 +209,12 @@ public class OTPControllerTest {
 		Mockito.when(otpService.generateOtp(otpRequestDto, "TEST0000001", requestWithMetadata)).thenThrow(idAuthenticationBusinessException);
 		Mockito.when(securityManager.hash(Mockito.anyString())).thenReturn("Zld6TjJjNllKYzExNjBFUUZrbmdzYnJMelRJQ1BY");
 		otpController.generateOTP(otpRequestDto, result, "TEST0000001", "TEST0000001","TEST0000001", requestWithMetadata);
+			});
 	}
 
-	@Test(expected = IdAuthenticationAppException.class)
+	@Test
 	public void testOtpGenerationHasError() throws IdAuthenticationBusinessException, IdAuthenticationAppException {
+		assertThrows(IdAuthenticationAppException.class, () -> {
 		// Given
 		boolean hasError = false;
 		otpRequestDto = getOtpRequestDTO();
@@ -224,17 +236,20 @@ public class OTPControllerTest {
 		Mockito.when(securityManager.hash(Mockito.anyString())).thenReturn("Zld6TjJjNllKYzExNjBFUUZrbmdzYnJMelRJQ1BY");
 		otpController.generateOTP(otpRequestDto, result, "TEST0000001", "TEST0000001","TEST0000001", requestWithMetadata);
 
+			});
 	}
 
-	@Test(expected = IdAuthenticationAppException.class)
+	@Test
 	public void testGenerateOtpDataValidationException()
 			throws IdAuthenticationAppException, IdAuthenticationBusinessException {
+		assertThrows(IdAuthenticationAppException.class, () -> {
 		Errors errors = new BeanPropertyBindingResult(OtpRequestDTO.class, "OtpRequestDTO");
 		errors.reject("errorCode");
 		Mockito.when(authTransactionHelper.createDataValidationException(Mockito.any(), Mockito.any(), Mockito.any()))
 			.thenReturn(new IdAuthenticationAppException());
 		Mockito.when(securityManager.hash(Mockito.anyString())).thenReturn("Zld6TjJjNllKYzExNjBFUUZrbmdzYnJMelRJQ1BY");
 		otpController.generateOTP(new OtpRequestDTO(), errors, "TEST0000001", "TEST0000001","TEST0000001", new TestHttpServletRequest());
+			});
 	}
 
 	@Test

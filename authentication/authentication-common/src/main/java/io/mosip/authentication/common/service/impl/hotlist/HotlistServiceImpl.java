@@ -7,7 +7,7 @@ import java.util.Objects;
 import java.util.Optional;
 
 import jakarta.annotation.PostConstruct;
-import javax.transaction.Transactional;
+import jakarta.transaction.Transactional;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;

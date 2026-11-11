@@ -12,7 +12,7 @@ import org.springframework.stereotype.Repository;
 
 import io.mosip.authentication.common.service.entity.CredentialEventStore;
 import io.mosip.kernel.core.dataaccess.spi.repository.BaseRepository;
-import javax.transaction.Transactional;
+import jakarta.transaction.Transactional;
 
 /**
  * The Interface CredentialEventStoreRepository.

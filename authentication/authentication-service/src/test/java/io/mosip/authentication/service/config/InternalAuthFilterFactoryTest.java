@@ -1,21 +1,21 @@
 package io.mosip.authentication.service.config;
 
-import org.junit.Before;
-import org.junit.Test;
-import org.junit.runner.RunWith;
+import org.junit.jupiter.api.BeforeEach;
+import org.junit.jupiter.api.Test;
+import org.junit.jupiter.api.extension.ExtendWith;
 import org.mockito.InjectMocks;
-import org.mockito.junit.MockitoJUnitRunner;
+import org.mockito.junit.jupiter.MockitoExtension;
 import org.springframework.test.util.ReflectionTestUtils;
 
-import static org.junit.Assert.*;
+import static org.junit.jupiter.api.Assertions.*;
 
-@RunWith(MockitoJUnitRunner.class)
+@ExtendWith(MockitoExtension.class)
 public class InternalAuthFilterFactoryTest {
 
 	@InjectMocks
 	private InternalAuthFilterFactory internalAuthFilterFactory;
 	
-	@Before
+	@BeforeEach
 	public void before() {
 		// Setup if needed
 	}
@@ -27,8 +27,8 @@ public class InternalAuthFilterFactoryTest {
 		
 		String[] result = internalAuthFilterFactory.getMosipAuthFilterClasses();
 		
-		assertNotNull("Result should not be null", result);
-		assertArrayEquals("Filter classes should match", filterClasses, result);
+		assertNotNull(result, "Result should not be null");
+		assertArrayEquals(filterClasses, result, "Filter classes should match");
 	}
 	
 	@Test
@@ -38,8 +38,8 @@ public class InternalAuthFilterFactoryTest {
 		
 		String[] result = internalAuthFilterFactory.getMosipAuthFilterClasses();
 		
-		assertNotNull("Result should not be null", result);
-		assertEquals("Should return empty array", 0, result.length);
+		assertNotNull(result, "Result should not be null");
+		assertEquals(0, result.length, "Should return empty array");
 	}
 	
 	@Test
@@ -49,6 +49,6 @@ public class InternalAuthFilterFactoryTest {
 		String[] result = internalAuthFilterFactory.getMosipAuthFilterClasses();
 		
 		// Should handle null gracefully
-		assertTrue("Should handle null case", result == null || result.length == 0);
+		assertTrue(result == null || result.length == 0, "Should handle null case");
 	}
 }

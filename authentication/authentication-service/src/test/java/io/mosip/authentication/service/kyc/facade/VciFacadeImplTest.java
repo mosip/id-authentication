@@ -2,6 +2,9 @@ package io.mosip.authentication.service.kyc.facade;
 
 
 
+import org.mockito.quality.Strictness;
+import org.mockito.junit.jupiter.MockitoSettings;
+import org.mockito.junit.jupiter.MockitoExtension;
 import io.mosip.authentication.common.manager.IdAuthFraudAnalysisEventManager;
 import io.mosip.authentication.common.service.entity.AutnTxn;
 import io.mosip.authentication.common.service.entity.KycTokenData;
@@ -22,9 +25,9 @@ import io.mosip.authentication.core.spi.id.service.IdService;
 import io.mosip.authentication.core.spi.partner.service.PartnerService;
 import io.mosip.authentication.service.kyc.impl.VciServiceImpl;
 import io.mosip.authentication.service.kyc.util.ExchangeDataAttributesUtil;
-import org.junit.Assert;
-import org.junit.Test;
-import org.junit.runner.RunWith;
+import org.junit.jupiter.api.Assertions;
+import org.junit.jupiter.api.Test;
+import org.junit.jupiter.api.extension.ExtendWith;
 import org.mockito.ArgumentCaptor;
 import org.mockito.InjectMocks;
 import org.mockito.Mockito;
@@ -32,7 +35,7 @@ import org.mockito.Captor;
 import org.mockito.Mock;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.annotation.Import;
-import org.springframework.test.context.junit4.SpringRunner;
+import org.springframework.test.context.junit.jupiter.SpringExtension;
 import org.springframework.test.util.ReflectionTestUtils;
 import java.util.*;
 import io.mosip.authentication.core.constant.IdAuthCommonConstants;
@@ -40,10 +43,10 @@ import io.mosip.authentication.core.partner.dto.KYCAttributes;
 import io.mosip.authentication.core.partner.dto.PartnerDTO;
 import io.mosip.authentication.core.partner.dto.PartnerPolicyResponseDTO;
 import io.mosip.authentication.core.partner.dto.PolicyDTO;
-import org.junit.Before;
+import org.junit.jupiter.api.BeforeEach;
 
-import static org.junit.Assert.assertNotNull;
-import static org.junit.Assert.fail;
+import static org.junit.jupiter.api.Assertions.assertNotNull;
+import static org.junit.jupiter.api.Assertions.fail;
 import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.ArgumentMatchers.eq;
 import static org.mockito.ArgumentMatchers.anyString;
@@ -56,7 +59,8 @@ import io.mosip.authentication.core.constant.AuditModules;
 import io.mosip.authentication.core.constant.AuditEvents;
 import io.mosip.authentication.core.indauth.dto.IdType;
 
-@RunWith(SpringRunner.class)
+@ExtendWith({SpringExtension.class, MockitoExtension.class})
+@MockitoSettings(strictness = Strictness.LENIENT)
 @Import(EnvUtil.class)
 public class VciFacadeImplTest {
 
@@ -130,7 +134,7 @@ public class VciFacadeImplTest {
         try{
             vciFacadeImpl.processVciExchange(vciExchangeRequestDTO,"1234567890","12345",metaData,new TestObjectWithMetadata());
         }catch(IdAuthenticationBusinessException e){
-            Assert.assertEquals("IDA-KYE-006",e.getErrorCode());
+            Assertions.assertEquals("IDA-KYE-006",e.getErrorCode());
         }
     }
 
@@ -236,7 +240,7 @@ public class VciFacadeImplTest {
         return resp;
     }
 
-    @Before
+    @BeforeEach
     public void setUp() {
         // ensure VciFacadeImpl.env bean is present for AuthTransactionBuilder
         ReflectionTestUtils.setField(vciFacadeImpl, "env", env);

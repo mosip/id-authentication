@@ -1,7 +1,11 @@
 package io.mosip.authentication.common.service.filter;
 
+import org.mockito.quality.Strictness;
+import org.mockito.junit.jupiter.MockitoSettings;
+import org.mockito.junit.jupiter.MockitoExtension;
+import static org.junit.jupiter.api.Assertions.assertThrows;
 import static io.mosip.authentication.core.constant.IdAuthCommonConstants.UTF_8;
-import static org.junit.Assert.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertEquals;
 
 import java.io.BufferedReader;
 import java.io.IOException;
@@ -21,18 +25,18 @@ import jakarta.servlet.http.HttpSession;
 import jakarta.servlet.http.HttpUpgradeHandler;
 import jakarta.servlet.http.Part;
 
-import org.junit.Before;
-import org.junit.Test;
-import org.junit.runner.RunWith;
+import org.junit.jupiter.api.BeforeEach;
+import org.junit.jupiter.api.Test;
+import org.junit.jupiter.api.extension.ExtendWith;
 import org.mockito.Mock;
 import org.mockito.Mockito;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.boot.test.autoconfigure.web.servlet.AutoConfigureMockMvc;
-import org.springframework.boot.test.autoconfigure.web.servlet.WebMvcTest;
+import org.springframework.boot.webmvc.test.autoconfigure.AutoConfigureMockMvc;
+import org.springframework.boot.webmvc.test.autoconfigure.WebMvcTest;
 import org.springframework.context.annotation.Import;
 import org.springframework.test.context.ContextConfiguration;
 import org.springframework.test.context.TestContext;
-import org.springframework.test.context.junit4.SpringRunner;
+import org.springframework.test.context.junit.jupiter.SpringExtension;
 import org.springframework.test.util.ReflectionTestUtils;
 import org.springframework.web.context.WebApplicationContext;
 
@@ -51,7 +55,8 @@ import io.mosip.authentication.core.spi.partner.service.PartnerService;
 /**
  * The Class IdAuthFilterTest.
  */
-@RunWith(SpringRunner.class)
+@ExtendWith({SpringExtension.class, MockitoExtension.class})
+@MockitoSettings(strictness = Strictness.LENIENT)
 @ContextConfiguration(classes = { TestContext.class, WebApplicationContext.class })
 @WebMvcTest
 @AutoConfigureMockMvc
@@ -98,7 +103,7 @@ public class IdAuthFilterTest {
 	/**
 	 * Before.
 	 */
-	@Before
+	@BeforeEach
 	public void before() {
 		ReflectionTestUtils.setField(filter, "mapper", mapper);
 		ReflectionTestUtils.setField(filter, "partnerService", partnerService);
@@ -147,13 +152,15 @@ public class IdAuthFilterTest {
 	 * @throws IOException                  Signals that an I/O exception has
 	 *                                      occurred.
 	 */
-	@Test(expected = IdAuthenticationAppException.class)
+	@Test
 	public void testInValidDecodedRequest()
 			throws IdAuthenticationAppException, JsonParseException, JsonMappingException, IOException {
+		assertThrows(IdAuthenticationAppException.class, () -> {
 		KeyManager keyManager = Mockito.mock(KeyManager.class);
 		ReflectionTestUtils.setField(filter, "keyManager", keyManager);
 		requestBody.put("request", 123214214);
 		filter.decipherRequest(requestBody);
+			});
 	}
 
 	/**
@@ -343,8 +350,9 @@ public class IdAuthFilterTest {
 	 * @throws IdAuthenticationAppException the id authentication app exception
 	 */
 	@SuppressWarnings("unchecked")
-	@Test(expected = IdAuthenticationAppException.class)
+	@Test
 	public void validateDecipheredRequestTest() throws IdAuthenticationAppException {
+		assertThrows(IdAuthenticationAppException.class, () -> {
 		ResettableStreamHttpServletRequest requestWrapper = new ResettableStreamHttpServletRequest(new HttpServletRequest() {
 
 			@Override
@@ -775,6 +783,7 @@ public class IdAuthFilterTest {
 			throw new IdAuthenticationAppException();
 		}
 
+			});
 	}
 
 	private PartnerPolicyResponseDTO getPolicyFor92834787293() {

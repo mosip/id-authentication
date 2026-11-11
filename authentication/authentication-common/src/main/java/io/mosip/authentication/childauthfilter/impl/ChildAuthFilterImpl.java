@@ -1,5 +1,6 @@
 package io.mosip.authentication.childauthfilter.impl;
 
+import io.mosip.authentication.common.service.util.IdaDateUtil;
 import io.mosip.authentication.authfilter.exception.IdAuthenticationFilterException;
 import io.mosip.authentication.authfilter.spi.IMosipAuthFilter;
 import io.mosip.authentication.common.service.util.AuthTypeUtil;
@@ -130,7 +131,7 @@ public class ChildAuthFilterImpl implements IMosipAuthFilter {
         }
 
         try {
-            return DateUtils2.parseDateToLocalDateTime(DateUtils2.parseToDate(dob, dateOfBirthPattern)).toLocalDate();
+            return DateUtils2.parseDateToLocalDateTime(IdaDateUtil.parseToDate(dob, dateOfBirthPattern)).toLocalDate();
         } catch (Exception e) {
             throw new IdAuthenticationFilterException(IdAuthenticationErrorConstants.UNABLE_TO_PROCESS.getErrorCode(), "Request could not be processed. Unable to parse " + dateOfBirthAttributeName + " from DB.");
         }

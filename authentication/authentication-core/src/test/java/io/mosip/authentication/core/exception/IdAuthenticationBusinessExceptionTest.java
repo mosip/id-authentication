@@ -1,6 +1,7 @@
 package io.mosip.authentication.core.exception;
 
-import org.junit.Test;
+import static org.junit.jupiter.api.Assertions.assertThrows;
+import org.junit.jupiter.api.Test;
 
 import io.mosip.authentication.core.constant.IdAuthenticationErrorConstants;
 import io.mosip.authentication.core.exception.IdAuthenticationBusinessException;
@@ -17,9 +18,11 @@ public class IdAuthenticationBusinessExceptionTest {
 	 *
 	 * @throws IdAuthenticationBusinessException the id authentication business exception
 	 */
-	@Test(expected=IdAuthenticationBusinessException.class)
+	@Test
 	public void IdAuthenticationBusinessExceptionDefaultCons() throws IdAuthenticationBusinessException {
+		assertThrows(IdAuthenticationBusinessException.class, () -> {
 		throw new IdAuthenticationBusinessException();
+			});
 	}
 
 	/**
@@ -27,9 +30,11 @@ public class IdAuthenticationBusinessExceptionTest {
 	 *
 	 * @throws IdAuthenticationBusinessException the id authentication business exception
 	 */
-	@Test(expected=IdAuthenticationBusinessException.class)
+	@Test
 	public void IdAuthenticationBusinessException2args() throws IdAuthenticationBusinessException {
+		assertThrows(IdAuthenticationBusinessException.class, () -> {
 		throw new IdAuthenticationBusinessException("errorcode", "errormessage");
+			});
 	}
 	
 	/**
@@ -37,9 +42,11 @@ public class IdAuthenticationBusinessExceptionTest {
 	 *
 	 * @throws IdAuthenticationBusinessException the id authentication business exception
 	 */
-	@Test(expected=IdAuthenticationBusinessException.class)
+	@Test
 	public void IdAuthenticationBusinessException3args() throws IdAuthenticationBusinessException {
+		assertThrows(IdAuthenticationBusinessException.class, () -> {
 		throw new IdAuthenticationBusinessException("errorcode", "errormessage", null);
+			});
 	}
 	
 	/**
@@ -47,9 +54,11 @@ public class IdAuthenticationBusinessExceptionTest {
 	 *
 	 * @throws IdAuthenticationBusinessException the id authentication business exception
 	 */
-	@Test(expected=IdAuthenticationBusinessException.class)
+	@Test
 	public void IdAuthenticationBusinessExceptionEnum() throws IdAuthenticationBusinessException {
+		assertThrows(IdAuthenticationBusinessException.class, () -> {
 		throw new IdAuthenticationBusinessException(IdAuthenticationErrorConstants.OTP_GENERATION_FAILED);
+			});
 	}
 	
 	/**
@@ -57,9 +66,11 @@ public class IdAuthenticationBusinessExceptionTest {
 	 *
 	 * @throws IdAuthenticationBusinessException the id authentication business exception
 	 */
-	@Test(expected=IdAuthenticationBusinessException.class)
+	@Test
 	public void IdAuthenticationBusinessExceptionEnumThrowable() throws IdAuthenticationBusinessException {
+		assertThrows(IdAuthenticationBusinessException.class, () -> {
 		throw new IdAuthenticationBusinessException(IdAuthenticationErrorConstants.OTP_GENERATION_FAILED, null);
+			});
 	}
 
 }

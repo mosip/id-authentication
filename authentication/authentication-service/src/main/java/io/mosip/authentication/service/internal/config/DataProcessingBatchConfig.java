@@ -4,10 +4,11 @@ import io.mosip.authentication.service.internal.listener.InternalAuthIdChangeEve
 import io.mosip.authentication.core.exception.IdAuthenticationBusinessException;
 import io.mosip.authentication.service.internal.batch.MissingCredentialsItemReader;
 import io.mosip.idrepository.core.dto.CredentialRequestIdsDto;
-import org.springframework.batch.core.*;
+import org.springframework.batch.core.job.Job;
+import org.springframework.batch.core.step.Step;
 import org.springframework.batch.core.configuration.JobRegistry;
 import org.springframework.batch.core.job.builder.JobBuilder;
-import org.springframework.batch.core.launch.support.RunIdIncrementer;
+import org.springframework.batch.core.job.parameters.RunIdIncrementer;
 import org.springframework.batch.core.repository.JobRepository;
 import org.springframework.batch.core.step.builder.StepBuilder;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -29,7 +30,7 @@ import org.springframework.retry.backoff.BackOffPolicy;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.batch.integration.async.AsyncItemProcessor;
 import org.springframework.batch.integration.async.AsyncItemWriter;
-import org.springframework.batch.item.ItemWriter;
+import org.springframework.batch.infrastructure.item.ItemWriter;
 import org.springframework.scheduling.concurrent.ThreadPoolTaskExecutor;
 import java.util.HashMap;
 import java.util.Map;
@@ -151,16 +152,14 @@ public class DataProcessingBatchConfig {
     }
     @Bean
     public <T> AsyncItemProcessor<T, T> asyncIdentityItemProcessor() {
-        AsyncItemProcessor<T, T> asyncItemProcessor = new AsyncItemProcessor<>();
-        asyncItemProcessor.setDelegate(elem -> elem);
+        AsyncItemProcessor<T, T> asyncItemProcessor = new AsyncItemProcessor<>(elem -> elem);
         asyncItemProcessor.setTaskExecutor(batchTaskExecutor());
         return asyncItemProcessor;
     }
 
     @Bean
     public AsyncItemWriter<CredentialRequestIdsDto> asyncMissingCredentialRetriggerItemWriter() {
-        AsyncItemWriter<CredentialRequestIdsDto> asyncItemWriter = new AsyncItemWriter<>();
-        asyncItemWriter.setDelegate(missingCredentialRetriggerItemWriter());
+        AsyncItemWriter<CredentialRequestIdsDto> asyncItemWriter = new AsyncItemWriter<>(missingCredentialRetriggerItemWriter());
         return asyncItemWriter;
     }
 
