@@ -1,7 +1,7 @@
 package io.mosip.authentication.core.util;
 
 import org.apache.commons.codec.EncoderException;
-import org.junit.Test;
+import org.junit.jupiter.api.Test;
 
 public class TextMatcherUtilTest {
 

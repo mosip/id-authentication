@@ -7,22 +7,22 @@ import io.mosip.authentication.service.internal.batch.CredentialStoreJobExecutio
 import io.mosip.authentication.service.internal.batch.MissingCredentialsItemReader;
 import io.mosip.authentication.service.internal.listener.InternalAuthIdChangeEventsWebSubInitializer;
 import org.apache.http.HttpStatus;
-import org.junit.Assert;
-import org.junit.Before;
-import org.junit.Test;
+import org.junit.jupiter.api.Assertions;
+import org.junit.jupiter.api.BeforeEach;
+import org.junit.jupiter.api.Test;
 import org.mockito.Mock;
 import org.mockito.MockitoAnnotations;
-import org.springframework.batch.core.StepContribution;
+import org.springframework.batch.core.step.StepContribution;
 import org.springframework.batch.core.configuration.JobRegistry;
 import org.springframework.batch.core.repository.JobRepository;
 import org.springframework.batch.core.scope.context.ChunkContext;
-import org.springframework.batch.repeat.RepeatStatus;
+import org.springframework.batch.infrastructure.repeat.RepeatStatus;
 import org.springframework.scheduling.concurrent.ThreadPoolTaskScheduler;
 import org.springframework.test.util.ReflectionTestUtils;
 import org.springframework.transaction.PlatformTransactionManager;
 
-import static org.powermock.api.mockito.PowerMockito.mock;
-import static org.powermock.api.mockito.PowerMockito.when;
+import static org.mockito.Mockito.mock;
+import static org.mockito.Mockito.when;
 
 
 public class ValidateWebSubTaskletTest {
@@ -40,9 +40,9 @@ public class ValidateWebSubTaskletTest {
     private ValidateWebSubTasklet tasklet;
 
 
-    @Before
+    @BeforeEach
     public void setUp() {
-        MockitoAnnotations.initMocks(this);
+        MockitoAnnotations.openMocks(this);
         tasklet = new ValidateWebSubTasklet(idChangeWebSubInitializer, listener, jobRepository, platformTransactionManager);
         tasklet.taskScheduler = taskScheduler;
     }
@@ -53,6 +53,6 @@ public class ValidateWebSubTaskletTest {
         when(idChangeWebSubInitializer.doInitSubscriptions()).thenReturn(HttpStatus.SC_OK);
 
         RepeatStatus status = tasklet.execute(mock(StepContribution.class), mock(ChunkContext.class));
-        Assert.assertEquals(RepeatStatus.FINISHED, status);
+        Assertions.assertEquals(RepeatStatus.FINISHED, status);
     }
 }

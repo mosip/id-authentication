@@ -1,9 +1,9 @@
 package io.mosip.authentication.service.config;
 
-import org.junit.Test;
-import org.junit.runner.RunWith;
+import org.junit.jupiter.api.Test;
+import org.junit.jupiter.api.extension.ExtendWith;
 import org.mockito.InjectMocks;
-import org.mockito.junit.MockitoJUnitRunner;
+import org.mockito.junit.jupiter.MockitoExtension;
 import org.springframework.boot.web.servlet.FilterRegistrationBean;
 
 import io.mosip.authentication.common.service.filter.DefaultAuthTypeFilter;
@@ -12,9 +12,9 @@ import io.mosip.authentication.common.service.filter.InternalAuthFilter;
 import io.mosip.authentication.common.service.filter.InternalAuthenticationFilter;
 import io.mosip.authentication.common.service.filter.InternalOtpFilter;
 
-import static org.junit.Assert.*;
+import static org.junit.jupiter.api.Assertions.*;
 
-@RunWith(MockitoJUnitRunner.class)
+@ExtendWith(MockitoExtension.class)
 public class InternalAuthFilterConfigTest {
 
 	@InjectMocks
@@ -24,12 +24,12 @@ public class InternalAuthFilterConfigTest {
 	public void testGetInternalAuthFilter() {
 		FilterRegistrationBean<InternalAuthFilter> bean = internalAuthFilterConfig.getInternalAuthFilter();
 		
-		assertNotNull("Filter registration bean should not be null", bean);
-		assertNotNull("Filter should not be null", bean.getFilter());
-		assertTrue("Filter should be instance of InternalAuthFilter", 
-			bean.getFilter() instanceof InternalAuthFilter);
-		assertEquals("Should have correct URL pattern", 1, bean.getUrlPatterns().size());
-		assertTrue("Should match /internal/auth pattern", bean.getUrlPatterns().contains("/internal/auth"));
+		assertNotNull(bean, "Filter registration bean should not be null");
+		assertNotNull(bean.getFilter(), "Filter should not be null");
+		assertTrue( 
+			bean.getFilter() instanceof InternalAuthFilter, "Filter should be instance of InternalAuthFilter");
+		assertEquals(1, bean.getUrlPatterns().size(), "Should have correct URL pattern");
+		assertTrue(bean.getUrlPatterns().contains("/internal/auth"), "Should match /internal/auth pattern");
 	}
 	
 	@Test
@@ -37,24 +37,24 @@ public class InternalAuthFilterConfigTest {
 		FilterRegistrationBean<InternalAuthenticationFilter> bean = 
 			internalAuthFilterConfig.getInternalAuthenticationFilter();
 		
-		assertNotNull("Filter registration bean should not be null", bean);
-		assertNotNull("Filter should not be null", bean.getFilter());
-		assertTrue("Filter should be instance of InternalAuthenticationFilter", 
-			bean.getFilter() instanceof InternalAuthenticationFilter);
-		assertEquals("Should have correct URL pattern", 1, bean.getUrlPatterns().size());
-		assertTrue("Should match /internal/verifyidentity pattern", bean.getUrlPatterns().contains("/internal/verifyidentity"));
+		assertNotNull(bean, "Filter registration bean should not be null");
+		assertNotNull(bean.getFilter(), "Filter should not be null");
+		assertTrue( 
+			bean.getFilter() instanceof InternalAuthenticationFilter, "Filter should be instance of InternalAuthenticationFilter");
+		assertEquals(1, bean.getUrlPatterns().size(), "Should have correct URL pattern");
+		assertTrue(bean.getUrlPatterns().contains("/internal/verifyidentity"), "Should match /internal/verifyidentity pattern");
 	}
 	
 	@Test
 	public void testGetInternalOTPFilter() {
 		FilterRegistrationBean<InternalOtpFilter> bean = internalAuthFilterConfig.getInternalOTPFilter();
 		
-		assertNotNull("Filter registration bean should not be null", bean);
-		assertNotNull("Filter should not be null", bean.getFilter());
-		assertTrue("Filter should be instance of InternalOtpFilter", 
-			bean.getFilter() instanceof InternalOtpFilter);
-		assertEquals("Should have correct URL pattern", 1, bean.getUrlPatterns().size());
-		assertTrue("Should match /internal/otp pattern", bean.getUrlPatterns().contains("/internal/otp"));
+		assertNotNull(bean, "Filter registration bean should not be null");
+		assertNotNull(bean.getFilter(), "Filter should not be null");
+		assertTrue( 
+			bean.getFilter() instanceof InternalOtpFilter, "Filter should be instance of InternalOtpFilter");
+		assertEquals(1, bean.getUrlPatterns().size(), "Should have correct URL pattern");
+		assertTrue(bean.getUrlPatterns().contains("/internal/otp"), "Should match /internal/otp pattern");
 	}
 	
 	@Test
@@ -62,13 +62,13 @@ public class InternalAuthFilterConfigTest {
 		FilterRegistrationBean<DefaultInternalFilter> bean = 
 			internalAuthFilterConfig.getDefaultInternalFilter();
 		
-		assertNotNull("Filter registration bean should not be null", bean);
-		assertNotNull("Filter should not be null", bean.getFilter());
-		assertTrue("Filter should be instance of DefaultInternalFilter", 
-			bean.getFilter() instanceof DefaultInternalFilter);
-		assertTrue("Should have URL pattern for auth transactions", 
-			bean.getUrlPatterns().stream().anyMatch(pattern -> pattern.contains("authTransactions")));
-		assertNotNull("Should have init parameters", bean.getInitParameters());
+		assertNotNull(bean, "Filter registration bean should not be null");
+		assertNotNull(bean.getFilter(), "Filter should not be null");
+		assertTrue( 
+			bean.getFilter() instanceof DefaultInternalFilter, "Filter should be instance of DefaultInternalFilter");
+		assertTrue( 
+			bean.getUrlPatterns().stream().anyMatch(pattern -> pattern.contains("authTransactions")), "Should have URL pattern for auth transactions");
+		assertNotNull(bean.getInitParameters(), "Should have init parameters");
 	}
 	
 	@Test
@@ -76,15 +76,15 @@ public class InternalAuthFilterConfigTest {
 		FilterRegistrationBean<DefaultAuthTypeFilter> bean = 
 			internalAuthFilterConfig.getDefaultAuthtypeFilter();
 		
-		assertNotNull("Filter registration bean should not be null", bean);
-		assertNotNull("Filter should not be null", bean.getFilter());
-		assertTrue("Filter should be instance of DefaultAuthTypeFilter", 
-			bean.getFilter() instanceof DefaultAuthTypeFilter);
-		assertTrue("Should have URL pattern /authtypes/status/* with wildcard",
-                			bean.getUrlPatterns().stream().anyMatch(pattern -> pattern.equals("/authtypes/status/*")));
-        assertNotNull("Should have init parameters", bean.getInitParameters());
-        assertTrue("Should have IDType init parameter", bean.getInitParameters().containsKey("IDType"));
-        assertTrue("Should have ID init parameter", bean.getInitParameters().containsKey("ID"));
+		assertNotNull(bean, "Filter registration bean should not be null");
+		assertNotNull(bean.getFilter(), "Filter should not be null");
+		assertTrue( 
+			bean.getFilter() instanceof DefaultAuthTypeFilter, "Filter should be instance of DefaultAuthTypeFilter");
+		assertTrue(
+                			bean.getUrlPatterns().stream().anyMatch(pattern -> pattern.equals("/authtypes/status/*")), "Should have URL pattern /authtypes/status/* with wildcard");
+        assertNotNull(bean.getInitParameters(), "Should have init parameters");
+        assertTrue(bean.getInitParameters().containsKey("IDType"), "Should have IDType init parameter");
+        assertTrue(bean.getInitParameters().containsKey("ID"), "Should have ID init parameter");
 	}
 	
 	@Test
@@ -92,13 +92,13 @@ public class InternalAuthFilterConfigTest {
 		FilterRegistrationBean<DefaultAuthTypeFilter> bean = 
 			internalAuthFilterConfig.getDefaultAuthtypeStatusFilter();
 		
-		assertNotNull("Filter registration bean should not be null", bean);
-		assertNotNull("Filter should not be null", bean.getFilter());
-		assertTrue("Filter should be instance of DefaultAuthTypeFilter", 
-			bean.getFilter() instanceof DefaultAuthTypeFilter);
-		assertTrue("Should have exact URL pattern /authtypes/status without wildcard",
-                			bean.getUrlPatterns().stream().anyMatch(pattern -> pattern.equals("/authtypes/status")));
-        assertTrue("Should have no init parameters",
-                			bean.getInitParameters() == null || bean.getInitParameters().isEmpty());
+		assertNotNull(bean, "Filter registration bean should not be null");
+		assertNotNull(bean.getFilter(), "Filter should not be null");
+		assertTrue( 
+			bean.getFilter() instanceof DefaultAuthTypeFilter, "Filter should be instance of DefaultAuthTypeFilter");
+		assertTrue(
+                			bean.getUrlPatterns().stream().anyMatch(pattern -> pattern.equals("/authtypes/status")), "Should have exact URL pattern /authtypes/status without wildcard");
+        assertTrue(
+                			bean.getInitParameters() == null || bean.getInitParameters().isEmpty(), "Should have no init parameters");
 	}
 }

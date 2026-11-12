@@ -57,7 +57,6 @@ import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.media.Content;
 import io.swagger.v3.oas.annotations.media.Schema;
 import io.swagger.v3.oas.annotations.responses.ApiResponse;
-import springfox.documentation.annotations.ApiIgnore;
 import static io.mosip.authentication.core.constant.IdAuthConfigKeyConstants.AUTHENTICATION_ERROR_EVENTING_ENABLED;
 
 /**
@@ -140,7 +139,7 @@ public class OTPController {
 			@ApiResponse(responseCode = "401", description = "Unauthorized" ,content = @Content(schema = @Schema(hidden = true))),
 			@ApiResponse(responseCode = "403", description = "Forbidden" ,content = @Content(schema = @Schema(hidden = true))),
 			@ApiResponse(responseCode = "404", description = "Not Found" ,content = @Content(schema = @Schema(hidden = true)))})
-	public OtpResponseDTO generateOTP(@Valid @RequestBody OtpRequestDTO otpRequestDto, @ApiIgnore Errors errors,
+	public OtpResponseDTO generateOTP(@Valid @RequestBody OtpRequestDTO otpRequestDto, @Parameter(hidden = true) Errors errors,
 			@PathVariable("MISP-LK") String mispLK,@PathVariable("Auth-Partner-ID") String partnerId, @PathVariable("API-Key") String apiKey, HttpServletRequest request )
 			throws IdAuthenticationAppException, IDDataValidationException, IdAuthenticationBusinessException {
 		

@@ -53,7 +53,6 @@ import io.swagger.v3.oas.annotations.responses.ApiResponses;
 import io.swagger.v3.oas.annotations.security.SecurityRequirement;
 import io.swagger.v3.oas.annotations.security.SecurityScheme;
 import io.swagger.v3.oas.annotations.tags.Tag;
-import springfox.documentation.annotations.ApiIgnore;
 
 /**
  * The {@code IdentityWalletBindingController} used to handle to perform authentication 
@@ -119,7 +118,7 @@ public class IdentityWalletBindingController {
 			@ApiResponse(responseCode = "403", description = "Forbidden" ,content = @Content(schema = @Schema(hidden = true))),
 			@ApiResponse(responseCode = "404", description = "Not Found" ,content = @Content(schema = @Schema(hidden = true)))})
 	public IdentityKeyBindingResponseDto processIdKeyBinding(@Validated @RequestBody IdentityKeyBindingRequestDTO identityKeyBindingRequestDTO,
-															 @ApiIgnore Errors errors, @PathVariable("IdP-LK") String mispLK, 
+															 @Parameter(hidden = true) Errors errors, @PathVariable("IdP-LK") String mispLK, 
 															 @PathVariable("Auth-Partner-ID") String partnerId,
 															 @PathVariable("OIDC-Client-Id") String oidcClientId, 
 															 HttpServletRequest request)

@@ -1,6 +1,7 @@
 package io.mosip.authentication.common.service.helper;
 
-import static org.junit.Assert.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertThrows;
+import static org.junit.jupiter.api.Assertions.assertEquals;
 
 import java.util.AbstractMap.SimpleEntry;
 import java.util.ArrayList;
@@ -15,22 +16,22 @@ import java.util.Set;
 import io.mosip.authentication.common.service.util.EntityInfoUtil;
 import io.mosip.authentication.common.service.util.LanguageUtil;
 import io.mosip.authentication.core.spi.indauth.match.*;
-import org.junit.Before;
-import org.junit.Ignore;
-import org.junit.Test;
-import org.junit.runner.RunWith;
+import org.junit.jupiter.api.BeforeEach;
+import org.junit.jupiter.api.Disabled;
+import org.junit.jupiter.api.Test;
+import org.junit.jupiter.api.extension.ExtendWith;
 import org.mockito.InjectMocks;
 import org.mockito.Mock;
 import org.mockito.Mockito;
 import org.mockito.MockitoAnnotations;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
-import org.springframework.boot.test.autoconfigure.web.servlet.WebMvcTest;
+import org.springframework.boot.webmvc.test.autoconfigure.WebMvcTest;
 import org.springframework.context.annotation.Import;
 import org.springframework.mock.env.MockEnvironment;
 import org.springframework.test.context.ContextConfiguration;
 import org.springframework.test.context.TestContext;
-import org.springframework.test.context.junit4.SpringRunner;
+import org.springframework.test.context.junit.jupiter.SpringExtension;
 import org.springframework.test.util.ReflectionTestUtils;
 import org.springframework.web.context.WebApplicationContext;
 
@@ -61,10 +62,10 @@ import io.mosip.kernel.biometrics.constant.BiometricType;
 @ContextConfiguration(classes = { TestContext.class, WebApplicationContext.class, IDAMappingFactory.class,
 		IDAMappingConfig.class })
 
-@RunWith(SpringRunner.class)
+@ExtendWith(SpringExtension.class)
 @Import(EnvUtil.class)
 @WebMvcTest
-@Ignore
+@Disabled
 public class IdInfoHelperTest {
 
 	@Value("${ida.id.attribute.separator.fullAddress}")
@@ -109,7 +110,7 @@ public class IdInfoHelperTest {
 	@Mock
 	private LanguageUtil languageUtil;
 
-	@Before
+	@BeforeEach
 	public void before() throws IdAuthenticationBusinessException {
 		ReflectionTestUtils.setField(idInfoHelper, "idMappingConfig", idMappingConfig);
 		ReflectionTestUtils.setField(identityAttributesForMatchTypeHelper, "idMappingConfig", idMappingConfig);
@@ -117,7 +118,7 @@ public class IdInfoHelperTest {
 		//	ReflectionTestUtils.setField(idInfoHelper, "ida-default-identity-filter-attributes", "phone,fullName,dateOfBirth,email,preferredLang");
 		ReflectionTestUtils.setField(idInfoHelper, "env", env);
 		ReflectionTestUtils.setField(idInfoHelper, "objectMapper", objectMapper);
-		MockitoAnnotations.initMocks(this);
+		MockitoAnnotations.openMocks(this);
 		Map<String, String> entityInfoTest = new HashMap<>();
 		entityInfoTest.put("residenceStatus_eng", "test@test.com");
 		Mockito.when(entityInfoUtil.getIdEntityInfoMap(Mockito.any(), Mockito.anyMap(), Mockito.anyString(),
@@ -212,12 +213,14 @@ public class IdInfoHelperTest {
 		identityAttributesForMatchTypeHelper.getIdMappingValue(matchType.getIdMapping(), DemoMatchType.NAME);
 	}
 
-	@Test(expected = IdAuthenticationBusinessException.class)
+	@Test
 	public void TestmappingInternal() throws IdAuthenticationBusinessException {
+		assertThrows(IdAuthenticationBusinessException.class, () -> {
 		MatchType matchType = BioMatchType.FACE;
 		List<String> value = new ArrayList<>();
 		value.add(IdaIdMapping.ADDRESSLINE1.getIdname());
 		identityAttributesForMatchTypeHelper.getIdMappingValue(matchType.getIdMapping(), DemoMatchType.ADDR_LINE1);
+			});
 	}
 
 	@Test

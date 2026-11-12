@@ -50,7 +50,6 @@ import io.swagger.v3.oas.annotations.responses.ApiResponses;
 import io.swagger.v3.oas.annotations.security.SecurityRequirement;
 import io.swagger.v3.oas.annotations.security.SecurityScheme;
 import io.swagger.v3.oas.annotations.tags.Tag;
-import springfox.documentation.annotations.ApiIgnore;
 
 /**
  * The {@code VCIController} used to validate the issued authentication
@@ -114,7 +113,7 @@ public class VCIController {
 	@ApiResponse(responseCode = "403", description = "Forbidden" ,content = @Content(schema = @Schema(hidden = true))),
 	@ApiResponse(responseCode = "404", description = "Not Found" ,content = @Content(schema = @Schema(hidden = true)))})
 	public VciExchangeResponseDTO vciExchange(@Validated @RequestBody VciExchangeRequestDTO vciExchangeRequestDTO,
-													 @ApiIgnore Errors errors, @PathVariable("IdP-LK") String idpLK, 
+													 @Parameter(hidden = true) Errors errors, @PathVariable("IdP-LK") String idpLK, 
 													 @PathVariable("Auth-Partner-ID") String partnerId,
 													 @PathVariable("OIDC-Client-Id") String oidcClientId, 
 													 HttpServletRequest request)

@@ -1,5 +1,9 @@
 package io.mosip.authentication.common.service.helper;
 
+import org.mockito.quality.Strictness;
+import org.mockito.junit.jupiter.MockitoSettings;
+import org.mockito.junit.jupiter.MockitoExtension;
+import static org.junit.jupiter.api.Assertions.assertThrows;
 import io.mosip.authentication.common.service.impl.match.BioMatchType;
 import io.mosip.authentication.common.service.impl.match.DemoAuthType;
 import io.mosip.authentication.common.service.impl.match.DemoMatchType;
@@ -8,12 +12,12 @@ import io.mosip.authentication.core.exception.IdAuthenticationBusinessException;
 import io.mosip.authentication.core.indauth.dto.AuthRequestDTO;
 import io.mosip.authentication.core.indauth.dto.IdentityInfoDTO;
 import io.mosip.authentication.core.spi.indauth.match.*;
-import org.junit.Test;
-import org.junit.runner.RunWith;
+import org.junit.jupiter.api.Test;
+import org.junit.jupiter.api.extension.ExtendWith;
 import org.mockito.InjectMocks;
 import org.mockito.Mock;
 import org.mockito.Mockito;
-import org.springframework.test.context.junit4.SpringRunner;
+import org.springframework.test.context.junit.jupiter.SpringExtension;
 import org.springframework.test.util.ReflectionTestUtils;
 
 import java.lang.reflect.UndeclaredThrowableException;
@@ -26,7 +30,8 @@ import java.util.Map;
  @author Kamesh Shekhar Prasad
  */
 
-@RunWith(SpringRunner.class)
+@ExtendWith({SpringExtension.class, MockitoExtension.class})
+@MockitoSettings(strictness = Strictness.LENIENT)
 public class MatchTypeHelperTest {
 
     @InjectMocks
@@ -63,8 +68,9 @@ public class MatchTypeHelperTest {
                 matchInput, entityValueFetcher, matchType, strategy, matchType.getIdMapping().getIdname(), "426789089018");
     }
 
-    @Test(expected = IdAuthenticationBusinessException.class)
+    @Test
     public void TestgetEntityInfo() throws Throwable {
+		assertThrows(IdAuthenticationBusinessException.class, () -> {
         Map<String, List<IdentityInfoDTO>> demoEntity = new HashMap<>();
         List<IdentityInfoDTO> identityInfoList = new ArrayList<>();
         IdentityInfoDTO identityInfoDTO = new IdentityInfoDTO();
@@ -85,10 +91,12 @@ public class MatchTypeHelperTest {
         } catch (UndeclaredThrowableException e) {
             throw e.getCause();
         }
-    }
+    		});
+	}
 
-    @Test(expected = IdAuthenticationBusinessException.class)
+    @Test
     public void TestBiogetEntityInfo() throws Throwable {
+		assertThrows(IdAuthenticationBusinessException.class, () -> {
         Map<String, List<IdentityInfoDTO>> demoEntity = new HashMap<>();
         List<IdentityInfoDTO> identityInfoList = new ArrayList<>();
         IdentityInfoDTO identityInfoDTO = new IdentityInfoDTO();
@@ -115,10 +123,12 @@ public class MatchTypeHelperTest {
         } catch (UndeclaredThrowableException e) {
             throw e.getCause();
         }
-    }
+    		});
+	}
 
-    @Test(expected = IdAuthenticationBusinessException.class)
+    @Test
     public void TestgetEntityInfowithBiowithLanguage() throws Throwable {
+		assertThrows(IdAuthenticationBusinessException.class, () -> {
         Map<String, List<IdentityInfoDTO>> demoEntity = new HashMap<>();
         List<IdentityInfoDTO> identityInfoList = new ArrayList<>();
         IdentityInfoDTO identityInfoDTO = new IdentityInfoDTO();
@@ -139,5 +149,6 @@ public class MatchTypeHelperTest {
         } catch (UndeclaredThrowableException e) {
             throw e.getCause();
         }
-    }
+    		});
+	}
 }

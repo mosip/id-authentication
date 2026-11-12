@@ -2,13 +2,13 @@ package io.mosip.authentication.common.service.websub;
 
 import static org.mockito.Mockito.verify;
 
-import org.junit.After;
-import org.junit.Before;
-import org.junit.Test;
-import org.junit.runner.RunWith;
+import org.junit.jupiter.api.AfterEach;
+import org.junit.jupiter.api.BeforeEach;
+import org.junit.jupiter.api.Test;
+import org.junit.jupiter.api.extension.ExtendWith;
 import org.mockito.InjectMocks;
 import org.mockito.Mock;
-import org.mockito.junit.MockitoJUnitRunner;
+import org.mockito.junit.jupiter.MockitoExtension;
 import org.springframework.test.util.ReflectionTestUtils;
 
 import io.mosip.authentication.common.service.helper.WebSubHelper;
@@ -25,7 +25,7 @@ import io.mosip.authentication.common.service.websub.impl.PartnerCACertEventInit
 import io.mosip.authentication.common.service.websub.impl.PartnerServiceEventsInitializer;
 import io.mosip.authentication.common.service.websub.impl.RemoveIdStatusEventPublisher;
 
-@RunWith(MockitoJUnitRunner.class)
+@ExtendWith(MockitoExtension.class)
 public class IdAuthWebSubInitializerTest {
 
 	@Mock
@@ -72,12 +72,12 @@ public class IdAuthWebSubInitializerTest {
 	@InjectMocks
 	private IdAuthWebSubInitializer idAuthWebSubInitializer;
 
-	@Before
+	@BeforeEach
 	public void setUp() throws Exception {
 
 	}
 
-	@After
+	@AfterEach
 	public void tearDown() throws Exception {
 
 	}

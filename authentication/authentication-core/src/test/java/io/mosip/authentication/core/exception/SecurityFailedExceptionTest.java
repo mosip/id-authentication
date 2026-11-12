@@ -1,6 +1,7 @@
 package io.mosip.authentication.core.exception;
 
-import org.junit.Test;
+import static org.junit.jupiter.api.Assertions.assertThrows;
+import org.junit.jupiter.api.Test;
 
 import io.mosip.authentication.core.constant.IdAuthenticationErrorConstants;
 import io.mosip.authentication.core.exception.SecurityFailedException;
@@ -17,9 +18,11 @@ public class SecurityFailedExceptionTest {
 	 *
 	 * @throws SecurityFailedException the security failed exception
 	 */
-	@Test(expected=SecurityFailedException.class)
+	@Test
 	public void SecurityFailedExceptionEnum() throws SecurityFailedException {
+		assertThrows(SecurityFailedException.class, () -> {
 		throw new SecurityFailedException(IdAuthenticationErrorConstants.OTP_GENERATION_FAILED);
+			});
 	}
 	
 	/**
@@ -27,9 +30,11 @@ public class SecurityFailedExceptionTest {
 	 *
 	 * @throws SecurityFailedException the security failed exception
 	 */
-	@Test(expected=SecurityFailedException.class)
+	@Test
 	public void SecurityFailedExceptionEnumThrowable() throws SecurityFailedException {
+		assertThrows(SecurityFailedException.class, () -> {
 		throw new SecurityFailedException(IdAuthenticationErrorConstants.OTP_GENERATION_FAILED, null);
+			});
 	}
 	
 	/**
@@ -37,9 +42,11 @@ public class SecurityFailedExceptionTest {
 	 *
 	 * @throws SecurityFailedException the security failed exception
 	 */
-	@Test(expected=SecurityFailedException.class)
+	@Test
 	public void SecurityFailedExceptionDefCons() throws SecurityFailedException {
+		assertThrows(SecurityFailedException.class, () -> {
 		throw new SecurityFailedException();
+			});
 	}
 
 }

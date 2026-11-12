@@ -2,17 +2,17 @@ package io.mosip.authentication.common.service.util;
 
 import java.util.List;
 
-import org.junit.Test;
-import org.junit.runner.RunWith;
+import org.junit.jupiter.api.Test;
+import org.junit.jupiter.api.extension.ExtendWith;
 import org.mockito.Mock;
-import org.mockito.junit.MockitoJUnitRunner;
+import org.mockito.junit.jupiter.MockitoExtension;
 import io.mosip.authentication.core.constant.RequestType;
 import io.mosip.authentication.core.indauth.dto.AuthRequestDTO;
 import io.mosip.authentication.core.indauth.dto.EkycAuthRequestDTO;
 import io.mosip.authentication.core.indauth.dto.IdentityDTO;
 import io.mosip.authentication.core.indauth.dto.RequestDTO;
 
-import static org.junit.Assert.*;
+import static org.junit.jupiter.api.Assertions.*;
 import static org.mockito.Mockito.mock;
 
 /**
@@ -20,7 +20,7 @@ import static org.mockito.Mockito.mock;
  * 
  * @author Md Tarique Azeez
  */
-@RunWith(MockitoJUnitRunner.class)
+@ExtendWith(MockitoExtension.class)
 public class AuthTypeUtilTest {
 
 	@Mock
@@ -39,7 +39,7 @@ public class AuthTypeUtilTest {
 		// Since BioAuthType.values() is checked internally
 		boolean result = AuthTypeUtil.isBio(authRequest);
 		// Result depends on actual BioAuthType implementation
-		assertNotNull("Result should not be null", result);
+		assertNotNull(result, "Result should not be null");
 	}
 	
 	@Test
@@ -53,7 +53,7 @@ public class AuthTypeUtilTest {
 		
 		boolean result = AuthTypeUtil.isDemo(authRequest);
 		// Result depends on actual DemoAuthType implementation
-		assertNotNull("Result should not be null", result);
+		assertNotNull(result, "Result should not be null");
 	}
 	
 	@Test
@@ -64,7 +64,7 @@ public class AuthTypeUtilTest {
 		authRequest.setRequest(request);
 		
 		boolean result = AuthTypeUtil.isOtp(authRequest);
-		assertNotNull("Result should not be null", result);
+		assertNotNull(result, "Result should not be null");
 	}
 	
 	@Test
@@ -75,7 +75,7 @@ public class AuthTypeUtilTest {
 		authRequest.setRequest(request);
 		
 		boolean result = AuthTypeUtil.isPin(authRequest);
-		assertNotNull("Result should not be null", result);
+		assertNotNull(result, "Result should not be null");
 	}
 	
 	@Test
@@ -90,8 +90,8 @@ public class AuthTypeUtilTest {
 		// AuthTransactionHelper methods are static, so we just test the flow
 		List<RequestType> requestTypes = AuthTypeUtil.findAutRequestTypes(authRequest, mockEnv);
 		
-		assertNotNull("Request types should not be null", requestTypes);
-		assertTrue("Should contain OTP_AUTH", requestTypes.contains(RequestType.OTP_AUTH));
+		assertNotNull(requestTypes, "Request types should not be null");
+		assertTrue(requestTypes.contains(RequestType.OTP_AUTH), "Should contain OTP_AUTH");
 	}
 	
 	@Test
@@ -105,9 +105,9 @@ public class AuthTypeUtilTest {
 		// AuthTransactionHelper methods are static, so we just test the flow
 		List<RequestType> requestTypes = AuthTypeUtil.findAutRequestTypes(authRequest, mockEnv);
 		
-		assertNotNull("Request types should not be null", requestTypes);
-		assertTrue("Should contain EKYC_AUTH_REQUEST", 
-			requestTypes.contains(RequestType.EKYC_AUTH_REQUEST));
+		assertNotNull(requestTypes, "Request types should not be null");
+		assertTrue( 
+			requestTypes.contains(RequestType.EKYC_AUTH_REQUEST), "Should contain EKYC_AUTH_REQUEST");
 	}
 
 }

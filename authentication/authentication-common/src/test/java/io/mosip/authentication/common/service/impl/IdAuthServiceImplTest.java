@@ -1,6 +1,10 @@
 package io.mosip.authentication.common.service.impl;
 
-import static org.junit.Assert.assertNotNull;
+import org.mockito.quality.Strictness;
+import org.mockito.junit.jupiter.MockitoSettings;
+import org.mockito.junit.jupiter.MockitoExtension;
+import static org.junit.jupiter.api.Assertions.assertThrows;
+import static org.junit.jupiter.api.Assertions.assertNotNull;
 
 import java.io.IOException;
 import java.lang.reflect.UndeclaredThrowableException;
@@ -12,19 +16,19 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
-import org.junit.Before;
-import org.junit.Ignore;
-import org.junit.Test;
-import org.junit.runner.RunWith;
+import org.junit.jupiter.api.BeforeEach;
+import org.junit.jupiter.api.Disabled;
+import org.junit.jupiter.api.Test;
+import org.junit.jupiter.api.extension.ExtendWith;
 import org.mockito.InjectMocks;
 import org.mockito.Mock;
 import org.mockito.Mockito;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.boot.test.autoconfigure.web.servlet.WebMvcTest;
+import org.springframework.boot.webmvc.test.autoconfigure.WebMvcTest;
 import org.springframework.dao.DataAccessException;
 import org.springframework.test.context.ContextConfiguration;
 import org.springframework.test.context.TestContext;
-import org.springframework.test.context.junit4.SpringRunner;
+import org.springframework.test.context.junit.jupiter.SpringExtension;
 import org.springframework.test.util.ReflectionTestUtils;
 import org.springframework.web.context.WebApplicationContext;
 
@@ -53,8 +57,9 @@ import io.mosip.authentication.common.service.helper.RestHelper;
  *
  * @author Rakesh Roshan
  */
-@Ignore
-@RunWith(SpringRunner.class)
+@Disabled
+@ExtendWith({SpringExtension.class, MockitoExtension.class})
+@MockitoSettings(strictness = Strictness.LENIENT)
 @WebMvcTest
 @ContextConfiguration(classes = { TestContext.class, WebApplicationContext.class })
 public class IdAuthServiceImplTest {
@@ -92,14 +97,14 @@ public class IdAuthServiceImplTest {
 	@Autowired
 	private ObjectMapper mapper;
 	
-	@Before
+	@BeforeEach
 	public void before() {
 		ReflectionTestUtils.setField(idServiceImpl, "mapper", mapper);
 
 	}
 
 	@Test
-	@Ignore
+	@Disabled
 	public void testGetIdRepoByVidAsRequest_IsNotNull() throws IdAuthenticationBusinessException {
 		Map<String, Object> idRepo = new HashMap<>();
 		idRepo.put("uin", "476567");
@@ -168,8 +173,9 @@ public class IdAuthServiceImplTest {
 		}
 	}
 
-	@Test(expected = IdAuthenticationBusinessException.class)
+	@Test
 	public void processIdtypeVIDFailed() throws IdAuthenticationBusinessException {
+		assertThrows(IdAuthenticationBusinessException.class, () -> {
 		String idvIdType = "VID";
 		String idvId = "875948796";
 		new IdAuthenticationBusinessException(
@@ -178,10 +184,12 @@ public class IdAuthServiceImplTest {
 		
 		idServiceImpl.processIdType(idvIdType, idvId, false, true, Collections.emptySet());
 
+			});
 	}
 
-	@Test(expected = IdAuthenticationBusinessException.class)
+	@Test
 	public void processIdtypeUINFailed() throws IdAuthenticationBusinessException {
+		assertThrows(IdAuthenticationBusinessException.class, () -> {
 		String idvIdType = "UIN";
 		String idvId = "875948796";
 
@@ -194,6 +202,7 @@ public class IdAuthServiceImplTest {
 				.thenThrow(idBusinessException);
 		Mockito.when(idServiceImpl.processIdType(idvIdType, idvId, false, true, Collections.emptySet())).thenThrow(idBusinessException);
 
+			});
 	}
 
 	@Test
@@ -306,9 +315,10 @@ public class IdAuthServiceImplTest {
 		ReflectionTestUtils.invokeMethod(idServiceImpl, "getIdInfo", idResponseDTO);
 	}
 
-	@Test(expected = IdAuthenticationBusinessException.class)
-	@Ignore
+	@Test
+	@Disabled
 	public void testIdRepoServiceException_UINDeActivated() throws Throwable {
+		assertThrows(IdAuthenticationBusinessException.class, () -> {
 		try {
 			Map<String, Object> idRepo = new HashMap<>();
 			String vid = "476567";
@@ -317,11 +327,13 @@ public class IdAuthServiceImplTest {
 		} catch (UndeclaredThrowableException e) {
 			throw e.getCause();
 		}
+			});
 	}
 
-	@Test(expected = IdAuthenticationBusinessException.class)
-	@Ignore
+	@Test
+	@Disabled
 	public void testIdRepoServiceException_InvalidUIN() throws Throwable {
+		assertThrows(IdAuthenticationBusinessException.class, () -> {
 		try {
 			Map<String, Object> idRepo = new HashMap<>();
 			String vid = "476567";
@@ -330,11 +342,13 @@ public class IdAuthServiceImplTest {
 		} catch (UndeclaredThrowableException e) {
 			throw e.getCause();
 		}
+			});
 	}
 
-	@Test(expected = IdAuthenticationBusinessException.class)
-	@Ignore
+	@Test
+	@Disabled
 	public void testIdRepoServiceException_UINDeactivated() throws Throwable {
+		assertThrows(IdAuthenticationBusinessException.class, () -> {
 		try {
 			Map<String, Object> idRepo = new HashMap<>();
 			String vid = "476567";
@@ -343,6 +357,7 @@ public class IdAuthServiceImplTest {
 		} catch (UndeclaredThrowableException e) {
 			throw e.getCause();
 		}
+			});
 	}
 	
 	@Test
@@ -352,12 +367,14 @@ public class IdAuthServiceImplTest {
 		ReflectionTestUtils.invokeMethod(idServiceImpl, "updateVIDstatus", "234433356");
 	}
 	
-	@Test(expected=IdAuthenticationBusinessException.class)
+	@Test
 	public void testUpdateVIDStatusFailed() throws RestServiceException, IdAuthenticationBusinessException {
+		assertThrows(IdAuthenticationBusinessException.class, () -> {
 		Mockito.when(securityManager.hash(Mockito.anyString())).thenReturn("234433356");
 		Mockito.when(identityRepo.existsById(Mockito.anyString())).thenReturn(true);
 		Mockito.when(identityRepo.getOne(Mockito.anyString())).thenThrow(new DataAccessException("error") {});
 		ReflectionTestUtils.invokeMethod(idServiceImpl, "updateVIDstatus", "234433356");
+			});
 	}
 
 }

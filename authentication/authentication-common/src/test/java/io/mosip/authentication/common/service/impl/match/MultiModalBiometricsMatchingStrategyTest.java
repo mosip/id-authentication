@@ -1,11 +1,12 @@
 package io.mosip.authentication.common.service.impl.match;
 
-import static org.junit.Assert.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertThrows;
+import static org.junit.jupiter.api.Assertions.assertEquals;
 
 import java.util.HashMap;
 import java.util.Map;
 
-import org.junit.Test;
+import org.junit.jupiter.api.Test;
 
 import io.mosip.authentication.core.exception.IdAuthenticationBusinessException;
 import io.mosip.authentication.core.spi.indauth.match.MatchFunction;
@@ -41,8 +42,9 @@ public class MultiModalBiometricsMatchingStrategyTest {
 		assertEquals(result, matchVal.intValue());
 	}
 	
-	@Test(expected=IdAuthenticationBusinessException.class)
+	@Test
 	public void testGetMatchingStrategyException() throws Exception {
+		assertThrows(IdAuthenticationBusinessException.class, () -> {
 		MultiModalBiometricsMatchingStrategy testSubject;
 
 		// default test
@@ -55,6 +57,7 @@ public class MultiModalBiometricsMatchingStrategyTest {
 		matchProperties.put(IdaIdMapping.MULTI_MODAL_BIOMETRICS.getIdname(), null);
 		matchFunction.match(reqValues, entityValues, matchProperties);
 		
+			});
 	}
 	
 	@Test

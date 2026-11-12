@@ -1,5 +1,8 @@
 package io.mosip.authentication.service.kyc.impl;
 
+import org.mockito.quality.Strictness;
+import org.mockito.junit.jupiter.MockitoSettings;
+import org.mockito.junit.jupiter.MockitoExtension;
 import io.mosip.authentication.common.service.config.IDAMappingConfig;
 import io.mosip.authentication.common.service.repository.IdentityBindingCertificateRepository;
 import io.mosip.authentication.common.service.transaction.manager.IdAuthSecurityManager;
@@ -7,14 +10,14 @@ import io.mosip.authentication.core.exception.IdAuthenticationBusinessException;
 import io.mosip.authentication.core.indauth.dto.IdentityInfoDTO;
 import io.mosip.authentication.core.indauth.dto.IdentityKeyBindingDTO;
 import io.mosip.authentication.core.indauth.dto.IdentityKeyBindingRequestDTO;
-import org.junit.Assert;
-import org.junit.Before;
-import org.junit.Test;
-import org.junit.runner.RunWith;
+import org.junit.jupiter.api.Assertions;
+import org.junit.jupiter.api.BeforeEach;
+import org.junit.jupiter.api.Test;
+import org.junit.jupiter.api.extension.ExtendWith;
 import org.mockito.InjectMocks;
 import org.mockito.Mock;
 import org.mockito.Mockito;
-import org.springframework.test.context.junit4.SpringRunner;
+import org.springframework.test.context.junit.jupiter.SpringExtension;
 import org.springframework.test.util.ReflectionTestUtils;
 import java.security.cert.CertificateEncodingException;
 import java.util.ArrayList;
@@ -22,7 +25,8 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
-@RunWith(SpringRunner.class)
+@ExtendWith({SpringExtension.class, MockitoExtension.class})
+@MockitoSettings(strictness = Strictness.LENIENT)
 public class IdentityKeyBindingServiceImplTest {
 
     @Mock
@@ -39,7 +43,7 @@ public class IdentityKeyBindingServiceImplTest {
 
     Map<String,Object> pubblicKeyMap;
 
-    @Before
+    @BeforeEach
     public void initialize() {
         pubblicKeyMap = new HashMap<>();
         pubblicKeyMap.put("n", "isAXe1AStinOg3KSCyTDAvu38KRS7ZmKv3Etmt7lSy3SPEg1jOqycdpL4YfFf2uh4rrUEMwsizyIlvWrN6C_ytEx8Non6noXnYfuuePRvL6kaTGdd_lbrC7eh1FI2c2cPzWRTq-CMBCSAdxmjD6PIqaVk5WtliU4qt27F5xfo7lG8lMlREgLb7u0HB9W7B8PjxvWmZ6cDle6eSnb1zOxAAFzB-GbGhRpPF-6ki25mdUrWJGlEkXGSCW1SohSM3YKPJW_xY6_520XdSeHFS9X84f6BXEz_fYTQcBPiNKaxObRkqZ-24PnRzy5vOytjeEnwusenBUHtri4aj1rKkTmIQ");
@@ -58,7 +62,7 @@ public class IdentityKeyBindingServiceImplTest {
         Mockito.when(bindingCertificateRepo.countPublicKeysByIdHash(Mockito.anyString(),Mockito.any())).thenReturn(1);
 
         boolean flag=identityKeyBindingServiceImpl.isPublicKeyBinded("idVid", pubblicKeyMap, "vid");
-        Assert.assertFalse(flag);
+        Assertions.assertFalse(flag);
 
     }
 
@@ -119,9 +123,9 @@ public class IdentityKeyBindingServiceImplTest {
 
         try{
             identityKeyBindingServiceImpl.createAndSaveKeyBindingCertificate(identityKeyBindingRequestDTO,identityInfo,"token","partnerId");
-            Assert.fail();
+            Assertions.fail();
         }catch (IdAuthenticationBusinessException e){
-            Assert.assertEquals("IDA-IKB-004",e.getErrorCode());
+            Assertions.assertEquals("IDA-IKB-004",e.getErrorCode());
         }
     }
 
@@ -151,9 +155,9 @@ public class IdentityKeyBindingServiceImplTest {
 
         try{
             identityKeyBindingServiceImpl.createAndSaveKeyBindingCertificate(identityKeyBindingRequestDTO,identityInfo,"token","partnerId");
-            Assert.fail();
+            Assertions.fail();
         }catch (IdAuthenticationBusinessException e){
-            Assert.assertEquals("IDA-IKB-005",e.getErrorCode());
+            Assertions.assertEquals("IDA-IKB-005",e.getErrorCode());
         }
     }
 }

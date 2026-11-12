@@ -1,14 +1,15 @@
 package io.mosip.authentication.common.service.integration;
 
+import static org.junit.jupiter.api.Assertions.assertThrows;
 import java.time.LocalDateTime;
 import java.util.Optional;
 
-import org.junit.Before;
-import org.junit.Test;
-import org.junit.runner.RunWith;
+import org.junit.jupiter.api.BeforeEach;
+import org.junit.jupiter.api.Test;
+import org.junit.jupiter.api.extension.ExtendWith;
 import org.mockito.InjectMocks;
 import org.mockito.Mock;
-import org.mockito.junit.MockitoJUnitRunner;
+import org.mockito.junit.jupiter.MockitoExtension;
 import org.springframework.test.util.ReflectionTestUtils;
 
 import io.mosip.authentication.common.service.entity.OtpTransaction;
@@ -18,11 +19,11 @@ import io.mosip.authentication.core.constant.IdAuthCommonConstants;
 import io.mosip.authentication.core.constant.IdAuthenticationErrorConstants;
 import io.mosip.authentication.core.exception.IdAuthenticationBusinessException;
 
-import static org.junit.Assert.*;
+import static org.junit.jupiter.api.Assertions.*;
 import static org.mockito.ArgumentMatchers.*;
 import static org.mockito.Mockito.*;
 
-@RunWith(MockitoJUnitRunner.class)
+@ExtendWith(MockitoExtension.class)
 public class ValidateOtpHelperTest {
 
 	@Mock
@@ -37,7 +38,7 @@ public class ValidateOtpHelperTest {
 	@InjectMocks
 	private ValidateOtpHelper validateOtpHelper;
 	
-	@Before
+	@BeforeEach
 	public void before() {
 		ReflectionTestUtils.setField(validateOtpHelper, "numberOfValidationAttemptsAllowed", 5);
 		ReflectionTestUtils.setField(validateOtpHelper, "otpFrozenTimeMinutes", 30);
@@ -47,13 +48,14 @@ public class ValidateOtpHelperTest {
 	public void testCreateOTPFrozenException() {
 		IdAuthenticationBusinessException exception = validateOtpHelper.createOTPFrozenException();
 		
-		assertNotNull("Exception should not be null", exception);
-		assertEquals("Should have correct error code", 
-			IdAuthenticationErrorConstants.OTP_FROZEN.getErrorCode(), exception.getErrorCode());
+		assertNotNull(exception, "Exception should not be null");
+		assertEquals( 
+			IdAuthenticationErrorConstants.OTP_FROZEN.getErrorCode(), exception.getErrorCode(), "Should have correct error code");
 	}
 	
-	@Test(expected = IdAuthenticationBusinessException.class)
+	@Test
 	public void testValidateOtpWithNoOtpEntity() throws IdAuthenticationBusinessException {
+		assertThrows(IdAuthenticationBusinessException.class, () -> {
 		String pinValue = "123456";
 		String otpKey = "testKey";
 		String individualId = "1234567890";
@@ -64,6 +66,7 @@ public class ValidateOtpHelperTest {
 			anyString(), anyList())).thenReturn(Optional.empty());
 		
 		validateOtpHelper.validateOtp(pinValue, otpKey, individualId);
+			});
 	}
 	
 	@Test
@@ -93,7 +96,7 @@ public class ValidateOtpHelperTest {
 		
 		boolean result = validateOtpHelper.validateOtp(pinValue, otpKey, individualId);
 		
-		assertTrue("Should return true for valid OTP", result);
+		assertTrue(result, "Should return true for valid OTP");
 		verify(otpRepo, atLeastOnce()).save(any(OtpTransaction.class));
 	}
 	
@@ -121,18 +124,19 @@ public class ValidateOtpHelperTest {
 		String computedHash = IdAuthSecurityManager.digestAsPlainText(
 			(otpKey + io.mosip.authentication.common.service.util.EnvUtil.getKeySplitter() + pinValue).getBytes());
 		// Ensure stored hash is different
-		assertNotEquals("Hashes should be different for invalid OTP test", storedOtpHash, computedHash);
+		assertNotEquals(storedOtpHash, computedHash, "Hashes should be different for invalid OTP test");
 		doNothing().when(requireOtpNotFrozen).requireOtpNotFrozen(any(OtpTransaction.class), anyBoolean());
 		when(otpRepo.save(any(OtpTransaction.class))).thenReturn(otpEntity);
 		
 		boolean result = validateOtpHelper.validateOtp(pinValue, otpKey, individualId);
 		
-		assertFalse("Should return false for invalid OTP", result);
+		assertFalse(result, "Should return false for invalid OTP");
 		verify(otpRepo, atLeastOnce()).save(any(OtpTransaction.class));
 	}
 	
-	@Test(expected = IdAuthenticationBusinessException.class)
+	@Test
 	public void testValidateOtpWithUnfrozenStatus() throws IdAuthenticationBusinessException {
+		assertThrows(IdAuthenticationBusinessException.class, () -> {
 		String pinValue = "123456";
 		String otpKey = "testKey";
 		String individualId = "1234567890";
@@ -148,5 +152,6 @@ public class ValidateOtpHelperTest {
 		doNothing().when(requireOtpNotFrozen).requireOtpNotFrozen(any(OtpTransaction.class), anyBoolean());
 		
 		validateOtpHelper.validateOtp(pinValue, otpKey, individualId);
+			});
 	}
 }

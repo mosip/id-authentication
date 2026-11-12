@@ -2,8 +2,8 @@ package io.mosip.authentication.service.internal.batch;
 
 import java.util.List;
 
-import org.springframework.batch.core.JobExecution;
-import org.springframework.batch.core.JobExecutionListener;
+import org.springframework.batch.core.job.JobExecution;
+import org.springframework.batch.core.listener.JobExecutionListener;
 import org.springframework.stereotype.Component;
 
 import io.mosip.authentication.core.logger.IdaLogger;

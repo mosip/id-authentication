@@ -1,25 +1,28 @@
 package io.mosip.authentication.service.kyc.validator;
 
-import static org.junit.Assert.assertFalse;
-import static org.junit.Assert.assertTrue;
+import org.mockito.quality.Strictness;
+import org.mockito.junit.jupiter.MockitoSettings;
+import org.mockito.junit.jupiter.MockitoExtension;
+import static org.junit.jupiter.api.Assertions.assertFalse;
+import static org.junit.jupiter.api.Assertions.assertTrue;
 
 import java.time.Instant;
 import java.time.ZoneOffset;
 import java.time.format.DateTimeFormatter;
 import java.util.Arrays;
 
-import org.junit.Assert;
-import org.junit.Before;
-import org.junit.Ignore;
-import org.junit.Test;
-import org.junit.runner.RunWith;
+import org.junit.jupiter.api.Assertions;
+import org.junit.jupiter.api.BeforeEach;
+import org.junit.jupiter.api.Disabled;
+import org.junit.jupiter.api.Test;
+import org.junit.jupiter.api.extension.ExtendWith;
 import org.mockito.InjectMocks;
-import org.springframework.boot.test.autoconfigure.web.servlet.WebMvcTest;
+import org.springframework.boot.webmvc.test.autoconfigure.WebMvcTest;
 import org.springframework.context.annotation.Import;
 import org.springframework.test.context.ContextConfiguration;
 import org.springframework.test.context.TestContext;
 import org.springframework.test.context.TestPropertySource;
-import org.springframework.test.context.junit4.SpringRunner;
+import org.springframework.test.context.junit.jupiter.SpringExtension;
 import org.springframework.test.util.ReflectionTestUtils;
 import org.springframework.validation.BeanPropertyBindingResult;
 import org.springframework.validation.Errors;
@@ -29,7 +32,8 @@ import io.mosip.authentication.common.service.util.EnvUtil;
 import io.mosip.authentication.core.indauth.dto.KycAuthRequestDTO;
 import io.mosip.authentication.core.indauth.dto.VciCredentialsDefinitionRequestDTO;
 import io.mosip.authentication.core.indauth.dto.VciExchangeRequestDTO;
-@RunWith(SpringRunner.class)
+@ExtendWith({SpringExtension.class, MockitoExtension.class})
+@MockitoSettings(strictness = Strictness.LENIENT)
 @WebMvcTest
 @ContextConfiguration(classes = { WebApplicationContext.class })
 @Import(EnvUtil.class)
@@ -39,7 +43,7 @@ public class VciExchangeRequestValidatorTest {
     @InjectMocks
     VciExchangeRequestValidator vciExchangeRequestValidator;
 
-    @Before
+    @BeforeEach
     public void before() {
         ReflectionTestUtils.setField(vciExchangeRequestValidator, "supportedCredTypes",
                 Arrays.asList("VerifiableCredential","MOSIPVerifiableCredential"));
@@ -47,12 +51,12 @@ public class VciExchangeRequestValidatorTest {
 
     @Test
     public void test_supports_withValidInput_thenPass() {
-        Assert.assertTrue(vciExchangeRequestValidator.supports(VciExchangeRequestDTO.class));
+        Assertions.assertTrue(vciExchangeRequestValidator.supports(VciExchangeRequestDTO.class));
     }
 
     @Test
     public void test_supports_withInvalidInput_thenFail() {
-        Assert.assertFalse(vciExchangeRequestValidator.supports(KycAuthRequestDTO.class));
+        Assertions.assertFalse(vciExchangeRequestValidator.supports(KycAuthRequestDTO.class));
     }
 
     @Test

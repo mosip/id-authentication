@@ -1,25 +1,24 @@
 package io.mosip.authentication.service.internal.validator;
 
 import io.mosip.authentication.common.service.websub.dto.EventModel;
-import org.junit.Ignore;
-import org.junit.runner.RunWith;
-import org.springframework.boot.test.autoconfigure.web.servlet.WebMvcTest;
+import org.junit.jupiter.api.Disabled;
+import org.junit.jupiter.api.extension.ExtendWith;
+import org.springframework.boot.webmvc.test.autoconfigure.WebMvcTest;
 import org.springframework.test.context.ContextConfiguration;
 import org.springframework.test.context.TestContext;
-import org.springframework.test.context.junit4.SpringRunner;
+import org.springframework.test.context.junit.jupiter.SpringExtension;
 import org.springframework.web.context.WebApplicationContext;
 
 import org.junit.jupiter.api.Test;
 import org.springframework.validation.BeanPropertyBindingResult;
 import org.springframework.validation.Errors;
 
-import static org.junit.Assert.assertFalse;
-import static org.junit.Assert.assertNull;
-import static org.junit.Assert.assertTrue;
+import static org.junit.jupiter.api.Assertions.assertFalse;
+import static org.junit.jupiter.api.Assertions.assertNull;
+import static org.junit.jupiter.api.Assertions.assertTrue;
 import static org.junit.jupiter.api.Assertions.assertDoesNotThrow;
 
-@Ignore
-@RunWith(SpringRunner.class)
+@ExtendWith(SpringExtension.class)
 @WebMvcTest
 @ContextConfiguration(classes = { TestContext.class, WebApplicationContext.class })
 public class CredentialIssueEventValidatorTest {
@@ -38,7 +37,7 @@ public class CredentialIssueEventValidatorTest {
 //	@InjectMocks
 //	CredentialIssueEventValidator validator;
 //
-//	@Before
+//	@BeforeEach
 //	public void setUp() throws Exception {
 //		ReflectionTestUtils.setField(validator, "env", env);
 //		ReflectionTestUtils.setField(validator, "uinValidator", uinValidator);
@@ -294,7 +293,7 @@ public class CredentialIssueEventValidatorTest {
 //		assertTrue(errors.getAllErrors().stream().anyMatch(err -> err.getCode().equals(IdAuthenticationErrorConstants.MISSING_INPUT_PARAMETER.getErrorCode())));
 //	}
 //	
-//	@Ignore
+//	@Disabled
 //	@Test
 //	public void testValidateRequestWrapperMissingRequestTime() throws Exception {
 //		CredentialIssueEventValidator testSubject;
@@ -322,7 +321,7 @@ public class CredentialIssueEventValidatorTest {
 //		assertTrue(errors.getAllErrors().stream().anyMatch(err -> err.getCode().equals(IdAuthenticationErrorConstants.MISSING_INPUT_PARAMETER.getErrorCode())));
 //	}
 //	
-//	@Ignore
+//	@Disabled
 //	@Test
 //	public void testValidateRequestWrapperFutureRequestTime() throws Exception {
 //		CredentialIssueEventValidator testSubject;

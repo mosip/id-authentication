@@ -1,8 +1,9 @@
 package io.mosip.authentication.core.util;
 
-import static org.junit.Assert.*;
+import static org.junit.jupiter.api.Assertions.assertThrows;
+import static org.junit.jupiter.api.Assertions.*;
 
-import org.junit.Test;
+import org.junit.jupiter.api.Test;
 
 import io.mosip.authentication.core.exception.IdAuthenticationBusinessException;
 
@@ -42,25 +43,33 @@ public class MaskUtilTest {
 	assertNotEquals("XXXX34654512324", MaskUtil.generateMaskValue("123234654512324", 8));
     }
     
-    @Test(expected = IdAuthenticationBusinessException.class)
+    @Test
     public void testMaskEmailWithNull() throws IdAuthenticationBusinessException {
+		assertThrows(IdAuthenticationBusinessException.class, () -> {
 	MaskUtil.maskEmail(null);
-    }
+    		});
+	}
     
-    @Test(expected = IdAuthenticationBusinessException.class)
+    @Test
     public void testMaskEmailWithEmpty() throws IdAuthenticationBusinessException {
+		assertThrows(IdAuthenticationBusinessException.class, () -> {
 	MaskUtil.maskEmail("");
-    }
+    		});
+	}
     
-    @Test(expected = IdAuthenticationBusinessException.class)
+    @Test
     public void testMaskMobileWithNull() throws IdAuthenticationBusinessException {
+		assertThrows(IdAuthenticationBusinessException.class, () -> {
 	MaskUtil.maskMobile(null);
-    }
+    		});
+	}
     
-    @Test(expected = IdAuthenticationBusinessException.class)
+    @Test
     public void testMaskMobileWithEmpty() throws IdAuthenticationBusinessException {
+		assertThrows(IdAuthenticationBusinessException.class, () -> {
 	MaskUtil.maskMobile("");
-    }
+    		});
+	}
     
     @Test
     public void testGenerateMaskValueWithMaskNoGreaterThanLength() {

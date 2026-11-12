@@ -1,34 +1,34 @@
 package io.mosip.authentication.service.internal.validator;
 
-import org.junit.Before;
-import org.junit.Test;
-import org.junit.runner.RunWith;
+import org.junit.jupiter.api.BeforeEach;
+import org.junit.jupiter.api.Test;
+import org.junit.jupiter.api.extension.ExtendWith;
 import org.mockito.InjectMocks;
-import org.mockito.junit.MockitoJUnitRunner;
+import org.mockito.junit.jupiter.MockitoExtension;
 import org.springframework.validation.BeanPropertyBindingResult;
 import org.springframework.validation.Errors;
 
 import io.mosip.authentication.core.spi.authtype.status.service.AuthTypeStatusDto;
 
-import static org.junit.Assert.*;
+import static org.junit.jupiter.api.Assertions.*;
 
-@RunWith(MockitoJUnitRunner.class)
+@ExtendWith(MockitoExtension.class)
 public class UpdateAuthtypeStatusValidatorTest {
 
 	@InjectMocks
 	private UpdateAuthtypeStatusValidator updateAuthtypeStatusValidator;
 	
-	@Before
+	@BeforeEach
 	public void before() {
 		// Setup if needed
 	}
 	
 	@Test
 	public void testSupports() {
-		assertTrue("Should support AuthTypeStatusDto", 
-			updateAuthtypeStatusValidator.supports(AuthTypeStatusDto.class));
-		assertFalse("Should not support other classes", 
-			updateAuthtypeStatusValidator.supports(String.class));
+		assertTrue( 
+			updateAuthtypeStatusValidator.supports(AuthTypeStatusDto.class), "Should support AuthTypeStatusDto");
+		assertFalse( 
+			updateAuthtypeStatusValidator.supports(String.class), "Should not support other classes");
 	}
 	
 	@Test
@@ -38,7 +38,7 @@ public class UpdateAuthtypeStatusValidatorTest {
 		updateAuthtypeStatusValidator.validate(null, errors);
 		
 		// Should handle null gracefully
-		assertFalse("Should not have errors for null target", errors.hasErrors());
+		assertFalse(errors.hasErrors(), "Should not have errors for null target");
 	}
 
 }

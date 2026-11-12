@@ -1,7 +1,10 @@
 package io.mosip.authentication.service.kyc.util;
 
-import static org.junit.Assert.assertEquals;
-import static org.junit.Assert.assertNotNull;
+import org.mockito.quality.Strictness;
+import org.mockito.junit.jupiter.MockitoSettings;
+import org.mockito.junit.jupiter.MockitoExtension;
+import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertNotNull;
 
 import java.util.ArrayList;
 import java.util.Arrays;
@@ -11,19 +14,19 @@ import java.util.List;
 import java.util.Optional;
 import java.util.Set;
 
-import org.junit.Before;
-import org.junit.Test;
-import org.junit.runner.RunWith;
+import org.junit.jupiter.api.BeforeEach;
+import org.junit.jupiter.api.Test;
+import org.junit.jupiter.api.extension.ExtendWith;
 import org.mockito.InjectMocks;
 import org.mockito.Mock;
 import org.mockito.Mockito;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.boot.test.autoconfigure.web.servlet.WebMvcTest;
+import org.springframework.boot.webmvc.test.autoconfigure.WebMvcTest;
 import org.springframework.context.annotation.Import;
 import org.springframework.test.context.ContextConfiguration;
 import org.springframework.test.context.TestContext;
 import org.springframework.test.context.TestPropertySource;
-import org.springframework.test.context.junit4.SpringRunner;
+import org.springframework.test.context.junit.jupiter.SpringExtension;
 import org.springframework.test.util.ReflectionTestUtils;
 import org.springframework.web.context.WebApplicationContext;
 
@@ -34,11 +37,12 @@ import io.mosip.authentication.common.service.util.EnvUtil;
 import io.mosip.authentication.core.exception.IdAuthenticationBusinessException;
 import io.mosip.authentication.core.indauth.dto.BaseRequestDTO;
 
-import static org.junit.Assert.*;
+import static org.junit.jupiter.api.Assertions.*;
 
 @WebMvcTest
 @ContextConfiguration(classes = {TestContext.class, WebApplicationContext.class})
-@RunWith(SpringRunner.class)
+@ExtendWith({SpringExtension.class, MockitoExtension.class})
+@MockitoSettings(strictness = Strictness.LENIENT)
 @Import(EnvUtil.class)
 @TestPropertySource(locations="classpath:application.properties")
 public class ExchangeDataAttributesUtilTest {
@@ -55,7 +59,7 @@ public class ExchangeDataAttributesUtilTest {
     @InjectMocks
     private ExchangeDataAttributesUtil exchangeDataAttributesUtil;
 
-    @Before
+    @BeforeEach
 	public void before() {
 		//
 	}
@@ -169,7 +173,7 @@ public class ExchangeDataAttributesUtilTest {
         ReflectionTestUtils.setField(exchangeDataAttributesUtil, "consentedIndividualIdAttributeName", "individual_id");
         exchangeDataAttributesUtil.mapConsentedAttributesToIdSchemaAttributes(null, filterAttributes, policyAttributes);
         
-        assertTrue("Filter attributes should remain empty", filterAttributes.isEmpty());
+        assertTrue(filterAttributes.isEmpty(), "Filter attributes should remain empty");
     }
 
     @Test
@@ -181,7 +185,7 @@ public class ExchangeDataAttributesUtilTest {
         ReflectionTestUtils.setField(exchangeDataAttributesUtil, "consentedIndividualIdAttributeName", "individual_id");
         exchangeDataAttributesUtil.mapConsentedAttributesToIdSchemaAttributes(emptyList, filterAttributes, policyAttributes);
         
-        assertTrue("Filter attributes should remain empty", filterAttributes.isEmpty());
+        assertTrue(filterAttributes.isEmpty(), "Filter attributes should remain empty");
     }
 
     @Test
@@ -190,7 +194,7 @@ public class ExchangeDataAttributesUtilTest {
         Set<String> filterAttributes = Set.of("name", "gender", "dob");
 
         Set<String> resFilterAttributes = exchangeDataAttributesUtil.filterByPolicyAllowedAttributes(filterAttributes, emptyPolicyAttributes);
-        assertTrue("Should return empty set when policy is empty", resFilterAttributes.isEmpty());
+        assertTrue(resFilterAttributes.isEmpty(), "Should return empty set when policy is empty");
     }
 
     @Test
@@ -199,6 +203,6 @@ public class ExchangeDataAttributesUtilTest {
         Set<String> filterAttributes = Set.of("name", "gender", "dob");
 
         Set<String> resFilterAttributes = exchangeDataAttributesUtil.filterByPolicyAllowedAttributes(filterAttributes, policyAttributes);
-        assertTrue("Should return empty set when no attributes match", resFilterAttributes.isEmpty());
+        assertTrue(resFilterAttributes.isEmpty(), "Should return empty set when no attributes match");
     }
 }

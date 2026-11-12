@@ -1,8 +1,8 @@
 package io.mosip.authentication.common.service.impl.match;
 
-import static org.junit.Assert.assertEquals;
-import static org.junit.Assert.assertNotEquals;
-import static org.junit.Assert.assertNotNull;
+import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertNotEquals;
+import static org.junit.jupiter.api.Assertions.assertNotNull;
 
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
@@ -13,9 +13,9 @@ import java.util.List;
 import java.util.Map;
 import java.util.Optional;
 
-import org.junit.Before;
-import org.junit.Ignore;
-import org.junit.Test;
+import org.junit.jupiter.api.BeforeEach;
+import org.junit.jupiter.api.Disabled;
+import org.junit.jupiter.api.Test;
 
 import io.mosip.authentication.common.service.config.IDAMappingConfig;
 import io.mosip.authentication.core.indauth.dto.IdentityInfoDTO;
@@ -31,7 +31,7 @@ public class DemoMatchTypeTest {
 
 	SimpleDateFormat sdf = null;
 
-	@Before
+	@BeforeEach
 	public void setup() {
 		sdf = new SimpleDateFormat("yyyy-MM-dd");
 	}
@@ -86,7 +86,7 @@ public class DemoMatchTypeTest {
 
 	}
 
-	@Ignore
+	@Disabled
 	@Test
 	public void TestFullAddress() {
 		String tmpAddress = "exemple d'adresse ligne 1 exemple d'adresse ligne 2 exemple d'adresse ligne 3 Casablanca Tanger-Tétouan-Al Hoceima Fès-Meknès";

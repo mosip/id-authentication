@@ -1,18 +1,22 @@
 package io.mosip.authentication.common.service.impl.idevent;
 
+import org.mockito.quality.Strictness;
+import org.mockito.junit.jupiter.MockitoSettings;
+import org.mockito.junit.jupiter.MockitoExtension;
+import static org.junit.jupiter.api.Assertions.assertThrows;
 import java.time.LocalDateTime;
 import java.util.HashMap;
 import java.util.Map;
 
-import org.junit.Before;
-import org.junit.Test;
-import org.junit.runner.RunWith;
+import org.junit.jupiter.api.BeforeEach;
+import org.junit.jupiter.api.Test;
+import org.junit.jupiter.api.extension.ExtendWith;
 import org.mockito.InjectMocks;
 import org.mockito.Mock;
-import org.springframework.boot.test.autoconfigure.web.servlet.WebMvcTest;
+import org.springframework.boot.webmvc.test.autoconfigure.WebMvcTest;
 import org.springframework.test.context.ContextConfiguration;
 import org.springframework.test.context.TestContext;
-import org.springframework.test.context.junit4.SpringRunner;
+import org.springframework.test.context.junit.jupiter.SpringExtension;
 import org.springframework.web.context.WebApplicationContext;
 
 import io.mosip.authentication.common.service.helper.AuditHelper;
@@ -23,7 +27,8 @@ import io.mosip.idrepository.core.constant.IDAEventType;
 import io.mosip.kernel.core.websub.model.Event;
 import io.mosip.kernel.core.websub.model.EventModel;
 
-@RunWith(SpringRunner.class)
+@ExtendWith({SpringExtension.class, MockitoExtension.class})
+@MockitoSettings(strictness = Strictness.LENIENT)
 @WebMvcTest
 @ContextConfiguration(classes = { TestContext.class, WebApplicationContext.class })
 public class IdChangeEventHandlerServiceImplTest {
@@ -48,7 +53,7 @@ public class IdChangeEventHandlerServiceImplTest {
 
 	private static final String ID_HASH = "id_hash";
 
-	@Before
+	@BeforeEach
 	public void before() {
 	}
 
@@ -78,8 +83,9 @@ public class IdChangeEventHandlerServiceImplTest {
 		idChangeEventImpl.handleIdEvent(eventModel);
 	}
 
-	@Test(expected = IdAuthenticationBusinessException.class)
+	@Test
 	public void handleIdEventExceptionTest1() throws IdAuthenticationBusinessException {
+		assertThrows(IdAuthenticationBusinessException.class, () -> {
 		EventModel eventModel = new EventModel();
 		Map<String, Object> data = new HashMap<String, Object>();
 		data.put("id_hash", "aZdaadxc");
@@ -91,10 +97,12 @@ public class IdChangeEventHandlerServiceImplTest {
 		event.setData(data);
 		eventModel.setEvent(event);
 		idChangeEventImpl.handleIdEvent(eventModel);
+			});
 	}
 
-	@Test(expected = IdAuthenticationBusinessException.class)
+	@Test
 	public void handleIdEventExceptionTest2() throws IdAuthenticationBusinessException {
+		assertThrows(IdAuthenticationBusinessException.class, () -> {
 		EventModel eventModel = new EventModel();
 		Map<String, Object> data = new HashMap<String, Object>();
 		data.put("id_hash", "aZdaadxc");
@@ -106,10 +114,12 @@ public class IdChangeEventHandlerServiceImplTest {
 		event.setData(data);
 		eventModel.setEvent(event);
 		idChangeEventImpl.handleIdEvent(eventModel);
+			});
 	}
 
-	@Test(expected = IdAuthenticationBusinessException.class)
+	@Test
 	public void handleIdEventExceptionTest3() throws IdAuthenticationBusinessException {
+		assertThrows(IdAuthenticationBusinessException.class, () -> {
 		EventModel eventModel = new EventModel();
 		Map<String, Object> data = new HashMap<String, Object>();
 		data.put("key1", "value1");
@@ -121,12 +131,15 @@ public class IdChangeEventHandlerServiceImplTest {
 		event.setData(data);
 		eventModel.setEvent(event);
 		idChangeEventImpl.handleIdEvent(eventModel);
+			});
 	}
 
-	@Test(expected = IdAuthenticationBusinessException.class)
+	@Test
 	public void handleIdEventExceptionTest() throws IdAuthenticationBusinessException {
+		assertThrows(IdAuthenticationBusinessException.class, () -> {
 		EventModel event = new EventModel();
 		idChangeEventImpl.handleIdEvent(event);
+			});
 	}
 
 }

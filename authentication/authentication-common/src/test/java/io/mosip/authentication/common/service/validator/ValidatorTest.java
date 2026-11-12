@@ -1,7 +1,10 @@
 package io.mosip.authentication.common.service.validator;
 
-import static org.junit.Assert.assertFalse;
-import static org.junit.Assert.assertTrue;
+import org.mockito.quality.Strictness;
+import org.mockito.junit.jupiter.MockitoSettings;
+import org.mockito.junit.jupiter.MockitoExtension;
+import static org.junit.jupiter.api.Assertions.assertFalse;
+import static org.junit.jupiter.api.Assertions.assertTrue;
 
 import java.time.Instant;
 import java.time.LocalDateTime;
@@ -13,19 +16,19 @@ import java.util.Collections;
 import java.util.List;
 import java.util.stream.Stream;
 
-import org.junit.Before;
-import org.junit.Ignore;
-import org.junit.Test;
-import org.junit.runner.RunWith;
+import org.junit.jupiter.api.BeforeEach;
+import org.junit.jupiter.api.Disabled;
+import org.junit.jupiter.api.Test;
+import org.junit.jupiter.api.extension.ExtendWith;
 import org.mockito.InjectMocks;
 import org.mockito.Mock;
 import org.mockito.Mockito;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.boot.test.autoconfigure.web.servlet.WebMvcTest;
+import org.springframework.boot.webmvc.test.autoconfigure.WebMvcTest;
 import org.springframework.mock.env.MockEnvironment;
 import org.springframework.test.context.ContextConfiguration;
 import org.springframework.test.context.TestContext;
-import org.springframework.test.context.junit4.SpringRunner;
+import org.springframework.test.context.junit.jupiter.SpringExtension;
 import org.springframework.test.util.ReflectionTestUtils;
 import org.springframework.validation.BeanPropertyBindingResult;
 import org.springframework.validation.Errors;
@@ -56,10 +59,11 @@ import io.mosip.kernel.core.idvalidator.exception.InvalidIDException;
 import io.mosip.kernel.core.util.DateUtils2;
 import io.mosip.kernel.logger.logback.appender.RollingFileAppender;
 
-@RunWith(SpringRunner.class)
+@ExtendWith({SpringExtension.class, MockitoExtension.class})
+@MockitoSettings(strictness = Strictness.LENIENT)
 @WebMvcTest
 @ContextConfiguration(classes = { TestContext.class, WebApplicationContext.class })
-@Ignore
+@Disabled
 public class ValidatorTest {
 
 	@Mock
@@ -103,7 +107,7 @@ public class ValidatorTest {
 	
 	private Long requestTimeAdjustmentSeconds;
 
-	@Before
+	@BeforeEach
 	public void before() {
 		ReflectionTestUtils.setField(restFactory, "env", env);
 		ReflectionTestUtils.setField(authRequestValidator, "idValidator", idValidator);
@@ -505,7 +509,7 @@ public class ValidatorTest {
 	
 	
 	@Test
-	@Ignore
+	@Disabled
 	public void validateBioMetadataDetails_Face_validateBioSubType_Invalid_Ignored() {
 		AuthRequestDTO authRequestDTO = createAuthRequestForFace();
 		RequestDTO requestDto = authRequestDTO.getRequest();
@@ -520,7 +524,7 @@ public class ValidatorTest {
 	}
 
 	@Test
-	@Ignore
+	@Disabled
 	public void validateBioMetadataDetails_Face_validateBioSubType_Null() { // TODO check error code
 		AuthRequestDTO authRequestDTO = createAuthRequestForFace();
 		RequestDTO requestDto = authRequestDTO.getRequest();
@@ -537,7 +541,7 @@ public class ValidatorTest {
 	}
 
 	@Test
-	@Ignore
+	@Disabled
 	public void validateBioMetadataDetails_Face_validateBioSubType_Empty() { // TODO check error code
 		AuthRequestDTO authRequestDTO = createAuthRequestForFace();
 		RequestDTO requestDto = authRequestDTO.getRequest();
@@ -674,7 +678,7 @@ public class ValidatorTest {
 	/**
 	 * Since validation to more than 2 finger count is removed ignoring this test
 	 */
-	@Ignore
+	@Disabled
 	@Test
 	public void validateBioMetadataDetails_validateFingerRequestExceedingCount() {
 		AuthRequestDTO authRequestDTO = createAuthRequestForFinger();

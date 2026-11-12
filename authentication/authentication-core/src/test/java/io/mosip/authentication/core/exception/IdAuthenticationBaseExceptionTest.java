@@ -1,8 +1,9 @@
 package io.mosip.authentication.core.exception;
 
-import static org.junit.Assert.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertThrows;
+import static org.junit.jupiter.api.Assertions.assertEquals;
 
-import org.junit.Test;
+import org.junit.jupiter.api.Test;
 
 import io.mosip.authentication.core.constant.IdAuthenticationErrorConstants;
 
@@ -18,9 +19,11 @@ public class IdAuthenticationBaseExceptionTest {
 	 *
 	 * @throws IdAuthenticationBaseException the id authentication base exception
 	 */
-	@Test(expected = IdAuthenticationBaseException.class)
+	@Test
 	public void IdAuthenticationBaseExceptionTest1() throws IdAuthenticationBaseException {
+		assertThrows(IdAuthenticationBaseException.class, () -> {
 		throw new IdAuthenticationBaseException("abcd");
+			});
 	}
 
 	/**

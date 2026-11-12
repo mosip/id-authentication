@@ -1,23 +1,26 @@
 package io.mosip.authentication.service.kyc.validator;
 
+import org.mockito.quality.Strictness;
+import org.mockito.junit.jupiter.MockitoSettings;
+import org.mockito.junit.jupiter.MockitoExtension;
 import io.mosip.authentication.common.service.helper.IdInfoHelper;
 import io.mosip.authentication.common.service.util.EnvUtil;
 import io.mosip.authentication.common.service.validator.AuthRequestValidator;
 import io.mosip.authentication.core.constant.IdAuthCommonConstants;
 import io.mosip.authentication.core.indauth.dto.KycExchangeRequestDTO;
-import org.junit.Assert;
-import org.junit.Before;
-import org.junit.Ignore;
-import org.junit.Test;
-import org.junit.runner.RunWith;
+import org.junit.jupiter.api.Assertions;
+import org.junit.jupiter.api.BeforeEach;
+import org.junit.jupiter.api.Disabled;
+import org.junit.jupiter.api.Test;
+import org.junit.jupiter.api.extension.ExtendWith;
 import org.mockito.InjectMocks;
 import org.mockito.Mock;
 import org.mockito.Mockito;
-import org.springframework.boot.test.autoconfigure.web.servlet.WebMvcTest;
+import org.springframework.boot.webmvc.test.autoconfigure.WebMvcTest;
 import org.springframework.context.annotation.Import;
 import org.springframework.test.context.ContextConfiguration;
 import org.springframework.test.context.TestContext;
-import org.springframework.test.context.junit4.SpringRunner;
+import org.springframework.test.context.junit.jupiter.SpringExtension;
 import org.springframework.test.util.ReflectionTestUtils;
 import org.springframework.validation.BeanPropertyBindingResult;
 import org.springframework.validation.Errors;
@@ -31,9 +34,10 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
-import static org.junit.Assert.assertFalse;
-import static org.junit.Assert.assertTrue;
-@RunWith(SpringRunner.class)
+import static org.junit.jupiter.api.Assertions.assertFalse;
+import static org.junit.jupiter.api.Assertions.assertTrue;
+@ExtendWith({SpringExtension.class, MockitoExtension.class})
+@MockitoSettings(strictness = Strictness.LENIENT)
 @WebMvcTest
 @ContextConfiguration(classes = { TestContext.class, WebApplicationContext.class })
 @Import(EnvUtil.class)
@@ -44,7 +48,7 @@ public class KycExchangeRequestValidatorTest {
     IdInfoHelper idInfoHelper;
     @InjectMocks
     AuthRequestValidator authRequestValidator;
-    @Before
+    @BeforeEach
     public void before() {
         ReflectionTestUtils.setField(kycExchangeRequestValidator, "idInfoHelper", idInfoHelper);
         ReflectionTestUtils.setField(authRequestValidator, "idInfoHelper", idInfoHelper);
@@ -58,7 +62,7 @@ public class KycExchangeRequestValidatorTest {
         assertFalse(kycExchangeRequestValidator.supports(KycAuthRequestValidator.class));
     }
     @Test
-    @Ignore
+    @Disabled
     public void testValidate_ValidRequest_NoErrors() {
         KycExchangeRequestDTO kycExchangeRequestDTO = new KycExchangeRequestDTO();
         kycExchangeRequestDTO.setId("id");
@@ -79,7 +83,7 @@ public class KycExchangeRequestValidatorTest {
         Errors errors = new BeanPropertyBindingResult(kycExchangeRequestDTO, "kycExchangeRequestDTO");
         Mockito.when(idInfoHelper.isMatchtypeEnabled(Mockito.any())).thenReturn(Boolean.TRUE);
         kycExchangeRequestValidator.validate(kycExchangeRequestDTO, errors);
-        Assert.assertFalse(errors.hasErrors());
+        Assertions.assertFalse(errors.hasErrors());
     }
     @Test
     public void testValidate_NullRequest_InvalidInputParameterError() {
@@ -87,8 +91,8 @@ public class KycExchangeRequestValidatorTest {
         Errors errors = new BeanPropertyBindingResult(kycExchangeRequestDTO, "kycExchangeRequestDTO");
         kycExchangeRequestValidator.validate(kycExchangeRequestDTO, errors);
         Mockito.when(idInfoHelper.isMatchtypeEnabled(Mockito.any())).thenReturn(Boolean.TRUE);
-        Assert.assertTrue(errors.hasErrors());
-        Assert.assertEquals("IDA-MLC-006", errors.getFieldError().getCode());
+        Assertions.assertTrue(errors.hasErrors());
+        Assertions.assertEquals("IDA-MLC-006", errors.getFieldError().getCode());
     }
     @Test
     public void testValidate_InvalidKycToken_MissingInputParameterError() {
@@ -99,8 +103,8 @@ public class KycExchangeRequestValidatorTest {
         Errors errors = new BeanPropertyBindingResult(request, "kycExchangeRequestDTO");
         kycExchangeRequestValidator.validate(request, errors);
         Mockito.when(idInfoHelper.isMatchtypeEnabled(Mockito.any())).thenReturn(Boolean.TRUE);
-        Assert.assertTrue(errors.hasErrors());
-        Assert.assertEquals("IDA-MLC-009", errors.getFieldError().getCode());
+        Assertions.assertTrue(errors.hasErrors());
+        Assertions.assertEquals("IDA-MLC-009", errors.getFieldError().getCode());
     }
     @Test
     public void testValidate_EmptyConsentObtainedList_MissingInputParameterError() {
@@ -112,8 +116,8 @@ public class KycExchangeRequestValidatorTest {
         Errors errors = new BeanPropertyBindingResult(request, "kycExchangeRequestDTO");
         Mockito.when(idInfoHelper.isMatchtypeEnabled(Mockito.any())).thenReturn(Boolean.TRUE);
         kycExchangeRequestValidator.validate(request, errors);
-        Assert.assertTrue(errors.hasErrors());
-        Assert.assertEquals("IDA-MLC-009", errors.getFieldError().getCode());
+        Assertions.assertTrue(errors.hasErrors());
+        Assertions.assertEquals("IDA-MLC-009", errors.getFieldError().getCode());
     }
 
     @Test

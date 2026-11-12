@@ -1,12 +1,12 @@
 package io.mosip.authentication.common.service.websub;
 
-import static org.junit.Assert.assertFalse;
-import static org.junit.Assert.assertTrue;
+import static org.junit.jupiter.api.Assertions.assertFalse;
+import static org.junit.jupiter.api.Assertions.assertTrue;
 
-import org.junit.After;
-import org.junit.Assert;
-import org.junit.Before;
-import org.junit.Test;
+import org.junit.jupiter.api.AfterEach;
+import org.junit.jupiter.api.Assertions;
+import org.junit.jupiter.api.BeforeEach;
+import org.junit.jupiter.api.Test;
 import org.mockito.Mockito;
 import org.springframework.boot.context.event.ApplicationReadyEvent;
 import org.springframework.scheduling.concurrent.ThreadPoolTaskScheduler;
@@ -14,12 +14,12 @@ import org.springframework.test.util.ReflectionTestUtils;
 
 public class BaseIDAWebSubInitializerTest {
 
-	@Before
+	@BeforeEach
 	public void setUp() throws Exception {
 
 	}
 
-	@After
+	@AfterEach
 	public void tearDown() throws Exception {
 
 	}

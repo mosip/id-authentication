@@ -1,6 +1,10 @@
 package io.mosip.authentication.common.service.facade;
 
-import static org.junit.Assert.assertTrue;
+import org.mockito.quality.Strictness;
+import org.mockito.junit.jupiter.MockitoSettings;
+import org.mockito.junit.jupiter.MockitoExtension;
+import static org.junit.jupiter.api.Assertions.assertThrows;
+import static org.junit.jupiter.api.Assertions.assertTrue;
 
 import java.io.IOException;
 import java.lang.reflect.InvocationTargetException;
@@ -19,19 +23,19 @@ import java.util.Optional;
 import io.mosip.authentication.common.service.helper.*;
 import io.mosip.authentication.common.service.util.EntityInfoUtil;
 import io.mosip.authentication.common.service.util.LanguageUtil;
-import org.junit.Before;
-import org.junit.Test;
-import org.junit.runner.RunWith;
+import org.junit.jupiter.api.BeforeEach;
+import org.junit.jupiter.api.Test;
+import org.junit.jupiter.api.extension.ExtendWith;
 import org.mockito.InjectMocks;
 import org.mockito.Mock;
 import org.mockito.Mockito;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.boot.test.autoconfigure.web.servlet.WebMvcTest;
+import org.springframework.boot.webmvc.test.autoconfigure.WebMvcTest;
 import org.springframework.context.annotation.Import;
 import org.springframework.test.context.ContextConfiguration;
 import org.springframework.test.context.TestContext;
 import org.springframework.test.context.TestPropertySource;
-import org.springframework.test.context.junit4.SpringRunner;
+import org.springframework.test.context.junit.jupiter.SpringExtension;
 import org.springframework.test.util.ReflectionTestUtils;
 import org.springframework.web.context.WebApplicationContext;
 
@@ -97,7 +101,8 @@ import io.mosip.kernel.templatemanager.velocity.builder.TemplateManagerBuilderIm
  * @author Prem Kumar
  */
 
-@RunWith(SpringRunner.class)
+@ExtendWith({SpringExtension.class, MockitoExtension.class})
+@MockitoSettings(strictness = Strictness.LENIENT)
 @WebMvcTest
 @ContextConfiguration(classes = { TestContext.class, WebApplicationContext.class, TemplateManagerBuilderImpl.class })
 @Import(EnvUtil.class)
@@ -211,7 +216,7 @@ public class AuthFacadeImplTest {
 	/**
 	 * Before.
 	 */
-	@Before
+	@BeforeEach
 	public void before() {
 		ReflectionTestUtils.setField(authFacadeImpl, "otpAuthService", otpAuthService);
 		ReflectionTestUtils.setField(authFacadeImpl, "tokenIdManager", tokenIdManager);
@@ -864,10 +869,11 @@ public class AuthFacadeImplTest {
 		
 	}
 	
-	@Test(expected = IdAuthenticationBusinessException.class)
+	@Test
 	public void authenticateIndividualTest_exception() throws IdAuthenticationBusinessException, IdAuthenticationDaoException,
 	NoSuchMethodException, SecurityException, IllegalAccessException, IllegalArgumentException,
 	InvocationTargetException, IOException {
+		assertThrows(IdAuthenticationBusinessException.class, () -> {
 		
 		AuthRequestDTO authRequestDTO = new AuthRequestDTO();
 		authRequestDTO.setIndividualId("274390482564");
@@ -963,6 +969,7 @@ public class AuthFacadeImplTest {
 		AuthResponseDTO authenticateIndividual = authFacadeImpl.authenticateIndividual(authRequestDTO, true, "123456", "12345", true,
 				new TestObjectWithMetadata());
 		
+			});
 	}
 	
 	@Test
@@ -1574,8 +1581,9 @@ public class AuthFacadeImplTest {
 				true, "247334310780728918141754192454591343", true, "1234", authTxnBuilder, "Zld6TjJjNllKYzExNjBFUUZrbmdzYnJMelRJQ1BY");
 	}
 
-	@Test(expected = IdAuthenticationBusinessException.class)
+	@Test
 	public void TestInvalidOTPviaAuth() throws Throwable {
+		assertThrows(IdAuthenticationBusinessException.class, () -> {
 		AuthRequestDTO authRequestDTO = new AuthRequestDTO();
 		RequestDTO request = new RequestDTO();
 		request.setOtp("111111");
@@ -1598,10 +1606,12 @@ public class AuthFacadeImplTest {
 			throw e.getCause();
 		}
 
+			});
 	}
 
-	@Test(expected = IdAuthenticationBusinessException.class)
+	@Test
 	public void TestInvalidOTPviaAuthwithActionMessage() throws Throwable {
+		assertThrows(IdAuthenticationBusinessException.class, () -> {
 		AuthRequestDTO authRequestDTO = new AuthRequestDTO();
 		authRequestDTO.setIndividualId("794138547620");
 		authRequestDTO.setIndividualIdType(IdType.UIN.getType());
@@ -1627,6 +1637,7 @@ public class AuthFacadeImplTest {
 			throw e.getCause();
 		}
 
+			});
 	}
 
 	private Map<String, Object> repoDetails() {

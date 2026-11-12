@@ -4,22 +4,22 @@ import io.mosip.authentication.common.service.spi.idevent.CredentialStoreService
 import io.mosip.authentication.service.internal.batch.MissingCredentialsItemReader;
 import io.mosip.authentication.service.internal.listener.InternalAuthIdChangeEventsWebSubInitializer;
 import io.mosip.idrepository.core.dto.CredentialRequestIdsDto;
-import org.junit.runner.RunWith;
+import org.junit.jupiter.api.extension.ExtendWith;
 import org.springframework.batch.integration.async.AsyncItemProcessor;
 import org.springframework.batch.integration.async.AsyncItemWriter;
-import org.springframework.batch.item.ItemWriter;
+import org.springframework.batch.infrastructure.item.ItemWriter;
 import org.springframework.core.task.TaskExecutor;
 import org.springframework.retry.RetryPolicy;
 import org.springframework.retry.backoff.BackOffPolicy;
 import org.springframework.scheduling.concurrent.ThreadPoolTaskExecutor;
-import org.springframework.test.context.junit4.SpringRunner;
+import org.springframework.test.context.junit.jupiter.SpringExtension;
 
-import static org.junit.Assert.*;
+import static org.junit.jupiter.api.Assertions.*;
 import static org.mockito.Mockito.*;
 
-import org.junit.Test;
-import org.springframework.batch.core.Job;
-import org.springframework.batch.core.Step;
+import org.junit.jupiter.api.Test;
+import org.springframework.batch.core.job.Job;
+import org.springframework.batch.core.step.Step;
 import org.springframework.batch.core.configuration.JobRegistry;
 import org.springframework.batch.core.repository.JobRepository;
 import org.springframework.context.annotation.AnnotationConfigApplicationContext;
@@ -29,7 +29,7 @@ import io.mosip.authentication.service.internal.batch.CredentialStoreTasklet;
 import java.lang.reflect.Method;
 import java.util.Collections;
 
-@RunWith(SpringRunner.class)
+@ExtendWith(SpringExtension.class)
 public class DataProcessingBatchConfigTest {
 
     @Test
@@ -113,8 +113,8 @@ public class DataProcessingBatchConfigTest {
     CredentialRequestIdsDto dto = new CredentialRequestIdsDto();
 
     // Create a Chunk wrapper for DTO
-    org.springframework.batch.item.Chunk<CredentialRequestIdsDto> chunk =
-            new org.springframework.batch.item.Chunk<>(Collections.singletonList(dto));
+    org.springframework.batch.infrastructure.item.Chunk<CredentialRequestIdsDto> chunk =
+            new org.springframework.batch.infrastructure.item.Chunk<>(Collections.singletonList(dto));
 
     // Call writer
     writer.write(chunk);

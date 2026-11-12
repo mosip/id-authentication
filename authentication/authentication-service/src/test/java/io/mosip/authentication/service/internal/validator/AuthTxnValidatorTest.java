@@ -1,31 +1,31 @@
 package io.mosip.authentication.service.internal.validator;
 
-import org.junit.Before;
-import org.junit.Test;
-import org.junit.runner.RunWith;
+import org.junit.jupiter.api.BeforeEach;
+import org.junit.jupiter.api.Test;
+import org.junit.jupiter.api.extension.ExtendWith;
 import org.mockito.InjectMocks;
-import org.mockito.junit.MockitoJUnitRunner;
+import org.mockito.junit.jupiter.MockitoExtension;
 import org.springframework.validation.BeanPropertyBindingResult;
 import org.springframework.validation.Errors;
 
 import io.mosip.authentication.core.autntxn.dto.AutnTxnRequestDto;
 
-import static org.junit.Assert.*;
-@RunWith(MockitoJUnitRunner.class)
+import static org.junit.jupiter.api.Assertions.*;
+@ExtendWith(MockitoExtension.class)
 public class AuthTxnValidatorTest {
 
 	@InjectMocks
 	private AuthTxnValidator authTxnValidator;
 	
-	@Before
+	@BeforeEach
 	public void before() {
 		// Setup if needed
 	}
 	
 	@Test
 	public void testSupports() {
-		assertTrue("Should support AutnTxnRequestDto", authTxnValidator.supports(AutnTxnRequestDto.class));
-		assertFalse("Should not support other classes", authTxnValidator.supports(String.class));
+		assertTrue(authTxnValidator.supports(AutnTxnRequestDto.class), "Should support AutnTxnRequestDto");
+		assertFalse(authTxnValidator.supports(String.class), "Should not support other classes");
 	}
 
 	@Test
@@ -35,7 +35,7 @@ public class AuthTxnValidatorTest {
 		authTxnValidator.validate(null, errors);
 		
 		// Should handle null gracefully
-		assertFalse("Should not have errors for null target", errors.hasErrors());
+		assertFalse(errors.hasErrors(), "Should not have errors for null target");
 	}
 	
 	@Test
@@ -50,6 +50,6 @@ public class AuthTxnValidatorTest {
 		
 		// Should have errors for invalid individual ID
 		// The actual validation is done by parent class method
-		assertNotNull("Errors object should not be null", errors);
+		assertNotNull(errors, "Errors object should not be null");
 	}
 }

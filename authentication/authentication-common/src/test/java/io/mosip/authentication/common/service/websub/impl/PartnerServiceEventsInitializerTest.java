@@ -1,12 +1,12 @@
 package io.mosip.authentication.common.service.websub.impl;
 
-import org.junit.Before;
+import org.junit.jupiter.api.BeforeEach;
 import org.mockito.Mockito;
 import org.springframework.test.util.ReflectionTestUtils;
 
 public class PartnerServiceEventsInitializerTest extends AbstractEventInitializerTest<PartnerServiceEventsInitializer>{
 
-	@Before
+	@BeforeEach
 	public void before() {
 	}
 	

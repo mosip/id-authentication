@@ -1,8 +1,9 @@
 package io.mosip.authentication.core.exception;
 
+import static org.junit.jupiter.api.Assertions.assertThrows;
 import java.io.IOException;
 
-import org.junit.Test;
+import org.junit.jupiter.api.Test;
 
 import io.mosip.authentication.core.constant.IdAuthenticationErrorConstants;
 
@@ -13,29 +14,39 @@ import io.mosip.authentication.core.constant.IdAuthenticationErrorConstants;
  */
 public class IdAuthUncheckedExceptionTest {
 
-	@Test(expected = IdAuthUncheckedException.class)
+	@Test
 	public void IdAuthUncheckedExceptionTest1() throws IdAuthenticationBaseException {
+		assertThrows(IdAuthUncheckedException.class, () -> {
 		throw new IdAuthUncheckedException();
+			});
 	}
 	
-	@Test(expected = IdAuthUncheckedException.class)
+	@Test
 	public void IdAuthUncheckedExceptionTest2() throws IdAuthenticationBaseException {
+		assertThrows(IdAuthUncheckedException.class, () -> {
 		throw new IdAuthUncheckedException("abcd", "message");
+			});
 	}
 	
-	@Test(expected = IdAuthUncheckedException.class)
+	@Test
 	public void IdAuthUncheckedExceptionTest3() throws IdAuthenticationBaseException {
+		assertThrows(IdAuthUncheckedException.class, () -> {
 		throw new IdAuthUncheckedException("abcd", "message", new IOException());
+			});
 	}
 	
-	@Test(expected = IdAuthUncheckedException.class)
+	@Test
 	public void IdAuthUncheckedExceptionTest4() throws IdAuthenticationBaseException {
+		assertThrows(IdAuthUncheckedException.class, () -> {
 		throw new IdAuthUncheckedException(IdAuthenticationErrorConstants.SERVER_ERROR);
+			});
 	}
 	
-	@Test(expected = IdAuthUncheckedException.class)
+	@Test
 	public void IdAuthUncheckedExceptionTest5() throws IdAuthenticationBaseException {
+		assertThrows(IdAuthUncheckedException.class, () -> {
 		throw new IdAuthUncheckedException(IdAuthenticationErrorConstants.SERVER_ERROR, new IOException());
+			});
 	}
 
 }

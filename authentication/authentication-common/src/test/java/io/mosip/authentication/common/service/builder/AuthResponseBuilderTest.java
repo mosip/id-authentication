@@ -1,13 +1,14 @@
 package io.mosip.authentication.common.service.builder;
 
-import static org.junit.Assert.assertEquals;
-import static org.junit.Assert.assertFalse;
-import static org.junit.Assert.assertTrue;
+import static org.junit.jupiter.api.Assertions.assertThrows;
+import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertFalse;
+import static org.junit.jupiter.api.Assertions.assertTrue;
 
 import java.util.Arrays;
 import java.util.stream.Collectors;
 
-import org.junit.Test;
+import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 
 import io.mosip.authentication.common.service.util.EnvUtil;
@@ -59,13 +60,15 @@ public class AuthResponseBuilderTest {
 
 	}
 
-	@Test(expected = IllegalStateException.class)
+	@Test
 	public void testAuthStatusInfoBuilderMultipleTimes() {
+		assertThrows(IllegalStateException.class, () -> {
 		AuthStatusInfoBuilder statusInfoBuilder = AuthStatusInfoBuilder.newInstance();
 		statusInfoBuilder.setStatus(true);
 		statusInfoBuilder.build();
 		statusInfoBuilder.setStatus(false);
 //		 statusInfoBuilder.addAuthUsageDataBits(AuthUsageDataBit.USED_PI_DOB);
+			});
 	}
 
 	@Test
@@ -122,13 +125,15 @@ public class AuthResponseBuilderTest {
 
 	}
 
-	@Test(expected = IllegalStateException.class)
+	@Test
 	public void testAuthResponseBuilderMultipleTimes() {
+		assertThrows(IllegalStateException.class, () -> {
 		AuthResponseBuilder statusInfoBuilder = AuthResponseBuilder.newInstance();
 		statusInfoBuilder.setTxnID("1234567890");
 		statusInfoBuilder.build("123456789");
 
 		statusInfoBuilder.build("123456789");
+			});
 	}
 
 	@Test

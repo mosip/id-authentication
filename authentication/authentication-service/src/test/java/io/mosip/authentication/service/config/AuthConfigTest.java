@@ -1,22 +1,22 @@
 package io.mosip.authentication.service.config;
 
 import io.mosip.authentication.common.service.util.EnvUtil;
-import org.junit.After;
-import org.junit.Before;
-import org.junit.Test;
-import org.junit.runner.RunWith;
+import org.junit.jupiter.api.AfterEach;
+import org.junit.jupiter.api.BeforeEach;
+import org.junit.jupiter.api.Test;
+import org.junit.jupiter.api.extension.ExtendWith;
 import org.mockito.InjectMocks;
-import org.mockito.junit.MockitoJUnitRunner;
+import org.mockito.junit.jupiter.MockitoExtension;
 import org.springframework.test.util.ReflectionTestUtils;
 
-import static org.junit.Assert.*;
+import static org.junit.jupiter.api.Assertions.*;
 
 /**
  * Test class for AuthConfig
  * 
  * @author Test
  */
-@RunWith(MockitoJUnitRunner.class)
+@ExtendWith(MockitoExtension.class)
 public class AuthConfigTest {
 
     @InjectMocks
@@ -25,14 +25,14 @@ public class AuthConfigTest {
     private String originalAllowedAuthType;
     private Boolean originalIsFmrEnabled;
 
-    @Before
+    @BeforeEach
     public void setUp() {
         // Save original values
         originalAllowedAuthType = EnvUtil.getAllowedAuthType();
         originalIsFmrEnabled = EnvUtil.getIsFmrEnabled();
     }
 
-    @After
+    @AfterEach
     public void tearDown() {
         // Restore original values
         if (originalAllowedAuthType != null) {
@@ -51,7 +51,7 @@ public class AuthConfigTest {
 
         boolean result = (boolean) ReflectionTestUtils.invokeMethod(authConfig, "isFingerAuthEnabled");
 
-        assertTrue("Finger auth should be enabled when FGR_IMG is in allowed auth types", result);
+        assertTrue(result, "Finger auth should be enabled when FGR_IMG is in allowed auth types");
     }
 
     @Test
@@ -62,7 +62,7 @@ public class AuthConfigTest {
 
         boolean result = (boolean) ReflectionTestUtils.invokeMethod(authConfig, "isFingerAuthEnabled");
 
-        assertTrue("Finger auth should be enabled when FGR_MIN is in allowed auth types and FMR is enabled", result);
+        assertTrue(result, "Finger auth should be enabled when FGR_MIN is in allowed auth types and FMR is enabled");
     }
 
     @Test
@@ -73,7 +73,7 @@ public class AuthConfigTest {
 
         boolean result = (boolean) ReflectionTestUtils.invokeMethod(authConfig, "isFingerAuthEnabled");
 
-        assertFalse("Finger auth should not be enabled when FMR is disabled even if FGR_MIN is in allowed auth types", result);
+        assertFalse(result, "Finger auth should not be enabled when FMR is disabled even if FGR_MIN is in allowed auth types");
     }
 
     @Test
@@ -84,7 +84,7 @@ public class AuthConfigTest {
 
         boolean result = (boolean) ReflectionTestUtils.invokeMethod(authConfig, "isFingerAuthEnabled");
 
-        assertFalse("Finger auth should not be enabled when neither FGR_IMG nor FGR_MIN is in allowed auth types", result);
+        assertFalse(result, "Finger auth should not be enabled when neither FGR_IMG nor FGR_MIN is in allowed auth types");
     }
 
     @Test
@@ -95,7 +95,7 @@ public class AuthConfigTest {
 
         boolean result = (boolean) ReflectionTestUtils.invokeMethod(authConfig, "isFingerAuthEnabled");
 
-        assertTrue("Finger auth should be enabled when both FGR_IMG and FGR_MIN are in allowed auth types", result);
+        assertTrue(result, "Finger auth should be enabled when both FGR_IMG and FGR_MIN are in allowed auth types");
     }
 
     @Test
@@ -106,7 +106,7 @@ public class AuthConfigTest {
 
         boolean result = (boolean) ReflectionTestUtils.invokeMethod(authConfig, "isFingerAuthEnabled");
 
-        assertFalse("Finger auth should not be enabled when allowed auth types is empty", result);
+        assertFalse(result, "Finger auth should not be enabled when allowed auth types is empty");
     }
 
     @Test
@@ -116,7 +116,7 @@ public class AuthConfigTest {
 
         boolean result = (boolean) ReflectionTestUtils.invokeMethod(authConfig, "isFaceAuthEnabled");
 
-        assertTrue("Face auth should be enabled when FACE_IMG is in allowed auth types", result);
+        assertTrue(result, "Face auth should be enabled when FACE_IMG is in allowed auth types");
     }
 
     @Test
@@ -126,7 +126,7 @@ public class AuthConfigTest {
 
         boolean result = (boolean) ReflectionTestUtils.invokeMethod(authConfig, "isFaceAuthEnabled");
 
-        assertFalse("Face auth should not be enabled when FACE_IMG is not in allowed auth types", result);
+        assertFalse(result, "Face auth should not be enabled when FACE_IMG is not in allowed auth types");
     }
 
     @Test
@@ -136,7 +136,7 @@ public class AuthConfigTest {
 
         boolean result = (boolean) ReflectionTestUtils.invokeMethod(authConfig, "isFaceAuthEnabled");
 
-        assertFalse("Face auth should not be enabled when allowed auth types is empty", result);
+        assertFalse(result, "Face auth should not be enabled when allowed auth types is empty");
     }
 
     @Test
@@ -146,7 +146,7 @@ public class AuthConfigTest {
 
         boolean result = (boolean) ReflectionTestUtils.invokeMethod(authConfig, "isIrisAuthEnabled");
 
-        assertTrue("Iris auth should be enabled when IRIS_IMG is in allowed auth types", result);
+        assertTrue(result, "Iris auth should be enabled when IRIS_IMG is in allowed auth types");
     }
 
     @Test
@@ -156,7 +156,7 @@ public class AuthConfigTest {
 
         boolean result = (boolean) ReflectionTestUtils.invokeMethod(authConfig, "isIrisAuthEnabled");
 
-        assertFalse("Iris auth should not be enabled when IRIS_IMG is not in allowed auth types", result);
+        assertFalse(result, "Iris auth should not be enabled when IRIS_IMG is not in allowed auth types");
     }
 
     @Test
@@ -166,7 +166,7 @@ public class AuthConfigTest {
 
         boolean result = (boolean) ReflectionTestUtils.invokeMethod(authConfig, "isIrisAuthEnabled");
 
-        assertFalse("Iris auth should not be enabled when allowed auth types is empty", result);
+        assertFalse(result, "Iris auth should not be enabled when allowed auth types is empty");
     }
 
     @Test
@@ -176,7 +176,7 @@ public class AuthConfigTest {
 
         boolean result = (boolean) ReflectionTestUtils.invokeMethod(authConfig, "isIrisAuthEnabled");
 
-        assertTrue("Iris auth should be enabled when IRIS_IMG is in allowed auth types even with other types", result);
+        assertTrue(result, "Iris auth should be enabled when IRIS_IMG is in allowed auth types even with other types");
     }
 
     @Test
@@ -187,7 +187,7 @@ public class AuthConfigTest {
 
         boolean result = (boolean) ReflectionTestUtils.invokeMethod(authConfig, "isFingerAuthEnabled");
 
-        assertTrue("Finger auth should be enabled when FGR_IMG is in allowed auth types regardless of FMR setting", result);
+        assertTrue(result, "Finger auth should be enabled when FGR_IMG is in allowed auth types regardless of FMR setting");
     }
 
     @Test
@@ -200,9 +200,9 @@ public class AuthConfigTest {
         boolean faceResult = (boolean) ReflectionTestUtils.invokeMethod(authConfig, "isFaceAuthEnabled");
         boolean irisResult = (boolean) ReflectionTestUtils.invokeMethod(authConfig, "isIrisAuthEnabled");
 
-        assertTrue("Finger auth should be enabled", fingerResult);
-        assertTrue("Face auth should be enabled", faceResult);
-        assertTrue("Iris auth should be enabled", irisResult);
+        assertTrue(fingerResult, "Finger auth should be enabled");
+        assertTrue(faceResult, "Face auth should be enabled");
+        assertTrue(irisResult, "Iris auth should be enabled");
     }
 
     @Test
@@ -215,9 +215,9 @@ public class AuthConfigTest {
         boolean faceResult = (boolean) ReflectionTestUtils.invokeMethod(authConfig, "isFaceAuthEnabled");
         boolean irisResult = (boolean) ReflectionTestUtils.invokeMethod(authConfig, "isIrisAuthEnabled");
 
-        assertFalse("Finger auth should not be enabled", fingerResult);
-        assertFalse("Face auth should not be enabled", faceResult);
-        assertFalse("Iris auth should not be enabled", irisResult);
+        assertFalse(fingerResult, "Finger auth should not be enabled");
+        assertFalse(faceResult, "Face auth should not be enabled");
+        assertFalse(irisResult, "Iris auth should not be enabled");
     }
 
     @Test
@@ -228,7 +228,7 @@ public class AuthConfigTest {
 
         boolean result = (boolean) ReflectionTestUtils.invokeMethod(authConfig, "isFingerAuthEnabled");
 
-        assertTrue("Finger auth should be enabled when only FGR_MIN is in allowed auth types and FMR is enabled", result);
+        assertTrue(result, "Finger auth should be enabled when only FGR_MIN is in allowed auth types and FMR is enabled");
     }
 
     @Test
@@ -239,7 +239,7 @@ public class AuthConfigTest {
 
         boolean result = (boolean) ReflectionTestUtils.invokeMethod(authConfig, "isFingerAuthEnabled");
 
-        assertTrue("Finger auth should be enabled when FGR_IMG is in allowed auth types even with spaces", result);
+        assertTrue(result, "Finger auth should be enabled when FGR_IMG is in allowed auth types even with spaces");
     }
 
     @Test
@@ -249,7 +249,7 @@ public class AuthConfigTest {
 
         boolean result = (boolean) ReflectionTestUtils.invokeMethod(authConfig, "isFaceAuthEnabled");
 
-        assertTrue("Face auth should be enabled when FACE_IMG is in allowed auth types even with spaces", result);
+        assertTrue(result, "Face auth should be enabled when FACE_IMG is in allowed auth types even with spaces");
     }
 
     @Test
@@ -259,6 +259,6 @@ public class AuthConfigTest {
 
         boolean result = (boolean) ReflectionTestUtils.invokeMethod(authConfig, "isIrisAuthEnabled");
 
-        assertTrue("Iris auth should be enabled when IRIS_IMG is in allowed auth types even with spaces", result);
+        assertTrue(result, "Iris auth should be enabled when IRIS_IMG is in allowed auth types even with spaces");
     }
 }

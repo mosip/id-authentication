@@ -1,15 +1,19 @@
 package io.mosip.authentication.common.service.integration;
 
-import org.junit.Before;
-import org.junit.Test;
-import org.junit.runner.RunWith;
+import org.mockito.quality.Strictness;
+import org.mockito.junit.jupiter.MockitoSettings;
+import org.mockito.junit.jupiter.MockitoExtension;
+import static org.junit.jupiter.api.Assertions.assertThrows;
+import org.junit.jupiter.api.BeforeEach;
+import org.junit.jupiter.api.Test;
+import org.junit.jupiter.api.extension.ExtendWith;
 import org.mockito.InjectMocks;
 import org.mockito.Mock;
 import org.mockito.Mockito;
-import org.springframework.boot.test.autoconfigure.web.servlet.WebMvcTest;
+import org.springframework.boot.webmvc.test.autoconfigure.WebMvcTest;
 import org.springframework.test.context.ContextConfiguration;
 import org.springframework.test.context.TestContext;
-import org.springframework.test.context.junit4.SpringRunner;
+import org.springframework.test.context.junit.jupiter.SpringExtension;
 import org.springframework.test.util.ReflectionTestUtils;
 import org.springframework.web.context.WebApplicationContext;
 
@@ -24,7 +28,8 @@ import io.mosip.kernel.tokenidgenerator.service.TokenIDGeneratorService;
  * @author Nagarjuna
  *
  */
-@RunWith(SpringRunner.class)
+@ExtendWith({SpringExtension.class, MockitoExtension.class})
+@MockitoSettings(strictness = Strictness.LENIENT)
 @ContextConfiguration(classes = { TestContext.class, WebApplicationContext.class })
 @WebMvcTest
 public class TokenIdManagerTest {
@@ -35,7 +40,7 @@ public class TokenIdManagerTest {
 	@Mock
 	TokenIDGeneratorService tokenIDGeneratorService;
 
-	@Before
+	@BeforeEach
 	public void before() {
 		ReflectionTestUtils.setField(tokenIdManager, "tokenIDGeneratorService", tokenIDGeneratorService);
 	}
@@ -60,18 +65,22 @@ public class TokenIdManagerTest {
 		tokenIdManager.generateTokenId(uin,partnerCode);
 	}
 	
-	@Test(expected = IdAuthenticationBusinessException.class)
+	@Test
 	public void generateTokenIdTest_S3() throws IdAuthenticationBusinessException {
+		assertThrows(IdAuthenticationBusinessException.class, () -> {
 		String uin = "3568174910";
 		String partnerCode = "1873299273";		
 		tokenIdManager.generateTokenId(uin,partnerCode);
+			});
 	}
 	
-	@Test(expected = IdAuthenticationBusinessException.class)
+	@Test
 	public void generateTokenIdTest_S4() throws IdAuthenticationBusinessException {
+		assertThrows(IdAuthenticationBusinessException.class, () -> {
 		String uin = "3568174910";
 		String partnerCode = "1873299273";		
 		Mockito.when(tokenIDGeneratorService.generateTokenID(uin, partnerCode)).thenReturn(null);
 		tokenIdManager.generateTokenId(uin,partnerCode);
+			});
 	}
 }

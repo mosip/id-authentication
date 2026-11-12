@@ -1,7 +1,8 @@
 package io.mosip.authentication.common.service.impl;
 
-import static org.junit.Assert.assertEquals;
-import static org.junit.Assert.assertNotNull;
+import static org.junit.jupiter.api.Assertions.assertThrows;
+import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertNotNull;
 import static org.mockito.ArgumentMatchers.*;
 import static org.mockito.Mockito.*;
 
@@ -19,15 +20,15 @@ import io.mosip.authentication.core.indauth.dto.IdentityInfoDTO;
 import io.mosip.authentication.core.spi.indauth.match.MatchInput;
 import io.mosip.authentication.core.spi.indauth.match.MatchOutput;
 
-import org.junit.Before;
-import org.junit.Test;
-import org.junit.runner.RunWith;
+import org.junit.jupiter.api.BeforeEach;
+import org.junit.jupiter.api.Test;
+import org.junit.jupiter.api.extension.ExtendWith;
 import org.mockito.InjectMocks;
 import org.mockito.Mock;
 import org.mockito.MockitoAnnotations;
-import org.mockito.junit.MockitoJUnitRunner;
+import org.mockito.junit.jupiter.MockitoExtension;
 
-@RunWith(MockitoJUnitRunner.class)
+@ExtendWith(MockitoExtension.class)
 public class PasswordAuthServiceImplTest {
 
     @InjectMocks
@@ -46,7 +47,7 @@ public class PasswordAuthServiceImplTest {
     private Map<String, List<IdentityInfoDTO>> idInfo;
     private String partnerId = "partner1";
 
-    @Before
+    @BeforeEach
     public void setUp() {
         MockitoAnnotations.openMocks(this);
         authRequestDTO = new AuthRequestDTO();
@@ -54,15 +55,19 @@ public class PasswordAuthServiceImplTest {
         idInfo.put("id", Collections.singletonList(new IdentityInfoDTO()));
     }
 
-    @Test(expected = IdAuthenticationBusinessException.class)
+    @Test
     public void testAuthenticateIdInfoNullThrowsException() throws IdAuthenticationBusinessException {
+		assertThrows(IdAuthenticationBusinessException.class, () -> {
         service.authenticate(authRequestDTO, "IND123", null, partnerId);
-    }
+    		});
+	}
 
-    @Test(expected = IdAuthenticationBusinessException.class)
+    @Test
     public void testAuthenticateIdInfoEmptyThrowsException() throws IdAuthenticationBusinessException {
+		assertThrows(IdAuthenticationBusinessException.class, () -> {
         service.authenticate(authRequestDTO, "IND123", new HashMap<>(), partnerId);
-    }
+    		});
+	}
 
     @Test
     public void testConstructMatchInput() {

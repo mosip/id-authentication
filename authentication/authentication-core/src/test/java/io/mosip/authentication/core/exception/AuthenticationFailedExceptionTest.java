@@ -1,6 +1,7 @@
 package io.mosip.authentication.core.exception;
 
-import org.junit.Test;
+import static org.junit.jupiter.api.Assertions.assertThrows;
+import org.junit.jupiter.api.Test;
 
 import io.mosip.authentication.core.constant.IdAuthenticationErrorConstants;
 import io.mosip.authentication.core.exception.AuthenticationFailedException;
@@ -17,9 +18,11 @@ public class AuthenticationFailedExceptionTest {
 	 *
 	 * @throws AuthenticationFailedException the authentication failed exception
 	 */
-	@Test(expected = AuthenticationFailedException.class)
+	@Test
 	public void testAuthenticationFailedExceptionDefaultCons() throws AuthenticationFailedException {
+		assertThrows(AuthenticationFailedException.class, () -> {
 		throw new AuthenticationFailedException();
+			});
 	}
 
 	/**
@@ -27,9 +30,11 @@ public class AuthenticationFailedExceptionTest {
 	 *
 	 * @throws AuthenticationFailedException the authentication failed exception
 	 */
-	@Test(expected = AuthenticationFailedException.class)
+	@Test
 	public void testAuthenticationFailedException() throws AuthenticationFailedException {
+		assertThrows(AuthenticationFailedException.class, () -> {
 		throw new AuthenticationFailedException(IdAuthenticationErrorConstants.OTP_GENERATION_FAILED, null);
+			});
 	}
 
 	/**
@@ -37,9 +42,11 @@ public class AuthenticationFailedExceptionTest {
 	 *
 	 * @throws AuthenticationFailedException the authentication failed exception
 	 */
-	@Test(expected = AuthenticationFailedException.class)
+	@Test
 	public void testAuthenticationFailedExceptionThrowable() throws AuthenticationFailedException {
+		assertThrows(AuthenticationFailedException.class, () -> {
 		throw new AuthenticationFailedException(IdAuthenticationErrorConstants.OTP_GENERATION_FAILED, null);
+			});
 	}
 
 	/**
@@ -47,9 +54,11 @@ public class AuthenticationFailedExceptionTest {
 	 *
 	 * @throws AuthenticationFailedException the authentication failed exception
 	 */
-	@Test(expected = AuthenticationFailedException.class)
+	@Test
 	public void TestAuthenticationexceptionConstant() throws AuthenticationFailedException {
+		assertThrows(AuthenticationFailedException.class, () -> {
 		throw new AuthenticationFailedException(IdAuthenticationErrorConstants.OTP_GENERATION_FAILED);
+			});
 	}
 
 }

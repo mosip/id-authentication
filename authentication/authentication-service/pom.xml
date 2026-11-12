@@ -16,8 +16,6 @@
     <name>authentication-service</name>
     <description>Maven project of MOSIP ID-Authentication Service</description>
     <properties>
-    <maven.surefire.plugin.version>2.22.0</maven.surefire.plugin.version>
-        <jacoco.maven.plugin.version>0.8.11</jacoco.maven.plugin.version>
         <central.publishing.maven.plugin.version>0.7.0</central.publishing.maven.plugin.version>
     </properties>
     <dependencies>
@@ -57,37 +55,7 @@
             <artifactId>authentication-hotlistfilter-impl</artifactId>
             <version>${authentication-hotlistfilter-impl.version}</version>
         </dependency>
-        <dependency>
-            <groupId>io.mosip.kernel</groupId>
-            <artifactId>kernel-pinvalidator</artifactId>
-            <version>${kernel-pinvalidator.version}</version>
-        </dependency>
 
-        <dependency>
-            <groupId>io.mosip.kernel</groupId>
-            <artifactId>kernel-templatemanager-velocity</artifactId>
-            <version>${kernel-templatemanager-velocity.version}</version>
-            <exclusions>
-                <exclusion>
-                    <groupId>javax.servlet</groupId>
-                    <artifactId>servlet-api</artifactId>
-                </exclusion>
-                <exclusion>
-                    <groupId>dom4j</groupId>
-                    <artifactId>dom4j</artifactId>
-                </exclusion>
-            </exclusions>
-        </dependency>
-        <dependency>
-            <groupId>io.mosip.kernel</groupId>
-            <artifactId>kernel-dataaccess-hibernate</artifactId>
-            <version>${kernel-dataaccess-hibernate.version}</version>
-        </dependency>
-        <dependency>
-            <groupId>io.mosip.kernel</groupId>
-            <artifactId>kernel-idgenerator-tokenid</artifactId>
-            <version>${kernel-idgenerator-tokenid.version}</version>
-        </dependency>
         <dependency>
             <groupId>org.postgresql</groupId>
             <artifactId>postgresql</artifactId>
@@ -123,12 +91,6 @@
             <scope>test</scope>
         </dependency>
         <dependency>
-            <groupId>org.objenesis</groupId>
-            <artifactId>objenesis</artifactId>
-            <version>${objenesis.version}</version>
-            <scope>test</scope>
-        </dependency>
-        <dependency>
             <groupId>org.springframework.boot</groupId>
             <artifactId>spring-boot-starter-data-jpa</artifactId>
         </dependency>
@@ -138,7 +100,7 @@
         </dependency>
         <dependency>
             <groupId>org.springframework.boot</groupId>
-            <artifactId>spring-boot-starter-batch</artifactId>
+            <artifactId>spring-boot-starter-batch-jdbc</artifactId>
             <exclusions>
                 <exclusion>
                     <groupId>com.fasterxml.jackson.core</groupId>
@@ -160,14 +122,8 @@
             <scope>test</scope>
         </dependency>
         <dependency>
-            <groupId>org.powermock</groupId>
-            <artifactId>powermock-api-mockito2</artifactId>
-            <scope>test</scope>
-        </dependency>
-        <dependency>
-            <groupId>org.powermock</groupId>
-            <artifactId>powermock-module-junit4</artifactId>
-            <scope>test</scope>
+            <groupId>org.springframework.cloud</groupId>
+            <artifactId>spring-cloud-starter-bootstrap</artifactId>
         </dependency>
         <dependency>
             <groupId>org.springframework.cloud</groupId>
@@ -200,11 +156,6 @@
         <dependency>
             <groupId>io.micrometer</groupId>
             <artifactId>micrometer-registry-prometheus</artifactId>
-        </dependency>
-        <dependency>
-            <groupId>io.mosip.kernel</groupId>
-            <artifactId>kernel-websubclient-api</artifactId>
-            <version>${kernel-websubclient-api.version}</version>
         </dependency>
         <dependency>
             <groupId>org.springdoc</groupId>
@@ -247,23 +198,6 @@
         		<exclusion>
         			<groupId>com.fasterxml.jackson.core</groupId>
         			<artifactId>jackson-core</artifactId>
-        		</exclusion>
-        	</exclusions>
-        </dependency>
-        <dependency>
-        	<groupId>io.mosip.kernel</groupId>
-        	<artifactId>kernel-logger-logback</artifactId>
-        	<version>${kernel-logger-logback.version}</version>
-        	<exclusions>
-        		<exclusion>
-        			<groupId>org.springframework.boot</groupId>
-        			<artifactId>
-        				spring-boot-starter-security
-        			</artifactId>
-        		</exclusion>
-        		<exclusion>
-        			<groupId>com.fasterxml.jackson.core</groupId>
-        			<artifactId>jackson-databind</artifactId>
         		</exclusion>
         	</exclusions>
         </dependency>
@@ -331,17 +265,6 @@
         	</exclusions>
         </dependency>
         <dependency>
-        	<groupId>io.mosip.kernel</groupId>
-        	<artifactId>kernel-openid-bridge-api</artifactId>
-        	<version>${kernel-openid-bridge-api.version}</version>
-        	<exclusions>
-        		<exclusion>
-        			<groupId>com.fasterxml.jackson.core</groupId>
-        			<artifactId>jackson-databind</artifactId>
-        		</exclusion>
-        	</exclusions>
-        </dependency>
-        <dependency>
             <groupId>io.mosip.biosdk</groupId>
             <artifactId>biosdk-client</artifactId>
             <version>${biosdk-client.version}</version>
@@ -379,7 +302,6 @@
                 <artifactId>spring-boot-maven-plugin</artifactId>
                 <version>${spring-boot-maven-plugin.version}</version>
                 <configuration>
-                    <executable>true</executable>
                     <layout>ZIP</layout>
                 </configuration>
                 <executions>
@@ -441,7 +363,7 @@
             <plugin>
                 <groupId>org.apache.maven.plugins</groupId>
                 <artifactId>maven-surefire-plugin</artifactId>
-                <version>2.22.0</version>
+                <version>${maven.surefire.plugin.version}</version>
                 <configuration>
                     <skipTests>false</skipTests>
                     <skip>false</skip>
@@ -451,6 +373,25 @@
                         --illegal-access=permit
                     </argLine>
                 </configuration>
+            </plugin>
+            <plugin>
+                <groupId>org.apache.maven.plugins</groupId>
+                <artifactId>maven-antrun-plugin</artifactId>
+                <version>3.1.0</version>
+                <executions>
+                    <execution>
+                        <id>mark-runnable-jar-executable</id>
+                        <phase>package</phase>
+                        <goals>
+                            <goal>run</goal>
+                        </goals>
+                        <configuration>
+                            <target>
+                                <chmod file="${project.build.directory}/${project.build.finalName}.jar" perm="ugo+x"/>
+                            </target>
+                        </configuration>
+                    </execution>
+                </executions>
             </plugin>
         </plugins>
     </build>
@@ -464,7 +405,6 @@
                         <artifactId>spring-boot-maven-plugin</artifactId>
                         <version>${spring-boot-maven-plugin.version}</version>
                         <configuration>
-                            <executable>true</executable>
                             <layout>ZIP</layout>
                             <wait>1000</wait>
                             <maxAttempts>180</maxAttempts>
@@ -505,7 +445,7 @@
                     <plugin>
                         <groupId>org.apache.maven.plugins</groupId>
                         <artifactId>maven-surefire-plugin</artifactId>
-                        <version>2.22.0</version>
+                        <version>${maven.surefire.plugin.version}</version>
                         <configuration>
                             <skipTests>false</skipTests>
                             <skip>false</skip>

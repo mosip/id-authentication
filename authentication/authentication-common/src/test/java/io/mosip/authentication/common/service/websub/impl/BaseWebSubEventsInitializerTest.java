@@ -1,15 +1,16 @@
 package io.mosip.authentication.common.service.websub.impl;
 
-import static org.junit.Assert.assertFalse;
-import static org.junit.Assert.assertTrue;
+import static org.junit.jupiter.api.Assertions.assertThrows;
+import static org.junit.jupiter.api.Assertions.assertFalse;
+import static org.junit.jupiter.api.Assertions.assertTrue;
 
 import java.util.function.Supplier;
 
-import org.junit.Test;
-import org.junit.runner.RunWith;
+import org.junit.jupiter.api.Test;
+import org.junit.jupiter.api.extension.ExtendWith;
 import org.mockito.Mock;
 import org.mockito.Mockito;
-import org.mockito.junit.MockitoJUnitRunner;
+import org.mockito.junit.jupiter.MockitoExtension;
 import org.springframework.test.util.ReflectionTestUtils;
 
 import io.mosip.authentication.common.service.helper.WebSubHelper;
@@ -17,7 +18,7 @@ import io.mosip.authentication.common.service.util.EnvUtil;
 import io.mosip.authentication.core.exception.IdAuthRetryException;
 import io.mosip.kernel.websub.api.exception.WebSubClientException;
 
-@RunWith(MockitoJUnitRunner.class)
+@ExtendWith(MockitoExtension.class)
 public class BaseWebSubEventsInitializerTest {
 	
 	private class TestBaseWebSubEventsInitializer extends BaseWebSubEventsInitializer {
@@ -87,10 +88,12 @@ public class BaseWebSubEventsInitializerTest {
 		assertFalse(baseWebSubEventsInitializer.subscribed);
 	}
 	
-	@Test(expected = IdAuthRetryException.class)
+	@Test
 	public void testSubscribeWithEnableTesterThrowsException() {
+		assertThrows(IdAuthRetryException.class, () -> {
 		TestBaseWebSubEventsInitializer baseWebSubEventsInitializer = createTestInstance(true);
 		baseWebSubEventsInitializer.subscribe(() -> true);
+			});
 	}
 	
 	@Test
@@ -133,11 +136,13 @@ public class BaseWebSubEventsInitializerTest {
 		baseWebSubEventsInitializer.subscribeForEvent("topic", "url", "secret");
 	}
 	
-	@Test(expected = RuntimeException.class)
+	@Test
 	public void testSubscribeForEventWithException() {
+		assertThrows(RuntimeException.class, () -> {
 		TestBaseWebSubEventsInitializer baseWebSubEventsInitializer = createTestInstance();
 		Mockito.doThrow(new RuntimeException()).when(webSubHelper).subscribe(Mockito.any());
 		baseWebSubEventsInitializer.subscribeForEvent("topic", "url", "secret");
+			});
 	}
 
 }

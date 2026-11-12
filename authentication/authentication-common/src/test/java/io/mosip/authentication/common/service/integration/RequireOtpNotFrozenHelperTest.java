@@ -1,25 +1,26 @@
 package io.mosip.authentication.common.service.integration;
 
+import static org.junit.jupiter.api.Assertions.assertThrows;
 import io.mosip.authentication.common.service.entity.OtpTransaction;
 import io.mosip.authentication.common.service.repository.OtpTxnRepository;
 import io.mosip.authentication.core.constant.IdAuthCommonConstants;
 import io.mosip.authentication.core.constant.IdAuthenticationErrorConstants;
 import io.mosip.authentication.core.exception.IdAuthenticationBusinessException;
 import io.mosip.kernel.core.util.DateUtils;
-import org.junit.Before;
-import org.junit.Test;
-import org.junit.runner.RunWith;
+import org.junit.jupiter.api.BeforeEach;
+import org.junit.jupiter.api.Test;
+import org.junit.jupiter.api.extension.ExtendWith;
 import org.mockito.InjectMocks;
 import org.mockito.Mock;
-import org.mockito.junit.MockitoJUnitRunner;
+import org.mockito.junit.jupiter.MockitoExtension;
 import org.springframework.test.util.ReflectionTestUtils;
 
 import java.time.LocalDateTime;
 
-import static org.junit.Assert.*;
+import static org.junit.jupiter.api.Assertions.*;
 import static org.mockito.Mockito.*;
 
-@RunWith(MockitoJUnitRunner.class)
+@ExtendWith(MockitoExtension.class)
 public class RequireOtpNotFrozenHelperTest {
 
     @InjectMocks
@@ -30,7 +31,7 @@ public class RequireOtpNotFrozenHelperTest {
 
     private OtpTransaction otpEntity;
 
-    @Before
+    @BeforeEach
     public void setup() {
         // Set @Value injected fields
         ReflectionTestUtils.setField(helper, "otpFrozenTimeMinutes", 30);
@@ -55,12 +56,14 @@ public class RequireOtpNotFrozenHelperTest {
     /**
      * OTP is frozen and frozen time is NOT over → must throw exception
      */
-    @Test(expected = IdAuthenticationBusinessException.class)
+    @Test
     public void testRequireOtpNotFrozenFrozenAndTimeNotOverShouldThrow() throws Exception {
+		assertThrows(IdAuthenticationBusinessException.class, () -> {
         otpEntity.setUpdDTimes(DateUtils.getUTCCurrentDateTime()); // updated just now
 
         helper.requireOtpNotFrozen(otpEntity, false);
-    }
+    		});
+	}
 
     /**
      * OTP frozen but frozen time IS over → should unfreeze and save

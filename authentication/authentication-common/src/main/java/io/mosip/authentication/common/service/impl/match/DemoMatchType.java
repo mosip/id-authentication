@@ -1,5 +1,6 @@
 package io.mosip.authentication.common.service.impl.match;
 
+import io.mosip.authentication.common.service.util.IdaDateUtil;
 import static io.mosip.authentication.core.spi.indauth.match.MatchType.setOf;
 
 import java.time.LocalDate;
@@ -29,7 +30,6 @@ import io.mosip.authentication.core.spi.indauth.match.MappingConfig;
 import io.mosip.authentication.core.spi.indauth.match.MatchType;
 import io.mosip.authentication.core.spi.indauth.match.MatchingStrategy;
 import io.mosip.authentication.core.spi.indauth.match.MatchingStrategyType;
-import io.mosip.kernel.core.util.DateUtils2;
 
 /**
  * The Enum DemoMatchType.
@@ -58,7 +58,7 @@ public enum DemoMatchType implements MatchType {
 				Optional<String> valueOpt = entityInfoMap.values().stream().findFirst();
 				if (valueOpt.isPresent()) {
 					String value = valueOpt.get();
-					int age = Period.between(DateUtils2.parseToDate(value, getDatePattern(props)).toInstant()
+					int age = Period.between(IdaDateUtil.parseToDate(value, getDatePattern(props)).toInstant()
 							.atZone(ZoneId.systemDefault()).toLocalDate(), LocalDate.now()).getYears();
 
 					Map<String, String> map = new LinkedHashMap<>();

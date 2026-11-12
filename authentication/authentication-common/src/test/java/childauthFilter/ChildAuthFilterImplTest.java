@@ -1,12 +1,13 @@
 package childauthFilter;
 
+import static org.junit.jupiter.api.Assertions.assertThrows;
 import io.mosip.authentication.authfilter.exception.IdAuthenticationFilterException;
 import io.mosip.authentication.childauthfilter.impl.ChildAuthFilterImpl;
 import io.mosip.authentication.core.indauth.dto.AuthRequestDTO;
 import io.mosip.authentication.core.indauth.dto.IdentityInfoDTO;
 
-import org.junit.Before;
-import org.junit.Test;
+import org.junit.jupiter.api.BeforeEach;
+import org.junit.jupiter.api.Test;
 
 import java.time.LocalDate;
 import java.util.*;
@@ -15,7 +16,7 @@ public class ChildAuthFilterImplTest {
 
     private ChildAuthFilterImpl filter;
 
-    @Before
+    @BeforeEach
     public void setUp() {
         filter = new ChildAuthFilterImpl();
 
@@ -47,39 +48,47 @@ public class ChildAuthFilterImplTest {
     /**
      * Case 1: dob list missing → throws ID_NOT_AVAILABLE
      */
-    @Test(expected = IdAuthenticationFilterException.class)
+    @Test
     public void testGetDobNullList() throws Exception {
+		assertThrows(IdAuthenticationFilterException.class, () -> {
         filter.validate(new AuthRequestDTO(), Collections.emptyMap(), new HashMap<>());
-    }
+    		});
+	}
 
     /**
      * Case 2: dob empty → exception
      */
-    @Test(expected = IdAuthenticationFilterException.class)
+    @Test
     public void testGetDobEmptyDobList() throws Exception {
+		assertThrows(IdAuthenticationFilterException.class, () -> {
         Map<String, List<IdentityInfoDTO>> data = new HashMap<>();
         data.put("dob", Collections.emptyList());
         filter.validate(new AuthRequestDTO(), data, new HashMap<>());
-    }
+    		});
+	}
 
     /**
      * Case 3: dob value null → exception
      */
-    @Test(expected = IdAuthenticationFilterException.class)
+    @Test
     public void testGetDobNullValue() throws Exception {
+		assertThrows(IdAuthenticationFilterException.class, () -> {
         IdentityInfoDTO dto = new IdentityInfoDTO();
         dto.setValue(null);
         Map<String, List<IdentityInfoDTO>> data = new HashMap<>();
         data.put("dob", Arrays.asList(dto));
         filter.validate(new AuthRequestDTO(), data, new HashMap<>());
-    }
+    		});
+	}
 
-    @Test(expected = IdAuthenticationFilterException.class)
+    @Test
     public void testGetDobInvalidFormat() throws Exception {
+		assertThrows(IdAuthenticationFilterException.class, () -> {
         Map<String, List<IdentityInfoDTO>> data = new HashMap<>();
         data.put("dob", Arrays.asList(createDob("not-a-date")));
         filter.validate(new AuthRequestDTO(), data, new HashMap<>());
-    }
+    		});
+	}
 
     @Test
     public void testAdultNoError() throws Exception {

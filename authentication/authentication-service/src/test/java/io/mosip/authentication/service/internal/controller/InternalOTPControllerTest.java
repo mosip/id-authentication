@@ -1,6 +1,10 @@
 package io.mosip.authentication.service.internal.controller;
 
-import static org.junit.Assert.assertTrue;
+import org.mockito.quality.Strictness;
+import org.mockito.junit.jupiter.MockitoSettings;
+import org.mockito.junit.jupiter.MockitoExtension;
+import static org.junit.jupiter.api.Assertions.assertThrows;
+import static org.junit.jupiter.api.Assertions.assertTrue;
 import static org.mockito.ArgumentMatchers.anyString;
 import static org.mockito.Mockito.when;
 
@@ -17,10 +21,10 @@ import jakarta.validation.ConstraintViolation;
 import jakarta.validation.Validation;
 import jakarta.validation.Validator;
 
-import org.junit.Before;
-import org.junit.BeforeClass;
-import org.junit.Test;
-import org.junit.runner.RunWith;
+import org.junit.jupiter.api.BeforeEach;
+import org.junit.jupiter.api.BeforeAll;
+import org.junit.jupiter.api.Test;
+import org.junit.jupiter.api.extension.ExtendWith;
 import org.mockito.InjectMocks;
 import org.mockito.Mock;
 import org.mockito.Mockito;
@@ -29,7 +33,7 @@ import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.context.annotation.Import;
 import org.springframework.test.context.ContextConfiguration;
 import org.springframework.test.context.TestContext;
-import org.springframework.test.context.junit4.SpringRunner;
+import org.springframework.test.context.junit.jupiter.SpringExtension;
 import org.springframework.test.util.ReflectionTestUtils;
 import org.springframework.validation.BeanPropertyBindingResult;
 import org.springframework.validation.BindingResult;
@@ -61,7 +65,8 @@ import io.mosip.kernel.core.logger.spi.Logger;
  *
  * @author Rakesh Roshan
  */
-@RunWith(SpringRunner.class)
+@ExtendWith({SpringExtension.class, MockitoExtension.class})
+@MockitoSettings(strictness = Strictness.LENIENT)
 @SpringBootTest
 @ContextConfiguration(classes = { TestContext.class, WebApplicationContext.class })
 @Import(EnvUtil.class)
@@ -117,13 +122,13 @@ public class InternalOTPControllerTest {
 
 	private static Validator validator;
 
-	@Before
+	@BeforeEach
 	public void before() throws IdAuthenticationBusinessException {
 		ReflectionTestUtils.invokeMethod(internalotpController, "initBinder", binder);
 		when(idTypeUtil.getIdType(Mockito.any())).thenReturn(IdType.UIN);
 	}
 
-	@BeforeClass
+	@BeforeAll
 	public static void setUp() {
 		validator = Validation.buildDefaultValidatorFactory().getValidator();
 	}
@@ -146,23 +151,27 @@ public class InternalOTPControllerTest {
 
 	}
 	
-	@Test(expected=IdAuthenticationAppException.class)
+	@Test
 	public void TestIdAuthBusinessException() throws IdAuthenticationBusinessException, IdAuthenticationAppException {
+		assertThrows(IdAuthenticationAppException.class, () -> {
 		otpRequestDto = getOtpRequestDTO();
 		Mockito.when(otpService.generateOtp(Mockito.any(), Mockito.any(), Mockito.any())).thenThrow(new IdAuthenticationBusinessException(IdAuthenticationErrorConstants.OTP_GENERATION_FAILED));
 		Errors errors = new BeanPropertyBindingResult(otpRequestDto, "otpRequestDto");
 		internalotpController.generateOTP(otpRequestDto, errors, new TestHttpServletRequest());
+			});
 	}
 
 
-	@Test(expected = IdAuthenticationAppException.class)
+	@Test
 	public void testGenerateOtpDataValidationException()
 			throws IdAuthenticationAppException, IdAuthenticationBusinessException {
+		assertThrows(IdAuthenticationAppException.class, () -> {
 		Errors errors = new BeanPropertyBindingResult(OtpRequestDTO.class, "OtpRequestDTO");
 		errors.reject("errorCode");
 		Mockito.when(authTransactionHelper.createDataValidationException(Mockito.any(), Mockito.any(), Mockito.any()))
 				.thenReturn(new IdAuthenticationAppException());
 		internalotpController.generateOTP(new OtpRequestDTO(), errors, new TestHttpServletRequest());
+			});
 	}
 
 	@Test

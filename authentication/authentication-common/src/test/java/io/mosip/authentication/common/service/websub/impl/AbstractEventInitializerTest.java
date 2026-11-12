@@ -1,18 +1,19 @@
 package io.mosip.authentication.common.service.websub.impl;
 
-import org.junit.Test;
-import org.junit.runner.RunWith;
+import static org.junit.jupiter.api.Assertions.assertThrows;
+import org.junit.jupiter.api.Test;
+import org.junit.jupiter.api.extension.ExtendWith;
 import org.mockito.InjectMocks;
 import org.mockito.Mock;
 import org.mockito.Mockito;
-import org.mockito.junit.MockitoJUnitRunner;
+import org.mockito.junit.jupiter.MockitoExtension;
 import org.springframework.core.env.Environment;
 import org.springframework.test.util.ReflectionTestUtils;
 
 import io.mosip.authentication.common.service.helper.WebSubHelper;
 import io.mosip.authentication.common.service.util.EnvUtil;
 
-@RunWith(MockitoJUnitRunner.class)
+@ExtendWith(MockitoExtension.class)
 public abstract class AbstractEventInitializerTest<T extends BaseWebSubEventsInitializer> {
 	
 	/** The env. */
@@ -43,11 +44,13 @@ public abstract class AbstractEventInitializerTest<T extends BaseWebSubEventsIni
 	}
 	
 
-	@Test(expected = RuntimeException.class)
+	@Test
 	public void testSubscribeForEventWithException() {
+		assertThrows(RuntimeException.class, () -> {
 		T baseWebSubEventsInitializer = createTestInstance();
 		Mockito.doThrow(new RuntimeException()).when(webSubHelper).subscribe(Mockito.any());
 		baseWebSubEventsInitializer.doSubscribe();
+			});
 	}
 	
 	@Test

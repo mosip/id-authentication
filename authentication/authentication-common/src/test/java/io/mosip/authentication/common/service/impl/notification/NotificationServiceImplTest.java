@@ -1,6 +1,7 @@
 package io.mosip.authentication.common.service.impl.notification;
 
-import static org.junit.Assert.assertTrue;
+import static org.junit.jupiter.api.Assertions.assertThrows;
+import static org.junit.jupiter.api.Assertions.assertTrue;
 
 import java.io.IOException;
 import java.lang.reflect.UndeclaredThrowableException;
@@ -21,22 +22,22 @@ import io.mosip.authentication.common.service.util.EntityInfoUtil;
 import io.mosip.authentication.common.service.util.LanguageUtil;
 import io.mosip.idrepository.core.dto.RestRequestDTO;
 import io.mosip.idrepository.core.exception.RestServiceException;
-import org.junit.Before;
-import org.junit.Test;
-import org.junit.runner.RunWith;
+import org.junit.jupiter.api.BeforeEach;
+import org.junit.jupiter.api.Test;
+import org.junit.jupiter.api.extension.ExtendWith;
 import org.mockito.InjectMocks;
 import org.mockito.Mock;
 import org.mockito.Mockito;
 import org.mockito.MockitoAnnotations;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.boot.test.autoconfigure.web.servlet.WebMvcTest;
+import org.springframework.boot.webmvc.test.autoconfigure.WebMvcTest;
 import org.springframework.context.annotation.Import;
 import org.springframework.core.env.AbstractEnvironment;
 import org.springframework.mock.env.MockEnvironment;
 import org.springframework.test.context.ContextConfiguration;
 import org.springframework.test.context.TestContext;
 import org.springframework.test.context.TestPropertySource;
-import org.springframework.test.context.junit4.SpringRunner;
+import org.springframework.test.context.junit.jupiter.SpringExtension;
 import org.springframework.test.util.ReflectionTestUtils;
 import org.springframework.web.context.WebApplicationContext;
 
@@ -66,7 +67,7 @@ import io.mosip.kernel.core.util.DateUtils2;
 import io.mosip.kernel.templatemanager.velocity.builder.TemplateManagerBuilderImpl;
 import reactor.core.publisher.Mono;
 
-@RunWith(SpringRunner.class)
+@ExtendWith(SpringExtension.class)
 @WebMvcTest
 @ContextConfiguration(classes = { TestContext.class, WebApplicationContext.class, TemplateManagerBuilderImpl.class })
 @Import(EnvUtil.class)
@@ -110,7 +111,7 @@ public class NotificationServiceImplTest {
 	@Mock
 	private EntityInfoUtil entityInfoUtil;
 
-	@Before
+	@BeforeEach
 	public void before() {
         MockitoAnnotations.openMocks(this);
 		ReflectionTestUtils.setField(restRequestFactory, "env", environment);
@@ -181,9 +182,10 @@ public class NotificationServiceImplTest {
 		notificationService.sendAuthNotification(authRequestDTO, uin, authResponseDTO, idInfo, false);
 	}
 
-	@Test(expected = IdAuthenticationBusinessException.class)
+	@Test
 	public void TestInValidAuthSmsNotification()
             throws IdAuthenticationBusinessException, IdAuthenticationDaoException, IOException, RestServiceException {
+		assertThrows(IdAuthenticationBusinessException.class, () -> {
 		AuthRequestDTO authRequestDTO = new AuthRequestDTO();
 		AuthResponseDTO authResponseDTO = new AuthResponseDTO();
 
@@ -231,6 +233,7 @@ public class NotificationServiceImplTest {
 		mockenv.setProperty("mosip.secondary-language", "ara");
 		mockenv.setProperty("mosip.notification.timezone", "GMT+05:30");
 		notificationService.sendAuthNotification(authRequestDTO, uin, authResponseDTO, idInfo, true);
+			});
 	}
 
 	@Test

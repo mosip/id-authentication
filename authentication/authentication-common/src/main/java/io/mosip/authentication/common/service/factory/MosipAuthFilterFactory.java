@@ -95,7 +95,7 @@ public abstract class MosipAuthFilterFactory {
 		Class<?> clazz = Class.forName(authFilterClassName);
 		validateTrust(clazz);
 		Object[] args = new Object[0];
-		Optional<Constructor<?>> result = ReflectionUtils.findConstructor(clazz, args);
+		Optional<Constructor<?>> result = Optional.ofNullable(ReflectionUtils.findConstructor(clazz, args));
 		if (result.isPresent()) {
 			Constructor<?> constructor = result.get();
 			constructor.setAccessible(true);

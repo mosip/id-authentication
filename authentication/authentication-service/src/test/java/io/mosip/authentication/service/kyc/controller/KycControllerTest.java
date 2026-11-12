@@ -3,9 +3,12 @@
  */
 package io.mosip.authentication.service.kyc.controller;
 
-import static org.junit.Assert.assertEquals;
-import static org.junit.Assert.assertNotNull;
-import static org.junit.Assert.assertThrows;
+import org.mockito.quality.Strictness;
+import org.mockito.junit.jupiter.MockitoSettings;
+import org.mockito.junit.jupiter.MockitoExtension;
+import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertNotNull;
+import static org.junit.jupiter.api.Assertions.assertThrows;
 import static org.mockito.Mockito.when;
 
 import java.time.ZonedDateTime;
@@ -40,19 +43,19 @@ import io.mosip.authentication.core.indauth.dto.IdType;
 import io.mosip.authentication.core.indauth.dto.AuthRequestDTO;
 import io.mosip.authentication.service.kyc.validator.KycExchangeRequestValidator;
 import jakarta.servlet.http.HttpServletRequest;
-import org.junit.Before;
-import org.junit.Test;
-import org.junit.runner.RunWith;
+import org.junit.jupiter.api.BeforeEach;
+import org.junit.jupiter.api.Test;
+import org.junit.jupiter.api.extension.ExtendWith;
 import org.mockito.InjectMocks;
 import org.mockito.Mock;
 import org.mockito.Mockito;
 import org.springframework.beans.factory.BeanCreationException;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.boot.test.autoconfigure.web.servlet.WebMvcTest;
+import org.springframework.boot.webmvc.test.autoconfigure.WebMvcTest;
 import org.springframework.context.annotation.Import;
 import org.springframework.test.context.ContextConfiguration;
 import org.springframework.test.context.TestContext;
-import org.springframework.test.context.junit4.SpringRunner;
+import org.springframework.test.context.junit.jupiter.SpringExtension;
 import org.springframework.test.util.ReflectionTestUtils;
 import org.springframework.validation.BindException;
 import org.springframework.validation.Errors;
@@ -76,37 +79,23 @@ import io.mosip.authentication.core.constant.IdAuthCommonConstants;
 import io.mosip.authentication.core.exception.IdAuthenticationAppException;
 import io.mosip.authentication.core.exception.IdAuthenticationBusinessException;
 import io.mosip.authentication.core.exception.IdAuthenticationDaoException;
-import io.mosip.authentication.core.indauth.dto.AuthRequestDTO;
-import io.mosip.authentication.core.indauth.dto.AuthResponseDTO;
-import io.mosip.authentication.core.indauth.dto.BioIdentityInfoDTO;
-import io.mosip.authentication.core.indauth.dto.DataDTO;
-import io.mosip.authentication.core.indauth.dto.DigitalId;
-import io.mosip.authentication.core.indauth.dto.IdType;
-import io.mosip.authentication.core.indauth.dto.IdentityDTO;
-import io.mosip.authentication.core.indauth.dto.IdentityInfoDTO;
-import io.mosip.authentication.core.indauth.dto.EkycAuthRequestDTO;
-import io.mosip.authentication.core.indauth.dto.EKycAuthResponseDTO;
-import io.mosip.authentication.core.indauth.dto.EKycResponseDTO;
 import io.mosip.authentication.core.indauth.dto.KycAuthRequestDTOV2;
 import io.mosip.authentication.core.indauth.dto.KycAuthResponseDTOV2;
 import io.mosip.authentication.core.indauth.dto.KycExchangeRequestDTOV2;
-import io.mosip.authentication.core.indauth.dto.KycExchangeResponseDTO;
 import io.mosip.authentication.core.indauth.dto.KycRequestDTOV2;
-import io.mosip.authentication.core.indauth.dto.RequestDTO;
-import io.mosip.authentication.core.indauth.dto.ResponseDTO;
 import io.mosip.authentication.core.partner.dto.PartnerDTO;
 import io.mosip.authentication.core.util.IdTypeUtil;
 import io.mosip.authentication.service.kyc.facade.KycFacadeImpl;
 import io.mosip.authentication.service.kyc.impl.KycServiceImpl;
 import io.mosip.authentication.service.kyc.validator.KycAuthRequestValidator;
-import io.mosip.authentication.service.kyc.validator.KycExchangeRequestValidator;
 import io.mosip.idrepository.core.helper.RestHelper;
 
 /**
  * @author Dinesh Karuppiah.T
  *
  */
-@RunWith(SpringRunner.class)
+@ExtendWith({SpringExtension.class, MockitoExtension.class})
+@MockitoSettings(strictness = Strictness.LENIENT)
 @WebMvcTest
 @ContextConfiguration(classes = { TestContext.class, WebApplicationContext.class })
 @Import(EnvUtil.class)
@@ -188,7 +177,7 @@ public class KycControllerTest {
 	Map<String, List<IdentityInfoDTO>> idInfo = null;
 	List<IdentityInfoDTO> list = null;
 	
-	@Before
+	@BeforeEach
 	public void before() throws Exception {
 		ReflectionTestUtils.setField(restFactory, "env", env);
 		ReflectionTestUtils.setField(partnerService, "mapper", mapper);
@@ -307,9 +296,10 @@ public class KycControllerTest {
 				kycAuthController.processKyc(kycAuthReqDTO, errors, "1635497344579", "1635497344579", "1635497344579", requestWithMetadata));
 	}
 
-	@Test(expected = IdAuthenticationAppException.class)
+	@Test
 	public void processKycFailure1() throws IdAuthenticationBusinessException, IdAuthenticationAppException,
 			IdAuthenticationDaoException, Exception {
+		assertThrows(IdAuthenticationAppException.class, () -> {
 
 		AuthTransactionBuilder authTxnBuilder = AuthTransactionBuilder.newInstance();
 		Errors errors = new BindException(kycAuthReqDTO, "kycAuthReqDTO");
@@ -321,6 +311,7 @@ public class KycControllerTest {
 		Mockito.when(kycFacade.authenticateIndividual(kycAuthReqDTO, true, "1635497344579", "1635497344579", new TestObjectWithMetadata())).thenReturn(authResponseDTO);
 		Mockito.when(kycFacade.processEKycAuth(kycAuthReqDTO, authResponseDTO, "1635497344579", Collections.emptyMap())).thenReturn(kycAuthResponseDTO);
 		kycAuthController.processKyc(kycAuthReqDTO, errors, "1635497344579", "1635497344579", "1635497344579", new TestHttpServletRequest());
+			});
 	}
 	
 	@Test
@@ -538,8 +529,9 @@ public class KycControllerTest {
 				requestWithMetadata));
 	}
 
-	@Test(expected = IdAuthenticationAppException.class)
+	@Test
 	public void processKycAuthV2ValidationFailure() throws Exception {
+		assertThrows(IdAuthenticationAppException.class, () -> {
 		KycAuthRequestDTOV2 request = new KycAuthRequestDTOV2();
 		request.setIndividualId("5134256294");
 		request.setIndividualIdType(IdType.UIN.getType());
@@ -556,6 +548,7 @@ public class KycControllerTest {
 
 		kycAuthController.processKycAuthV2(request, validationErrors, "mispLK", "partnerId", "oidcClientId",
 				new TestHttpServletRequest());
+			});
 	}
 
 	@Test
@@ -582,8 +575,9 @@ public class KycControllerTest {
 				requestWithMetadata));
 	}
 
-	@Test(expected = IdAuthenticationAppException.class)
+	@Test
 	public void processKycExchangeV2ValidationFailure() throws Exception {
+		assertThrows(IdAuthenticationAppException.class, () -> {
 		KycExchangeRequestDTOV2 request = new KycExchangeRequestDTOV2();
 		request.setIndividualId("5134256294");
 		request.setIndividualIdType(IdType.UIN.getType());
@@ -600,6 +594,7 @@ public class KycControllerTest {
 
 		kycAuthController.processKycExchangeV2(request, validationErrors, "mispLK", "partnerId", "oidcClientId",
 				new TestHttpServletRequest());
+			});
 	}
 
 }

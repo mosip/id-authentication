@@ -1,33 +1,44 @@
 package io.mosip.authentication.authfilter.exception;
 
+import static org.junit.jupiter.api.Assertions.assertThrows;
 import io.mosip.authentication.core.constant.IdAuthenticationErrorConstants;
-import org.junit.Test;
+import org.junit.jupiter.api.Test;
 
 public class IdAuthenticationFilterExceptionTest {
 
-    @Test(expected= IdAuthenticationFilterException.class)
+    @Test
     public void IdAuthenticationFilterException() throws IdAuthenticationFilterException {
+		assertThrows(IdAuthenticationFilterException.class, () -> {
         throw new IdAuthenticationFilterException();
-    }
+    		});
+	}
 
-    @Test(expected=IdAuthenticationFilterException.class)
+    @Test
     public void IdAuthenticationFilterException2args() throws IdAuthenticationFilterException {
+		assertThrows(IdAuthenticationFilterException.class, () -> {
         throw new IdAuthenticationFilterException("errorcode", "errormessage");
-    }
+    		});
+	}
 
-    @Test(expected=IdAuthenticationFilterException.class)
+    @Test
     public void IdAuthenticationFilterException3args() throws IdAuthenticationFilterException {
+		assertThrows(IdAuthenticationFilterException.class, () -> {
         throw new IdAuthenticationFilterException("errorcode", "errormessage", null);
-    }
+    		});
+	}
 
-    @Test(expected=IdAuthenticationFilterException.class)
+    @Test
     public void IdAuthenticationFilterExceptionEnum() throws IdAuthenticationFilterException {
+		assertThrows(IdAuthenticationFilterException.class, () -> {
         throw new IdAuthenticationFilterException(IdAuthenticationErrorConstants.OTP_GENERATION_FAILED);
-    }
+    		});
+	}
 
-    @Test(expected=IdAuthenticationFilterException.class)
+    @Test
     public void IdAuthenticationFilterExceptionEnumThrowable() throws IdAuthenticationFilterException {
+		assertThrows(IdAuthenticationFilterException.class, () -> {
         throw new IdAuthenticationFilterException(IdAuthenticationErrorConstants.OTP_GENERATION_FAILED, null);
-    }
+    		});
+	}
 
 }

@@ -1,31 +1,27 @@
 package io.mosip.authentication.common.service.filter;
 
-import org.junit.Ignore;
-import org.junit.Test;
-import org.junit.runner.RunWith;
+import static org.junit.jupiter.api.Assertions.assertThrows;
+
+import org.junit.jupiter.api.Disabled;
+import org.junit.jupiter.api.Test;
+import org.mockito.MockedStatic;
 import org.mockito.Mockito;
-import org.powermock.api.mockito.PowerMockito;
-import org.powermock.core.classloader.annotations.PrepareForTest;
-import org.powermock.modules.junit4.PowerMockRunner;
-import org.slf4j.LoggerFactory;
 import org.springframework.context.annotation.Import;
 
 import io.mosip.authentication.common.service.util.EnvUtil;
 import io.mosip.authentication.core.exception.IdAuthenticationAppException;
 import io.mosip.authentication.core.util.CryptoUtil;
 
-@Ignore
-@RunWith(PowerMockRunner.class)
-@PrepareForTest({CryptoUtil.class, LoggerFactory.class})
+@Disabled
 @Import(EnvUtil.class)
 public class BaseAuthFilterStaticTest {
 
-	@Test(expected=IdAuthenticationAppException.class)
+	@Test
 	public void decodetest() throws IdAuthenticationAppException {
-		PowerMockito.mockStatic(CryptoUtil.class);
-		String stringToDecode = "YWJjZA==";
-		Mockito.when(CryptoUtil.decodeBase64Url(stringToDecode)).thenThrow(new IllegalArgumentException());
-		BaseAuthFilter.decode(stringToDecode);
+		try (MockedStatic<CryptoUtil> cryptoUtil = Mockito.mockStatic(CryptoUtil.class)) {
+			String stringToDecode = "YWJjZA==";
+			cryptoUtil.when(() -> CryptoUtil.decodeBase64Url(stringToDecode)).thenThrow(new IllegalArgumentException());
+			assertThrows(IdAuthenticationAppException.class, () -> BaseAuthFilter.decode(stringToDecode));
+		}
 	}
 }
-

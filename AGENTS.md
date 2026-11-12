@@ -4,7 +4,7 @@ This file provides guidance to AI agents when working with code in this reposito
 
 ## Prerequisites
 
-- **JDK**: 21.0.3
+- **JDK**: 21.0.3 (the build targets Java 21; Spring Boot 4 requires Java 17+)
 - **Maven**: 3.9.6
 - **PostgreSQL**: 16.0 (schema: `ida`)
 - **Keycloak**: Required for auth token issuance
@@ -72,7 +72,17 @@ docker-compose up -d
 
 ## Architecture
 
-This is a **Spring Boot 3.2.3 multi-module Maven project** (`authentication-parent`, group `io.mosip.authentication`). As of Issue #1764 it exposes a single consolidated REST service — `authentication-service` — for identity authentication within the MOSIP platform; the formerly separate `authentication-internal-service` and `authentication-otp-service` modules were merged into it (see `IdAuthenticationApplication`) and removed.
+This is a **Spring Boot 4.1.1 multi-module Maven project** (`authentication-parent`, group `io.mosip.authentication`). As of Issue #1764 it exposes a single consolidated REST service — `authentication-service` — for identity authentication within the MOSIP platform; the formerly separate `authentication-internal-service` and `authentication-otp-service` modules were merged into it (see `IdAuthenticationApplication`) and removed.
+
+**Platform versions** (Boot 4 upgrade): the root `pom.xml` uses `spring-boot-starter-parent` 4.1.1 (the `kernel-bom` is no longer imported), with Spring Framework 7, Spring Cloud 2025.1.3, Spring Batch 6, Hibernate 7, Spring Security 7 and springdoc 3.x. MOSIP kernel/idrepository libraries are `1.4.1-SNAPSHOT` (`kernel-core` now bundles several formerly separate kernel libraries and auto-configures them; unused ones are excluded in `IdAuthenticationApplication`).
+
+Things that are easy to break when touching dependencies or tests:
+- **Jackson 2 is kept** (`com.fasterxml.jackson`, pinned via `jackson-bom` 2.22.3 in the root pom) because the codebase and kernel libs use it; Boot 4 defaults to Jackson 3 (`tools.jackson`), so also set `spring.http.converters.preferred-json-mapper=jackson2` in the config.
+- **JAXB is pinned to the javax-era 2.3.9 runtime** (`org.glassfish.jaxb:jaxb-runtime` and `txw2` in the root `dependencyManagement`). `kernel-biometrics-api` (`CbeffValidator`, BIR/CBEFF) still uses `javax.xml.bind`; the Boot 4 BOM would otherwise replace the runtime with the Jakarta 4.x one and bio auth fails with "Implementation of JAXB-API has not been found". Remove the pin only after the kernel moves CBEFF to `jakarta.xml.bind`.
+- **Tests are JUnit 5 + Mockito 5 only.** PowerMock and the JUnit 4 runners were removed; do not reintroduce them. Spring slice tests use `spring-boot-starter-webmvc-test`. The root pom sets `spring.cloud.config.enabled=false` and `spring.cloud.config.import-check.enabled=false` for surefire so unit tests never contact a config server.
+- **Spring Batch 6 is JDBC-backed** (`spring-boot-starter-batch-jdbc`); job metadata is stored in the `ida.batch_*` tables. Batch 6 renamed the sequence `BATCH_JOB_SEQ` to `BATCH_JOB_INSTANCE_SEQ` (see `db_upgrade_scripts/mosip_ida/sql/1.3.1_to_1.4.0_upgrade.sql` and `db_scripts`). A `JobRegistry` bean is provided by `BatchJobRegistryConfig`.
+- **Dates:** `IdaDateUtil.parseToDate` is a stopgap for date-only patterns, because `kernel-core`'s `DateUtils2.parseToDate` rejects them. Remove it once `kernel-core` is fixed.
+- **Resource filtering:** the Boot parent filters only `application*.{properties,yml,yaml}` using the `@...@` delimiter (not `${...}`). Avoid unrelated `@` pairs in values of such files.
 
 ### Module Layout
 
@@ -150,11 +160,18 @@ All property files are externalized to [mosip-config](https://github.com/mosip/m
 - `id-authentication-otp-default.properties` — OTP service config
 - `application-default.properties` — platform-wide config
 
-Two known compatibility settings required for Spring Boot 3.x:
+Settings for Spring Boot 4 (config repo):
 ```properties
-hibernate.dialect=org.hibernate.dialect.PostgreSQLDialect
-spring.mvc.pathmatch.matching-strategy=ANT_PATH_MATCHER
+# required: keep Jackson 2 for HTTP message conversion (Boot 4 defaults to Jackson 3)
+spring.http.converters.preferred-json-mapper=jackson2
 ```
+Boot 3-era settings that must NOT be carried over: `spring.mvc.pathmatch.matching-strategy=ANT_PATH_MATCHER` (Spring MVC now uses `PathPatternParser`; remove it) and `hibernate.dialect` (Hibernate 7 selects `PostgreSQLDialect` itself and logs HHH90000025 if it is set). Renamed keys: `spring.datasource.initialization-mode` -> `spring.sql.init.mode`, `management.metrics.export.prometheus.enabled` -> `management.prometheus.metrics.export.enabled`; `server.max-http-header-size` is no longer supported, so the 8KB default applies unless `server.max-http-request-header-size` is set (e.g. `10000000` to keep 10MB); `management.endpoint.<id>.enabled` is replaced by `management.endpoint.<id>.access`.
+
+`bootstrap.properties` ships a placeholder `spring.cloud.config.uri=localhost`; for local runs override it (e.g. `--spring.cloud.config.uri=http://localhost:51000/config`) and add `--spring.cloud.loadbalancer.enabled=false` so `@LoadBalanced` clients treat `localhost` as a host, not a service name.
+
+### Container start
+
+`authentication-service/Dockerfile` ends with `CMD exec java ... $spring_args <module>.jar`. `configure_start.sh` (the `ENTRYPOINT`) installs the HSM client, downloads the IAM adapter (`kernel-auth-adapter.jar` from `$iam_adapter_url_env` into `$loader_path_env`, picked up through `-Dloader.path`) and exports `spring_args` (`-Dspring.cloud.config.name=...` when `spring_config_name_env` is set) before `exec "$@"`. The IAM adapter is not bundled in the jar; local runs of the fat jar need it on `-Dloader.path`.
 
 ### CI/CD
 

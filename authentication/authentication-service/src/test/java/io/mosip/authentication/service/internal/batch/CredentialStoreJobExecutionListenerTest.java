@@ -1,23 +1,28 @@
 package io.mosip.authentication.service.internal.batch;
 
-import org.junit.Test;
-import org.junit.runner.RunWith;
+import org.mockito.quality.Strictness;
+import org.mockito.junit.jupiter.MockitoSettings;
+import org.mockito.junit.jupiter.MockitoExtension;
+import org.junit.jupiter.api.Test;
+import org.junit.jupiter.api.extension.ExtendWith;
 import org.mockito.InjectMocks;
-import org.springframework.batch.core.JobParameters;
-import org.springframework.batch.core.StepExecution;
-import org.springframework.boot.test.autoconfigure.web.servlet.WebMvcTest;
+import org.springframework.batch.core.job.JobInstance;
+import org.springframework.batch.core.job.parameters.JobParameters;
+import org.springframework.batch.core.step.StepExecution;
+import org.springframework.boot.webmvc.test.autoconfigure.WebMvcTest;
 import org.springframework.test.context.ContextConfiguration;
 import org.springframework.test.context.TestContext;
-import org.springframework.test.context.junit4.SpringRunner;
+import org.springframework.test.context.junit.jupiter.SpringExtension;
 import org.springframework.web.context.WebApplicationContext;
 
-import org.springframework.batch.core.JobExecution;
+import org.springframework.batch.core.job.JobExecution;
 
 import java.util.*;
 
 @WebMvcTest
 @ContextConfiguration(classes = {TestContext.class, WebApplicationContext.class})
-@RunWith(SpringRunner.class)
+@ExtendWith({SpringExtension.class, MockitoExtension.class})
+@MockitoSettings(strictness = Strictness.LENIENT)
 public class CredentialStoreJobExecutionListenerTest {
 
     @InjectMocks
@@ -32,14 +37,16 @@ public class CredentialStoreJobExecutionListenerTest {
     public void afterJobTest(){
         Long id = Long.valueOf(1213);
         JobParameters jobParameters = new JobParameters();
-        jobExecution = new JobExecution(id, jobParameters);
+        jobExecution = new JobExecution(id, new JobInstance(id, "testJob"), jobParameters);
 //        case 1
         credentialStoreJobExecutionListener.afterJob(jobExecution);
 
         Collection<StepExecution> stepExecutions = new ArrayList<>();
-        StepExecution step1 = jobExecution.createStepExecution("step1");
+        StepExecution step1 = new StepExecution("step1", jobExecution);
+        jobExecution.addStepExecution(step1);
         step1.setReadCount(0);
-        StepExecution step2 = jobExecution.createStepExecution("step2");
+        StepExecution step2 = new StepExecution("step2", jobExecution);
+        jobExecution.addStepExecution(step2);
         step2.setReadCount(0);
         stepExecutions.add(step1);
         stepExecutions.add(step2);
@@ -70,7 +77,7 @@ public class CredentialStoreJobExecutionListenerTest {
     public void beforeJobTest(){
         Long id = Long.valueOf(1213);
         JobParameters jobParameters = new JobParameters();
-        jobExecution = new JobExecution(id, jobParameters);
+        jobExecution = new JobExecution(id, new JobInstance(id, "testJob"), jobParameters);
         credentialStoreJobExecutionListener.beforeJob(jobExecution);
     }
 }

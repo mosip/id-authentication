@@ -1,8 +1,9 @@
 package io.mosip.authentication.core.exception;
 
-import org.junit.Test;
-import org.junit.runner.RunWith;
-import org.mockito.junit.MockitoJUnitRunner;
+import static org.junit.jupiter.api.Assertions.assertThrows;
+import org.junit.jupiter.api.Test;
+import org.junit.jupiter.api.extension.ExtendWith;
+import org.mockito.junit.jupiter.MockitoExtension;
 import org.springframework.validation.Errors;
 
 import io.mosip.authentication.core.constant.IdAuthenticationErrorConstants;
@@ -14,7 +15,7 @@ import io.mosip.authentication.core.indauth.dto.AuthRequestDTO;
  *
  * @author Manoj SP
  */
-@RunWith(MockitoJUnitRunner.class)
+@ExtendWith(MockitoExtension.class)
 public class IdValidationFailedExceptionTest {
 
 	/** The auth req. */
@@ -28,10 +29,12 @@ public class IdValidationFailedExceptionTest {
 	 *
 	 * @throws IdValidationFailedException the id validation failed exception
 	 */
-	@Test(expected = IdValidationFailedException.class)
+	@Test
 	public void testDataValidationExceptionDefaultCons() throws IdValidationFailedException {
+		assertThrows(IdValidationFailedException.class, () -> {
 		errors.rejectValue(null, "test error", "test error");
 		throw new IdValidationFailedException();
+			});
 	}
 
 	/**
@@ -39,10 +42,12 @@ public class IdValidationFailedExceptionTest {
 	 *
 	 * @throws IdValidationFailedException the id validation failed exception
 	 */
-	@Test(expected = IdValidationFailedException.class)
+	@Test
 	public void testDataValidationException() throws IdValidationFailedException {
+		assertThrows(IdValidationFailedException.class, () -> {
 		errors.rejectValue(null, "test error", "test error");
 		throw new IdValidationFailedException(IdAuthenticationErrorConstants.DATA_VALIDATION_FAILED, errors);
+			});
 	}
 
 	/**
@@ -50,9 +55,11 @@ public class IdValidationFailedExceptionTest {
 	 *
 	 * @throws IdValidationFailedException the id validation failed exception
 	 */
-	@Test(expected = IdValidationFailedException.class)
+	@Test
 	public void testDataValidationExceptionWithErrors() throws IdValidationFailedException {
+		assertThrows(IdValidationFailedException.class, () -> {
 		throw new IdValidationFailedException(errors);
+			});
 	}
 	
 	/**
@@ -60,9 +67,11 @@ public class IdValidationFailedExceptionTest {
 	 *
 	 * @throws IdValidationFailedException the id validation failed exception
 	 */
-	@Test(expected = IdValidationFailedException.class)
+	@Test
 	public void testDataValidationException1() throws IdValidationFailedException {
+		assertThrows(IdValidationFailedException.class, () -> {
 		throw new IdValidationFailedException(IdAuthenticationErrorConstants.OTP_GENERATION_FAILED, new Throwable());
+			});
 	}
 
 	/**
@@ -70,9 +79,11 @@ public class IdValidationFailedExceptionTest {
 	 *
 	 * @throws IdValidationFailedException the id validation failed exception
 	 */
-	@Test(expected = IdValidationFailedException.class)
+	@Test
 	public void testDataValidationExceptionWithErrors1() throws IdValidationFailedException {
+		assertThrows(IdValidationFailedException.class, () -> {
 		throw new IdValidationFailedException(IdAuthenticationErrorConstants.OTP_GENERATION_FAILED);
+			});
 	}
 
 }

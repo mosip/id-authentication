@@ -52,7 +52,7 @@ public class DemoAuthConfig {
 			IllegalAccessException, IllegalArgumentException, InvocationTargetException {
 		Class<?> object = Class.forName(demosdkClassName);
 		Object[] args = new Object[0];
-		Optional<Constructor<?>> result = ReflectionUtils.findConstructor(object, args);
+		Optional<Constructor<?>> result = Optional.ofNullable(ReflectionUtils.findConstructor(object, args));
 		if (result.isPresent()) {
 			Constructor<?> constructor = result.get();
 			constructor.setAccessible(true);
@@ -80,7 +80,7 @@ public class DemoAuthConfig {
 			IllegalAccessException, IllegalArgumentException, InvocationTargetException {
 		Class<?> object = Class.forName(normalizerClassName);
 		Object[] args = new Object[0];
-		Optional<Constructor<?>> result = ReflectionUtils.findConstructor(object, args);
+		Optional<Constructor<?>> result = Optional.ofNullable(ReflectionUtils.findConstructor(object, args));
 		if (result.isPresent()) {
 			Constructor<?> constructor = result.get();
 			constructor.setAccessible(true);

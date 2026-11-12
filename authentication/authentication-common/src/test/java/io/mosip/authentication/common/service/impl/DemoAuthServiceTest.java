@@ -1,8 +1,12 @@
 package io.mosip.authentication.common.service.impl;
 
-import static org.junit.Assert.assertEquals;
-import static org.junit.Assert.assertNotNull;
-import static org.junit.Assert.assertTrue;
+import org.mockito.quality.Strictness;
+import org.mockito.junit.jupiter.MockitoSettings;
+import org.mockito.junit.jupiter.MockitoExtension;
+import static org.junit.jupiter.api.Assertions.assertThrows;
+import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertNotNull;
+import static org.junit.jupiter.api.Assertions.assertTrue;
 import static org.mockito.Mockito.when;
 
 import java.lang.reflect.InvocationTargetException;
@@ -20,20 +24,20 @@ import java.util.Set;
 import io.mosip.authentication.common.service.helper.MatchTypeHelper;
 import io.mosip.authentication.common.service.impl.match.BioMatchType;
 import io.mosip.authentication.core.spi.indauth.match.MatchOutput;
-import org.junit.Before;
-import org.junit.Test;
-import org.junit.runner.RunWith;
+import org.junit.jupiter.api.BeforeEach;
+import org.junit.jupiter.api.Test;
+import org.junit.jupiter.api.extension.ExtendWith;
 import org.mockito.InjectMocks;
 import org.mockito.Mock;
 import org.mockito.Mockito;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.boot.test.autoconfigure.web.servlet.WebMvcTest;
+import org.springframework.boot.webmvc.test.autoconfigure.WebMvcTest;
 import org.springframework.context.annotation.Import;
 import org.springframework.core.env.AbstractEnvironment;
 import org.springframework.mock.env.MockEnvironment;
 import org.springframework.test.context.ContextConfiguration;
 import org.springframework.test.context.TestContext;
-import org.springframework.test.context.junit4.SpringRunner;
+import org.springframework.test.context.junit.jupiter.SpringExtension;
 import org.springframework.test.util.ReflectionTestUtils;
 import org.springframework.web.context.WebApplicationContext;
 
@@ -69,7 +73,8 @@ import io.mosip.authentication.core.util.DemoNormalizer;
  * @author Nagarjuna
  *
  */
-@RunWith(SpringRunner.class)
+@ExtendWith({SpringExtension.class, MockitoExtension.class})
+@MockitoSettings(strictness = Strictness.LENIENT)
 @WebMvcTest
 @Import({ IDAMappingConfig.class, EnvUtil.class })
 @ContextConfiguration(classes = { TestContext.class, WebApplicationContext.class, IDAMappingConfig.class,
@@ -109,7 +114,7 @@ public class DemoAuthServiceTest {
 	@Mock
 	private MatchTypeHelper matchTypeHelper;
 
-	@Before
+	@BeforeEach
 	public void before() {
 		ReflectionTestUtils.setField(idInfoHelper, "idMappingConfig", idaMappingConfig);
 		ReflectionTestUtils.setField(demoAuthServiceImpl, "idInfoHelper", idInfoHelper);
@@ -380,8 +385,9 @@ public class DemoAuthServiceTest {
 		assertTrue(listMatchInputsAct.isEmpty());
 	}
 
-	@Test(expected = IdAuthenticationBusinessException.class)
+	@Test
 	public void TestInValidgetDemoStatuswithException() throws IdAuthenticationBusinessException {
+		assertThrows(IdAuthenticationBusinessException.class, () -> {
 		List<IdentityInfoDTO> list = new ArrayList<IdentityInfoDTO>();
 		list.add(new IdentityInfoDTO("en", "mosip"));
 		Map<String, List<IdentityInfoDTO>> idInfo = new HashMap<>();
@@ -394,6 +400,7 @@ public class DemoAuthServiceTest {
 		AuthRequestDTO authRequestDTO = new AuthRequestDTO();
 
 		demoAuthService.authenticate(authRequestDTO, "", idInfo, "123456");
+			});
 	}
 
 	@Test
@@ -445,23 +452,28 @@ public class DemoAuthServiceTest {
 
 	}
 
-	@Test(expected = IdAuthenticationBusinessException.class)
+	@Test
 	public void TestInValidgetDemoStatus() throws IdAuthenticationBusinessException {
+		assertThrows(IdAuthenticationBusinessException.class, () -> {
 		AuthRequestDTO authRequestDTO = generateData();
 		Map<String, List<IdentityInfoDTO>> idInfo = new HashMap<>();
 		demoAuthServiceImpl.authenticate(authRequestDTO, "121212", idInfo, "123456");
+			});
 	}
 
-	@Test(expected = IdAuthenticationBusinessException.class)
+	@Test
 	public void TestdemoEntityisNull() throws IdAuthenticationBusinessException {
+		assertThrows(IdAuthenticationBusinessException.class, () -> {
 		AuthRequestDTO authRequestDTO = null;
 		String uin = "";
 		Map<String, List<IdentityInfoDTO>> demoEntity = new HashMap<>();
 		demoAuthServiceImpl.authenticate(authRequestDTO, uin, demoEntity, "123456");
+			});
 	}
 
-	@Test(expected = IdAuthenticationBusinessException.class)
+	@Test
 	public void TestDemoAuthStatus() throws IdAuthenticationBusinessException {
+		assertThrows(IdAuthenticationBusinessException.class, () -> {
 		AuthRequestDTO authRequestDTO = new AuthRequestDTO();
 		authRequestDTO.setId("mosip.identity.auth");
 		BioIdentityInfoDTO fingerValue = new BioIdentityInfoDTO();
@@ -502,6 +514,7 @@ public class DemoAuthServiceTest {
 		mockenv.merge(((AbstractEnvironment) mockenv));
 		when(masterDataManager.fetchTitles()).thenReturn(createFetcher());
 		demoAuthServiceImpl.authenticate(authRequestDTO, uin, null, "123456");
+			});
 	}
 
 	@Test
@@ -638,20 +651,24 @@ public class DemoAuthServiceTest {
 		}
 	}
 
-	@Test(expected = IdAuthenticationBusinessException.class)
+	@Test
 	public void TestcontstructMatchInputisNull() throws IdAuthenticationBusinessException {
+		assertThrows(IdAuthenticationBusinessException.class, () -> {
 		AuthRequestDTO authRequestDTO = null;
 		String uin = null;
 		Map<String, List<IdentityInfoDTO>> demoEntity = null;
 		demoAuthServiceImpl.authenticate(authRequestDTO, uin, demoEntity, "123456");
+			});
 	}
 
-	@Test(expected = IdAuthenticationBusinessException.class)
+	@Test
 	public void TestcontstructMatchInputisEmpty() throws IdAuthenticationBusinessException {
+		assertThrows(IdAuthenticationBusinessException.class, () -> {
 		AuthRequestDTO authRequestDTO = new AuthRequestDTO();
 		String uin = null;
 		Map<String, List<IdentityInfoDTO>> demoEntity = new HashMap<>();
 		demoAuthServiceImpl.authenticate(authRequestDTO, uin, demoEntity, "123456");
+			});
 	}
 
 	@Test

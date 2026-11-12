@@ -1,5 +1,9 @@
 package io.mosip.authentication.service.controller;
 
+import org.mockito.quality.Strictness;
+import org.mockito.junit.jupiter.MockitoSettings;
+import org.mockito.junit.jupiter.MockitoExtension;
+import static org.junit.jupiter.api.Assertions.assertThrows;
 import java.time.Instant;
 import java.time.ZoneOffset;
 import java.time.format.DateTimeFormatter;
@@ -16,20 +20,20 @@ import io.mosip.authentication.core.partner.dto.PartnerDTO;
 import io.mosip.authentication.core.spi.indauth.facade.AuthFacade;
 import io.mosip.authentication.core.spi.partner.service.PartnerService;
 import io.mosip.authentication.core.util.IdTypeUtil;
-import org.junit.Before;
-import org.junit.Ignore;
-import org.junit.Test;
-import org.junit.runner.RunWith;
+import org.junit.jupiter.api.BeforeEach;
+import org.junit.jupiter.api.Disabled;
+import org.junit.jupiter.api.Test;
+import org.junit.jupiter.api.extension.ExtendWith;
 import org.mockito.InjectMocks;
 import org.mockito.Mock;
 import org.mockito.Mockito;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.boot.test.autoconfigure.web.servlet.WebMvcTest;
+import org.springframework.boot.webmvc.test.autoconfigure.WebMvcTest;
 import org.springframework.core.env.Environment;
 import org.springframework.mock.web.MockHttpServletRequest;
 import org.springframework.test.context.ContextConfiguration;
 import org.springframework.test.context.TestContext;
-import org.springframework.test.context.junit4.SpringRunner;
+import org.springframework.test.context.junit.jupiter.SpringExtension;
 import org.springframework.test.util.ReflectionTestUtils;
 import org.springframework.validation.BindException;
 import org.springframework.validation.Errors;
@@ -56,8 +60,8 @@ import io.mosip.authentication.core.indauth.dto.IdType;
 import io.mosip.authentication.core.indauth.dto.EkycAuthRequestDTO;
 import io.mosip.authentication.core.indauth.dto.RequestDTO;
 import io.mosip.authentication.common.service.helper.RestHelper;
-import static org.junit.Assert.assertEquals;
-import static org.junit.Assert.fail;
+import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.fail;
 import static org.mockito.ArgumentMatchers.*;
 import static org.mockito.Mockito.any;
 import static org.mockito.Mockito.never;
@@ -76,7 +80,8 @@ import io.mosip.authentication.core.exception.IDDataValidationException;
  * 
  * @author Prem Kumar
  */
-@RunWith(SpringRunner.class)
+@ExtendWith({SpringExtension.class, MockitoExtension.class})
+@MockitoSettings(strictness = Strictness.LENIENT)
 @WebMvcTest
 @ContextConfiguration(classes = { TestContext.class, WebApplicationContext.class })
 public class AuthControllerTest {
@@ -131,7 +136,7 @@ public class AuthControllerTest {
 
 	TestHttpServletRequest requestWithMetadata = new TestHttpServletRequest();
 
-	@Before
+	@BeforeEach
 	public void before() {
 		ReflectionTestUtils.setField(env, "env", environment);
 		//ReflectionTestUtils.setField(auditFactory, "env", env);
@@ -149,9 +154,10 @@ public class AuthControllerTest {
 	 * 
 	 * Errors in the AuthRequestValidator is handled here and exception is thrown
 	 */
-	@Test(expected = IdAuthenticationAppException.class)
+	@Test
 	public void showRequestValidator()
 			throws IdAuthenticationAppException, IdAuthenticationBusinessException, IdAuthenticationDaoException {
+		assertThrows(IdAuthenticationAppException.class, () -> {
 		AuthRequestDTO authReqDTO = new AuthRequestDTO();
 		authReqDTO.setIndividualIdType(IdType.UIN.getType());
 		Errors error = new BindException(authReqDTO, "authReqDTO");
@@ -168,11 +174,13 @@ public class AuthControllerTest {
 
 		authController.authenticateIndividual(authReqDTO, error, "123456", "123456","1234567", requestWithMetadata);
 
+			});
 	}
 
-	@Test(expected = IdAuthenticationAppException.class)
+	@Test
 	public void authenticationFailed()
 			throws IdAuthenticationAppException, IdAuthenticationBusinessException, IdAuthenticationDaoException {
+		assertThrows(IdAuthenticationAppException.class, () -> {
 		AuthRequestDTO authReqDTO = new AuthRequestDTO();
 		authReqDTO.setIndividualIdType(IdType.UIN.getType());
 		Optional<PartnerDTO> partner = Optional.empty();
@@ -187,6 +195,7 @@ public class AuthControllerTest {
 
 		authController.authenticateIndividual(authReqDTO, error, "123456", "123456","1234567", requestWithMetadata);
 
+			});
 	}
 
 	@Test
@@ -267,11 +276,13 @@ public class AuthControllerTest {
 		return authRequestDTO;
 	}
 
-	@Test(expected = BeanCreationException.class)
+	@Test
 	public void initWhenEventingEnabledAndPublisherNullThrows() {
+		assertThrows(BeanCreationException.class, () -> {
 		ReflectionTestUtils.setField(authController, "isEventingEnabled", true);
 		ReflectionTestUtils.setField(authController, "authenticationErrorEventingPublisher", null);
 		authController.init();
+			});
 	}
 
 	@Test
@@ -318,14 +329,16 @@ public class AuthControllerTest {
 	}
 
 	/*
-	 * @Test(expected = IdAuthenticationAppException.class) public void
+	 * @Test public void
 	 * showProcessKycValidator() throws IdAuthenticationBusinessException,
 	 * IdAuthenticationAppException, IdAuthenticationDaoException {
+		assertThrows(IdAuthenticationAppException.class, () -> {
 	 * KycAuthRequestDTO kycAuthReqDTO = new KycAuthRequestDTO(); Errors errors =
 	 * new BindException(kycAuthReqDTO, "kycAuthReqDTO"); errors.rejectValue("id",
 	 * "errorCode", "defaultMessage");
 	 * authFacade.authenticateIndividual(kycAuthReqDTO, true, "123456789"); //
-	 * authController.processKyc(kycAuthReqDTO, errors, "123456", "123456"); }
+	 * authController.processKyc(kycAuthReqDTO, errors, "123456", "123456"); 		});
+	}
 	 * 
 	 * @Test public void processKycSuccess() throws
 	 * IdAuthenticationBusinessException, IdAuthenticationAppException,
@@ -382,9 +395,10 @@ public class AuthControllerTest {
 	 * authController.processKyc(kycAuthReqDTO, errors, "123456789", "12345689");
 	 * assertFalse(error.hasErrors()); }
 	 * 
-	 * @Test(expected = IdAuthenticationAppException.class) public void
+	 * @Test public void
 	 * processKycFailure() throws IdAuthenticationBusinessException,
 	 * IdAuthenticationAppException, IdAuthenticationDaoException {
+		assertThrows(IdAuthenticationAppException.class, () -> {
 	 * KycAuthRequestDTO kycAuthRequestDTO = new KycAuthRequestDTO();
 	 * kycAuthRequestDTO.setId("id"); kycAuthRequestDTO.setVersion("1.1");
 	 * kycAuthRequestDTO.setRequestTime(ZonedDateTime.now()
@@ -437,6 +451,7 @@ public class AuthControllerTest {
 	 * "12346789")) // .thenThrow(new
 	 * IdAuthenticationBusinessException(IdAuthenticationErrorConstants.
 	 * UNABLE_TO_PROCESS)); // authController.processKyc(kycAuthRequestDTO, errors,
-	 * "12346789", "1234567"); }
+	 * "12346789", "1234567"); 		});
+	}
 	 */
 }

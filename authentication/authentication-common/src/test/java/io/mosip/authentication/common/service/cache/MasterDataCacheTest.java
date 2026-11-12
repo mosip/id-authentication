@@ -1,28 +1,29 @@
 package io.mosip.authentication.common.service.cache;
 
+import static org.junit.jupiter.api.Assertions.assertThrows;
 import io.mosip.authentication.common.service.factory.RestRequestFactory;
 import io.mosip.authentication.core.constant.RestServicesConstants;
 import io.mosip.authentication.core.exception.IDDataValidationException;
 import io.mosip.authentication.core.exception.IdAuthenticationBusinessException;
 import io.mosip.idrepository.core.dto.RestRequestDTO;
 import io.mosip.authentication.common.service.helper.RestHelper;
-import org.junit.Test;
-import org.junit.runner.RunWith;
+import org.junit.jupiter.api.Test;
+import org.junit.jupiter.api.extension.ExtendWith;
 import org.mockito.InjectMocks;
 import org.mockito.Mock;
 import org.mockito.Mockito;
-import org.mockito.junit.MockitoJUnitRunner;
-import org.springframework.boot.test.autoconfigure.web.servlet.WebMvcTest;
+import org.mockito.junit.jupiter.MockitoExtension;
+import org.springframework.boot.webmvc.test.autoconfigure.WebMvcTest;
 import org.springframework.test.context.ContextConfiguration;
 import org.springframework.test.context.TestContext;
-import org.springframework.test.context.junit4.SpringRunner;
+import org.springframework.test.context.junit.jupiter.SpringExtension;
 import org.springframework.web.context.WebApplicationContext;
 
 import java.util.Map;
 
 @WebMvcTest
 @ContextConfiguration(classes = {TestContext.class, WebApplicationContext.class})
-@RunWith(MockitoJUnitRunner.class)
+@ExtendWith(MockitoExtension.class)
 public class MasterDataCacheTest {
 
     @InjectMocks
@@ -48,13 +49,15 @@ public class MasterDataCacheTest {
      * @throws IdAuthenticationBusinessException the id authentication business
      *                                           exception
      */
-    @Test(expected = IdAuthenticationBusinessException.class)
+    @Test
     public void getMasterDataTitlesExceptionTest1() throws IdAuthenticationBusinessException {
+		assertThrows(IdAuthenticationBusinessException.class, () -> {
         Object[] args = {};
         IDDataValidationException exception = new IDDataValidationException("kj","as",args);
         Mockito.doThrow(exception).when(restFactory).buildRequest(RestServicesConstants.TITLE_SERVICE, null, Map.class);
         masterDataCache.getMasterDataTitles();
-    }
+    		});
+	}
 
     /**
      * This class tests the getMasterDataTemplate method
@@ -77,14 +80,16 @@ public class MasterDataCacheTest {
      * @throws IdAuthenticationBusinessException the id authentication business
      *                                           exception
      */
-    @Test(expected = IdAuthenticationBusinessException.class)
+    @Test
     public void getMasterDataTemplateExceptionTest() throws IdAuthenticationBusinessException {
+		assertThrows(IdAuthenticationBusinessException.class, () -> {
         String template = "1122";
         Object[] args = {};
         IDDataValidationException exception = new IDDataValidationException("kj","as",args);
         Mockito.doThrow(exception).when(restFactory).buildRequest(RestServicesConstants.ID_MASTERDATA_TEMPLATE_SERVICE_MULTILANG, null, Map.class);
         masterDataCache.getMasterDataTemplate(template);
-    }
+    		});
+	}
 
     /**
      * This class tests the clearMasterDataTemplateCache method

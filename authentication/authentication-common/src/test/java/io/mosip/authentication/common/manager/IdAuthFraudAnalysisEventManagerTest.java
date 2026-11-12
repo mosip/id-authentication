@@ -1,6 +1,6 @@
 package io.mosip.authentication.common.manager;
 
-import static org.junit.Assert.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.mockito.Mockito.lenient;
 
 import java.io.IOException;
@@ -10,13 +10,13 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
-import org.junit.Before;
-import org.junit.Test;
-import org.junit.runner.RunWith;
+import org.junit.jupiter.api.BeforeEach;
+import org.junit.jupiter.api.Test;
+import org.junit.jupiter.api.extension.ExtendWith;
 import org.mockito.InjectMocks;
 import org.mockito.Mock;
-import org.mockito.junit.MockitoJUnitRunner;
-import org.springframework.boot.test.autoconfigure.web.servlet.WebMvcTest;
+import org.mockito.junit.jupiter.MockitoExtension;
+import org.springframework.boot.webmvc.test.autoconfigure.WebMvcTest;
 import org.springframework.test.context.ContextConfiguration;
 import org.springframework.test.context.TestContext;
 import org.springframework.test.util.ReflectionTestUtils;
@@ -29,7 +29,7 @@ import io.mosip.authentication.common.service.repository.AutnTxnRepository;
 import io.mosip.authentication.common.service.util.EnvUtil;
 import io.mosip.authentication.common.service.websub.impl.IdAuthFraudAnalysisEventPublisher;
 import io.mosip.authentication.core.dto.IdAuthFraudAnalysisEventDTO;
-@RunWith(MockitoJUnitRunner.class)
+@ExtendWith(MockitoExtension.class)
 @WebMvcTest
 @ContextConfiguration(classes = {TestContext.class, WebApplicationContext.class})
 public class IdAuthFraudAnalysisEventManagerTest {
@@ -52,7 +52,7 @@ public class IdAuthFraudAnalysisEventManagerTest {
     @Mock
     private ObjectMapper mapper;
     
-    @Before
+    @BeforeEach
     public void Before(){
     	EnvUtil.setIsFraudAnalysisEnabled(true);
         ReflectionTestUtils.setField(idAuthFraudAnalysisEventManager, "requestFloodingTimeDiff", 1);

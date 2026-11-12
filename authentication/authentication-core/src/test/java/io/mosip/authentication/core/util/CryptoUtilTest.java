@@ -1,7 +1,7 @@
 package io.mosip.authentication.core.util;
 
-import org.junit.Assert;
-import org.junit.Test;
+import org.junit.jupiter.api.Assertions;
+import org.junit.jupiter.api.Test;
 
 
 public class CryptoUtilTest {
@@ -17,8 +17,8 @@ public class CryptoUtilTest {
 		
 		byte[] result = CryptoUtil.combineByteArray(data, key, keySplitter);
 		
-		Assert.assertNotNull(result);
-		Assert.assertTrue(result.length > 0);
+		Assertions.assertNotNull(result);
+		Assertions.assertTrue(result.length > 0);
 	}
 	
 	/**
@@ -30,8 +30,8 @@ public class CryptoUtilTest {
 		
 		String encoded = CryptoUtil.encodeBase64(data);
 		
-		Assert.assertNotNull(encoded);
-		Assert.assertFalse(encoded.isEmpty());
+		Assertions.assertNotNull(encoded);
+		Assertions.assertFalse(encoded.isEmpty());
 	}
 	
 	/**
@@ -43,8 +43,8 @@ public class CryptoUtilTest {
 		
 		String encoded = CryptoUtil.encodeBase64Url(data);
 		
-		Assert.assertNotNull(encoded);
-		Assert.assertFalse(encoded.isEmpty());
+		Assertions.assertNotNull(encoded);
+		Assertions.assertFalse(encoded.isEmpty());
 	}
 	
 	/**
@@ -57,8 +57,8 @@ public class CryptoUtilTest {
 		
 		byte[] decoded = CryptoUtil.decodeBase64(encoded);
 		
-		Assert.assertNotNull(decoded);
-		Assert.assertArrayEquals(originalData, decoded);
+		Assertions.assertNotNull(decoded);
+		Assertions.assertArrayEquals(originalData, decoded);
 	}
 	
 	/**
@@ -71,7 +71,7 @@ public class CryptoUtilTest {
 		
 		byte[] decoded = CryptoUtil.decodeBase64Url(encoded);
 		
-		Assert.assertNotNull(decoded);
-		Assert.assertArrayEquals(originalData, decoded);
+		Assertions.assertNotNull(decoded);
+		Assertions.assertArrayEquals(originalData, decoded);
 	}
 }

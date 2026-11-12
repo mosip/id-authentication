@@ -1,14 +1,15 @@
 package io.mosip.authentication.common.service.impl.match;
 
-import static org.junit.Assert.assertEquals;
-import static org.junit.Assert.assertNotEquals;
-import static org.junit.Assert.assertNotNull;
-import static org.junit.Assert.assertNull;
+import static org.junit.jupiter.api.Assertions.assertThrows;
+import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertNotEquals;
+import static org.junit.jupiter.api.Assertions.assertNotNull;
+import static org.junit.jupiter.api.Assertions.assertNull;
 
 import java.util.HashMap;
 import java.util.Map;
 
-import org.junit.Test;
+import org.junit.jupiter.api.Test;
 
 import io.mosip.authentication.common.service.impl.match.PinMatchingStrategy;
 import io.mosip.authentication.core.exception.IdAuthenticationBusinessException;
@@ -63,8 +64,9 @@ public class PinMatchingStrategyTest {
 	 * 
 	 * @throws IdAuthenticationBusinessException
 	 */
-	@Test(expected = IdAuthenticationBusinessException.class)
+	@Test
 	public void TestInvalidExactMatchingStrategyFunction() throws IdAuthenticationBusinessException {
+		assertThrows(IdAuthenticationBusinessException.class, () -> {
 		MatchFunction matchFunction = PinMatchingStrategy.EXACT.getMatchFunction();
 		Map<String, Object> matchProperties = new HashMap<>();
 		int value = matchFunction.match(2, "2", matchProperties);
@@ -72,10 +74,12 @@ public class PinMatchingStrategyTest {
 
 		int value1 = matchFunction.match(2, "dinesh", matchProperties);
 		assertEquals(0, value1);
+			});
 	}
 
-	@Test(expected = IdAuthenticationBusinessException.class)
+	@Test
 	public void TestInvalidExactMatchingStrategyFunctions() throws IdAuthenticationBusinessException {
+		assertThrows(IdAuthenticationBusinessException.class, () -> {
 		Map<String, Object> matchProperties = new HashMap<>();
 		
 		MatchFunction matchFunction = PinMatchingStrategy.EXACT.getMatchFunction();
@@ -83,32 +87,39 @@ public class PinMatchingStrategyTest {
 		int value = matchFunction.match(2, "2", matchProperties);
 		assertEquals(0, value);
 
+			});
 	}
 
-	@Test(expected = IdAuthenticationBusinessException.class)
+	@Test
 	public void TestInvalidMatchwithSecondaryLang() throws IdAuthenticationBusinessException {
+		assertThrows(IdAuthenticationBusinessException.class, () -> {
 		Map<String, Object> matchProperties = new HashMap<>();
 		MatchFunction matchFunction = PinMatchingStrategy.EXACT.getMatchFunction();
 		
 		int value1 = matchFunction.match(2, "dinesh", matchProperties);
 		assertEquals(0, value1);
+			});
 	}
 
-	@Test(expected = IdAuthenticationBusinessException.class)
+	@Test
 	public void TestInvalid() throws IdAuthenticationBusinessException {
+		assertThrows(IdAuthenticationBusinessException.class, () -> {
 		Map<String, Object> matchProperties = new HashMap<>();
 		MatchFunction matchFunction = PinMatchingStrategy.EXACT.getMatchFunction();
 		matchProperties.put("languageType", "test");
 		int value2 = matchFunction.match(2, "invalid", matchProperties);
 		assertEquals(0, value2);
+			});
 	}
 
-	@Test(expected = IdAuthenticationBusinessException.class)
+	@Test
 	public void TestInvalidExactMatchingStrategy() throws IdAuthenticationBusinessException {
+		assertThrows(IdAuthenticationBusinessException.class, () -> {
 		Map<String, Object> matchProperties = new HashMap<>();
 		MatchFunction matchFunction = PinMatchingStrategy.EXACT.getMatchFunction();
 		int value = matchFunction.match(5, 1, matchProperties);
 		assertEquals(0, value);
+			});
 	}
 
 

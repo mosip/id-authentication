@@ -1,8 +1,8 @@
 package io.mosip.authentication.service.internal.constant;
 
-import org.junit.Test;
+import org.junit.jupiter.api.Test;
 
-import static org.junit.Assert.*;
+import static org.junit.jupiter.api.Assertions.*;
 
 public class BatchJobConstantTest {
 
@@ -11,7 +11,7 @@ public class BatchJobConstantTest {
 		BatchJobConstant constant = BatchJobConstant.DB_SCHEMA_NAME;
 		String expectedValue = "mosip.id.authentication.internal-service.schemaName";
 		
-		assertEquals("Should return correct schema name property", expectedValue, constant.getValue());
+		assertEquals(expectedValue, constant.getValue(), "Should return correct schema name property");
 	}
 	
 	@Test
@@ -19,14 +19,14 @@ public class BatchJobConstantTest {
 		BatchJobConstant constant = BatchJobConstant.DB_TABLE_NAME;
 		String expectedValue = "mosip.id.authentication.internal-service.tableName";
 		
-		assertEquals("Should return correct table name property", expectedValue, constant.getValue());
+		assertEquals(expectedValue, constant.getValue(), "Should return correct table name property");
 	}
 	
 	@Test
 	public void testGetValue() {
 		String value = BatchJobConstant.DB_SCHEMA_NAME.getValue();
 		
-		assertNotNull("Value should not be null", value);
-		assertFalse("Value should not be empty", value.isEmpty());
+		assertNotNull(value, "Value should not be null");
+		assertFalse(value.isEmpty(), "Value should not be empty");
 	}
 }

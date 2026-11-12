@@ -1,20 +1,21 @@
 package io.mosip.authentication.common.service.cache;
 
+import static org.junit.jupiter.api.Assertions.assertThrows;
 import io.mosip.authentication.core.exception.IdAuthUncheckedException;
 import io.mosip.authentication.core.exception.IdAuthenticationBusinessException;
-import org.junit.Ignore;
-import org.junit.Test;
-import org.junit.runner.RunWith;
+import org.junit.jupiter.api.Disabled;
+import org.junit.jupiter.api.Test;
+import org.junit.jupiter.api.extension.ExtendWith;
 import org.mockito.InjectMocks;
 import org.mockito.Mock;
 import org.mockito.Mockito;
-import org.mockito.junit.MockitoJUnitRunner;
+import org.mockito.junit.jupiter.MockitoExtension;
 import org.springframework.boot.SpringApplication;
 import org.springframework.boot.context.event.ApplicationReadyEvent;
-import org.springframework.boot.test.autoconfigure.web.servlet.WebMvcTest;
+import org.springframework.boot.webmvc.test.autoconfigure.WebMvcTest;
 import org.springframework.test.context.ContextConfiguration;
 import org.springframework.test.context.TestContext;
-import org.springframework.test.context.junit4.SpringRunner;
+import org.springframework.test.context.junit.jupiter.SpringExtension;
 import org.springframework.test.util.ReflectionTestUtils;
 import org.springframework.web.context.WebApplicationContext;
 
@@ -22,7 +23,7 @@ import java.io.IOException;
 
 @WebMvcTest
 @ContextConfiguration(classes = {TestContext.class, WebApplicationContext.class})
-@RunWith(MockitoJUnitRunner.class)
+@ExtendWith(MockitoExtension.class)
 public class MasterDataCacheInitializerTest {
 
     @InjectMocks
@@ -59,12 +60,14 @@ public class MasterDataCacheInitializerTest {
      * @throws IdAuthenticationBusinessException the id authentication business
      *                                           exception
      */
-    @Ignore
-    @Test(expected = IdAuthUncheckedException.class)
+    @Disabled
+    @Test
     public void OnApplicationReadyEventExceptionTest() throws IdAuthenticationBusinessException {
+		assertThrows(IdAuthUncheckedException.class, () -> {
         SpringApplication application = new SpringApplication();
         ApplicationReadyEvent event = new ApplicationReadyEvent(application, new String[0], null,null);
         Mockito.doThrow(IdAuthenticationBusinessException.class).when(masterDataCache).getMasterDataTitles();
         masterDataCacheInitializer.onApplicationEvent(event);
-    }
+    		});
+	}
 }

@@ -1,5 +1,9 @@
 package io.mosip.authentication.service.internal.controller;
 
+import org.mockito.quality.Strictness;
+import org.mockito.junit.jupiter.MockitoSettings;
+import org.mockito.junit.jupiter.MockitoExtension;
+import static org.junit.jupiter.api.Assertions.assertThrows;
 import java.sql.Ref;
 import java.time.Instant;
 import java.time.ZoneOffset;
@@ -10,19 +14,19 @@ import java.util.List;
 import io.mosip.authentication.core.constant.IdAuthCommonConstants;
 import io.mosip.authentication.core.dto.ObjectWithMetadata;
 import io.mosip.authentication.core.util.IdTypeUtil;
-import org.junit.Assert;
-import org.junit.Before;
-import org.junit.Test;
-import org.junit.runner.RunWith;
+import org.junit.jupiter.api.Assertions;
+import org.junit.jupiter.api.BeforeEach;
+import org.junit.jupiter.api.Test;
+import org.junit.jupiter.api.extension.ExtendWith;
 import org.mockito.InjectMocks;
 import org.mockito.Mock;
 import org.mockito.Mockito;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.boot.test.autoconfigure.web.servlet.WebMvcTest;
+import org.springframework.boot.webmvc.test.autoconfigure.WebMvcTest;
 import org.springframework.context.annotation.Import;
 import org.springframework.test.context.ContextConfiguration;
 import org.springframework.test.context.TestContext;
-import org.springframework.test.context.junit4.SpringRunner;
+import org.springframework.test.context.junit.jupiter.SpringExtension;
 import org.springframework.test.util.ReflectionTestUtils;
 import org.springframework.validation.BindException;
 import org.springframework.validation.Errors;
@@ -57,7 +61,8 @@ import io.mosip.authentication.core.spi.indauth.service.KycService;
 import io.mosip.authentication.service.internal.validator.InternalAuthRequestValidator;
 import io.mosip.authentication.common.service.helper.RestHelper;
 
-@RunWith(SpringRunner.class)
+@ExtendWith({SpringExtension.class, MockitoExtension.class})
+@MockitoSettings(strictness = Strictness.LENIENT)
 @WebMvcTest
 @ContextConfiguration(classes = { TestContext.class, WebApplicationContext.class })
 @Import(EnvUtil.class)
@@ -110,7 +115,7 @@ public class InternalAuthControllerTest {
 
 	Errors error = new BindException(AuthRequestDTO.class, "authReqDTO");
 
-	@Before
+	@BeforeEach
 	public void before() {
 		ReflectionTestUtils.setField(restFactory, "env", env);
 		ReflectionTestUtils.invokeMethod(authController, "initBinder", binder);
@@ -122,9 +127,10 @@ public class InternalAuthControllerTest {
 
 	}
 
-	@Test(expected = IdAuthenticationAppException.class)
+	@Test
 	public void showAuthenticateTspValidator()
 			throws IdAuthenticationAppException, IdAuthenticationDaoException, IdAuthenticationBusinessException {
+		assertThrows(IdAuthenticationAppException.class, () -> {
 		AuthResponseDTO authResponseDTO = new AuthResponseDTO();
 		AuthRequestDTO authReqestsDTO = new AuthRequestDTO();
 		authReqestsDTO.setIndividualIdType(IdType.UIN.getType());
@@ -142,6 +148,7 @@ public class InternalAuthControllerTest {
 		Mockito.when(authTransactionHelper.createAndSetAuthTxnBuilderMetadataToRequest(Mockito.any(), Mockito.anyBoolean(), Mockito.any())).thenReturn(authTransactionBuilder);
 		Mockito.when(authTransactionHelper.createDataValidationException(Mockito.any(), Mockito.any(), Mockito.any())).thenReturn(new IdAuthenticationAppException(IdAuthenticationErrorConstants.UNABLE_TO_PROCESS));
 		authController.authenticate(authReqestsDTO, error, new TestHttpServletRequest());
+			});
 	}
 
 	@Test
@@ -187,9 +194,10 @@ public class InternalAuthControllerTest {
 		authController.authenticate(authReqestDTO, error, request);
 	}
 
-	@Test(expected = IdAuthenticationAppException.class)
+	@Test
 	public void TestAuthIdException1()
 			throws IdAuthenticationBusinessException, IdAuthenticationDaoException, IdAuthenticationAppException {
+		assertThrows(IdAuthenticationAppException.class, () -> {
 		AuthRequestDTO authReqestDTO = new AuthRequestDTO();
 		authReqestDTO.setIndividualIdType(IdType.UIN.getType());
 		Mockito.when(authfacade.authenticateIndividual(Mockito.any(), Mockito.anyBoolean(), Mockito.anyString(), Mockito.anyString(), Mockito.anyBoolean(), Mockito.any()))
@@ -198,11 +206,13 @@ public class InternalAuthControllerTest {
 		Mockito.when(authTransactionHelper.createAndSetAuthTxnBuilderMetadataToRequest(Mockito.any(), Mockito.anyBoolean(), Mockito.any())).thenReturn(authTransactionBuilder);
 		Mockito.when(authTransactionHelper.createDataValidationException(Mockito.any(), Mockito.any(), Mockito.any())).thenReturn(new IdAuthenticationAppException(IdAuthenticationErrorConstants.UNABLE_TO_PROCESS));
 		authController.authenticate(authReqestDTO, error, new TestHttpServletRequest());
+			});
 	}
 
-	@Test(expected = IdAuthenticationAppException.class)
+	@Test
 	public void TestAuthIdException2()
 			throws IdAuthenticationBusinessException, IdAuthenticationDaoException, IdAuthenticationAppException {
+		assertThrows(IdAuthenticationAppException.class, () -> {
 		AuthRequestDTO authReqestDTO = new AuthRequestDTO();
 		authReqestDTO.setIndividualIdType(IdType.UIN.getType());
 		Mockito.when(authfacade.authenticateIndividual(Mockito.any(), Mockito.anyBoolean(), Mockito.anyString(), Mockito.anyString(), Mockito.anyBoolean(), Mockito.any()))
@@ -211,28 +221,33 @@ public class InternalAuthControllerTest {
 		Mockito.when(authTransactionHelper.createAndSetAuthTxnBuilderMetadataToRequest(Mockito.any(), Mockito.anyBoolean(), Mockito.any())).thenReturn(authTransactionBuilder);
 		Mockito.when(authTransactionHelper.createDataValidationException(Mockito.any(), Mockito.any(), Mockito.any())).thenReturn(new IdAuthenticationAppException(IdAuthenticationErrorConstants.UNABLE_TO_PROCESS));
 		authController.authenticate(authReqestDTO, error, new TestHttpServletRequest());
+			});
 	}
 
-	@Test(expected = IdAuthenticationAppException.class)
+	@Test
 	public void TestAuthIdException3()
 			throws IdAuthenticationBusinessException, IdAuthenticationAppException, IdAuthenticationDaoException {
+		assertThrows(IdAuthenticationAppException.class, () -> {
 		AuthRequestDTO authReqestDTO = new AuthRequestDTO();
 		authReqestDTO.setIndividualIdType(IdType.UIN.getType());
 		Mockito.when(authfacade.authenticateIndividual(Mockito.any(), Mockito.anyBoolean(), Mockito.anyString(), Mockito.anyString(), Mockito.anyBoolean(), Mockito.any()))
 				.thenThrow(new IdAuthenticationBusinessException(IdAuthenticationErrorConstants.UNABLE_TO_PROCESS));
 		Mockito.when(authTransactionHelper.createUnableToProcessException(Mockito.any(), Mockito.any(), Mockito.any())).thenReturn(new IdAuthenticationAppException(IdAuthenticationErrorConstants.UNABLE_TO_PROCESS));
 		authController.authenticate(authReqestDTO, error, new TestHttpServletRequest());
+			});
 	}
 
-	@Test(expected = IdAuthenticationAppException.class)
+	@Test
 	public void TestAuthIdException4()
 			throws IdAuthenticationBusinessException, IdAuthenticationAppException, IdAuthenticationDaoException {
+		assertThrows(IdAuthenticationAppException.class, () -> {
 		AuthRequestDTO authReqestDTO = new AuthRequestDTO();
 		authReqestDTO.setIndividualIdType(IdType.UIN.getType());
 		Mockito.when(authfacade.authenticateIndividual(Mockito.any(), Mockito.anyBoolean(), Mockito.anyString(), Mockito.anyString(), Mockito.anyBoolean(), Mockito.any()))
 				.thenThrow(new IdAuthenticationBusinessException());
 		Mockito.when(authTransactionHelper.createUnableToProcessException(Mockito.any(), Mockito.any(), Mockito.any())).thenReturn(new IdAuthenticationAppException(IdAuthenticationErrorConstants.UNABLE_TO_PROCESS));
 		authController.authenticate(authReqestDTO, error, new TestHttpServletRequest());
+			});
 	}
 
 	@Test
@@ -339,12 +354,13 @@ public class InternalAuthControllerTest {
 		authController.authenticateInternal(authReqestDTO, error, request);
 
 		authReqestDTO.setIndividualIdType(IdType.UIN.getType());
-		Assert.assertEquals(null, authController.authenticateInternal(authReqestDTO, error, request));
+		Assertions.assertEquals(null, authController.authenticateInternal(authReqestDTO, error, request));
 	}
 
-	@Test(expected = IdAuthenticationAppException.class)
+	@Test
 	public void authenticateInternalExceptionTest1()
 			throws IdAuthenticationBusinessException, IdAuthenticationDaoException, IdAuthenticationAppException {
+		assertThrows(IdAuthenticationAppException.class, () -> {
 		AuthRequestDTO authReqestDTO = new AuthRequestDTO();
 		authReqestDTO.setIndividualIdType(IdType.UIN.getType());
 		Mockito.when(authfacade.authenticateIndividual(Mockito.any(), Mockito.anyBoolean(), Mockito.anyString(), Mockito.anyString(), Mockito.anyBoolean(), Mockito.any()))
@@ -353,11 +369,13 @@ public class InternalAuthControllerTest {
 		Mockito.when(authTransactionHelper.createAndSetAuthTxnBuilderMetadataToRequest(Mockito.any(), Mockito.anyBoolean(), Mockito.any())).thenReturn(authTransactionBuilder);
 		Mockito.when(authTransactionHelper.createDataValidationException(Mockito.any(), Mockito.any(), Mockito.any())).thenReturn(new IdAuthenticationAppException(IdAuthenticationErrorConstants.UNABLE_TO_PROCESS));
 		authController.authenticateInternal(authReqestDTO, error, new TestHttpServletRequest());
+			});
 	}
 
-	@Test(expected = IdAuthenticationAppException.class)
+	@Test
 	public void authenticateInternalExceptionTest2()
 			throws IdAuthenticationBusinessException, IdAuthenticationDaoException, IdAuthenticationAppException {
+		assertThrows(IdAuthenticationAppException.class, () -> {
 		AuthRequestDTO authReqestDTO = new AuthRequestDTO();
 		authReqestDTO.setIndividualIdType(IdType.UIN.getType());
 		Mockito.when(authfacade.authenticateIndividual(Mockito.any(), Mockito.anyBoolean(), Mockito.anyString(), Mockito.anyString(), Mockito.anyBoolean(), Mockito.any()))
@@ -366,28 +384,33 @@ public class InternalAuthControllerTest {
 		Mockito.when(authTransactionHelper.createAndSetAuthTxnBuilderMetadataToRequest(Mockito.any(), Mockito.anyBoolean(), Mockito.any())).thenReturn(authTransactionBuilder);
 		Mockito.when(authTransactionHelper.createDataValidationException(Mockito.any(), Mockito.any(), Mockito.any())).thenReturn(new IdAuthenticationAppException(IdAuthenticationErrorConstants.UNABLE_TO_PROCESS));
 		authController.authenticateInternal(authReqestDTO, error, new TestHttpServletRequest());
+			});
 	}
 
-	@Test(expected = IdAuthenticationAppException.class)
+	@Test
 	public void authenticateInternalExceptionTest3()
 			throws IdAuthenticationBusinessException, IdAuthenticationAppException, IdAuthenticationDaoException {
+		assertThrows(IdAuthenticationAppException.class, () -> {
 		AuthRequestDTO authReqestDTO = new AuthRequestDTO();
 		authReqestDTO.setIndividualIdType(IdType.UIN.getType());
 		Mockito.when(authfacade.authenticateIndividual(Mockito.any(), Mockito.anyBoolean(), Mockito.anyString(), Mockito.anyString(), Mockito.anyBoolean(), Mockito.any()))
 				.thenThrow(new IdAuthenticationBusinessException(IdAuthenticationErrorConstants.UNABLE_TO_PROCESS));
 		Mockito.when(authTransactionHelper.createUnableToProcessException(Mockito.any(), Mockito.any(), Mockito.any())).thenReturn(new IdAuthenticationAppException(IdAuthenticationErrorConstants.UNABLE_TO_PROCESS));
 		authController.authenticateInternal(authReqestDTO, error, new TestHttpServletRequest());
+			});
 	}
 
-	@Test(expected = IdAuthenticationAppException.class)
+	@Test
 	public void authenticateInternalExceptionTest4()
 			throws IdAuthenticationBusinessException, IdAuthenticationAppException, IdAuthenticationDaoException {
+		assertThrows(IdAuthenticationAppException.class, () -> {
 		AuthRequestDTO authReqestDTO = new AuthRequestDTO();
 		authReqestDTO.setIndividualIdType(IdType.UIN.getType());
 		Mockito.when(authfacade.authenticateIndividual(Mockito.any(), Mockito.anyBoolean(), Mockito.anyString(), Mockito.anyString(), Mockito.anyBoolean(), Mockito.any()))
 				.thenThrow(new IdAuthenticationBusinessException());
 		Mockito.when(authTransactionHelper.createUnableToProcessException(Mockito.any(), Mockito.any(), Mockito.any())).thenReturn(new IdAuthenticationAppException(IdAuthenticationErrorConstants.UNABLE_TO_PROCESS));
 		authController.authenticateInternal(authReqestDTO, error, new TestHttpServletRequest());
+			});
 	}
 
 	private AuthRequestDTO getRequestDto() {

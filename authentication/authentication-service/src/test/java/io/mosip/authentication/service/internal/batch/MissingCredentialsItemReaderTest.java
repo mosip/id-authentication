@@ -1,5 +1,9 @@
 package io.mosip.authentication.service.internal.batch;
 
+import org.mockito.quality.Strictness;
+import org.mockito.junit.jupiter.MockitoSettings;
+import org.mockito.junit.jupiter.MockitoExtension;
+import static org.junit.jupiter.api.Assertions.assertThrows;
 import io.mosip.authentication.common.service.impl.idevent.CredentialStoreStatus;
 import io.mosip.authentication.common.service.integration.CredentialRequestManager;
 import io.mosip.authentication.common.service.repository.CredentialEventStoreRepository;
@@ -8,16 +12,16 @@ import io.mosip.authentication.core.exception.IdAuthRetryException;
 import io.mosip.idrepository.core.dto.CredentialRequestIdsDto;
 import io.mosip.idrepository.core.exception.RestServiceException;
 import io.mosip.kernel.core.util.DateUtils2;
-import org.junit.Before;
-import org.junit.Test;
-import org.junit.runner.RunWith;
+import org.junit.jupiter.api.BeforeEach;
+import org.junit.jupiter.api.Test;
+import org.junit.jupiter.api.extension.ExtendWith;
 import org.mockito.InjectMocks;
 import org.mockito.Mock;
 import org.mockito.Mockito;
-import org.springframework.boot.test.autoconfigure.web.servlet.WebMvcTest;
+import org.springframework.boot.webmvc.test.autoconfigure.WebMvcTest;
 import org.springframework.test.context.ContextConfiguration;
 import org.springframework.test.context.TestContext;
-import org.springframework.test.context.junit4.SpringRunner;
+import org.springframework.test.context.junit.jupiter.SpringExtension;
 import org.springframework.test.util.ReflectionTestUtils;
 import org.springframework.web.context.WebApplicationContext;
 
@@ -27,7 +31,8 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.concurrent.atomic.AtomicInteger;
 
-@RunWith(SpringRunner.class)
+@ExtendWith({SpringExtension.class, MockitoExtension.class})
+@MockitoSettings(strictness = Strictness.LENIENT)
 @WebMvcTest
 @ContextConfiguration(classes = {TestContext.class, WebApplicationContext.class})
 public class MissingCredentialsItemReaderTest {
@@ -42,7 +47,7 @@ public class MissingCredentialsItemReaderTest {
     @Mock
     private CredentialRequestManager credentialRequestManager;
 
-    @Before
+    @BeforeEach
     public void Before(){
         ReflectionTestUtils.setField(missingCredentialsItemReader, "maxCredentialPullWindowDays", 5);
         ReflectionTestUtils.setField(missingCredentialsItemReader, "currentPageIndex", new AtomicInteger(0));
@@ -83,21 +88,24 @@ public class MissingCredentialsItemReaderTest {
      * failed and throws IdAuthRetryException
      *
      */
-    @Test(expected = IdAuthRetryException.class)
+    @Test
     public void readIdAuthRetryExceptionTest() throws Exception {
+		assertThrows(IdAuthRetryException.class, () -> {
         LocalDateTime t=LocalDateTime.now().plusYears(1);
         Mockito.when(credentialEventRepo.findMaxCrDTimesByStatusCode(CredentialStoreStatus.STORED.name())).thenReturn(java.util.Optional.of(t));
         Mockito.doThrow(IDDataValidationException.class).when(credentialRequestManager).getMissingCredentialsPageItems(0, DateUtils2.formatToISOString(t));
         ReflectionTestUtils.invokeMethod(missingCredentialsItemReader, "read");
-    }
+    		});
+	}
 
     /**
      * This class tests the read method where it
      * failed and throws Exception
      *
      */
-    @Test(expected = Exception.class)
+    @Test
     public void readExceptionTest() throws RestServiceException, IDDataValidationException {
+		assertThrows(Exception.class, () -> {
         CredentialRequestIdsDto credentialRequestIdsDto1= new CredentialRequestIdsDto();
         CredentialRequestIdsDto credentialRequestIdsDto2= new CredentialRequestIdsDto();
         CredentialRequestIdsDto credentialRequestIdsDto3= new CredentialRequestIdsDto();
@@ -112,7 +120,8 @@ public class MissingCredentialsItemReaderTest {
         Mockito.when(credentialRequestManager.getMissingCredentialsPageItems(0, DateUtils2.formatToISOString(t))).thenReturn(credRequests);
         Mockito.when(credentialEventRepo.findDistictCredentialTransactionIdsInList(requestIds)).thenReturn(null);
         ReflectionTestUtils.invokeMethod(missingCredentialsItemReader, "read");
-    }
+    		});
+	}
 
     /**
      * This class tests the getRequestIdsIterator method

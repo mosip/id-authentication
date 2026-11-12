@@ -19,7 +19,7 @@ import static io.mosip.authentication.core.constant.IdAuthConfigKeyConstants.IDA
 import static io.mosip.authentication.core.constant.IdAuthConfigKeyConstants.IDA_WEBSUB_TOPIC_PMP_POLICY_UPDATED;
 
 
-import org.apache.commons.lang.exception.ExceptionUtils;
+import org.apache.commons.lang3.exception.ExceptionUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.web.bind.annotation.PostMapping;
@@ -76,7 +76,7 @@ public class PartnerServiceCallbackController {
 			partnerManager.handleApiKeyApproved(eventModel);
 		} catch (Exception e) {
 			logger.error(securityManager.getUser(), "PartnerServiceCallbackController", "handleApiKeyApprovedEvent",
-					ExceptionUtils.getFullStackTrace(e));
+					ExceptionUtils.getStackTrace(e));
 		}
 	}
 
@@ -98,7 +98,7 @@ public class PartnerServiceCallbackController {
 			partnerManager.updatePartnerData(eventModel);
 		} catch (Exception e) {
 			logger.error(securityManager.getUser(), "PartnerServiceCallbackController", "handlePartnerUpdated",
-					ExceptionUtils.getFullStackTrace(e));
+					ExceptionUtils.getStackTrace(e));
 		}
 	}
 
@@ -119,7 +119,7 @@ public class PartnerServiceCallbackController {
 			partnerManager.updatePolicyData(eventModel);
 		} catch (Exception e) {
 			logger.error(securityManager.getUser(), "PartnerServiceCallbackController", "handlePolicyUpdated",
-					ExceptionUtils.getFullStackTrace(e));
+					ExceptionUtils.getStackTrace(e));
 		}
 	}
 
@@ -141,7 +141,7 @@ public class PartnerServiceCallbackController {
 			partnerManager.handleApiKeyUpdated(eventModel);
 		} catch (Exception e) {
 			logger.error(securityManager.getUser(), "PartnerServiceCallbackController", "handlePartnerApiKeyUpdated",
-					ExceptionUtils.getFullStackTrace(e));
+					ExceptionUtils.getStackTrace(e));
 		}
 	}
 
@@ -163,7 +163,7 @@ public class PartnerServiceCallbackController {
 			partnerManager.updateMispLicenseData(eventModel);
 		} catch (Exception e) {
 			logger.error(securityManager.getUser(), "PartnerServiceCallbackController", "handleMispLicenseGeneratedEvent",
-					ExceptionUtils.getFullStackTrace(e));
+					ExceptionUtils.getStackTrace(e));
 		}
 	}
 
@@ -185,7 +185,7 @@ public class PartnerServiceCallbackController {
 			partnerManager.updateMispLicenseData(eventModel);
 		} catch (Exception e) {
 			logger.error(securityManager.getUser(), "PartnerServiceCallbackController", "handleMispUpdatedEvent",
-					ExceptionUtils.getFullStackTrace(e));
+					ExceptionUtils.getStackTrace(e));
 		}
 	}
 
@@ -207,7 +207,7 @@ public class PartnerServiceCallbackController {
 			partnerManager.createOIDCClientData(eventModel);
 		} catch (Exception e) {
 			logger.error(securityManager.getUser(), "PartnerServiceCallbackController", "handleMispUpdatedEvent",
-					ExceptionUtils.getFullStackTrace(e));
+					ExceptionUtils.getStackTrace(e));
 		}
 	}
 
@@ -229,7 +229,7 @@ public class PartnerServiceCallbackController {
 			partnerManager.updateOIDCClientData(eventModel);
 		} catch (Exception e) {
 			logger.error(securityManager.getUser(), "PartnerServiceCallbackController", "handleMispUpdatedEvent",
-					ExceptionUtils.getFullStackTrace(e));
+					ExceptionUtils.getStackTrace(e));
 		}
 	}
 }

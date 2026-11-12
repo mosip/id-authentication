@@ -7,22 +7,22 @@ import com.fasterxml.jackson.databind.ObjectMapper;
 import io.mosip.authentication.core.exception.IdAuthUncheckedException;
 import io.mosip.authentication.core.exception.IdAuthenticationBusinessException;
 import org.json.simple.JSONObject;
-import org.junit.Assert;
-import org.junit.Before;
-import org.junit.Test;
-import org.junit.runner.RunWith;
+import org.junit.jupiter.api.Assertions;
+import org.junit.jupiter.api.BeforeEach;
+import org.junit.jupiter.api.Test;
+import org.junit.jupiter.api.extension.ExtendWith;
 import org.mockito.InjectMocks;
 import org.mockito.Mock;
 import org.mockito.Mockito;
 import org.mockito.MockitoAnnotations;
-import org.mockito.junit.MockitoJUnitRunner;
+import org.mockito.junit.jupiter.MockitoExtension;
 import org.springframework.web.client.RestTemplate;
 
 import java.io.IOException;
 import java.io.StringReader;
 import java.util.Map;
 
-@RunWith(MockitoJUnitRunner.class)
+@ExtendWith(MockitoExtension.class)
 public class VCSchemaProviderUtilTest {
 
     @InjectMocks
@@ -31,9 +31,9 @@ public class VCSchemaProviderUtilTest {
     @Mock
     private RestTemplate restTemplate;
 
-    @Before
+    @BeforeEach
     public void setUp() {
-        MockitoAnnotations.initMocks(this);
+        MockitoAnnotations.openMocks(this);
     }
 
     @Test
@@ -51,7 +51,7 @@ public class VCSchemaProviderUtilTest {
         Mockito.when(restTemplate.getForObject(configServerFileStorageUrl + uri, String.class))
                 .thenReturn(vcContextJson);
         JsonDocument result = vcSchemaProviderUtil.getVCContextSchema(configServerFileStorageUrl, uri);
-        Assert.assertEquals(expectedJsonDocument.getJsonContent(), result.getJsonContent());
+        Assertions.assertEquals(expectedJsonDocument.getJsonContent(), result.getJsonContent());
         Mockito.verify(restTemplate).getForObject(configServerFileStorageUrl + uri, String.class);
     }
 
@@ -62,7 +62,7 @@ public class VCSchemaProviderUtilTest {
         String vcContextJson = "";
         Mockito.when(restTemplate.getForObject(configServerFileStorageUrl + uri, String.class))
                 .thenReturn(vcContextJson);
-        Assert.assertThrows(IdAuthUncheckedException.class,()->vcSchemaProviderUtil.getVCContextSchema(configServerFileStorageUrl, uri));
+        Assertions.assertThrows(IdAuthUncheckedException.class,()->vcSchemaProviderUtil.getVCContextSchema(configServerFileStorageUrl, uri));
     }
 
     @Test
@@ -76,7 +76,7 @@ public class VCSchemaProviderUtilTest {
         try {
             expectedMap = objectMapper.readValue(vcContextData, new TypeReference<Map<String,Object>>(){});
         } catch (IOException e) {
-            Assert.fail("Error parsing JSON: " + e.getMessage());
+            Assertions.fail("Error parsing JSON: " + e.getMessage());
             return;
         }
 
@@ -84,7 +84,7 @@ public class VCSchemaProviderUtilTest {
         Mockito.when(restTemplate.getForObject(configServerFileStorageUrl + uri, String.class))
                 .thenReturn(vcContextData);
         JSONObject result = vcSchemaProviderUtil.getVCContextData(configServerFileStorageUrl, uri, objectMapper);
-        Assert.assertEquals(expectedJsonObject, result);
+        Assertions.assertEquals(expectedJsonObject, result);
         Mockito.verify(restTemplate).getForObject(configServerFileStorageUrl + uri, String.class);
     }
 
@@ -95,7 +95,7 @@ public class VCSchemaProviderUtilTest {
         String vcContextData = "";
         Mockito.when(restTemplate.getForObject(configServerFileStorageUrl + uri, String.class))
                 .thenReturn(vcContextData);
-        Assert.assertThrows(IdAuthenticationBusinessException.class,()->vcSchemaProviderUtil.getVCContextData(configServerFileStorageUrl,uri, new ObjectMapper()));
+        Assertions.assertThrows(IdAuthenticationBusinessException.class,()->vcSchemaProviderUtil.getVCContextData(configServerFileStorageUrl,uri, new ObjectMapper()));
     }
 
 }

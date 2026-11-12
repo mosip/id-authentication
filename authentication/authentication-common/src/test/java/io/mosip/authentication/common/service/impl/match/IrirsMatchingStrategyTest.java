@@ -1,14 +1,15 @@
 package io.mosip.authentication.common.service.impl.match;
 
-import static org.junit.Assert.assertEquals;
-import static org.junit.Assert.assertNotEquals;
-import static org.junit.Assert.assertNotNull;
-import static org.junit.Assert.assertNull;
+import static org.junit.jupiter.api.Assertions.assertThrows;
+import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertNotEquals;
+import static org.junit.jupiter.api.Assertions.assertNotNull;
+import static org.junit.jupiter.api.Assertions.assertNull;
 
 import java.util.HashMap;
 import java.util.Map;
 
-import org.junit.Test;
+import org.junit.jupiter.api.Test;
 
 import io.mosip.authentication.core.exception.IdAuthenticationBusinessException;
 import io.mosip.authentication.core.spi.indauth.match.TriFunctionWithBusinessException;
@@ -24,8 +25,9 @@ public class IrirsMatchingStrategyTest {
 		matchFunction.match("name", "name", matchProperties);
 	}
 
-	@Test(expected = IdAuthenticationBusinessException.class)
+	@Test
 	public void TestInValidMatchingStrategy1() throws IdAuthenticationBusinessException {
+		assertThrows(IdAuthenticationBusinessException.class, () -> {
 		MatchFunction matchFunction = IrisMatchingStrategy.PARTIAL.getMatchFunction();
 		Map<String, String> reqValues = new HashMap<>();
 		reqValues.put("leftEye", "Test");
@@ -35,6 +37,7 @@ public class IrirsMatchingStrategyTest {
 		
 		int value = matchFunction.match(reqValues, entityValues, matchProperties);
 		assertEquals(0, value);
+			});
 	}
 
 	@Test

@@ -1,7 +1,11 @@
 package io.mosip.authentication.common.service.util;
 
-import static org.junit.Assert.assertEquals;
-import static org.junit.Assert.assertNotEquals;
+import org.mockito.quality.Strictness;
+import org.mockito.junit.jupiter.MockitoSettings;
+import org.mockito.junit.jupiter.MockitoExtension;
+import static org.junit.jupiter.api.Assertions.assertThrows;
+import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertNotEquals;
 
 import java.util.Collections;
 import java.util.HashMap;
@@ -9,17 +13,17 @@ import java.util.Map;
 import java.util.Optional;
 
 import io.mosip.authentication.common.service.helper.TypeForIdNameHelper;
-import org.junit.Before;
-import org.junit.Test;
-import org.junit.runner.RunWith;
+import org.junit.jupiter.api.BeforeEach;
+import org.junit.jupiter.api.Test;
+import org.junit.jupiter.api.extension.ExtendWith;
 import org.mockito.AdditionalMatchers;
 import org.mockito.InjectMocks;
 import org.mockito.Mock;
 import org.mockito.Mockito;
-import org.springframework.boot.test.autoconfigure.web.servlet.WebMvcTest;
+import org.springframework.boot.webmvc.test.autoconfigure.WebMvcTest;
 import org.springframework.test.context.ContextConfiguration;
 import org.springframework.test.context.TestContext;
-import org.springframework.test.context.junit4.SpringRunner;
+import org.springframework.test.context.junit.jupiter.SpringExtension;
 import org.springframework.test.util.ReflectionTestUtils;
 import org.springframework.web.context.WebApplicationContext;
 
@@ -34,7 +38,8 @@ import io.mosip.kernel.biosdk.provider.spi.iBioProviderApi;
 import io.mosip.kernel.core.bioapi.exception.BiometricException;
 import io.mosip.kernel.core.cbeffutil.constant.CbeffConstant;
 
-@RunWith(SpringRunner.class)
+@ExtendWith({SpringExtension.class, MockitoExtension.class})
+@MockitoSettings(strictness = Strictness.LENIENT)
 @WebMvcTest
 @ContextConfiguration(classes = { TestContext.class, WebApplicationContext.class,  })
 @SuppressWarnings("unchecked")
@@ -57,7 +62,7 @@ public class BioMatcherUtilTest {
 	@Mock
 	private TypeForIdNameHelper typeForIdNameHelper;
 
-	@Before
+	@BeforeEach
 	public void before() {		
 		ReflectionTestUtils.setField(bioMatcherUtil, "bdbProcessedLevel", "Raw");
 	}
@@ -113,8 +118,9 @@ public class BioMatcherUtilTest {
 		}
 	}
 	
-	@Test(expected=IdAuthenticationBusinessException.class)
+	@Test
 	public void TestmatchValueInvalidType() throws IdAuthenticationBusinessException, BiometricException {
+		assertThrows(IdAuthenticationBusinessException.class, () -> {
 		valueMap.put(value, value);
 		Mockito.when(typeForIdNameHelper.getTypeForIdName(Mockito.anyString(), Mockito.any())).thenReturn(Optional.of("ABC"));
 		HashMap<String, Object> properties = new HashMap<>();
@@ -123,6 +129,7 @@ public class BioMatcherUtilTest {
 		mockBioProvider();
 		
 		bioMatcherUtil.match(valueMap, valueMap, properties);
+			});
 	}
 	
 
@@ -210,8 +217,9 @@ public class BioMatcherUtilTest {
 	}
 	
 	
-	@Test(expected=IdAuthenticationBusinessException.class)
+	@Test
 	public void TestMissingEntityValue() throws IdAuthenticationBusinessException, BiometricException {
+		assertThrows(IdAuthenticationBusinessException.class, () -> {
 		valueMap.put(value, value);
 		Map<String, String> invalidMap = new HashMap<>();
 		invalidMap.put("invalid", "invalid");
@@ -223,6 +231,7 @@ public class BioMatcherUtilTest {
 		
 		double matchValue = bioMatcherUtil.match(valueMap, invalidMap, properties);
 		assertNotEquals("90.0", matchValue);
+			});
 	}
 
 	@Test
@@ -284,8 +293,9 @@ public class BioMatcherUtilTest {
 		}
 	}
 
-	@Test(expected=IdAuthenticationBusinessException.class)
+	@Test
 	public void TestInvaidMultipleValues() throws IdAuthenticationBusinessException, BiometricException {
+		assertThrows(IdAuthenticationBusinessException.class, () -> {
 		Map<String, String> reqInfo = new HashMap<>();
 		reqInfo.put("", value);
 		reqInfo.put(CbeffConstant.class.getName(), String.valueOf(CbeffConstant.FORMAT_TYPE_FINGER));
@@ -295,10 +305,12 @@ public class BioMatcherUtilTest {
 		mockBioProvider();
 		
 		bioMatcherUtil.match(reqInfo, entityInfo, Collections.emptyMap());
+			});
 	}
 
-	@Test(expected=IdAuthenticationBusinessException.class)
+	@Test
 	public void TestUnknownValues() throws IdAuthenticationBusinessException, BiometricException {
+		assertThrows(IdAuthenticationBusinessException.class, () -> {
 		Map<String, String> reqInfo = new HashMap<>();
 		reqInfo.put(IdAuthCommonConstants.UNKNOWN_BIO, value);
 		reqInfo.put(CbeffConstant.class.getName(), String.valueOf(CbeffConstant.FORMAT_TYPE_FINGER));
@@ -309,6 +321,7 @@ public class BioMatcherUtilTest {
 		
 		bioMatcherUtil.match(reqInfo, entityInfo, Collections.emptyMap());
 
+			});
 	}
 
 }

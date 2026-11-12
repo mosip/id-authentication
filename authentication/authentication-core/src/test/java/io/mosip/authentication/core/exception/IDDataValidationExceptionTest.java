@@ -1,8 +1,9 @@
 package io.mosip.authentication.core.exception;
 
-import static org.junit.Assert.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertThrows;
+import static org.junit.jupiter.api.Assertions.assertEquals;
 
-import org.junit.Test;
+import org.junit.jupiter.api.Test;
 
 import io.mosip.authentication.core.constant.IdAuthenticationErrorConstants;
 import io.mosip.kernel.core.exception.BaseCheckedException;
@@ -19,9 +20,11 @@ public class IDDataValidationExceptionTest {
 	 *
 	 * @throws IDDataValidationException the ID data validation exception
 	 */
-	@Test(expected = IDDataValidationException.class)
+	@Test
 	public void testIDDataValidationExceptionDefaultCons() throws IDDataValidationException {
+		assertThrows(IDDataValidationException.class, () -> {
 		throw new IDDataValidationException();
+			});
 	}
 
 	/**
@@ -29,9 +32,11 @@ public class IDDataValidationExceptionTest {
 	 *
 	 * @throws IDDataValidationException the ID data validation exception
 	 */
-	@Test(expected = IDDataValidationException.class)
+	@Test
 	public void testIDDataValidationException() throws IDDataValidationException {
+		assertThrows(IDDataValidationException.class, () -> {
 		throw new IDDataValidationException(IdAuthenticationErrorConstants.OTP_GENERATION_FAILED);
+			});
 	}
 
 	/**
@@ -39,9 +44,11 @@ public class IDDataValidationExceptionTest {
 	 *
 	 * @throws IDDataValidationException the ID data validation exception
 	 */
-	@Test(expected = IDDataValidationException.class)
+	@Test
 	public void testIDDataValidationExceptionWithArgs() throws IDDataValidationException {
+		assertThrows(IDDataValidationException.class, () -> {
 		throw new IDDataValidationException(IdAuthenticationErrorConstants.OTP_GENERATION_FAILED, "OTP");
+			});
 	}
 
 	/**
@@ -49,10 +56,12 @@ public class IDDataValidationExceptionTest {
 	 *
 	 * @throws IDDataValidationException the ID data validation exception
 	 */
-	@Test(expected = IDDataValidationException.class)
+	@Test
 	public void testIDDataValidationExceptionWithCause() throws IDDataValidationException {
+		assertThrows(IDDataValidationException.class, () -> {
 		throw new IDDataValidationException(IdAuthenticationErrorConstants.OTP_GENERATION_FAILED,
 				new IDDataValidationException());
+			});
 	}
 
 	/**
@@ -60,10 +69,12 @@ public class IDDataValidationExceptionTest {
 	 *
 	 * @throws IDDataValidationException the ID data validation exception
 	 */
-	@Test(expected = IDDataValidationException.class)
+	@Test
 	public void testIDDataValidationExceptionWithArgsAndCause() throws IDDataValidationException {
+		assertThrows(IDDataValidationException.class, () -> {
 		throw new IDDataValidationException(IdAuthenticationErrorConstants.OTP_GENERATION_FAILED,
 				new IDDataValidationException(), "OTP");
+			});
 	}
 
 	/**
@@ -71,10 +82,12 @@ public class IDDataValidationExceptionTest {
 	 *
 	 * @throws IDDataValidationException the ID data validation exception
 	 */
-	@Test(expected = IDDataValidationException.class)
+	@Test
 	public void testIDDataValidationExceptionThrowable() throws IDDataValidationException {
+		assertThrows(IDDataValidationException.class, () -> {
 		throw new IDDataValidationException(IdAuthenticationErrorConstants.OTP_GENERATION_FAILED.getErrorCode(),
 				IdAuthenticationErrorConstants.OTP_GENERATION_FAILED.getErrorMessage());
+			});
 	}
 
 	/**
@@ -82,10 +95,12 @@ public class IDDataValidationExceptionTest {
 	 *
 	 * @throws IDDataValidationException the ID data validation exception
 	 */
-	@Test(expected = IDDataValidationException.class)
+	@Test
 	public void testIDDataValidationExceptionWithArg() throws IDDataValidationException {
+		assertThrows(IDDataValidationException.class, () -> {
 		throw new IDDataValidationException(IdAuthenticationErrorConstants.OTP_GENERATION_FAILED.getErrorCode(),
 				IdAuthenticationErrorConstants.OTP_GENERATION_FAILED.getErrorMessage(), "a");
+			});
 	}
 
 	/**
@@ -93,11 +108,13 @@ public class IDDataValidationExceptionTest {
 	 *
 	 * @throws IDDataValidationException the ID data validation exception
 	 */
-	@Test(expected = IDDataValidationException.class)
+	@Test
 	public void testIDDataValidationExceptionWithThrowable() throws IDDataValidationException {
+		assertThrows(IDDataValidationException.class, () -> {
 		throw new IDDataValidationException(IdAuthenticationErrorConstants.OTP_GENERATION_FAILED.getErrorCode(),
 				IdAuthenticationErrorConstants.OTP_GENERATION_FAILED.getErrorMessage(),
 				new IDDataValidationException());
+			});
 	}
 
 	/**
@@ -105,11 +122,13 @@ public class IDDataValidationExceptionTest {
 	 *
 	 * @throws IDDataValidationException the ID data validation exception
 	 */
-	@Test(expected = IDDataValidationException.class)
+	@Test
 	public void testIDDataValidationExceptionWithArgAndThrowable() throws IDDataValidationException {
+		assertThrows(IDDataValidationException.class, () -> {
 		throw new IDDataValidationException(IdAuthenticationErrorConstants.OTP_GENERATION_FAILED.getErrorCode(),
 				IdAuthenticationErrorConstants.OTP_GENERATION_FAILED.getErrorMessage(), new IDDataValidationException(),
 				"a");
+			});
 	}
 
 	/**

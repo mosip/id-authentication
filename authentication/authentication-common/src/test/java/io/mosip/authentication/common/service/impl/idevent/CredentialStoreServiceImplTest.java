@@ -1,6 +1,10 @@
 package io.mosip.authentication.common.service.impl.idevent;
 
-import static org.junit.Assert.assertEquals;
+import org.mockito.quality.Strictness;
+import org.mockito.junit.jupiter.MockitoSettings;
+import org.mockito.junit.jupiter.MockitoExtension;
+import static org.junit.jupiter.api.Assertions.assertThrows;
+import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.mockito.Mockito.doThrow;
 
 import java.io.IOException;
@@ -13,19 +17,19 @@ import java.util.Map;
 import java.util.Optional;
 import java.util.OptionalInt;
 
-import org.junit.Before;
-import org.junit.Ignore;
-import org.junit.Test;
-import org.junit.runner.RunWith;
+import org.junit.jupiter.api.BeforeEach;
+import org.junit.jupiter.api.Disabled;
+import org.junit.jupiter.api.Test;
+import org.junit.jupiter.api.extension.ExtendWith;
 import org.mockito.InjectMocks;
 import org.mockito.Mock;
 import org.mockito.Mockito;
-import org.springframework.batch.item.Chunk;
+import org.springframework.batch.infrastructure.item.Chunk;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.boot.test.autoconfigure.web.servlet.WebMvcTest;
+import org.springframework.boot.webmvc.test.autoconfigure.WebMvcTest;
 import org.springframework.test.context.ContextConfiguration;
 import org.springframework.test.context.TestContext;
-import org.springframework.test.context.junit4.SpringRunner;
+import org.springframework.test.context.junit.jupiter.SpringExtension;
 import org.springframework.test.util.ReflectionTestUtils;
 import org.springframework.web.context.WebApplicationContext;
 
@@ -53,7 +57,8 @@ import io.mosip.idrepository.core.constant.IdRepoErrorConstants;
 import io.mosip.idrepository.core.dto.CredentialRequestIdsDto;
 import io.mosip.idrepository.core.exception.RestServiceException;
 import io.mosip.kernel.core.websub.model.EventModel;
-@RunWith(SpringRunner.class)
+@ExtendWith({SpringExtension.class, MockitoExtension.class})
+@MockitoSettings(strictness = Strictness.LENIENT)
 @ContextConfiguration(classes = { TestContext.class, WebApplicationContext.class })
 @WebMvcTest
 
@@ -100,7 +105,7 @@ public class CredentialStoreServiceImplTest {
     /**
      * Before.
      */
-    @Before
+    @BeforeEach
     public void before() {
         ReflectionTestUtils.setField(credentialStoreServiceImpl, "intervalExponentialMultiplier", 2);
         ReflectionTestUtils.setField(credentialStoreServiceImpl, "retryInterval", 3);
@@ -137,12 +142,14 @@ public class CredentialStoreServiceImplTest {
      * This class tests the processCredentialStoreEvent method for RuntimeException case
      *
      */
-    @Test(expected = RuntimeException.class)
+    @Test
     public void RuntimeExceptionProcessCredentialStoreEventTest() {
+		assertThrows(RuntimeException.class, () -> {
         CredentialEventStore credentialEventStore = new CredentialEventStore();
         credentialEventStore.setStatusCode("STORED");
         ReflectionTestUtils.invokeMethod(credentialStoreServiceImpl, "processCredentialStoreEvent", credentialEventStore);
-    }
+    		});
+	}
 
     @Test
     public void ProcessCredentialStoreEventTest_exception()
@@ -343,13 +350,15 @@ public class CredentialStoreServiceImplTest {
         ReflectionTestUtils.invokeMethod(credentialStoreServiceImpl, "storeIdentityEntity", identityEntity);
     }
 
-    @Test(expected = UndeclaredThrowableException.class)
+    @Test
     public void skipIfWaitingForRetryIntervalTest(){
+		assertThrows(UndeclaredThrowableException.class, () -> {
         CredentialEventStore credentialEventStore = new CredentialEventStore();
         LocalDateTime now = LocalDateTime.now().plusYears(1).plusMonths(1).plusWeeks(1).plusDays(1);
         ReflectionTestUtils.setField(credentialEventStore, "updDTimes", now);
         ReflectionTestUtils.invokeMethod(credentialStoreServiceImpl, "skipIfWaitingForRetryInterval", credentialEventStore);
-    }
+    		});
+	}
 
     /**
      * This class tests the createIdentityEntity method
@@ -376,12 +385,14 @@ public class CredentialStoreServiceImplTest {
         ReflectionTestUtils.invokeMethod(credentialStoreServiceImpl, "retriggerCredentialIssuance", requestId);
     }
 
-    @Test(expected = IdAuthRetryException.class)
+    @Test
     public void retriggerCredentialIssuanceTest_exception() throws IDDataValidationException, RestServiceException{
+		assertThrows(IdAuthRetryException.class, () -> {
         String requestId="abc";
     	doThrow(new RestServiceException(IdRepoErrorConstants.AUTHENTICATION_FAILED)).when(credentialRequestManager).retriggerCredentialIssuance(Mockito.anyString());
         ReflectionTestUtils.invokeMethod(credentialStoreServiceImpl, "retriggerCredentialIssuance", requestId);
-    }
+    		});
+	}
 
     /**
      * This class tests the updateStatusAndRetryCount method

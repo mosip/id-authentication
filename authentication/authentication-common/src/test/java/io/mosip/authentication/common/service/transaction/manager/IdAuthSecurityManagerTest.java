@@ -1,8 +1,12 @@
 package io.mosip.authentication.common.service.transaction.manager;
 
-import static org.junit.Assert.assertEquals;
-import static org.junit.Assert.assertNotNull;
-import static org.junit.Assert.assertNotSame;
+import org.mockito.quality.Strictness;
+import org.mockito.junit.jupiter.MockitoSettings;
+import org.mockito.junit.jupiter.MockitoExtension;
+import static org.junit.jupiter.api.Assertions.assertThrows;
+import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertNotNull;
+import static org.junit.jupiter.api.Assertions.assertNotSame;
 import static org.mockito.Mockito.when;
 
 import java.util.ArrayList;
@@ -10,18 +14,18 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
-import org.junit.Before;
-import org.junit.Test;
-import org.junit.runner.RunWith;
+import org.junit.jupiter.api.BeforeEach;
+import org.junit.jupiter.api.Test;
+import org.junit.jupiter.api.extension.ExtendWith;
 import org.mockito.InjectMocks;
 import org.mockito.Mock;
 import org.mockito.Mockito;
 import org.springframework.beans.factory.annotation.Value;
-import org.springframework.boot.test.autoconfigure.web.servlet.WebMvcTest;
+import org.springframework.boot.webmvc.test.autoconfigure.WebMvcTest;
 import org.springframework.context.annotation.Import;
 import org.springframework.test.context.ContextConfiguration;
 import org.springframework.test.context.TestContext;
-import org.springframework.test.context.junit4.SpringRunner;
+import org.springframework.test.context.junit.jupiter.SpringExtension;
 import org.springframework.test.util.ReflectionTestUtils;
 import org.springframework.web.context.WebApplicationContext;
 
@@ -59,7 +63,8 @@ import io.netty.util.internal.ReflectionUtil;
  * @author Manoj SP
  *
  */
-@RunWith(SpringRunner.class)
+@ExtendWith({SpringExtension.class, MockitoExtension.class})
+@MockitoSettings(strictness = Strictness.LENIENT)
 @WebMvcTest
 @ContextConfiguration(classes = { TestContext.class, WebApplicationContext.class, RestRequestFactory.class,
 		ObjectMapper.class, RestRequestFactory.class })
@@ -110,7 +115,7 @@ public class IdAuthSecurityManagerTest {
 
 	private int tokenIDLength;
 
-	@Before
+	@BeforeEach
 	public void before() {
 		ReflectionTestUtils.setField(authSecurityManager, "signApplicationid", "22");
 		ReflectionTestUtils.setField(authSecurityManager, "signRefid", "12");
@@ -126,16 +131,20 @@ public class IdAuthSecurityManagerTest {
 		assertEquals("abcd", new String(encrypt));
 	}
 
-	@Test(expected = IdAuthenticationBusinessException.class)
+	@Test
 	public void testEncryptNoUniqueAliasException() throws IdAuthenticationBusinessException {
+		assertThrows(IdAuthenticationBusinessException.class, () -> {
 		when(cryptomanagerService.encrypt(Mockito.any())).thenThrow(new NoUniqueAliasException("", ""));
 		authSecurityManager.encrypt("Hello", "20190101", null, null);
+			});
 	}
 
-	@Test(expected = IdAuthenticationBusinessException.class)
+	@Test
 	public void testEncryptException() throws IdAuthenticationBusinessException {
+		assertThrows(IdAuthenticationBusinessException.class, () -> {
 		when(cryptomanagerService.encrypt(Mockito.any())).thenThrow(new BaseUncheckedException("", ""));
 		authSecurityManager.encrypt("Hello", "20190101", null, null);
+			});
 	}
 
 	@Test
@@ -146,16 +155,20 @@ public class IdAuthSecurityManagerTest {
 		assertEquals("abcd", new String(decrypt));
 	}
 
-	@Test(expected = IdAuthenticationBusinessException.class)
+	@Test
 	public void testDecryptNoUniqueAliasException() throws IdAuthenticationBusinessException {
+		assertThrows(IdAuthenticationBusinessException.class, () -> {
 		when(cryptomanagerService.decrypt(Mockito.any())).thenThrow(new NoUniqueAliasException("", ""));
 		authSecurityManager.decrypt("Hello", "20190101", null, null, false);
+			});
 	}
 
-	@Test(expected = IdAuthenticationBusinessException.class)
+	@Test
 	public void testDecryptException() throws IdAuthenticationBusinessException {
+		assertThrows(IdAuthenticationBusinessException.class, () -> {
 		when(cryptomanagerService.decrypt(Mockito.any())).thenThrow(new BaseUncheckedException("", ""));
 		authSecurityManager.decrypt("Hello", "20190101", null, null, false);
+			});
 	}
 
 //	@Test
@@ -314,17 +327,20 @@ public class IdAuthSecurityManagerTest {
 		assertEquals(response, actualResponse);
 	}
 	
-	@Test(expected = IdAuthenticationBusinessException.class)
+	@Test
 	public void hashTest_salt_key_not_exists() throws IdAuthenticationBusinessException {
+		assertThrows(IdAuthenticationBusinessException.class, () -> {
 		String id = "12";
 		Mockito.when(uinHashSaltRepo.retrieveSaltById(Mockito.any())).thenReturn(null);
 		String actualResponse = "CBFAD02F9ED2A8D1E08D8F74F5303E9EB93637D47F82AB6F1C15871CF8DD0481";
 		Mockito.when(identityRepo.existsById(Mockito.anyString())).thenReturn(true);
 		String response = authSecurityManager.hash(id);
+			});
 	}
 	
-	@Test(expected = IdAuthenticationBusinessException.class)
+	@Test
 	public void hashTest_salt_key_not_exists_legacy_hash_enabled() throws IdAuthenticationBusinessException {
+		assertThrows(IdAuthenticationBusinessException.class, () -> {
 		try {
 		String id = "12";
 		Mockito.when(uinHashSaltRepo.retrieveSaltById(Mockito.any())).thenReturn(null);
@@ -336,10 +352,12 @@ public class IdAuthSecurityManagerTest {
 			ReflectionTestUtils.setField(authSecurityManager, "legacySaltSelectionEnabled", false);
 			throw e;
 		}
+			});
 	}
 	
-	@Test(expected = IdAuthenticationBusinessException.class)
+	@Test
 	public void hashTest_salt_key_not_exists_legacy_hash_disabled() throws IdAuthenticationBusinessException {
+		assertThrows(IdAuthenticationBusinessException.class, () -> {
 		try {
 		String id = "12";
 		Mockito.when(uinHashSaltRepo.retrieveSaltById(Mockito.any())).thenReturn(null);
@@ -351,6 +369,7 @@ public class IdAuthSecurityManagerTest {
 			ReflectionTestUtils.setField(authSecurityManager, "legacySaltSelectionEnabled", false);
 			throw e;
 		}
+			});
 	}
 	
 	@Test
@@ -389,8 +408,9 @@ public class IdAuthSecurityManagerTest {
 		}
 	}
 	
-	@Test(expected = IdAuthenticationBusinessException.class)
+	@Test
 	public void hashTestLegacy_newIdNotExists_legacyDisabled_newSaltKeyNotExists() throws IdAuthenticationBusinessException {
+		assertThrows(IdAuthenticationBusinessException.class, () -> {
 		try {
 		String id = "12";
 		Mockito.when(uinHashSaltRepo.retrieveSaltById(328)).thenReturn(null);
@@ -404,10 +424,12 @@ public class IdAuthSecurityManagerTest {
 			ReflectionTestUtils.setField(authSecurityManager, "legacySaltSelectionEnabled", false);
 			throw e;
 		}
+			});
 	}
 	
-	@Test(expected = IdAuthenticationBusinessException.class)
+	@Test
 	public void hashTestLegacy_newIdExists_legacyEnabled_legacyHashDoesNotExists() throws IdAuthenticationBusinessException {
+		assertThrows(IdAuthenticationBusinessException.class, () -> {
 		try {
 		String id = "12";
 		Mockito.when(uinHashSaltRepo.retrieveSaltById(328)).thenReturn("328");
@@ -421,10 +443,12 @@ public class IdAuthSecurityManagerTest {
 			ReflectionTestUtils.setField(authSecurityManager, "legacySaltSelectionEnabled", false);
 			throw e;
 		}
+			});
 	}
 	
-	@Test(expected = IdAuthenticationBusinessException.class)
+	@Test
 	public void hashTestLegacy_newIdNotExists_legacyEnabled_legacySaltKeyNotExists() throws IdAuthenticationBusinessException {
+		assertThrows(IdAuthenticationBusinessException.class, () -> {
 		try {
 		String id = "12";
 		Mockito.when(uinHashSaltRepo.retrieveSaltById(328)).thenReturn("328");
@@ -438,19 +462,24 @@ public class IdAuthSecurityManagerTest {
 			ReflectionTestUtils.setField(authSecurityManager, "legacySaltSelectionEnabled", false);
 			throw e;
 		}
+			});
 	}
 
-	@Test(expected = IdAuthenticationBusinessException.class)
+	@Test
 	public void hashExceptionTest() throws IdAuthenticationBusinessException {
+		assertThrows(IdAuthenticationBusinessException.class, () -> {
 		String id = "12";
 		authSecurityManager.hash(id);
+			});
 	}
 
-	@Test(expected = IdAuthenticationBusinessException.class)
+	@Test
 	public void encryptDataExceptionTest() throws IdAuthenticationBusinessException {
+		assertThrows(IdAuthenticationBusinessException.class, () -> {
 		byte[] data = "Test".getBytes();
 		String partnerCertificate = "Test";
 		authSecurityManager.encryptData(data, partnerCertificate);
+			});
 	}
 
 	@Test

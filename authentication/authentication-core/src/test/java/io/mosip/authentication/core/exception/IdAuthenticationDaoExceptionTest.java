@@ -1,6 +1,7 @@
 package io.mosip.authentication.core.exception;
 
-import org.junit.Test;
+import static org.junit.jupiter.api.Assertions.assertThrows;
+import org.junit.jupiter.api.Test;
 
 import io.mosip.authentication.core.constant.IdAuthenticationErrorConstants;
 import io.mosip.authentication.core.exception.IdAuthenticationDaoException;
@@ -17,9 +18,11 @@ public class IdAuthenticationDaoExceptionTest {
 	 *
 	 * @throws IdAuthenticationDaoException the id authentication dao exception
 	 */
-	@Test(expected=IdAuthenticationDaoException.class)
+	@Test
 	public void IdAuthenticationDaoExceptionDefaultCons() throws IdAuthenticationDaoException {
+		assertThrows(IdAuthenticationDaoException.class, () -> {
 		throw new IdAuthenticationDaoException();
+			});
 	}
 
 	/**
@@ -27,9 +30,11 @@ public class IdAuthenticationDaoExceptionTest {
 	 *
 	 * @throws IdAuthenticationDaoException the id authentication dao exception
 	 */
-	@Test(expected=IdAuthenticationDaoException.class)
+	@Test
 	public void IdAuthenticationDaoException2args() throws IdAuthenticationDaoException {
+		assertThrows(IdAuthenticationDaoException.class, () -> {
 		throw new IdAuthenticationDaoException("errorcode", "errormessage");
+			});
 	}
 	
 	/**
@@ -37,9 +42,11 @@ public class IdAuthenticationDaoExceptionTest {
 	 *
 	 * @throws IdAuthenticationDaoException the id authentication dao exception
 	 */
-	@Test(expected=IdAuthenticationDaoException.class)
+	@Test
 	public void IdAuthenticationDaoException3args() throws IdAuthenticationDaoException {
+		assertThrows(IdAuthenticationDaoException.class, () -> {
 		throw new IdAuthenticationDaoException("errorcode", "errormessage", null);
+			});
 	}
 	
 	/**
@@ -47,9 +54,11 @@ public class IdAuthenticationDaoExceptionTest {
 	 *
 	 * @throws IdAuthenticationDaoException the id authentication dao exception
 	 */
-	@Test(expected=IdAuthenticationDaoException.class)
+	@Test
 	public void IdAuthenticationDaoExceptionEnum() throws IdAuthenticationDaoException {
+		assertThrows(IdAuthenticationDaoException.class, () -> {
 		throw new IdAuthenticationDaoException(IdAuthenticationErrorConstants.OTP_GENERATION_FAILED);
+			});
 	}
 	
 	/**
@@ -57,9 +66,11 @@ public class IdAuthenticationDaoExceptionTest {
 	 *
 	 * @throws IdAuthenticationDaoException the id authentication dao exception
 	 */
-	@Test(expected=IdAuthenticationDaoException.class)
+	@Test
 	public void IdAuthenticationDaoExceptionEnumThrowable() throws IdAuthenticationDaoException {
+		assertThrows(IdAuthenticationDaoException.class, () -> {
 		throw new IdAuthenticationDaoException(IdAuthenticationErrorConstants.OTP_GENERATION_FAILED, null);
+			});
 	}
 
 }
