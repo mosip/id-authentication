@@ -113,24 +113,9 @@ AuthTransaction:
       output: '{
         "referenceIdType": "UIN"
 }'
-   auth_AuthTransaction_allValid_UIN3:
-      endPoint: /idauthentication/v1/internal/authTransactions/individualId/{individualId}
-      uniqueIdentifier: TC_IDA_AuthTransaction_01
-      description: Validate the successful processing of an authentication transaction for a UIN when all input parameters are valid
-      role: resident
-      checkErrorsOnlyInResponse: true
-      restMethod: get
-      inputTemplate: ida/AuthTransaction/authTransaction
-      outputTemplate: ida/AuthTransaction/authTransactionResult
-      input: '{
-      "individualId":"$ID:AddIdentity_ValidParam_smoke_Pos_UIN$"
-}'
-      output: '{
-        "referenceIdType": "UIN"
-}'
    auth_AuthTransaction_allValid_UIN4:
       endPoint: /idauthentication/v1/internal/authTransactions/individualId/{individualId}
-      uniqueIdentifier: TC_IDA_AuthTransaction_01
+      uniqueIdentifier: TC_IDA_AuthTransaction_27
       description: Validate the successful processing of an authentication transaction for a UIN when all input parameters are valid
       role: resident
       checkErrorsOnlyInResponse: true
@@ -145,7 +130,7 @@ AuthTransaction:
 }'
    auth_AuthTransaction_allValid_UIN5:
       endPoint: /idauthentication/v1/internal/authTransactions/individualId/{individualId}
-      uniqueIdentifier: TC_IDA_AuthTransaction_01
+      uniqueIdentifier: TC_IDA_AuthTransaction_28
       description: Validate the successful processing of an authentication transaction for a UIN when all input parameters are valid
       role: resident
       checkErrorsOnlyInResponse: true

@@ -33,6 +33,23 @@ HotlistAPI:
       output: '{
         "status": "BLOCKED"
     }'
+   auth_BlockHotlistAPI_ForBioAuthDelegatedNeg_UIN_forever_sid:
+      endPoint: /v1/hotlist/block
+      uniqueIdentifier: TC_IDA_HotlistAPI_15
+      description: Hotlist-block the UIN used by the delegated bio kyc-auth negative test, permanently and including SID
+      role: hotlist
+      restMethod: post
+      inputTemplate: ida/BlockHotlistAPI/blockHotlistAPI
+      outputTemplate: ida/BlockHotlistAPI/blockHotlistAPIResult
+      input: '{
+    "id": "$ID:AddIdentity_ForBioAuthDelegatedNeg_HotlistedUIN_smoke_sid_Pos_UIN$",
+    "idType": "UIN",
+    "requestTime": "$TIMESTAMP$",
+    "expiryTimestamp": ""
+  }'
+      output: '{
+        "status": "BLOCKED"
+    }'
    auth_BlockHotlistAPI_when_id_type_uin_incorrect:
       endPoint: /v1/hotlist/block
       uniqueIdentifier: TC_IDA_HotlistAPI_03

@@ -8,7 +8,7 @@
 	"requestTime": "{{requestTime}}",
 	"filters": [
     {{#each filters}}
-       "{{type}}": {{bio}}
+       { "{{type}}": {{bio}} }
        {{#unless @last}},{{/unless}}
       	{{/each}}
     ],
@@ -21,7 +21,6 @@
 	"requestSessionKey": "sessionkey",
 	"transactionID": "{{transactionId}}",
 	"domainUri": "baseurl",
-    "env": "{{env}}",
     "env": "Staging",
 	"keyIndex": "string",
 	"specVersion": "1.0",

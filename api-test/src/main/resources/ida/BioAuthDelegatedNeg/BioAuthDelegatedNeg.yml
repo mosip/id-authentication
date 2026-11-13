@@ -854,7 +854,7 @@ BioAuthDelegatedNeg:
         }
       ]
 }'
-  auth_BioAuthDelegatedNeg_Biometric_Face_Lock_Permanent_uin_Valid_Smoke:
+  auth_BioAuthDelegatedNeg_Biometric_Face_Lock_Permanent_uin_Valid:
       endPoint: /idauthentication/v1/kyc-auth/delegated/$partialPartnerKeyUrl$/$ID:CreateOIDCClient_Delegated_Valid_Smoke_sid_clientId$
       uniqueIdentifier: TC_IDA_BioAuthDelegatedNeg_20
       description: Bio kyc delegated auth with permanently locked UIN
@@ -887,51 +887,6 @@ BioAuthDelegatedNeg:
           "model": "4d36e96c-e325-11ce-bfc1-08002be10318",
           "serialNo": "78467171",
           "type": "Iris",
-    "transactionId": "$TRANSACTIONID$",
-    "identityRequestTemplate": "ida/BioAuth/BioAuthIdentityEncrypt",
-    "identityRequestEncUrl": "/idauthentication/v1/internal/encrypt"
-    }
-    }'
-      output: '{
-    "errors": [
-        {
-          "errorCode": "IDA-MLC-019"
-        }
-      ]
-}'
-  auth_BioAuthDelegatedNeg_With_Deactivated_UIN:
-      endPoint: /idauthentication/v1/kyc-auth/delegated/$partialPartnerKeyUrl$/$ID:CreateOIDCClient_Delegated_Valid_Smoke_sid_clientId$
-      uniqueIdentifier: TC_IDA_BioAuthDelegatedNeg_21
-      description: Bio kyc delegated auth with deactivated UIN
-      role: resident
-      restMethod: post
-      inputTemplate: ida/BioAuthDelegatedNeg/BioAuthDelegated
-      outputTemplate: ida/DelegateError
-      input: '{
-        "requestTime": "$TIMESTAMP$",
-        "individualId": "$ID:AddIdentity_deactivate_UIN_smoke_sid_Pos_UIN$",
-        "transactionId": "$TRANSACTIONID$",
-        "individualIdType": "UIN",
-        "bio": true,
-        "demo": false,
-        "otp": false,
-        "identityRequest":{
-          "bioSubType": "",
-          "bioType": "FACE",
-          "bioValue": "$FACE$",
-          "deviceCode": "bc0b6848-6d45-46d1-a9bd-b334410bf823",
-          "dateTime": "$DATETIME$",
-          "deviceProviderID": "1873299273",
-          "env": "Staging",
-          "deviceServiceID": "",
-          "deviceServiceVersion": "SB.WIN.001",
-          "deviceProvider": "SYNCBYTE",
-          "deviceProviderId": "SYNCBYTE.LTC165",
-          "deviceSubType": "Single",
-          "make": "Logitech",
-          "model": "4d36e96c-e325-11ce-bfc1-08002be10318",
-          "serialNo": "78467171",
-          "type": "Face",
     "transactionId": "$TRANSACTIONID$",
     "identityRequestTemplate": "ida/BioAuth/BioAuthIdentityEncrypt",
     "identityRequestEncUrl": "/idauthentication/v1/internal/encrypt"

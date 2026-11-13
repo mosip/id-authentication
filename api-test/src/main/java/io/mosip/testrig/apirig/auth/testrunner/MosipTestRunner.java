@@ -23,6 +23,7 @@ import com.nimbusds.jose.jwk.RSAKey;
 
 import io.mosip.testrig.apirig.auth.utils.IdAuthConfigManager;
 import io.mosip.testrig.apirig.auth.utils.IdAuthenticationUtil;
+import io.mosip.testrig.apirig.auth.utils.LocalRunBootstrap;
 import io.mosip.testrig.apirig.dataprovider.BiometricDataProvider;
 import io.mosip.testrig.apirig.dbaccess.DBManager;
 import io.mosip.testrig.apirig.testrunner.BaseTestCase;
@@ -94,6 +95,24 @@ public class MosipTestRunner {
 			GlobalMethods.setModuleNameAndReCompilePattern(IdAuthConfigManager.getproperty("moduleNamePattern"));
 			setLogLevels();
 
+			if (IdAuthConfigManager.isLocalRun()) {
+				try {
+					LocalRunBootstrap.initialize();
+					String mdsPurpose = IdAuthConfigManager.getproperty("local.mds.purpose");
+					if (mdsPurpose == null || mdsPurpose.isBlank()) {
+						mdsPurpose = "Auth";
+					}
+					LOGGER.info("Local run - generating biometric test data with purpose: " + mdsPurpose);
+					BiometricDataProvider.generateBiometricTestData(mdsPurpose);
+					startTestRunner();
+				} catch (Exception e) {
+					LOGGER.error("Local run failed: " + e.getMessage(), e);
+				} finally {
+					shutdown(watchdog);
+				}
+				return;
+			}
+
 			HealthChecker healthcheck = new HealthChecker();
 			healthcheck.setCurrentRunningModule(GlobalConstants.AUTH);
 			Thread trigger = new Thread(healthcheck);
@@ -110,6 +129,13 @@ public class MosipTestRunner {
 			String partnerKeyURL = "";
 			String updatedPartnerKeyURL = "";
 			String ekycPartnerKeyURL = "";
+			String policyTokenPartnerKeyURL = "";
+			String policyToken2PartnerKeyURL = "";
+			String policyToken3PartnerKeyURL = "";
+			String partnerToken2KeyURL = "";
+			String randomTokenPartnerKeyURL = "";
+			String randomToken2PartnerKeyURL = "";
+			String randomToken3PartnerKeyURL = "";
 
 			PartnerRegistration.deleteCertificates();
 			CertificateGenerationUtil.getThumbprints();
@@ -117,6 +143,31 @@ public class MosipTestRunner {
 			AdminTestUtil.createEditAndPublishPolicy();
 			partnerKeyURL = PartnerRegistration.generateAndGetPartnerKeyUrl();
 			updatedPartnerKeyURL = PartnerRegistration.generateAndGetUpdatedPartnerKeyUrl();
+
+			IdAuthenticationUtil.createAndPublishPolicyWithPolicyTokenType();
+			policyTokenPartnerKeyURL = IdAuthenticationUtil.generateAndGetPolicyTokenPartnerKeyUrl();
+			LOGGER.info("policyTokenPartnerKeyURL generated");
+
+			IdAuthenticationUtil.registerSecondPolicyTokenPartner();
+			policyToken2PartnerKeyURL = IdAuthenticationUtil.generateAndGetSecondPolicyTokenPartnerKeyUrl();
+			LOGGER.info("policyToken2PartnerKeyURL generated");
+
+			partnerToken2KeyURL = IdAuthenticationUtil.generateAndGetPartnerToken2KeyUrl();
+			LOGGER.info("partnerToken2KeyURL generated");
+
+			IdAuthenticationUtil.registerThirdPolicyTokenPartner();
+			policyToken3PartnerKeyURL = IdAuthenticationUtil.generateAndGetThirdPolicyTokenPartnerKeyUrl();
+			LOGGER.info("policyToken3PartnerKeyURL generated");
+
+			IdAuthenticationUtil.createAndPublishPolicyWithRandomTokenType();
+			randomTokenPartnerKeyURL = IdAuthenticationUtil.generateAndGetRandomTokenPartnerKeyUrl();
+			LOGGER.info("randomTokenPartnerKeyURL generated");
+
+			randomToken2PartnerKeyURL = IdAuthenticationUtil.generateAndGetRandomToken2PartnerKeyUrl();
+			LOGGER.info("randomToken2PartnerKeyURL generated");
+
+			randomToken3PartnerKeyURL = IdAuthenticationUtil.generateAndGetRandomToken3PartnerKeyUrl();
+			LOGGER.info("randomToken3PartnerKeyURL generated");
 
 			AdminTestUtil.createAndPublishPolicyForKyc();
 			ekycPartnerKeyURL = PartnerRegistration.generateAndGetEkycPartnerKeyUrl();
@@ -161,6 +212,15 @@ public class MosipTestRunner {
 
 	}
 	
+	private static void shutdown(Watchdog watchdog) {
+		OTPListener.bTerminate = true;
+		HealthChecker.bTerminate = true;
+		if (watchdog != null) {
+			watchdog.stop();
+		}
+		System.exit(0);
+	}
+
 	public static void suiteSetup(String runType) {
 		if (IdAuthConfigManager.IsDebugEnabled())
 			LOGGER.setLevel(Level.ALL);
@@ -178,12 +238,16 @@ public class MosipTestRunner {
 		IdAuthenticationUtil.dbCleanUp();
 
 		AuthTestsUtil.initiateAuthTest();
+
+		if (IdAuthConfigManager.isLocalFlagEnabled("local.skipOtpListener")) {
+			LOGGER.info("Local run - skipping the OTP WebSocket listener");
+			return;
+		}
+
 		BaseTestCase.otpListener = new OTPListener();
 		BaseTestCase.otpListener.run();
 	}
 	
-	
-
 	private static void setLogLevels() {
 		AdminTestUtil.setLogLevel();
 		OutputValidationUtil.setLogLevel();
@@ -217,12 +281,15 @@ public class MosipTestRunner {
 			homeDir = new File(dir.getParent() + "/mosip/testNgXmlFiles");
 			LOGGER.info("ELSE :" + homeDir);
 		}
+		String suiteMarker = IdAuthConfigManager.isLocalRun() ? "authlocalsuite" : "mastertestsuite";
+		LOGGER.info("Selecting suite file matching: " + suiteMarker);
+
 		File[] files = homeDir.listFiles();
 		if (files != null) {
 			for (File file : files) {
 				TestNG runner = new TestNG();
 				List<String> suitefiles = new ArrayList<>();
-				if (file.getName().toLowerCase().contains("mastertestsuite")) {
+				if (file.getName().toLowerCase().contains(suiteMarker)) {
 					BaseTestCase.setReportName(GlobalConstants.AUTH);
 					suitefiles.add(file.getAbsolutePath());
 					runner.setTestSuites(suitefiles);

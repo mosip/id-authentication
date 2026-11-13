@@ -441,7 +441,7 @@ GenerateVID:
         "maskedEmail": "$IGNORE$"
     }
 }'
-   auth_GenerateVID_for_kycDelegated_bio_sid:
+   auth_GenerateVID_for_kycDelegated_bio_smoke_sid:
       endPoint: /resident/v1/vid
       uniqueIdentifier: TC_IDA_GenerateVID_14
       description: Verify that VID generation succeeds for a valid SID and can be used for delegated KYC biometric authentication
@@ -475,7 +475,7 @@ GenerateVID:
         "maskedEmail": "$IGNORE$"
     }
 }'
-   auth_GenerateVID_for_kycDelegated_bio_rightIris_sid:
+   auth_GenerateVID_for_kycDelegated_bio_rightIris_smoke_sid:
       endPoint: /resident/v1/vid
       uniqueIdentifier: TC_IDA_GenerateVID_16
       description: Verify that VID generation succeeds for a valid SID and can be used for delegated KYC authentication using right iris biometric data
@@ -531,6 +531,40 @@ GenerateVID:
     "transactionID": "$TRANSACTIONID$",
     "requestTime": "$TIMESTAMP$",
     "individualId": "$ID:AddIdentity_withValidParameters_forDelegated_differentIdType_Pos_UIN$",
+    "individualIdType": "UIN",
+    "sendOtpReqTemplate": "ida/SendOTP/createSendOTP",
+    "sendOtpEndPoint": "/resident/v1/req/otp"
+    }
+    }'
+      output: '{
+  "sendOtpResp":{
+        "maskedMobile": "$IGNORE$",
+        "sendOtpResTemplate":"ida/SendOTP/createSendOTPResult",
+        "maskedEmail": "$IGNORE$"
+    }
+}'
+   auth_GenerateVID_All_Valid_Smoke_Onetimeuse_sid:
+      endPoint: /resident/v1/vid
+      uniqueIdentifier: TC_IDA_GenerateVID_18
+      description: Generate a one-time-use VID with a valid SID - expected to succeed
+      role: resident
+      checkErrorsOnlyInResponse: true
+      restMethod: post
+      inputTemplate: ida/GenerateVID/createGenerateVID
+      outputTemplate: ida/GenerateVID/createGenerateVIDResult
+      input: '{
+        "transactionID": "$TRANSACTIONID$",
+        "individualId": "$ID:AddIdentity_ValidParam_smoke_Pos_UIN$",
+        "individualIdType": "UIN",
+        "requesttime": "$TIMESTAMP$",
+        "id": "mosip.resident.vid",
+        "version": "v1",
+        "vidType": "onetimeuse",
+        "otp": "$ID:AddIdentity_ValidParam_smoke_Pos_EMAIL$",
+        "sendOtp":{
+    "transactionID": "$TRANSACTIONID$",
+    "requestTime": "$TIMESTAMP$",
+    "individualId": "$ID:AddIdentity_ValidParam_smoke_Pos_UIN$",
     "individualIdType": "UIN",
     "sendOtpReqTemplate": "ida/SendOTP/createSendOTP",
     "sendOtpEndPoint": "/resident/v1/req/otp"

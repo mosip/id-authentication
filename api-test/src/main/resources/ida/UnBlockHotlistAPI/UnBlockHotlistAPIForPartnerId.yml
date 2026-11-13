@@ -19,7 +19,7 @@ HotlistAPI:
     }'
    auth_HotlistAPI_All_Valid_Smoke_Unblock_API_KEY_sid:
       endPoint: /v1/hotlist/unblock
-      uniqueIdentifier: TC_IDA_HotlistAPI_Unblock_09
+      uniqueIdentifier: TC_IDA_HotlistAPI_Unblock_10
       description: Verify that the Hotlist API succeeds in unblocking an API key when all inputs are valid and a session ID is provided
       role: hotlist
       restMethod: post
