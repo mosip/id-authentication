@@ -2148,7 +2148,7 @@ EkycBio:
       inputTemplate: ida/EkycBio/EkycBio
       outputTemplate: ida/EkycBio/errorCommon
       input: '{
-        "requestTime": "22/02/2887262",
+        "requestTime": "$TIMESTAMP$",
         "individualId": "$ID:AddIdentity_Positive_EKYC_smoke_UIN$",
         "transactionId": "1234567890",
         "individualIdType": "UIN",
@@ -2401,11 +2401,11 @@ EkycBio:
   auth_EkycBio_Face_With_Valid_With_space_in_domain:
       endPoint: /idauthentication/v1/kyc/$ekycPartnerKeyURL$
       uniqueIdentifier: TC_IDA_EkycBio_59
-      description: Verify that eKYC biometric authentication using face succeeds or returns an appropriate error when valid inputs are provided but the domain field contains spaces
+      description: Verify that eKYC biometric authentication using face fails when the biometric domainUri contains spaces
       role: resident
       kycFields: ["gender"]
       restMethod: post
-      inputTemplate: ida/EkycBio/EkycBioWithDomain
+      inputTemplate: ida/EkycBio/EkycBio
       outputTemplate: ida/EkycBio/errorCommon
       input: '{
         "requestTime": "$TIMESTAMP$",
@@ -2434,29 +2434,29 @@ EkycBio:
           "serialNo": "78467171",
           "type": "Face",
     "transactionId": "1234567890",
-    "identityRequestTemplate": "ida/EkycBio/EkycBioIdentityEncrypt",
+    "identityRequestTemplate": "ida/EkycBio/EkycBioIdentityEncryptWithDomain",
     "identityRequestEncUrl": "/idauthentication/v1/internal/encrypt"
     }
     }'
       output: '{
    "errors": [
     {
-      "errorCode": "IDA-MLC-007"
+      "errorCode": "IDA-MLC-024"
     },
     {
-      "errorCode": "IDA-MLC-006"
+      "errorCode": "IDA-MLC-009"
     }
   ]
 }'
   auth_EkycBio_Face_Without_Empty_domain:
       endPoint: /idauthentication/v1/kyc/$ekycPartnerKeyURL$
       uniqueIdentifier: TC_IDA_EkycBio_57
-      description: Verify that eKYC biometric authentication using face succeeds with valid inputs when the domain field is provided and not empty
+      description: Verify that eKYC biometric authentication using face succeeds when the biometric domainUri is provided and matches the request domainUri
       role: resident
       kycFields: ["gender"]
       restMethod: post
-      inputTemplate: ida/EkycBio/EkycBioWithDomain
-      outputTemplate: ida/EkycBio/errorCommon
+      inputTemplate: ida/EkycBio/EkycBio
+      outputTemplate: ida/EkycBio/EkycBioResult
       input: '{
         "requestTime": "$TIMESTAMP$",
         "individualId": "$ID:AddIdentity_Positive_EKYC_smoke_UIN$",
@@ -2474,6 +2474,7 @@ EkycBio:
           "deviceProviderID": "1873299273",
           "env": "Staging",
           "deviceServiceID": "",
+          "domainUri": "$DOMAINURI$",
           "deviceServiceVersion": "SB.WIN.001",
           "deviceProvider": "SYNCBYTE",
           "deviceProviderId": "SYNCBYTE.LTC165",
@@ -2483,28 +2484,21 @@ EkycBio:
           "serialNo": "78467171",
           "type": "Face",
     "transactionId": "1234567890",
-    "identityRequestTemplate": "ida/EkycBio/EkycBioIdentityEncrypt",
+    "identityRequestTemplate": "ida/EkycBio/EkycBioIdentityEncryptWithDomain",
     "identityRequestEncUrl": "/idauthentication/v1/internal/encrypt"
     }
     }'
       output: '{
-   "errors": [
-    {
-      "errorCode": "IDA-MLC-007"
-    },
-    {
-      "errorCode": "IDA-MLC-006"
-    }
-  ]
+    "kycStatus": "true"
 }'
   auth_EkycBio_Face_Without_domain:
       endPoint: /idauthentication/v1/kyc/$ekycPartnerKeyURL$
       uniqueIdentifier: TC_IDA_EkycBio_58
-      description: Verify that eKYC biometric authentication using face fails or returns an appropriate error when the domain field is not provided
+      description: Verify that eKYC biometric authentication using face fails when the biometric domainUri is empty
       role: resident
       kycFields: ["gender"]
       restMethod: post
-      inputTemplate: ida/EkycBio/EkycBioWithDomain
+      inputTemplate: ida/EkycBio/EkycBio
       outputTemplate: ida/EkycBio/errorCommon
       input: '{
         "requestTime": "$TIMESTAMP$",
@@ -2533,17 +2527,17 @@ EkycBio:
           "serialNo": "78467171",
           "type": "Face",
     "transactionId": "1234567890",
-    "identityRequestTemplate": "ida/EkycBio/EkycBioIdentityEncrypt",
+    "identityRequestTemplate": "ida/EkycBio/EkycBioIdentityEncryptWithDomain",
     "identityRequestEncUrl": "/idauthentication/v1/internal/encrypt"
     }
     }'
       output: '{
    "errors": [
     {
-      "errorCode": "IDA-MLC-007"
+      "errorCode": "IDA-MLC-024"
     },
     {
-      "errorCode": "IDA-MLC-006"
+      "errorCode": "IDA-MLC-009"
     }
   ]
 }'

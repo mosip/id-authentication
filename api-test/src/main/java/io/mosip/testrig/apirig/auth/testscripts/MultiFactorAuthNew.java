@@ -146,6 +146,8 @@ public class MultiFactorAuthNew extends IdAuthenticationUtil implements ITest {
 			identityRequest = req.get("identityRequest").toString();
 			req.remove("identityRequest");
 		}
+		String individualId = req.has("individualId") ? req.optString("individualId", null) : null;
+		identityRequest = IdAuthenticationUtil.applyLocalSubstitutions(identityRequest, individualId);
 		identityRequest = buildIdentityRequest(identityRequest);
 
 		JSONObject identityReqJson = new JSONObject(identityRequest);
@@ -159,12 +161,11 @@ public class MultiFactorAuthNew extends IdAuthenticationUtil implements ITest {
 		if (identyEnryptRequest.contains("$DATETIME$"))
 			identyEnryptRequest = identyEnryptRequest.replace("$DATETIME$", generateCurrentUTCTimeStamp());
 		logger.info(identyEnryptRequest);
+		String domainUrl = IdAuthConfigManager.isLocalRun() ? BaseTestCase.domain : BaseTestCase.ApplnURI;
 		if (identyEnryptRequest.contains("baseurl")) {
-			String domainUrl =  BaseTestCase.ApplnURI;
 			identyEnryptRequest = identyEnryptRequest.replace("baseurl", domainUrl);
 		}
 		if (identyEnryptRequest.contains("$DOMAINURI$")) {
-			String domainUrl =  BaseTestCase.ApplnURI;
 			identyEnryptRequest = identyEnryptRequest.replace("$DOMAINURI$", domainUrl);
 		}
 		logger.info(identyEnryptRequest);
@@ -195,6 +196,9 @@ public class MultiFactorAuthNew extends IdAuthenticationUtil implements ITest {
 		JSONObject authRequestTemp = new JSONObject(authRequest);
 		authRequestTemp.remove("env");
 		authRequestTemp.put("env", "Staging");
+		if (IdAuthConfigManager.isLocalRun()) {
+			authRequestTemp.put("domainUri", BaseTestCase.domain);
+		}
 		authRequest = authRequestTemp.toString();
 		testCaseDTO.setInput(authRequest);
 				
