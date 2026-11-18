@@ -3,7 +3,6 @@ package io.mosip.authentication.common.service.impl;
 import org.mockito.quality.Strictness;
 import org.mockito.junit.jupiter.MockitoSettings;
 import org.mockito.junit.jupiter.MockitoExtension;
-import java.sql.Timestamp;
 import java.time.LocalDateTime;
 import java.util.ArrayList;
 import java.util.HashMap;
@@ -46,7 +45,7 @@ public class AuthtypeStatusImplTest {
 		Map<String, Object> value = new HashMap<>();
 		value.put("uin", "9172985031");
 		List<Object[]> valuelist = new ArrayList<>();
-		Object[] authtypeLockStatus = new Object[] { "bio-FMR", "true", Timestamp.valueOf(LocalDateTime.now().plusMinutes(1)) };
+		Object[] authtypeLockStatus = new Object[] { "bio-FMR", "true", LocalDateTime.now().plusMinutes(1) };
 		valuelist.add(authtypeLockStatus);
 		Mockito.when(authLockRepository.findByToken(Mockito.anyString())).thenReturn(valuelist);
 		List<AuthtypeStatus> authTypeStatus = authtypeStatusImpl.fetchAuthtypeStatus("");
