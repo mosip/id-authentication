@@ -182,8 +182,7 @@ Paths below are relative to the id-authentication repo root unless stated.
 
 You need Java 21, Maven 3.9.6+, Docker with Docker Compose (Docker Desktop
 running on Windows/macOS; the `docker` command must work in the shell that
-runs the rig, see [OTP in local runs](#otp-in-local-runs)), Git, and Node.js
-for the port relay in step 6 (or any other TCP proxy).
+runs the rig, see [OTP in local runs](#otp-in-local-runs)) and Git.
 
 1. **apitest-commons** (nothing to do normally). The rig depends on
    `io.mosip.testrig.apitest.commons:apitest-commons:1.8.0-SNAPSHOT`, which the
@@ -205,22 +204,28 @@ for the port relay in step 6 (or any other TCP proxy).
    - `bootstrap.properties` of `authentication-service` pointing at the local
      config server (`http://localhost:51000/config`) and the local hosts, with
      `spring.cloud.loadbalancer.enabled=false` (section 5.2 there).
-3. **Local IDA settings the rig needs**, on top of `local-dev-setup/README.md`:
+3. **Local IDA settings on top of `local-dev-setup/README.md`.** That guide
+   already covers the allowed domain `localhost`, the first / middle / last name
+   mapping, `preferred-json-mapper=jackson2`, removing `ANT_PATH_MATCHER` and the
+   PKCS12 keystore; follow it for those. In addition:
+
+   *Needed by any local IDA, not yet in `local-dev-setup/README.md`* (skip a
+   row once that guide covers it):
 
    | Where | Setting | Why |
    |---|---|---|
-   | `mosip-config/id-authentication-default.properties` | `mosip.ida.allowed.domain.uris` also lists `localhost` | the rig sends `domainUri=localhost` (see *Why no port in the endpoint*) |
-   | `mosip-config/id-authentication-default.properties` and `identity-mapping.json` | name mapped to `firstName,middleName,lastName` instead of `fullName` | the seeded identities in `init.sql` carry first / middle / last names |
-   | `mosip-config/id-authentication-default.properties` | `mosip.kernel.keymanager.jwtEncrypt.validate.json=false` | kyc-exchange JWE responses (same as upstream config) |
-   | `mosip-config/id-authentication-default.properties` | `mosip.ida.oidc4ida.ignore.standard.claims.list=picture,individual_id,gender,residenceStatus` | required by kyc-auth / kyc-exchange v2 (#1818), has no default |
-   | `mosip-config/id-authentication-default.properties` | `mosip.ida.idp.no.language.attribute.list=phone,birthdate,email` | claims returned without a language suffix |
-   | `mosip-config/id-authentication-default.properties` | `mosip.ida.idp.issuer.uri=mosip-ida` | kyc-exchange responses carry `iss` only when this is set |
-   | `mosip-config/id-authentication-default.properties` | `spring.http.converters.preferred-json-mapper=jackson2` | Spring Boot 4 defaults to Jackson 3; IDA uses Jackson 2 |
-   | `mosip-config/id-authentication-default.properties` | `otp.request.flooding.max-count=300` (default config: 100) | locally all OTP tests use the same seeded UIN, and the OTP blocks run back to back, so 100 requests per minute is exceeded (`IDA-OTA-001`); same value as dev1 |
-   | `mosip-config/application-default.properties` | `spring.mvc.pathmatch.matching-strategy=ANT_PATH_MATCHER` commented out | not supported by Spring Boot 4 |
-   | `mosip-config/id-authentication-default.properties` | keymanager uses the PKCS12 keystore `local-dev-setup/mosip-ida-ks.p12` | no HSM locally |
-   | `local-dev-setup/docker-compose/wiremock/mappings/master-data.json` | both token stubs return a JWT-shaped token carrying the MOSIP roles (see 3a) | IDA reads the roles from the token; `DUMMY.AUTH.TOKEN` has none |
+   | `mosip-config/id-authentication-default.properties` | `mosip.ida.oidc4ida.ignore.standard.claims.list=picture,individual_id,gender,residenceStatus` | IDA does not start without it (no default; kyc-auth / kyc-exchange v2, #1818) |
+   | `mosip-config/id-authentication-default.properties` | `mosip.kernel.keymanager.jwtEncrypt.validate.json=false` | kyc-exchange fails without it: IDA passes a signed JWS, not JSON, to `jwtEncrypt` |
    | `authentication-service/pom.xml` | `bcprov-jdk18on` declared before the `kernel-auth-adapter` dependency from step 2 (see 3b) | otherwise the unsigned BouncyCastle copy inside the adapter jar loads first and every eKYC response returns `kycStatus:false` |
+
+   *Needed only for the rig*:
+
+   | Where | Setting | Why |
+   |---|---|---|
+   | `mosip-config/id-authentication-default.properties` | `otp.request.flooding.max-count=300` (default config: 100) | the rig sends many OTPs to one seeded UIN within a minute, so 100 per minute is exceeded (`IDA-OTA-001`); same value as dev1 |
+   | `mosip-config/id-authentication-default.properties` | `mosip.ida.idp.issuer.uri=mosip-ida` | the kyc-exchange tests check `iss`, which IDA adds only when this is set (default: empty) |
+   | `mosip-config/id-authentication-default.properties` | `mosip.ida.idp.no.language.attribute.list=phone,birthdate,email` | the v2 claim tests expect these claims without a language suffix (default: `phone`) |
+   | `local-dev-setup/docker-compose/wiremock/mappings/master-data.json` | both token stubs return a JWT-shaped token carrying the MOSIP roles (see 3a) | IDA reads the roles from the token on flows the rig drives; `DUMMY.AUTH.TOKEN` has none |
 
    The OTP stub in `master-data.json` stays as it is (random OTP): the rig
    reads each generated OTP from the mock container's log, see
@@ -268,21 +273,17 @@ for the port relay in step 6 (or any other TCP proxy).
    ```
    Wait until `http://localhost:8090/idauthentication/v1/actuator/health`
    reports `UP`.
-6. **Start the 8080 → 8090 relay** (see Prerequisites, item 3), for example:
-   ```
-   node -e "const n=require('net');n.createServer(c=>{const u=n.connect(8090,'127.0.0.1',()=>{c.pipe(u);u.pipe(c)});u.on('error',()=>c.destroy());c.on('error',()=>u.destroy())}).listen(8080,'127.0.0.1')"
-   ```
-7. **Switch the rig to the local files and build** (from `api-test/`, see
+6. **Switch the rig to the local files and build** (from `api-test/`, see
    [Switch the rig to the local files](#switch-the-rig-to-the-local-files)):
    ```
    cp application-local.properties application.properties
    mvn clean install -Dgpg.skip=true -Dmaven.gitcommitid.skip=true
    ```
-8. **Run smoke** with `mvn exec:java` (see [Run](#run)), then, for regression,
+7. **Run smoke** with `mvn exec:java` (see [Run](#run)), then, for regression,
    repeat steps 4–5 (fresh database, restart the service) and run
    `smokeAndRegression`.
-9. **Clean up**: stop the service and the relay, `docker compose down -v`,
-   and restore the env file with `git checkout -- application.properties`.
+8. **Clean up**: stop the service, `docker compose down -v`, and restore the
+   env file with `git checkout -- application.properties`.
 
 ### Prerequisites
 
@@ -292,9 +293,9 @@ for the port relay in step 6 (or any other TCP proxy).
 2. `authentication-service` is running on port **8090**. The OTP service is
    merged into it, so this one process serves `/auth`, `/otp`, `/kyc` and
    `/kyc-exchange`.
-3. A TCP relay forwards port **8080** to **8090** (any simple TCP proxy, e.g. a
-   few lines of Node `net`). The endpoint below carries no port, so REST-Assured
-   sends to 8080.
+3. The run command's endpoint carries this port
+   (`-Denv.endpoint=http://localhost:8090`); change it there if your service
+   runs on another port.
 
 ### Switch the rig to the local files
 
@@ -322,17 +323,17 @@ Do not commit the copied file.
 
 ### Run
 
-From `api-test/`, after the build in step 7:
+From `api-test/`, after the build in step 6:
 
 ```sh
 # Linux / macOS / Git Bash
 mvn exec:java -Dexec.mainClass=io.mosip.testrig.apirig.auth.testrunner.MosipTestRunner \
-  -DlocalRun=yes -Denv.user=local -Denv.endpoint=http://localhost \
+  -DlocalRun=yes -Denv.user=local -Denv.endpoint=http://localhost:8090 \
   -DtransactionId=1234567890 -Denv.testLevel=smoke
 ```
 ```powershell
 # Windows PowerShell (quote each -D argument, PowerShell splits them at the dot otherwise)
-mvn exec:java "-Dexec.mainClass=io.mosip.testrig.apirig.auth.testrunner.MosipTestRunner" "-DlocalRun=yes" "-Denv.user=local" "-Denv.endpoint=http://localhost" "-DtransactionId=1234567890" "-Denv.testLevel=smoke"
+mvn exec:java "-Dexec.mainClass=io.mosip.testrig.apirig.auth.testrunner.MosipTestRunner" "-DlocalRun=yes" "-Denv.user=local" "-Denv.endpoint=http://localhost:8090" "-DtransactionId=1234567890" "-Denv.testLevel=smoke"
 ```
 
 Use `-Denv.testLevel=smokeAndRegression` for the full run. The first run
@@ -370,11 +371,19 @@ same database fails:
 - The hotlist tests leave the MISP licence key blocked, which fails every
   authentication of the next run.
 
-> **Why no port in the endpoint.** The rig names its certificate directory and
-> builds the request `domainUri` from the endpoint host, and the local IDA only
-> accepts the bare host `localhost` as the domain. `IdAuthConfigManager` also
-> rewrites `BaseTestCase.domain` to a filesystem-safe form in local mode, since a
-> colon in the directory name is invalid on Windows.
+> **Endpoint and `domainUri`.** The endpoint is the local IDA URL including its
+> port (`http://localhost:8090`). The `domainUri` sent in auth requests is set
+> separately from `local.domainUri` in `Ida-local.properties` (`localhost`),
+> because the local IDA accepts only the bare host as a domain. The rig also
+> names its certificate directory after the endpoint host; `IdAuthConfigManager`
+> makes that name filesystem-safe in local mode (`localhost:8090` →
+> `localhost_8090`), since a colon is invalid in a Windows directory name.
+>
+> **Why UTC.** The rig sends UTC timestamps (`requestTime`, biometric capture
+> times). IDA compares them with its own clock in the JVM's default time zone,
+> so on a machine in another zone (IST is 5.5 h ahead) requests fall outside the
+> allowed time window. A deployed IDA runs in UTC containers, so start the local
+> one with `-Duser.timezone=UTC`.
 >
 > **Why `-DtransactionId`.** An Auth biometric capture binds its encryption to
 > the transactionId, and some yml files hardcode `1234567890`, so the value is
@@ -391,6 +400,7 @@ folder as the working directory.
 | Symptom | Fix |
 |---|---|
 | `docker compose up` fails, or the database / config server never come up | start Docker (Docker Desktop on Windows/macOS) and wait until `docker info` answers, then repeat step 4 |
+| `biosdk_service` stays `Created` and `http://localhost:8083/biosdk-service/` does not answer | it waits for `mock-service` to be healthy, and that healthcheck runs only every 500 s; wait, or start it with `docker start biosdk_service` |
 | Windows: config-server fails with `bind ... 51000 ... forbidden` | Windows has reserved the port (`netsh interface ipv4 show excludedportrange protocol=tcp`). From an admin prompt run `net stop winnat` and `net start winnat`, then repeat step 4 |
 | Windows: `git clone` reports `Filename too long` | clone into a short path, or run `git config --system core.longpaths true` and clone again |
 | `Could not find or load main class ...MosipTestRunner` | run with `mvn exec:java` from `api-test/` as in [Run](#run), not with plain `java` |
@@ -511,7 +521,6 @@ and counted under *Ignored* in the report:
 | Testcases | Listed in | Reason |
 |---|---|---|
 | MultiFactorAuth NOAUTH (no resident token) | `local.skipTestCases` | expects a gateway to reject the request; there is no gateway locally |
-| TC_IDA_HotlistAPI_05 (invalid expiry) | `local.skipTestCases` | expects the hotlist service's own validation error; the hotlist stub does not validate input |
 | BlockHotlistStatus_01 | `local.skipTestCases` | `GET /v1/hotlist/status/UIN/{id}` has no stub |
 | TC_IDA_DemoAuth_76–79 | `local.noSeedDataTestCases` | need partners mapped to one policy with `authTokenType=policy` |
 | TC_IDA_DemoAuth_82 | `local.noSeedDataTestCases` | needs a second partner on an `authTokenType=partner` policy |
@@ -542,6 +551,9 @@ the same certificate as `config/local/partner-mosip-signed.p12`.
 **Known issues** come from the same `testCaseSkippedList.txt` in both modes
 and are counted under *Known Issues*. A testcase that is a known issue only
 locally goes into `local.skipTestCases` in `Ida-local.properties` instead.
+For example, TC_IDA_HotlistAPI_05 (malformed `expiryTimestamp`) is MOSIP-41020,
+as in the IDA 1.3.x release branches: the hotlist service returns `ADM-HTL-004`
+instead of `ADM-HTL-002`.
 
 ---
 

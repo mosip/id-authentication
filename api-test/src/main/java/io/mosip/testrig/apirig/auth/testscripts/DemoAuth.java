@@ -220,7 +220,7 @@ public class DemoAuth extends IdAuthenticationUtil implements ITest {
 		authRequestTemp.remove("env");
 		authRequestTemp.put("env", "Staging");
 		if (IdAuthConfigManager.isLocalRun()) {
-			authRequestTemp.put("domainUri", BaseTestCase.domain);
+			authRequestTemp.put("domainUri", IdAuthenticationUtil.localDomainUri());
 		}
 		authRequest = authRequestTemp.toString();
 		testCaseDTO.setInput(authRequest);

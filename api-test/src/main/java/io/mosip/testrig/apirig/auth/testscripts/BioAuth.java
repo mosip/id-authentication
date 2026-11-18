@@ -154,7 +154,7 @@ public class BioAuth extends IdAuthenticationUtil implements ITest {
 		identityReqJson.remove("identityRequestEncUrl");
 		identityRequest = getJsonFromTemplate(identityReqJson.toString(), identityRequestTemplate);
 		logger.info("Built identity request for " + testCaseName);
-		String domainUrl = IdAuthConfigManager.isLocalRun() ? BaseTestCase.domain : BaseTestCase.ApplnURI;
+		String domainUrl = IdAuthConfigManager.isLocalRun() ? IdAuthenticationUtil.localDomainUri() : BaseTestCase.ApplnURI;
 		if (identityRequest.contains("baseurl")) {
 			identityRequest = identityRequest.replace("baseurl", domainUrl);
 		}
@@ -200,7 +200,7 @@ public class BioAuth extends IdAuthenticationUtil implements ITest {
 		// modifyRequest force-injects domainUri via JsonPrecondtion regardless of the
 		// template - strip it back out for tests that deliberately omit it.
 		if (IdAuthConfigManager.isLocalRun()) {
-			authRequestTemp.put("domainUri", BaseTestCase.domain);
+			authRequestTemp.put("domainUri", IdAuthenticationUtil.localDomainUri());
 		}
 		if (testCaseDTO.getInputTemplate().contains("WithoutDomainUri")) {
 			authRequestTemp.remove("domainUri");

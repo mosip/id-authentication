@@ -470,6 +470,13 @@ public class IdAuthenticationUtil extends AdminTestUtil {
 		return null;
 	}
 
+	// Local run: domainUri the local IDA accepts (local.domainUri, e.g. "localhost"),
+	// independent of the endpoint, which carries the IDA port (http://localhost:8090).
+	public static String localDomainUri() {
+		String domainUri = IdAuthConfigManager.getproperty("local.domainUri");
+		return domainUri == null || domainUri.isBlank() ? BaseTestCase.domain : domainUri.trim();
+	}
+
 	public static String restoreUndeliverableOtp(String request, String template, String otpChannel) {
 		if (request == null || !IdAuthConfigManager.isLocalRun() || otpChannel == null
 				|| otpChannel.matches("^[^@\\s]+@[^@\\s]+\\.[^@\\s]+$")
