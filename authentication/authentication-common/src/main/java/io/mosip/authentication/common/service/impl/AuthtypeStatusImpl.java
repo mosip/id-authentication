@@ -1,6 +1,6 @@
 package io.mosip.authentication.common.service.impl;
 
-import java.sql.Timestamp;
+import java.time.LocalDateTime;
 import java.util.List;
 import java.util.Objects;
 import java.util.stream.Collectors;
@@ -42,7 +42,7 @@ public class AuthtypeStatusImpl implements AuthtypeStatusService {
 		List<AuthtypeLock> authTypeLockList;
 		List<Object[]> authTypeLockObjectsList = authLockRepository.findByToken(token);
 		authTypeLockList = authTypeLockObjectsList.stream()
-				.map(obj -> new AuthtypeLock((String) obj[0], (String) obj[1], Objects.nonNull(obj[2]) ? ((Timestamp) obj[2]).toLocalDateTime() : null))
+				.map(obj -> new AuthtypeLock((String) obj[0], (String) obj[1], (LocalDateTime) obj[2]))
 				.collect(Collectors.toList());
 		return authTypeLockList;
 	}
