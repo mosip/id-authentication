@@ -1,7 +1,7 @@
 services:
 
   database:
-    image: 'postgres:bookworm'
+    image: 'postgres:18.7-bookworm'
     ports:
       - 5455:5432
     environment:
@@ -11,12 +11,12 @@ services:
       - ./init.sql:/docker-entrypoint-initdb.d/init.sql
 
   config-server:
-    image: mosipid/config-server:latest
+    image: mosipid/config-server:1.1.2
     container_name: my_config_server
     ports:
       - "51000:51000"
     volumes:
-      - <ABSOLUTE_PATH_TO_MOSIP_CONFIG>:/mosip-config   # host path : container path, provide absolute path of host, no change of container path
+      - ${MOSIP_CONFIG_PATH:?Set MOSIP_CONFIG_PATH in docker-compose/.env (copy .env.example)}:/mosip-config   # host path comes from .env; container path must not change
     environment:
        # Spring profile & config location
       - SPRING_PROFILES_ACTIVE=native
@@ -34,7 +34,7 @@ services:
       - SPRING_SECURITY_ENABLED=false
 
   mock-service:
-    image: wiremock/wiremock:latest
+    image: wiremock/wiremock:3.13.2
     container_name: master_data_mock_service
     ports:
       - "8082:8082"
@@ -48,7 +48,7 @@ services:
       - "host.docker.internal:host-gateway"
     healthcheck:
       test: ["CMD-SHELL", "curl -f http://localhost:8082/__admin/health || exit 1"]
-      interval: 500s
+      interval: 30s
       timeout: 5s
       retries: 5
       start_period: 10s

@@ -155,16 +155,20 @@ cd local-dev-setup
 prepare-biosdk-mock-lib.bat
 ```
 
-The script downloads `mock-sdk-1.3.0-beta.1-jar-with-dependencies.jar` (~110 MB) from Maven Central, zips it as `mock-sdk.zip`, and places it in `docker-compose/wiremock/__files/`. You only need to run it once; skip it on subsequent starts unless the file is deleted.
+The script downloads `mock-sdk-1.3.0-beta.1-jar-with-dependencies.jar` (~171 MB) from Maven Central, zips it as `mock-sdk.zip`, and places it in `docker-compose/wiremock/__files/`. You only need to run it once; skip it on subsequent starts unless the file is deleted.
 
 ### Configure the Config Server volume
 
-Before starting, open `docker-compose/docker-compose.yml` and update the config-server volume mount to the **absolute path** of your cloned `mosip-config` directory:
+The config-server mounts your cloned `mosip-config` directory. Its path is read from `docker-compose/.env`, so no tracked file needs editing:
 
-```yaml
-volumes:
-  - /absolute/path/to/mosip-config:/mosip-config
+```bash
+cd local-dev-setup/docker-compose
+cp .env.example .env
+# edit .env and set the absolute path of your mosip-config clone, e.g.
+# MOSIP_CONFIG_PATH=/Users/<you>/mosip-config
 ```
+
+`.env` is git-ignored. `docker compose up` stops with a clear message if `MOSIP_CONFIG_PATH` is not set.
 
 ### Start the services
 
@@ -474,20 +478,21 @@ Available under **4**. Uses the key + certificate stored by *5. Identity key bin
 
 ### Available Identities (UIN/VID)
 
-The following identities are available in the local database. Use any of the UIN/VIDs below for OTP, demographic, biometric and KYC requests.
+The following identities are seeded in the local database. **Not every identity has biometric data**, so pick the identity according to what you want to test (for example, eKYC with face needs face data).
 
-| UIN | Mapped VID(s) | Notes |
-|-----|---------------|-------|
-| `8952059168` | – | Default identity used by `samples/auth-req-01.json` |
-| `8497103958` | `8971487034965918` | |
-| `8941269276` | `8708548136415038`, `8948612871402917` | |
-| `8918362358` | `8216925367201389` | |
-| `8148718920` | N/A | |
-| `8724928329` | `8564539580423608` | |
-| `8375416927` | `8526937256046298` | |
-| `8354720784` | `8420394176306134`, `8021750691607687` | |
-| `8130162368` | `8694304726328408` | Password identity — password: `Password@123` |
-| `8296342506` | `8421783185386241` | Password identity + Verifiable Claims — password: `Password$567` |
+| UIN | Mapped VID(s) | Biometric data | Notes |
+|-----|---------------|----------------|-------|
+| `8952059168` | – | None | Do not use for eKYC or biometric auth. Demographic details are in `samples/auth-req-01.json`. |
+| `8497103958` | `8971487034965918` | None | Do not use for eKYC or biometric auth. Demographic details: `auth-req-02.json` (UIN), `auth-req-05-vid.json` (VID). |
+| `8941269276` | `8708548136415038`, `8948612871402917` | None | Do not use for eKYC or biometric auth. Demographic details: `auth-req-03.json` (UIN), `auth-req-06-vid.json` (VID `8708548136415038`), `auth-req-07-vid-1time.json` (VID `8948612871402917`). |
+| `8918362358` | `8216925367201389` | None | Do not use for eKYC or biometric auth. Demographic details: `auth-req-04.json` (UIN), `auth-req-08-vid-5trans.json` (VID `8216925367201389`). |
+| `8724928329` | `8564539580423608` | Yes | Use for eKYC and biometric auth. Demographic details: `auth-req-09.json` (change the UIN value to `8724928329`). |
+| `8375416927` | `8526937256046298` | Face only (infant) | Infant data. Demographic details: `auth-req-10-infant.json` (VID; change the UIN value to `8375416927` for UIN). |
+| `8354720784` | `8420394176306134`, `8021750691607687` | Yes | Use for eKYC and biometric auth. No demo sample file; the seeded demographic data can be used for OTP auth. |
+| `8130162368` | `8694304726328408` | Yes | Use for eKYC and biometric auth. Password identity, password: `Password@123`. No demo sample file; use OTP auth with the seeded demographic data. |
+| `8296342506` | `8421783185386241` | Yes | Use for eKYC and biometric auth. Password identity + verified attributes, password: `Password$567`. No demo sample file; use OTP auth with the seeded demographic data. |
+
+> **Biometric format:** the seeded biometric data is in **WSQ** format for finger. Mock MDS must be started with the WSQ image type (see [7.2](#72-configure-and-run-mock-mds)), otherwise finger auth fails with `IDA-BIA-001`.
 
 Several `samples/auth-req-*.json` files already reference these (e.g. `auth-req-05-vid.json` → VID `8971487034965918`, `auth-req-10-infant.json` → VID `8526937256046298`).
 
@@ -518,23 +523,31 @@ cd mosip-mock-services/MockMDS
 mvn clean install -Dgpg.skip=true -DskipTests
 ```
 
-### 7.2 Properties to update
+### 7.2 Configure and run Mock MDS
 
-Add/update the following properties in the MockMDS configuration (or pass them as `-D` Java arguments, see below).
+Mock MDS needs two kinds of configuration before it is started: **properties** that you edit in its `application.properties` file, and three **program arguments** that you pass when you start it.
 
-Keystores for face and iris:
+> Mock MDS reads its properties only from the `application.properties` file in its working directory (the `MockMDS` folder). Passing them as `-D` JVM options has no effect, so edit the file and start Mock MDS from that folder.
+
+#### Step 1 — Edit `MockMDS/application.properties`
+
+Switch the FTM keystores for **face, finger and iris** to the `ida-local` keystore, so the capture is signed with a key that the local IDA trusts. If any of these three is left unchanged, that modality fails with `IDA-MPA-001 Digital signature verification failed`.
 
 ```properties
 mosip.mock.sbi.file.face.keys.keystorefilename.ftm=/Biometric Devices/Finger/Single/Keys/mosipfingersingleftm-ida-local.p12
 mosip.mock.sbi.file.face.keys.keyalias.ftm=mosipfingersingleftm
 mosip.mock.sbi.file.face.keys.keystorepwd.ftm=mosipfingersingleftm
 
+mosip.mock.sbi.file.finger.single.keys.keystorefilename.ftm=/Biometric Devices/Finger/Single/Keys/mosipfingersingleftm-ida-local.p12
+mosip.mock.sbi.file.finger.single.keys.keyalias.ftm=mosipfingersingleftm
+mosip.mock.sbi.file.finger.single.keys.keystorepwd.ftm=mosipfingersingleftm
+
 mosip.mock.sbi.file.iris.single.keys.keystorefilename.ftm=/Biometric Devices/Finger/Single/Keys/mosipfingersingleftm-ida-local.p12
 mosip.mock.sbi.file.iris.single.keys.keyalias.ftm=mosipfingersingleftm
 mosip.mock.sbi.file.iris.single.keys.keystorepwd.ftm=mosipfingersingleftm
 ```
 
-Auth server and IDA certificate endpoints (served by the local WireMock on port `8082`):
+Point the auth server and IDA certificate endpoints to the local WireMock (port `8082`). The defaults call a MOSIP environment, which makes capture fail with "IDA Biometric encryption Certificate not found":
 
 ```properties
 mosip.auth.server.url=http://localhost:8082/v1/authmanager/authenticate/clientidsecretkey
@@ -545,26 +558,30 @@ mosip.auth.secretkey=a
 mosip.ida.server.url=http://localhost:8082/idauthentication/v1/internal/getCertificate?applicationId=IDA&referenceId=IDA-FIR
 ```
 
-### 7.3 Run
+#### Step 2 — Pass the program arguments when you start Mock MDS
 
-Run the MockMDS from your IDE (VS Code `launch.json` or equivalent) or from a `.sh` / `.bat` script, passing the properties above as Java arguments. Example `run-mock-mds.sh` (replace `<MockMDS-main-class-or-jar>` with the value from your `launch.json` `mainClass` / built jar):
+Start the main class `io.mosip.mock.sbi.test.TestMockSBI` with these three **program arguments**, in this order (they are positional, and they are not `-D` options):
 
-```bash
-#!/bin/bash
-java \
-  "-Dmosip.mock.sbi.file.face.keys.keystorefilename.ftm=/Biometric Devices/Finger/Single/Keys/mosipfingersingleftm-ida-local.p12" \
-  -Dmosip.mock.sbi.file.face.keys.keyalias.ftm=mosipfingersingleftm \
-  -Dmosip.mock.sbi.file.face.keys.keystorepwd.ftm=mosipfingersingleftm \
-  "-Dmosip.mock.sbi.file.iris.single.keys.keystorefilename.ftm=/Biometric Devices/Finger/Single/Keys/mosipfingersingleftm-ida-local.p12" \
-  -Dmosip.mock.sbi.file.iris.single.keys.keyalias.ftm=mosipfingersingleftm \
-  -Dmosip.mock.sbi.file.iris.single.keys.keystorepwd.ftm=mosipfingersingleftm \
-  -Dmosip.auth.server.url=http://localhost:8082/v1/authmanager/authenticate/clientidsecretkey \
-  -Dmosip.auth.appid=a -Dmosip.auth.clientid=a -Dmosip.auth.secretkey=a \
-  "-Dmosip.ida.server.url=http://localhost:8082/idauthentication/v1/internal/getCertificate?applicationId=IDA&referenceId=IDA-FIR" \
-  <MockMDS-main-class-or-jar>
-```
+| # | Argument | Value |
+|---|----------|-------|
+| 1 | `mosip.mock.sbi.device.purpose` | `Auth` (IDA authentication needs the Auth purpose, not `Registration`) |
+| 2 | `mosip.mock.sbi.biometric.type` | `Biometric Device` |
+| 3 | `mosip.mock.sbi.biometric.image.type` | `WSQ` (the seeded finger data is WSQ; the default `JP2000` makes finger auth fail with `IDA-BIA-001`) |
 
-On Windows, put the same `-D` arguments in a `.bat` file (use `^` for line continuation and quote values containing spaces or `&`). Once running, MockMDS listens on `http://localhost:4501`.
+> **Warning:** use the `WSQ` image type **only for local testing**, to match the WSQ biometric data seeded in the local database. Do **not** use WSQ in a production environment.
+
+Depending on how you run the service, pass them as follows:
+
+- **IDE (for example VS Code `launch.json`):** set `mainClass` to `io.mosip.mock.sbi.test.TestMockSBI` and add the arguments to `args`:
+
+  ```json
+  "args": "mosip.mock.sbi.device.purpose=Auth \"mosip.mock.sbi.biometric.type=Biometric Device\" mosip.mock.sbi.biometric.image.type=WSQ"
+  ```
+
+  Make sure the working directory (`cwd`) is the `MockMDS` folder so that `application.properties` is picked up.
+- **`.sh` / `.bat` script:** edit the arguments at the end of the Java command in the script you use (for example `run.sh` or `run_auth.bat` in the `MockMDS` folder). `run.sh` ships with `Registration` and without the image type, so change it to the three values above. Quote any argument that contains a space.
+
+Once running, Mock MDS listens on `http://localhost:4501`.
 
 ---
 
@@ -596,6 +613,7 @@ Follow **[api-test/README.md → Running Against a Local IDA (Local Run Mode)](.
 | `prepare-biosdk-mock-lib.sh` | Downloads the mock BioSDK JAR and packages it as `mock-sdk.zip` (macOS/Linux) |
 | `prepare-biosdk-mock-lib.bat` | Same as above for Windows |
 | `docker-compose/docker-compose.yml` | Starts all required backing services |
+| `docker-compose/.env.example` | Template for `docker-compose/.env` (set `MOSIP_CONFIG_PATH`); the real `.env` is git-ignored |
 | `docker-compose/init.sql` | Initialises the IDA database schema and seed data (uses the Spring Batch 6 sequence `BATCH_JOB_INSTANCE_SEQ`) |
 | `docker-compose/wiremock/mappings/master-data.json` | WireMock stubs for master-data, notification, OTP manager, and WebSub APIs |
 | `docker-compose/wiremock/__files/mock-sdk.zip` | Mock BioSDK bundle served to the BioSDK service on startup (**generated** — run `prepare-biosdk-mock-lib.sh/.bat` first) |
@@ -610,7 +628,7 @@ Follow **[api-test/README.md → Running Against a Local IDA (Local Run Mode)](.
 ## Troubleshooting
 
 **Config server returns 404 for properties**  
-Verify the volume path in `docker-compose.yml` points to the correct `mosip-config` directory and that you have edited the right property files.
+Verify that `MOSIP_CONFIG_PATH` in `docker-compose/.env` is the absolute path of your `mosip-config` clone (then run `docker compose up -d` again) and that you have edited the right property files.
 
 **503 errors when calling downstream services**  
 This is caused by Spring Cloud LoadBalancer treating `localhost` as a service-registry name. The property `spring.cloud.loadbalancer.enabled=false` is already included in the `bootstrap.properties` steps above for the authentication service. If you still see this error, verify the property is present in the JAR's `bootstrap.properties` (rebuild with `mvn clean install -Dgpg.skip=true` if needed).
@@ -619,4 +637,4 @@ This is caused by Spring Cloud LoadBalancer treating `localhost` as a service-re
 Double-check the absolute path set in `mosip.kernel.keymanager.hsm.config-path`. Use forward slashes even on Windows.
 
 **BioSDK service fails to start**  
-The `biosdk-service` depends on `mock-service` being healthy. Check that the WireMock container started successfully (`docker compose logs mock-service`) before the BioSDK container attempts to download the SDK zip.
+The `biosdk-service` depends on `mock-service` being healthy. Check that the WireMock container started successfully (`docker compose logs mock-service`) before the BioSDK container attempts to download the SDK zip. WireMock's health check runs every 30 seconds, so `biosdk-service` can take up to about a minute to start after WireMock.
