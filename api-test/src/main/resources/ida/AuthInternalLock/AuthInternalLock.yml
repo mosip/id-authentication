@@ -27,7 +27,7 @@ AuthInternalLock:
       inputTemplate: ida/AuthInternalLock/authInternalLock
       outputTemplate: ida/AuthInternalLock/authInternalLockResult
       input: '{
-    "individualId": "$ID:AddIdentity_withValidParameters_with_Infant_which_locked_Pos_UIN$",
+    "individualId": "$ID:AddIdentity_withValidParameters_with_Infant_which_locked_smoke_Pos_UIN$",
     "individualIdType": "UIN",
     "authType": "Bio",
     "authSubType": "Iris",
@@ -199,14 +199,14 @@ AuthInternalLock:
 
   auth_AuthInternal_Permanent_Lock_DemoAuthDelegate_Valid_Smoke_Pos:
       endPoint: /idrepository/v1/identity/authtypes/status
-      uniqueIdentifier: TC_IDA_AuthInternalLock_07
+      uniqueIdentifier: TC_IDA_AuthInternalLock_11
       description: lock Demo authType Permanently for UIN and demo auth shoud fail with the same UIN
       role: idrepo
       restMethod: post
       inputTemplate: ida/AuthInternalLock/authInternalLock
       outputTemplate: ida/AuthInternalLock/authInternalLockResult
       input: '{
-    "individualId": "$ID:AddIdentity_withValidParameters_forLockedUIN_DemoDelegated_Pos_UIN$",
+    "individualId": "$ID:AddIdentity_withValidParameters_forLockedUIN_DemoDelegated_smoke_Pos_UIN$",
     "individualIdType": "UIN",
     "authType": "Demo",
     "authSubType": "",

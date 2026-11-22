@@ -1,0 +1,47 @@
+BioAuthDelegatedNegHotlisted:
+  auth_BioAuthDelegatedNeg_With_Deactivated_UIN:
+      endPoint: /idauthentication/v1/kyc-auth/delegated/$partialPartnerKeyUrl$/$ID:CreateOIDCClient_Delegated_Valid_Smoke_sid_clientId$
+      uniqueIdentifier: TC_IDA_BioAuthDelegatedNeg_21
+      description: Bio kyc delegated auth with a hotlist-blocked UIN
+      role: resident
+      restMethod: post
+      additionalDependencies: TC_DependentModule_IdRepo_63,TC_IDA_HotlistAPI_15
+      inputTemplate: ida/BioAuthDelegatedNeg/BioAuthDelegated
+      outputTemplate: ida/DelegateError
+      input: '{
+        "requestTime": "$TIMESTAMP$",
+        "individualId": "$ID:AddIdentity_ForBioAuthDelegatedNeg_HotlistedUIN_smoke_sid_Pos_UIN$",
+        "transactionId": "$TRANSACTIONID$",
+        "individualIdType": "UIN",
+        "bio": true,
+        "demo": false,
+        "otp": false,
+        "identityRequest":{
+          "bioSubType": "",
+          "bioType": "FACE",
+          "bioValue": "$FACE$",
+          "deviceCode": "bc0b6848-6d45-46d1-a9bd-b334410bf823",
+          "dateTime": "$DATETIME$",
+          "deviceProviderID": "1873299273",
+          "env": "Staging",
+          "deviceServiceID": "",
+          "deviceServiceVersion": "SB.WIN.001",
+          "deviceProvider": "SYNCBYTE",
+          "deviceProviderId": "SYNCBYTE.LTC165",
+          "deviceSubType": "Single",
+          "make": "Logitech",
+          "model": "4d36e96c-e325-11ce-bfc1-08002be10318",
+          "serialNo": "78467171",
+          "type": "Face",
+    "transactionId": "$TRANSACTIONID$",
+    "identityRequestTemplate": "ida/BioAuth/BioAuthIdentityEncrypt",
+    "identityRequestEncUrl": "/idauthentication/v1/internal/encrypt"
+    }
+    }'
+      output: '{
+    "errors": [
+        {
+          "errorCode": "IDA-MLC-022"
+        }
+      ]
+}'

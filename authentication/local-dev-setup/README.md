@@ -488,7 +488,7 @@ The following identities are seeded in the local database. **Not every identity 
 | `8918362358` | `8216925367201389` | None | Do not use for eKYC or biometric auth. Demographic details: `auth-req-04.json` (UIN), `auth-req-08-vid-5trans.json` (VID `8216925367201389`). |
 | `8724928329` | `8564539580423608` | Yes | Use for eKYC and biometric auth. Demographic details: `auth-req-09.json` (change the UIN value to `8724928329`). |
 | `8375416927` | `8526937256046298` | Face only (infant) | Infant data. Demographic details: `auth-req-10-infant.json` (VID; change the UIN value to `8375416927` for UIN). |
-| `8354720784` | `8420394176306134`, `8021750691607687` | Yes | Use for eKYC and biometric auth. Demographic details: `auth-req-11.json`. |
+| `8354720784` | `8420394176306134`, `8021750691607687` | Yes | Use for eKYC and biometric auth. No demo sample file; the seeded demographic data can be used for OTP auth. |
 | `8130162368` | `8694304726328408` | Yes | Use for eKYC and biometric auth. Password identity, password: `Password@123`. No demo sample file; use OTP auth with the seeded demographic data. |
 | `8296342506` | `8421783185386241` | Yes | Use for eKYC and biometric auth. Password identity + verified attributes, password: `Password$567`. No demo sample file; use OTP auth with the seeded demographic data. |
 
@@ -582,6 +582,14 @@ Depending on how you run the service, pass them as follows:
 - **`.sh` / `.bat` script:** edit the arguments at the end of the Java command in the script you use (for example `run.sh` or `run_auth.bat` in the `MockMDS` folder). `run.sh` ships with `Registration` and without the image type, so change it to the three values above. Quote any argument that contains a space.
 
 Once running, Mock MDS listens on `http://localhost:4501`.
+
+---
+
+## 8. Run the API Test Rig Against This Setup
+
+With the stack and `authentication-service` from sections 4 and 5 running, the IDA API test rig (`api-test/`) can run its smoke and regression suites against this local IDA. The rig needs a few more local settings on top of this guide (extra `mosip-config` values, a WireMock token with roles, BouncyCastle order in `authentication-service/pom.xml`) and an 8080 → 8090 port relay.
+
+Follow **[api-test/README.md → Running Against a Local IDA (Local Run Mode)](../../api-test/README.md#running-against-a-local-ida-local-run-mode)** for the step-by-step setup, the run command and troubleshooting. The rig starts its own mock SBI, so MockMDS from section 7 is not needed for it.
 
 ---
 
