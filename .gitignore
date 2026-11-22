@@ -32,8 +32,8 @@ test.txt
 .sts4-cache*
 
 # local-dev-setup: generated / machine-specific files
-local-dev-setup/docker-compose/.env
-local-dev-setup/docker-compose/wiremock/__files/mock-sdk*
+authentication/local-dev-setup/docker-compose/.env
+authentication/local-dev-setup/docker-compose/wiremock/__files/mock-sdk*
 .venv/
 __pycache__/
 *.pyc
