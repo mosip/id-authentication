@@ -181,7 +181,7 @@ class MOSIPAuthenticator:
     
             request = MOSIPEncryptAuthRequest(
                 timestamp = timestamp_str,
-                demographics = demographic_data
+                demographics = demographic_data.dict(exclude_none=True)
             )
             
             self.auth_request.request, self.auth_request.requestSessionKey, self.auth_request.requestHMAC = \
@@ -304,7 +304,7 @@ class MOSIPAuthenticator:
 
             demo_otp_request = {
                 "timestamp": timestamp_str,
-                "demographics": json.loads(demographic_data.json()),
+                "demographics": json.loads(demographic_data.json(exclude_none=True)),
                 "otp": otp
             }
 
