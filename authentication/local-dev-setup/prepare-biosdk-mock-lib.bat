@@ -26,7 +26,7 @@ echo.
 REM Create temp directory
 mkdir "%TEMP_DIR%" 2>nul
 
-echo [1/3] Downloading mock-sdk JAR from Maven Central (~110 MB)...
+echo [1/3] Downloading mock-sdk JAR from Maven Central (~171 MB)...
 curl -L --progress-bar "%JAR_URL%" -o "%TEMP_DIR%\%JAR_NAME%"
 if %ERRORLEVEL% neq 0 (
     echo ERROR: Download failed. Check your internet connection and retry.
