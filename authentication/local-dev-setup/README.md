@@ -346,7 +346,16 @@ Key settings to be aware of:
 | `partner_apikey` | `198833` | Partner API key |
 | `partner_misp_lk` | `vM1BA8RosNt3kemNGpsneYgcelZwNmsOoKJQgMm92DltqtJh4p` | MISP licence key |
 
-> **Partner, API key and OIDC client are pre-seeded.** There is no setup step that creates them: `docker-compose/init.sql` already seeds the auth partner `auth_v1z0816154432` (API key `198833`, MISP licence key above), the OIDC partner `mpartner-default-demo-oidc` and its OIDC client `xedG72yecDpJcQbzn6Q8LDplTVGZPhLRXi1ssAh1oW4` (used with `idp_misp_lk`, `auth_partner_id` and `oidc_client_id` in the TOML file). To use a different partner, API key or OIDC client, add it to `init.sql` and recreate the database container.
+> **Partner, API key and OIDC client are pre-seeded.** There is no setup step that creates them: `docker-compose/init.sql` already seeds the auth partner `auth_v1z0816154432` (API key `198833`, MISP licence key above), the OIDC partner `mpartner-default-demo-oidc` and its OIDC client `xedG72yecDpJcQbzn6Q8LDplTVGZPhLRXi1ssAh1oW4` (used with `idp_misp_lk`, `auth_partner_id` and `oidc_client_id` in the TOML file). To use a different partner, API key or OIDC client, add it to `init.sql` and reset the database as described below.
+
+**Resetting the database after changing `init.sql`** (run from `docker-compose/`): remove the database container together with its volume, then start it again.
+
+```bash
+docker compose rm -s -f -v database
+docker compose up -d database
+```
+
+`init.sql` runs only when the database data directory is empty, and the database keeps its data in a volume that survives a plain container recreate, so the volume must be removed too. This wipes the local database and re-seeds it from `init.sql`; restart `authentication-service` afterwards so it reconnects.
 
 ### 6.2 Set Up a Python Virtual Environment
 
