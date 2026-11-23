@@ -13,7 +13,13 @@ Install the following tools before proceeding:
 | Git | Latest |
 | Java | 21 |
 | Maven | 3.9.6 |
-| Docker + Docker Compose | Latest |
+| Docker + Docker Compose | Latest, and **running** before you start the Docker services (section 4) |
+| curl | Latest (used by `prepare-biosdk-mock-lib.sh`) |
+| zip | Latest (used by `prepare-biosdk-mock-lib.sh`; on Windows the `.bat` uses PowerShell instead) |
+| argon2 native library | Needed for password authentication (kyc-auth v2). macOS: `brew install argon2`. Debian/Ubuntu: `sudo apt-get install libargon2-1`. See [5.3](#53-run-the-authentication-service) for the `-Djna.library.path` option. |
+| Python | 3.10 or later, only for the sample client (section 6) |
+
+> **Apple Silicon note:** the `mosipid/config-server` image is amd64-only, so Docker runs it under emulation on Apple Silicon Macs. This works, but it starts a little slower.
 
 > **HSM note:** This setup uses a **PKCS12 keystore file** (`mosip-ida-ks.p12`) instead of SoftHSM. No external HSM installation is required.
 
@@ -28,15 +34,21 @@ git clone -b develop https://github.com/mosip/mosip-config
 git clone -b develop https://github.com/mosip/id-authentication
 ```
 
+This guide uses the `develop` branch by default. You can check out any other branch of either repository (for example a release or feature branch) and follow the same steps; if that branch differs from what this guide describes, use the README of that branch.
+
+Run the clone commands from a workspace folder of your choice. **Every `cd` command in this guide is relative to that workspace folder** (the folder that contains both clones, and later `mosip-mock-services`), so return to it before copying a `cd` line.
+
+> **Why `master` in section 5.2 but `develop` here?** The service asks the config server for the label `master`, while `mosip-config` is cloned on `develop`. This is fine: the local config server runs in `native` mode and serves the files of the mounted folder, ignoring the label.
+
 ---
 
 ## 2. Build the Project
 
-From the root of the `id-authentication` repository, build all modules. The `-Dgpg.skip=true` flag skips GPG signing, which is not required in a local environment.
+From the root of the `id-authentication` repository, build all modules. The `-Dgpg.skip=true` flag skips GPG signing, which is not required in a local environment. The `-U` flag forces Maven to re-check the snapshot repositories: without it, Maven can reuse an earlier failed lookup of a `SNAPSHOT` dependency (for example `kernel-core:1.4.1-SNAPSHOT`) and fail again even after the cause was fixed.
 
 ```bash
 cd id-authentication/authentication
-mvn clean install -Dgpg.skip=true
+mvn clean install -U -Dgpg.skip=true
 ```
 
 ---
@@ -69,7 +81,9 @@ mosip.esignet.host=localhost
 spring.http.converters.preferred-json-mapper=jackson2
 ```
 
-> `spring.http.converters.preferred-json-mapper=jackson2` is required on Spring Boot 4 to keep Jackson 2 for HTTP message conversion. Do **not** carry over the Boot 3-era `spring.mvc.pathmatch.matching-strategy=ANT_PATH_MATCHER` or `hibernate.dialect` properties — remove them if present.
+> `spring.http.converters.preferred-json-mapper=jackson2` is required on Spring Boot 4 to keep Jackson 2 for HTTP message conversion. Do **not** carry over the Boot 3-era `spring.mvc.pathmatch.matching-strategy=ANT_PATH_MATCHER` property — remove it if present.
+>
+> **Keep** `hibernate.dialect=org.hibernate.dialect.PostgreSQLDialect`. If the property is missing, `kernel-core` falls back to `org.hibernate.dialect.MySQL5Dialect`, which Hibernate 7 no longer contains, and the service fails at startup with `ClassNotFoundException: org.hibernate.dialect.MySQL5Dialect`.
 
 #### Change these existing properties
 
@@ -111,7 +125,7 @@ spring.http.converters.preferred-json-mapper=jackson2
 
 ### 3.4 `id-authentication-otp-default.properties`
 
-> The OTP service has been merged into `authentication-service`; apply this only if your config repo still loads this file.
+> **Required.** The OTP service has been merged into `authentication-service`, but `bootstrap.properties` still loads this file (`spring.cloud.config.name=id-authentication,id-authentication-internal,id-authentication-external,id-authentication-otp`). If you skip this step, the service fails at startup with an unresolved property.
 
 | Property | Old Value | New Value |
 |----------|-----------|-----------|
@@ -144,14 +158,14 @@ The `biosdk-service` downloads a ZIP file containing the mock BioSDK JAR on star
 
 **macOS / Linux:**
 ```bash
-cd local-dev-setup
+cd id-authentication/authentication/local-dev-setup
 chmod +x prepare-biosdk-mock-lib.sh
 ./prepare-biosdk-mock-lib.sh
 ```
 
 **Windows:**
 ```cmd
-cd local-dev-setup
+cd id-authentication\authentication\local-dev-setup
 prepare-biosdk-mock-lib.bat
 ```
 
@@ -162,7 +176,7 @@ The script downloads `mock-sdk-1.3.0-beta.1-jar-with-dependencies.jar` (~171 MB)
 The config-server mounts your cloned `mosip-config` directory. Its path is read from `docker-compose/.env`, so no tracked file needs editing:
 
 ```bash
-cd local-dev-setup/docker-compose
+cd id-authentication/authentication/local-dev-setup/docker-compose
 cp .env.example .env
 # edit .env and set the absolute path of your mosip-config clone, e.g.
 # MOSIP_CONFIG_PATH=/Users/<you>/mosip-config
@@ -173,7 +187,7 @@ cp .env.example .env
 ### Start the services
 
 ```bash
-cd local-dev-setup/docker-compose
+cd id-authentication/authentication/local-dev-setup/docker-compose
 docker compose up -d
 ```
 
@@ -193,7 +207,7 @@ All four services (`database`, `config-server`, `mock-service`, `biosdk-service`
 
 ### 5.1 Add the `kernel-auth-adapter` dependency
 
-The authentication service requires `kernel-auth-adapter` as a runtime dependency. It is not bundled in the fat jar: for `mvn spring-boot:run` / IDE runs add the dependency below, and for `java -jar` runs also put the adapter jar on `-Dloader.path`. Open `authentication-service/pom.xml` and add the following inside the `<dependencies>` block:
+The authentication service needs `kernel-auth-adapter` at runtime, but the project does not declare it (the Docker image downloads it at container start). For a local run, add it explicitly. Open `authentication-service/pom.xml` and add the following inside the `<dependencies>` block:
 
 ```xml
 <dependency>
@@ -203,16 +217,14 @@ The authentication service requires `kernel-auth-adapter` as a runtime dependenc
 </dependency>
 ```
 
-> The version property `${kernel-auth-adapter.version}` is already defined in the parent `pom.xml`. Do **not** hard-code the version.
+> The version property `${kernel-auth-adapter.version}` is already defined in the parent `pom.xml`. Do **not** hard-code the version. This is a local-only change, so do not commit it. It applies to all the run options in 5.3, and the adapter is packaged into the jar when you build it.
 
 ### 5.2 Update `bootstrap.properties`
 
-Open `authentication-service/src/main/resources/bootstrap.properties` and apply the following changes:
+Open `authentication-service/src/main/resources/bootstrap.properties`. It already contains `spring.profiles.active=default` and `spring.cloud.config.label=master`, so only this value needs to change:
 
 | Property | Old Value | New Value |
 |----------|-----------|-----------|
-| `spring.profiles.active` | `dev` | `default` |
-| `spring.cloud.config.label` | `mz` | `master` |
 | `spring.cloud.config.uri` | `localhost` | `http://localhost:51000/config` |
 
 Also **add** these four properties (the committed `spring.cloud.config.uri=localhost` is only a placeholder, so the override is mandatory; alternatively pass them as CLI args, e.g. `--spring.cloud.config.uri=http://localhost:51000/config`):
@@ -231,18 +243,18 @@ spring.cloud.loadbalancer.enabled=false
 #### Option A — Maven
 
 ```bash
-cd authentication/authentication-service
-mvn spring-boot:run
+cd id-authentication/authentication/authentication-service
+mvn spring-boot:run -Dspring-boot.run.jvmArguments="-Djna.library.path=/opt/homebrew/lib"
 ```
 
 #### Option B — JAR
 
-Since `bootstrap.properties` was modified after the initial build, rebuild the module first to include the updated configuration in the JAR:
+Since `bootstrap.properties` and `authentication-service/pom.xml` were modified after the initial build, rebuild the module first to include the updated configuration and the `kernel-auth-adapter` dependency in the JAR:
 
 ```bash
-cd authentication/authentication-service
-mvn clean install -Dgpg.skip=true
-java -Dloader.path=<dir-containing-kernel-auth-adapter.jar> -jar target/authentication-service-*.jar
+cd id-authentication/authentication/authentication-service
+mvn clean install -U -Dgpg.skip=true
+java -Djna.library.path=/opt/homebrew/lib -jar target/authentication-service-*.jar
 ```
 
 #### Option C — IntelliJ IDEA
@@ -261,6 +273,8 @@ java -Dloader.path=<dir-containing-kernel-auth-adapter.jar> -jar target/authenti
 4. Open `authentication-service/src/main/java/.../IdAuthenticationApplication.java`.
 5. Click **Run** above the `main` method (shown by the CodeLens link), or press `F5` with the file open.
 6. VS Code will auto-generate a launch configuration in `.vscode/launch.json`; you can edit it to add any `-D` JVM arguments if needed.
+
+> **argon2 library path (`-Djna.library.path`):** password authentication loads the native `argon2` library through JNA. Without it, a password request fails with `UnsatisfiedLinkError: Unable to load library 'argon2'`. Pass the folder that contains the library: `/opt/homebrew/lib` on Apple Silicon Macs (as in the examples above), `/usr/local/lib` on Intel Macs. On Linux, installing the package (see Prerequisites) is normally enough; otherwise pass its folder the same way. For IntelliJ IDEA and VS Code, add `-Djna.library.path=<folder>` to the VM options / `vmArgs` of the run configuration.
 
 The service starts on port **8090** with context path `/idauthentication/v1`.
 
@@ -310,6 +324,8 @@ Verify your Python version:
 python3 --version
 ```
 
+> **macOS:** the system `python3` is 3.9, which is too old (the client fails with type errors on `list[...]` and `X | Y`). Install a newer Python, for example `brew install python@3.12`, and use `python3.12` to create the virtual environment in section 6.2.
+
 ### 6.1 Review the Configuration
 
 Open `IDA-sample-client/client/authenticator/authenticator-config-local.toml`. The defaults are pre-configured for the local Docker setup — no changes are needed unless you have customised ports or partner credentials.
@@ -330,18 +346,29 @@ Key settings to be aware of:
 | `partner_apikey` | `198833` | Partner API key |
 | `partner_misp_lk` | `vM1BA8RosNt3kemNGpsneYgcelZwNmsOoKJQgMm92DltqtJh4p` | MISP licence key |
 
+> **Partner, API key and OIDC client are pre-seeded.** There is no setup step that creates them: `docker-compose/init.sql` already seeds the auth partner `auth_v1z0816154432` (API key `198833`, MISP licence key above), the OIDC partner `mpartner-default-demo-oidc` and its OIDC client `xedG72yecDpJcQbzn6Q8LDplTVGZPhLRXi1ssAh1oW4` (used with `idp_misp_lk`, `auth_partner_id` and `oidc_client_id` in the TOML file). To use a different partner, API key or OIDC client, add it to `init.sql` and reset the database as described below.
+
+**Resetting the database after changing `init.sql`** (run from `docker-compose/`): remove the database container together with its volume, then start it again.
+
+```bash
+docker compose rm -s -f -v database
+docker compose up -d database
+```
+
+`init.sql` runs only when the database data directory is empty, and the database keeps its data in a volume that survives a plain container recreate, so the volume must be removed too. This wipes the local database and re-seeds it from `init.sql`; restart `authentication-service` afterwards so it reconnects.
+
 ### 6.2 Set Up a Python Virtual Environment
 
 All commands below must be run from the `IDA-sample-client/` directory. The key file paths in the config are relative to this directory.
 
 ```bash
-cd local-dev-setup/IDA-sample-client
+cd id-authentication/authentication/local-dev-setup/IDA-sample-client
 ```
 
 Create and activate a virtual environment:
 
 ```bash
-# Create the venv
+# Create the venv (macOS: use the newer interpreter, e.g. python3.12 -m venv .venv)
 python3 -m venv .venv
 
 # Activate — macOS / Linux
@@ -407,6 +434,7 @@ The sample file format (`samples/auth-req-01.json`):
   "vid": "<VID or UIN>",
   "name": [{"language": "eng", "value": "John David Smith"}],
   "gender": [{"language": "eng", "value": "Male"}],
+  "dob": "1992/04/15",
   "phoneNumber": "9912993478",
   "emailId": "john.smith@example.com",
   "fullAddress": [{"language": "eng", "value": "123 Main Street"}]
@@ -423,13 +451,13 @@ Sends an OTP to the registered mobile/email for a given UIN/VID.
 
 1. Enter a UIN or VID when prompted.
 2. The service returns a `transactionID` — **copy this**, you will need it for OTP auth and Demo + OTP.
-3. The actual OTP is not delivered (no real notifier is running). Read it from the Docker Compose logs by grepping for the generation event:
+3. The actual OTP is not delivered (no real notifier is running). IDA sends the OTP message to the WireMock notifier stub, which logs it. Read the OTP from the WireMock logs (run this in `local-dev-setup/docker-compose`):
 
 ```bash
-docker compose logs -f mock-service | grep --line-buffered "GENERATION_SUCCESSFUL"
+docker compose logs -f mock-service | grep --line-buffered "OTP for"
 ```
 
-The matching log line will contain the generated OTP value.
+The matching log line contains the generated OTP, for example `OTP for UIN XXXXXXXX68 is 582006 and is valid for ...`. Do **not** grep for `GENERATION_SUCCESSFUL`: that matches WireMock's response template for the OTP generation call, which does not contain the OTP that IDA actually used.
 
 ---
 
@@ -488,7 +516,7 @@ The following identities are seeded in the local database. **Not every identity 
 | `8918362358` | `8216925367201389` | None | Do not use for eKYC or biometric auth. Demographic details: `auth-req-04.json` (UIN), `auth-req-08-vid-5trans.json` (VID `8216925367201389`). |
 | `8724928329` | `8564539580423608` | Yes | Use for eKYC and biometric auth. Demographic details: `auth-req-09.json` (change the UIN value to `8724928329`). |
 | `8375416927` | `8526937256046298` | Face only (infant) | Infant data. Demographic details: `auth-req-10-infant.json` (VID; change the UIN value to `8375416927` for UIN). |
-| `8354720784` | `8420394176306134`, `8021750691607687` | Yes | Use for eKYC and biometric auth. No demo sample file; the seeded demographic data can be used for OTP auth. |
+| `8354720784` | `8420394176306134`, `8021750691607687` | Yes | Use for eKYC and biometric auth. Demographic details: `auth-req-11.json`. |
 | `8130162368` | `8694304726328408` | Yes | Use for eKYC and biometric auth. Password identity, password: `Password@123`. No demo sample file; use OTP auth with the seeded demographic data. |
 | `8296342506` | `8421783185386241` | Yes | Use for eKYC and biometric auth. Password identity + verified attributes, password: `Password$567`. No demo sample file; use OTP auth with the seeded demographic data. |
 
@@ -620,8 +648,6 @@ Follow **[api-test/README.md → Running Against a Local IDA (Local Run Mode)](.
 | `mosip-ida-ks.p12` | PKCS12 keystore used by the key manager (replaces SoftHSM) |
 | `partner-chain.p12` | Partner certificate chain for local testing |
 | `partner-mosip-signed.p12` | MOSIP-signed partner certificate for local testing |
-
-> See `local-dev-setup/README.md` for additional notes on the optional `DevEnvIDABioAPIFactory` (makes the BioSDK provider fault-tolerant at startup) and the `MasterDataCacheInitializer` replacement (loads master-data from a static JSON file instead of calling the live service).
 
 ---
 
