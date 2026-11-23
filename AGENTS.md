@@ -51,7 +51,7 @@ java -jar -Dmodules=auth \
   -Denv.user=api-internal.<env_name> \
   -Denv.endpoint=<base_env> \
   -Denv.testLevel=smokeAndRegression \
-  apitest-auth-1.2.1-jar-with-dependencies.jar
+  apitest-auth-*-jar-with-dependencies.jar
 ```
 
 API test levels: `smoke` (positive only) or `smokeAndRegression` (all).  
