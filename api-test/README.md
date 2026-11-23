@@ -196,8 +196,9 @@ runs the rig, see [OTP in local runs](#otp-in-local-runs)) and Git.
 2. **Prepare the local IDA stack** as described in
    `authentication/local-dev-setup/README.md`:
    - a local checkout of `mosip-config`, mounted into the config-server
-     container (`docker-compose.yml`, `volumes:`), with the Spring Boot 4
-     settings that README lists (`preferred-json-mapper=jackson2`);
+     container through `MOSIP_CONFIG_PATH` in `docker-compose/.env` (copy
+     `.env.example` to `.env`), with the Spring Boot 4 settings that README
+     lists (`preferred-json-mapper=jackson2`);
    - the `kernel-auth-adapter` dependency added to
      `authentication-service/pom.xml` (section 5.1 there: the adapter is not
      bundled in the jar);
@@ -400,7 +401,7 @@ folder as the working directory.
 | Symptom | Fix |
 |---|---|
 | `docker compose up` fails, or the database / config server never come up | start Docker (Docker Desktop on Windows/macOS) and wait until `docker info` answers, then repeat step 4 |
-| `biosdk_service` stays `Created` and `http://localhost:8083/biosdk-service/` does not answer | it waits for `mock-service` to be healthy, and that healthcheck runs only every 500 s; wait, or start it with `docker start biosdk_service` |
+| `biosdk_service` stays `Created` and `http://localhost:8083/biosdk-service/` does not answer | it waits for `mock-service` to be healthy; that healthcheck runs every 30 s, so this can take about a minute. If it still stays `Created`, start it with `docker start biosdk_service` |
 | Windows: config-server fails with `bind ... 51000 ... forbidden` | Windows has reserved the port (`netsh interface ipv4 show excludedportrange protocol=tcp`). From an admin prompt run `net stop winnat` and `net start winnat`, then repeat step 4 |
 | Windows: `git clone` reports `Filename too long` | clone into a short path, or run `git config --system core.longpaths true` and clone again |
 | `Could not find or load main class ...MosipTestRunner` | run with `mvn exec:java` from `api-test/` as in [Run](#run), not with plain `java` |
