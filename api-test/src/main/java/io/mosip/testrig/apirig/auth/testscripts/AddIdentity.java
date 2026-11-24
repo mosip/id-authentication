@@ -182,7 +182,10 @@ public class AddIdentity extends IdAuthenticationUtil implements ITest {
 	}
 
 	@AfterClass(alwaysRun = true)
-	public void waittime() {
+	public void waittime(ITestContext context) {
+		if (IdAuthenticationUtil.isLocalIgnoredEnvBlock(context)) {
+			return;
+		}
 
 		try {
 			logger.info(

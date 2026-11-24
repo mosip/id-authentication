@@ -17,6 +17,7 @@ import org.testng.ITestContext;
 import org.testng.SkipException;
 
 import io.mosip.testrig.apirig.auth.testrunner.MosipTestRunner;
+import io.mosip.testrig.apirig.auth.testrunner.RunModeSuiteFilter;
 import io.mosip.testrig.apirig.dbaccess.DBManager;
 import io.mosip.testrig.apirig.dto.TestCaseDTO;
 import io.mosip.testrig.apirig.testrunner.BaseTestCase;
@@ -100,6 +101,12 @@ public class IdAuthenticationUtil extends AdminTestUtil {
 
 		if (MosipTestRunner.skipAll == true) {
 			throw new SkipException(GlobalConstants.PRE_REQUISITE_FAILED_MESSAGE);
+		}
+
+		if (isLocalIgnoredEnvBlock(currentTestContext())) {
+			throw new SkipException(GlobalConstants.SERVICE_NOT_DEPLOYED
+					+ " locally (runMode=env block, reported as ignored so the total matches an env run)."
+					+ " Hence skipping the testcase");
 		}
 
 		if (SkipTestCaseHandler.isTestCaseInSkippedList(testCaseName)) {
@@ -294,6 +301,23 @@ public class IdAuthenticationUtil extends AdminTestUtil {
 			}
 		}
 		return result;
+	}
+
+	/**
+	 * True for a runMode=env block that RunModeSuiteFilter kept in a local run
+	 * only to report its testcases as ignored. Always false on env runs.
+	 */
+	public static boolean isLocalIgnoredEnvBlock(ITestContext context) {
+		if (context == null || !IdAuthConfigManager.isLocalRun()) {
+			return false;
+		}
+		return "true".equals(
+				context.getCurrentXmlTest().getLocalParameters().get(RunModeSuiteFilter.LOCAL_IGNORED_PARAM));
+	}
+
+	private static ITestContext currentTestContext() {
+		org.testng.ITestResult result = org.testng.Reporter.getCurrentTestResult();
+		return result == null ? null : result.getTestContext();
 	}
 
 	public static Object[] filterLocalTestCases(Object[] testCases, ITestContext context) {

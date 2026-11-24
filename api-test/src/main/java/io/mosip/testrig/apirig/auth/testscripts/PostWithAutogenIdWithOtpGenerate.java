@@ -65,7 +65,7 @@ public class PostWithAutogenIdWithOtpGenerate extends IdAuthenticationUtil imple
 		String ymlFile = context.getCurrentXmlTest().getLocalParameters().get("ymlFile");
 		idKeyName = context.getCurrentXmlTest().getLocalParameters().get("idKeyName");
 		logger.info("Started executing yml: " + ymlFile);
-		return getYmlTestData(ymlFile);
+		return IdAuthenticationUtil.filterLocalTestCases(getYmlTestData(ymlFile), context);
 	}
 
 	/**
@@ -206,7 +206,10 @@ public class PostWithAutogenIdWithOtpGenerate extends IdAuthenticationUtil imple
 	}
 
 	@AfterClass(alwaysRun = true)
-	public void waittime() {
+	public void waittime(ITestContext context) {
+		if (IdAuthenticationUtil.isLocalIgnoredEnvBlock(context)) {
+			return;
+		}
 		try {
 			logger.info(
 					"waiting for " + IdAuthConfigManager.getproperty("vidGenerationProcessingDelayTimeInMilliSeconds")

@@ -8,8 +8,10 @@
 		<listener class-name="io.mosip.testrig.apirig.report.EmailableReport" />
 	</listeners>
 
-	<!-- runMode: a <test> block with runMode=local runs only with -DlocalRun=yes, one with runMode=env
-		runs only on env runs, and a block without it runs in both (RunModeSuiteFilter). -->
+	<!-- runMode: a <test> block with runMode=local runs only with -DlocalRun=yes, and a block without it
+		runs in both (RunModeSuiteFilter). A runMode=env block runs on env runs; on local runs it is dropped
+		if it has localReplacedBy (the named local block stands in for it), else its testcases are reported
+		as ignored so the local total matches the env total. -->
 
 	<test name="BioAuth">
 		<parameter name="ymlFile" value="ida/BioAuth/BioAuth2.yml" />
@@ -199,6 +201,7 @@
 
 	<test name="AuthUnLock">
 		<parameter name="runMode" value="env" />
+		<parameter name="localReplacedBy" value="AuthUnLockNewLocal" />
 		<parameter name="ymlFile"
 			value="ida/AuthUnLock/createAuthUnLock.yml" />
 		<classes>
