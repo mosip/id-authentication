@@ -47,7 +47,7 @@ mvn clean install -Dgpg.skip=true -Dmaven.gitcommitid.skip=true
 - **`authPrerequisiteSuite.xml`** — 31 `<test>` blocks: create identity, OIDC client, VID/draft lifecycle, lock state setup. These produce IDs consumed by later tests.
 - **`authSuite.xml`** — 40 `<test>` blocks: BioAuth, OtpAuth, DemoAuth, eKYC variants, KYC exchange, hotlist block/unblock, auth transactions.
 
-A block may carry `<parameter name="runMode" value="env" />` or `value="local"`; `RunModeSuiteFilter` drops the blocks of the other mode before TestNG starts, and a block without `runMode` runs in both modes.
+A block may carry `<parameter name="runMode" value="env" />` or `value="local"`, and a block without `runMode` runs in both modes. `RunModeSuiteFilter` drops the `local` blocks on env runs. On local runs it keeps the `env` blocks and reports their testcases as ignored (so the local total matches the env total), except an `env` block with `localReplacedBy`, which it drops because the named local block stands in for it.
 
 ### YAML-Driven Test Pattern
 Every test scenario is defined entirely in YAML under `src/main/resources/ida/<TestName>/`. Java test classes are generic executors — they read the YAML, build the request, call the API, and validate the response. The mapping between YAML file and Java class is declared in the TestNG XML `<parameter name="ymlFile">` and `<test><classes>` respectively.

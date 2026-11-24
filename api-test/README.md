@@ -409,13 +409,14 @@ folder as the working directory.
 | eKYC tests return `kycStatus:false` although the auth passed | the IDA side has the same BouncyCastle problem: see 3b |
 | OTP tests fail with `IDA-OTA-001` | set `otp.request.flooding.max-count=300` (step 3) and restart the service |
 | OTP auth tests fail with an OTP mismatch, and the log says `no generated OTP found in the mock OTP manager log` or `could not read the mock OTP manager log` | `docker` must be on the PATH of the shell that runs the rig, and the WireMock container must be named `master_data_mock_service` (set `local.otpMockContainer` in `Ida-local.properties` if yours differs); see [OTP in local runs](#otp-in-local-runs) |
+| many OTP-based positive tests (OtpAuth, EkycOtp, MultiFactorAuth, OtpAuthDelegated, OtpAuthKycExchange) fail with `IDA-OTA-004` *OTP is invalid*, although the log says `OTP taken from the mock OTP manager log` and an earlier run on the same code passed | the machine is short of memory or CPU, so Docker writes the new OTP to the mock container log late and the rig picks up the previous test's OTP. This depends on the machine, not on the code. Close other heavy applications (check free RAM and Docker Desktop's memory limit), bring the stack down with `docker compose down -v` and run again |
 
 ### What local mode changes
 
 | | Environment run | Local run |
 |---|---|---|
 | Config | `Ida.properties` | `Ida.properties` + `Ida-local.properties` overlay |
-| Suite | `authMasterTestSuite.xml`, blocks with `runMode=local` dropped | `authMasterTestSuite.xml`, blocks with `runMode=env` dropped |
+| Suite | `authMasterTestSuite.xml`, blocks with `runMode=local` dropped | `authMasterTestSuite.xml`; `runMode=env` blocks reported as ignored, or dropped when a `localReplacedBy` block stands in for them |
 | Partner registration | PMS + policy-manager (~11 calls) | seeded values from the local profile |
 | IDA certificate | `/idauthentication/v1/internal/getCertificate` | `config/local/ida-partner-local.cer` |
 | Request signing key | generated, uploaded to PMS for signing | `config/local/partner-mosip-signed.p12` |
@@ -472,23 +473,41 @@ OIDC client `mpartner-default-demo-oidc`.
 
 **One suite for both modes.** Both modes run `authMasterTestSuite.xml`
 (`authPrerequisiteSuite.xml` + `authSuite.xml`). A `<test>` block can carry
-`<parameter name="runMode" value="local" />` or `value="env"`;
-`RunModeSuiteFilter` drops the blocks of the other mode before TestNG starts,
-and a block without `runMode` runs in both. A new block added without
-`runMode` therefore runs in both modes; mark it `env` if the local stack cannot
-serve it.
+`<parameter name="runMode" value="local" />` or `value="env"`, and a block
+without `runMode` runs in both. `RunModeSuiteFilter` adjusts the blocks before
+TestNG starts:
+
+- An env run drops the `runMode=local` blocks.
+- A local run keeps the `runMode=env` blocks, but reports every one of their
+  testcases as *Ignored* without calling anything, so the local total matches
+  the env total. An env block that carries
+  `<parameter name="localReplacedBy" value="<local block>" />` is dropped
+  instead, because the named local block runs the same testcases on the local
+  stack.
+
+A new block added without `runMode` therefore runs in both modes; mark it `env`
+if the local stack cannot serve it, and add `localReplacedBy` only when a local
+block stands in for it test for test.
 
 | Marked | Blocks |
 |---|---|
-| `runMode=env` | the env prerequisite blocks that create or change data through PMS, idrepo and resident (AddIdentity, OIDCClient, CreateVID, the draft and GenerateVID blocks, UpdateIdentityForUin, UpdateIdentityToActivate, RevokeVID, AuthInternalLock, AuthLock, RegenerateVid, the Retrieve* blocks, GetUnusedUIN), and in `authSuite.xml` AuthTransaction, AuthUnLock and UpdateIdentity |
+| `runMode=env`, reported as ignored locally | AddIdentity, OIDCClient, CreateVID, GenerateVidForSendOtpAndDeactivateUIN, the draft blocks, GenerateVID, AuthInternalLock, RegenerateVid, the Retrieve* blocks, GetUnusedUIN (prerequisite suite), and AuthTransaction and UpdateIdentity (`authSuite.xml`) |
+| `runMode=env` with `localReplacedBy` | UpdateIdentityForUin, UpdateIdentityToActivate, RevokeVID, AuthLock (prerequisite suite) and AuthUnLock (`authSuite.xml`); each is replaced by the `*Local` / `*NewLocal` block of the same name |
 | `runMode=local` | DemoAuthLocalTempVid, UpdateIdentityForUinLocal, UpdateIdentityToActivateLocal, RevokeVIDLocal, AuthLockNewLocal (prerequisite suite), AuthUnLockNewLocal (`authSuite.xml`), and the four `DeactivatedUin*` blocks, each next to the env block it stands in for |
 | none (both) | DeactivateVIDs, ReactivateVIDs and all other `authSuite.xml` blocks |
+
+DemoAuthLocalTempVid stands in for TC_IDA_GenerateVID_05 (the env run creates
+the one-time temporary VID there; the local run uses the seeded one), so the
+GenerateVID block leaves that testcase out locally
+(`localExcludeTestCases`). The four `DeactivatedUin*` tests move out of their
+main blocks locally (see below). With these, a local run has the same total as
+an env run (1037 for `smokeAndRegression`).
 
 AuthUnLockNewLocal sits after EkycDemo rather than next to AuthUnLock:
 locally the lock tests share one seeded UIN, and EkycDemo_48 / _49 need its
 DOB still locked.
 
-Why the env-only blocks do not run locally:
+Why the env-only blocks are reported as ignored locally:
 
 | Block | Reason |
 |---|---|
