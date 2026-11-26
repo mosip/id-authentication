@@ -2,6 +2,33 @@
 
 This guide walks you through setting up the ID Authentication (IDA) service locally **without** standing up the full MOSIP platform. All external MOSIP dependencies (database, config server, master-data, biometric SDK) are replaced with lightweight Docker containers provided in the `local-dev-setup/docker-compose/` directory.
 
+## Architecture
+
+```mermaid
+flowchart LR
+    client["IDA sample client"]
+    mds["Mock MDS<br/>:4501"]
+    ida["authentication-service<br/>:8090"]
+    db[("PostgreSQL<br/>:5455")]
+    config["Config Server<br/>:51000"]
+    repo["mosip-config folder"]
+    wiremock["WireMock<br/>:8082"]
+    biosdk["BioSDK Service<br/>:8083"]
+
+    client -->|"auth, OTP, KYC"| ida
+    client -->|"biometric capture"| mds
+    mds -->|"token, IDA certificate"| wiremock
+    ida -->|"properties at startup"| config
+    config --> repo
+    ida --> db
+    ida -->|"token, master data, OTP, notification, WebSub"| wiremock
+    wiremock -.->|"event callbacks"| ida
+    ida -->|"biometric matching"| biosdk
+    biosdk -->|"mock SDK download"| wiremock
+```
+
+`authentication-service`, the sample client and Mock MDS run on your machine. PostgreSQL, Config Server, WireMock and BioSDK Service run in Docker.
+
 ---
 
 ## Prerequisites
@@ -16,12 +43,56 @@ Install the following tools before proceeding:
 | Docker + Docker Compose | Latest, and **running** before you start the Docker services (section 4) |
 | curl | Latest (used by `prepare-biosdk-mock-lib.sh`) |
 | zip | Latest (used by `prepare-biosdk-mock-lib.sh`; on Windows the `.bat` uses PowerShell instead) |
-| argon2 native library | Needed for password authentication (kyc-auth v2). macOS: `brew install argon2`. Debian/Ubuntu: `sudo apt-get install libargon2-1`. See [5.3](#53-run-the-authentication-service) for the `-Djna.library.path` option. |
+| argon2 native library | Needed for password authentication (kyc-auth v2). macOS: `brew install argon2`. Debian/Ubuntu: `sudo apt-get install libargon2-1`. Windows: see [argon2 library on Windows](#argon2-library-on-windows). See [5.3](#53-run-the-authentication-service) for the `-Djna.library.path` option. |
 | Python | 3.10 or later, only for the sample client (section 6) |
 
 > **Apple Silicon note:** the `mosipid/config-server` image is amd64-only, so Docker runs it under emulation on Apple Silicon Macs. This works, but it starts a little slower.
 
 > **HSM note:** This setup uses a **PKCS12 keystore file** (`mosip-ida-ks.p12`) instead of SoftHSM. No external HSM installation is required.
+
+### Hardware and ports
+
+| Resource | Requirement |
+|----------|-------------|
+| RAM | 8 GB minimum, 16 GB recommended if you also run an IDE and Mock MDS. The four containers use about 2 GB and `authentication-service` about 1 GB. Give Docker at least 4 GB. |
+| Free disk | About 15 GB: Docker images (about 3.5 GB), the Maven repository, the build output and the BioSDK mock library. |
+
+The following ports must be free on your machine:
+
+| Port | Used by |
+|------|---------|
+| `5455` | PostgreSQL |
+| `51000` | Config Server |
+| `8082` | WireMock |
+| `8083` | BioSDK Service |
+| `8090` | `authentication-service` |
+| `4501` | Mock MDS (biometric auth only) |
+
+### Running the commands on Windows (PowerShell)
+
+The commands in this guide are written for macOS / Linux shells. In PowerShell, change them as follows:
+
+| In this guide | In PowerShell |
+|---------------|---------------|
+| `-Dgpg.skip=true` and any other `-D` argument | Put the whole argument in quotes: `"-Dgpg.skip=true"` |
+| `python3` | `python` or `py` |
+| `./prepare-biosdk-mock-lib.sh` | `.\prepare-biosdk-mock-lib.bat` |
+| `source .venv/bin/activate` | `.venv\Scripts\activate` |
+| `curl` | `curl.exe` (in Windows PowerShell, `curl` is an alias of `Invoke-WebRequest`) |
+| `grep --line-buffered "OTP for"` | `Select-String "OTP for"` |
+
+The commands to run the service are given for PowerShell in [5.3](#53-run-the-authentication-service).
+
+### argon2 library on Windows
+
+Windows has no argon2 package. Take the DLL from the `argon2-jvm` jar on Maven Central. Run these PowerShell commands from your workspace folder:
+
+```powershell
+curl.exe -L -o argon2-jvm.zip https://repo1.maven.org/maven2/de/mkammerer/argon2-jvm/2.11/argon2-jvm-2.11.jar
+Expand-Archive argon2-jvm.zip -DestinationPath argon2-jvm
+```
+
+The library is `argon2-jvm\win32-x86-64\argon2.dll`. Pass the full path of that folder in `-Djna.library.path` when you [run the service](#53-run-the-authentication-service).
 
 ---
 
@@ -50,6 +121,8 @@ From the root of the `id-authentication` repository, build all modules. The `-Dg
 cd id-authentication/authentication
 mvn clean install -U -Dgpg.skip=true
 ```
+
+The build runs the unit tests and, on the first run, downloads the dependencies, so it can take 10 minutes or more.
 
 ---
 
@@ -174,7 +247,7 @@ chmod +x prepare-biosdk-mock-lib.sh
 **Windows:**
 ```cmd
 cd id-authentication\authentication\local-dev-setup
-prepare-biosdk-mock-lib.bat
+.\prepare-biosdk-mock-lib.bat
 ```
 
 The script downloads `mock-sdk-1.3.0-beta.1-jar-with-dependencies.jar` (~171 MB) from Maven Central, zips it as `mock-sdk.zip`, and places it in `docker-compose/wiremock/__files/`. You only need to run it once; skip it on subsequent starts unless the file is deleted.
@@ -187,7 +260,8 @@ The config-server mounts your cloned `mosip-config` directory. Its path is read 
 cd id-authentication/authentication/local-dev-setup/docker-compose
 cp .env.example .env
 # edit .env and set the absolute path of your mosip-config clone, e.g.
-# MOSIP_CONFIG_PATH=/Users/<you>/mosip-config
+# macOS / Linux: MOSIP_CONFIG_PATH=/Users/<you>/mosip-config
+# Windows:       MOSIP_CONFIG_PATH=D:/path/to/mosip-config   (use forward slashes)
 ```
 
 `.env` is git-ignored. `docker compose up` stops with a clear message if `MOSIP_CONFIG_PATH` is not set.
@@ -199,13 +273,40 @@ cd id-authentication/authentication/local-dev-setup/docker-compose
 docker compose up -d
 ```
 
+The Compose project is named `ida-local`. If you started the stack with an earlier version of this file, see [Troubleshooting](#troubleshooting) before you run this command.
+
 ### Verify all services are running
 
 ```bash
 docker compose ps
 ```
 
-All four services (`database`, `config-server`, `mock-service`, `biosdk-service`) should show status `running` or `healthy`.
+All four services (`database`, `config-server`, `mock-service`, `biosdk-service`) should show status `Up`. Only `mock-service` has a health check, so also call the health URL of each of the other services:
+
+```bash
+curl http://localhost:51000/config/actuator/health   # Config Server: "status":"UP"
+curl http://localhost:8082/__admin/health            # WireMock:      "status" : "healthy"
+curl http://localhost:8083/biosdk-service/           # BioSDK:        Service is running...
+```
+
+BioSDK Service starts after WireMock is healthy and then downloads the mock library, so it can take about a minute to answer.
+
+### Verify the seed data
+
+```bash
+docker compose exec database psql -U postgres -d mosip_ida -c "SELECT 'identity_cache' AS table_name, count(*) FROM ida.identity_cache UNION ALL SELECT 'partner_data', count(*) FROM ida.partner_data UNION ALL SELECT 'oidc_client_data', count(*) FROM ida.oidc_client_data UNION ALL SELECT 'misp_license_data', count(*) FROM ida.misp_license_data;"
+```
+
+Expected counts on a new database:
+
+| Table | Rows | Content |
+|-------|------|---------|
+| `identity_cache` | 19 | 9 UINs and 10 VIDs (see [Available Identities](#available-identities-uinvid)) |
+| `partner_data` | 3 | Partners |
+| `oidc_client_data` | 2 | OIDC clients |
+| `misp_license_data` | 2 | MISP licences |
+
+If the tables are missing or the counts differ on a new setup, [reset the database](#reset-the-database).
 
 ---
 
@@ -254,7 +355,14 @@ spring.cloud.loadbalancer.enabled=false
 
 ```bash
 cd id-authentication/authentication/authentication-service
-mvn spring-boot:run -Dspring-boot.run.jvmArguments="-Djna.library.path=/opt/homebrew/lib"
+mvn spring-boot:run -Dspring-boot.run.jvmArguments="-Duser.timezone=UTC -Djna.library.path=/opt/homebrew/lib"
+```
+
+PowerShell:
+
+```powershell
+cd id-authentication\authentication\authentication-service
+mvn spring-boot:run "-Dspring-boot.run.jvmArguments=-Duser.timezone=UTC -Djna.library.path=C:/path/to/argon2-jvm/win32-x86-64"
 ```
 
 #### Option B — JAR
@@ -264,8 +372,18 @@ Since `bootstrap.properties` and `authentication-service/pom.xml` were modified 
 ```bash
 cd id-authentication/authentication/authentication-service
 mvn clean install -U -Dgpg.skip=true
-java -Djna.library.path=/opt/homebrew/lib -jar target/authentication-service-*.jar
+java -Duser.timezone=UTC -Djna.library.path=/opt/homebrew/lib -jar target/authentication-service-1.4.0-1764-SNAPSHOT.jar
 ```
+
+PowerShell:
+
+```powershell
+cd id-authentication\authentication\authentication-service
+mvn clean install -U "-Dgpg.skip=true"
+java "-Duser.timezone=UTC" "-Djna.library.path=C:/path/to/argon2-jvm/win32-x86-64" -jar target\authentication-service-1.4.0-1764-SNAPSHOT.jar
+```
+
+> Use the exact jar name. A wildcard such as `authentication-service-*.jar` also matches the `-javadoc` and `-sources` jars, and `java` then fails with `no main manifest attribute`. The version in the name differs between branches, so check the `target` folder.
 
 #### Option C — IntelliJ IDEA
 
@@ -284,7 +402,9 @@ java -Djna.library.path=/opt/homebrew/lib -jar target/authentication-service-*.j
 5. Click **Run** above the `main` method (shown by the CodeLens link), or press `F5` with the file open.
 6. VS Code will auto-generate a launch configuration in `.vscode/launch.json`; you can edit it to add any `-D` JVM arguments if needed.
 
-> **argon2 library path (`-Djna.library.path`):** password authentication loads the native `argon2` library through JNA. Without it, a password request fails with `UnsatisfiedLinkError: Unable to load library 'argon2'`. Pass the folder that contains the library: `/opt/homebrew/lib` on Apple Silicon Macs (as in the examples above), `/usr/local/lib` on Intel Macs. On Linux, installing the package (see Prerequisites) is normally enough; otherwise pass its folder the same way. For IntelliJ IDEA and VS Code, add `-Djna.library.path=<folder>` to the VM options / `vmArgs` of the run configuration.
+> **Time zone (`-Duser.timezone=UTC`):** requests carry UTC timestamps and a deployed IDA runs in UTC, so run the local service in UTC too. Without it, time checks can fail on a machine in another time zone. For IntelliJ IDEA and VS Code, add it to the VM options / `vmArgs` of the run configuration.
+
+> **argon2 library path (`-Djna.library.path`):** password authentication loads the native `argon2` library through JNA. Without it, a password request fails with `UnsatisfiedLinkError: Unable to load library 'argon2'`. Pass the folder that contains the library: `/opt/homebrew/lib` on Apple Silicon Macs (as in the examples above), `/usr/local/lib` on Intel Macs, and the [DLL folder](#argon2-library-on-windows) on Windows. On Linux, installing the package (see Prerequisites) is normally enough; otherwise pass its folder the same way. For IntelliJ IDEA and VS Code, add `-Djna.library.path=<folder>` to the VM options / `vmArgs` of the run configuration.
 
 The service starts on port **8090** with context path `/idauthentication/v1`.
 
@@ -292,6 +412,26 @@ Swagger UI is available at:
 ```
 http://localhost:8090/idauthentication/v1/swagger-ui/index.html
 ```
+
+To save the OpenAPI specification of the running service:
+
+```bash
+curl http://localhost:8090/idauthentication/v1/v3/api-docs.yaml -o ida-openapi.yaml
+```
+
+### 5.4 Verify the service has started
+
+The service is ready when the log shows `Started IdAuthenticationApplication in ... seconds`, usually within a minute. Then check its health:
+
+```bash
+curl http://localhost:8090/idauthentication/v1/actuator/health
+```
+
+The response contains `"status":"UP"`. If the log shows `Application run failed` or `APPLICATION FAILED TO START`, the service did not start; see the error above that line and [Troubleshooting](#troubleshooting).
+
+### 5.5 Internal APIs are not supported locally
+
+The internal APIs need a token issued by a full Keycloak setup, which this local setup does not provide (WireMock only returns a dummy token for the service's own outgoing calls). This applies to `/internal/auth`, `/internal/verifyidentity`, `/internal/otp`, `/internal/authTransactions/...` and the key manager APIs under `/internal`. For example, a call without a token returns `IDA-MLC-006` (`Missing Input Parameter - Authorization - header`). Test these APIs in a deployed environment.
 
 ---
 
@@ -313,7 +453,9 @@ IDA-sample-client/
 │       ├── model/
 │       │   └── auth_request.py              # Request models
 │       ├── utils/
+│       │   ├── captureutil.py               # Mock MDS biometric capture
 │       │   ├── cryptoutil.py                # Encryption & signing
+│       │   ├── keybindutil.py               # Key binding keys & tokens
 │       │   └── restutil.py                  # HTTP calls
 │       └── exceptions/
 │           └── authenticator_exception.py
@@ -358,7 +500,9 @@ Key settings to be aware of:
 
 > **Partner, API key and OIDC client are pre-seeded.** There is no setup step that creates them: `docker-compose/init.sql` already seeds the auth partner `auth_v1z0816154432` (API key `198833`, MISP licence key above), the OIDC partner `mpartner-default-demo-oidc` and its OIDC client `xedG72yecDpJcQbzn6Q8LDplTVGZPhLRXi1ssAh1oW4` (used with `idp_misp_lk`, `auth_partner_id` and `oidc_client_id` in the TOML file). To use a different partner, API key or OIDC client, add it to `init.sql` and reset the database as described below.
 
-**Resetting the database after changing `init.sql`** (run from `docker-compose/`): remove the database container together with its volume, then start it again.
+#### Reset the database
+
+To reset the database, for example after changing `init.sql` (run from `docker-compose/`): remove the database container together with its volume, then start it again.
 
 ```bash
 docker compose rm -s -f -v database
@@ -524,7 +668,7 @@ The following identities are seeded in the local database. **Not every identity 
 | `8497103958` | `8971487034965918` | None | Do not use for eKYC or biometric auth. Demographic details: `auth-req-02.json` (UIN), `auth-req-05-vid.json` (VID). |
 | `8941269276` | `8708548136415038`, `8948612871402917` | None | Do not use for eKYC or biometric auth. Demographic details: `auth-req-03.json` (UIN), `auth-req-06-vid.json` (VID `8708548136415038`), `auth-req-07-vid-1time.json` (VID `8948612871402917`). |
 | `8918362358` | `8216925367201389` | None | Do not use for eKYC or biometric auth. Demographic details: `auth-req-04.json` (UIN), `auth-req-08-vid-5trans.json` (VID `8216925367201389`). |
-| `8724928329` | `8564539580423608` | Yes | Use for eKYC and biometric auth. Demographic details: `auth-req-09.json` (change the UIN value to `8724928329`). |
+| `8724928329` | `8564539580423608` | Yes | Use for eKYC and biometric auth. Demographic details: `auth-req-09.json` (uses VID `8564539580423608`; no change needed). |
 | `8375416927` | `8526937256046298` | Face only (infant) | Infant data. Demographic details: `auth-req-10-infant.json` (VID; change the UIN value to `8375416927` for UIN). |
 | `8354720784` | `8420394176306134`, `8021750691607687` | Yes | Use for eKYC and biometric auth. Demographic details: `auth-req-11.json`. |
 | `8130162368` | `8694304726328408` | Yes | Use for eKYC and biometric auth. Password identity, password: `Password@123`. No demo sample file; use OTP auth with the seeded demographic data. |
@@ -565,9 +709,14 @@ mvn clean install -Dgpg.skip=true -DskipTests
 
 Mock MDS needs two kinds of configuration before it is started: **properties** that you edit in its `application.properties` file, and three **program arguments** that you pass when you start it.
 
-> Mock MDS reads its properties only from the `application.properties` file in its working directory (the `MockMDS` folder). Passing them as `-D` JVM options has no effect, so edit the file and start Mock MDS from that folder.
+> Mock MDS reads its properties only from the `application.properties` file in its working directory. Passing them as `-D` JVM options has no effect, so edit the file in the folder you start Mock MDS from:
+>
+> | How you run it | Working directory and file to edit |
+> |----------------|------------------------------------|
+> | `run.sh` / `run_auth.bat` | `MockMDS/target/`. The build copies `application.properties`, the scripts and the data folders there, next to the jar and `lib/`. `mvn clean` removes this folder, so repeat your edits after a clean build. |
+> | IDE | `MockMDS/` |
 
-#### Step 1 — Edit `MockMDS/application.properties`
+#### Step 1 — Edit `application.properties`
 
 Switch the FTM keystores for **face, finger and iris** to the `ida-local` keystore, so the capture is signed with a key that the local IDA trusts. If any of these three is left unchanged, that modality fails with `IDA-MPA-001 Digital signature verification failed`.
 
@@ -616,8 +765,8 @@ Depending on how you run the service, pass them as follows:
   "args": "mosip.mock.sbi.device.purpose=Auth \"mosip.mock.sbi.biometric.type=Biometric Device\" mosip.mock.sbi.biometric.image.type=WSQ"
   ```
 
-  Make sure the working directory (`cwd`) is the `MockMDS` folder so that `application.properties` is picked up.
-- **`.sh` / `.bat` script:** edit the arguments at the end of the Java command in the script you use (for example `run.sh` or `run_auth.bat` in the `MockMDS` folder). `run.sh` ships with `Registration` and without the image type, so change it to the three values above. Quote any argument that contains a space.
+  Make sure the working directory (`cwd`) is the `MockMDS` folder so that `MockMDS/application.properties` is picked up.
+- **`.sh` / `.bat` script:** edit the arguments at the end of the Java command in the script you use (`run.sh` or `run_auth.bat` in the `MockMDS/target` folder) and run it from that folder. `run_auth.bat` already has the three values; `run.sh` ships with `Registration` and without the image type, so change it. Quote any argument that contains a space.
 
 Once running, Mock MDS listens on `http://localhost:4501`.
 
@@ -639,7 +788,7 @@ Follow **[api-test/README.md → Running Against a Local IDA (Local Run Mode)](.
 | WireMock (mock APIs) | `http://localhost:8082` |
 | BioSDK Service | `http://localhost:8083` |
 | PostgreSQL | `localhost:5455` |
-| Authentication Service (auth, OTP, KYC, internal APIs) | `http://localhost:8090/idauthentication/v1` |
+| Authentication Service (auth, OTP, KYC) | `http://localhost:8090/idauthentication/v1` |
 | Mock MDS | `http://localhost:4501` |
 
 ---
@@ -663,6 +812,16 @@ Follow **[api-test/README.md → Running Against a Local IDA (Local Run Mode)](.
 
 ## Troubleshooting
 
+**`docker compose up` reports a container name conflict or `port is already allocated`**  
+The containers `my_config_server`, `master_data_mock_service` and `biosdk_service` have fixed names, and the stack uses ports `5455`, `51000`, `8082` and `8083`. Another MOSIP local stack on the same machine may hold them: stop it (`docker compose down` in its folder).  
+Earlier versions of this guide ran the stack under the project name `docker-compose`. To remove those old containers, first run `docker compose -p docker-compose ps -a` and confirm that the list shows only IDA containers (another repository can use the same default name), then run `docker compose -p docker-compose down`. The `ida-local` stack starts with a new database.
+
+**Authentication fails with `IDA-MLC-019` (auth type locked)**  
+An [API test rig](#8-run-the-api-test-rig-against-this-setup) run leaves some auth types locked on a seeded UIN. [Reset the database](#reset-the-database) and restart `authentication-service`, or use another UIN.
+
+**Windows: the build fails in `VciServiceImplTest` with `Unable to establish loopback connection`**  
+This was seen when building from Git Bash. Build from PowerShell or cmd. To continue from the failed module, run `mvn install "-Dgpg.skip=true" -rf :authentication-service` from `id-authentication/authentication`.
+
 **Config server returns 404 for properties**  
 Verify that `MOSIP_CONFIG_PATH` in `docker-compose/.env` is the absolute path of your `mosip-config` clone (then run `docker compose up -d` again) and that you have edited the right property files.
 
@@ -674,3 +833,12 @@ Double-check the absolute path set in `mosip.kernel.keymanager.hsm.config-path`.
 
 **BioSDK service fails to start**  
 The `biosdk-service` depends on `mock-service` being healthy. Check that the WireMock container started successfully (`docker compose logs mock-service`) before the BioSDK container attempts to download the SDK zip. WireMock's health check runs every 30 seconds, so `biosdk-service` can take up to about a minute to start after WireMock.
+
+---
+
+## References
+
+- [ID Authentication services](https://docs.mosip.io/1.2.0/id-lifecycle-management/identity-verification/id-authentication-services)
+- [ID Authentication service developer guide](https://docs.mosip.io/1.2.0/id-lifecycle-management/identity-verification/id-authentication-services/id-authentication-service-developer-guide)
+- [API test rig README](../../api-test/README.md)
+- [Mock MDS](https://github.com/mosip/mosip-mock-services/tree/develop/MockMDS)
