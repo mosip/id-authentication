@@ -1,3 +1,7 @@
+# Fixed project name, so that containers and volumes are not shared with another
+# repository that also keeps its compose file in a "docker-compose" folder.
+name: ida-local
+
 services:
 
   database:

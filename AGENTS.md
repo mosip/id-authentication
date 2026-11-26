@@ -108,27 +108,24 @@ db_scripts/                   # PostgreSQL DDL scripts
 | `authentication-service` | `/idauthentication/v1` | 8090 | Both external Auth/KYC Partners **and** internal MOSIP modules (Reg Processor, Resident) — same pod, same port |
 
 The internal-only controllers (`InternalAuthController`, `InternalOTPController`, `InternalAuthTxnController`,
-`InternalUpdateAuthTypeController`, ...) have **no** `/internal` path segment of their own — they are
-plain paths under the shared `/idauthentication/v1` context path (e.g. `POST /idauthentication/v1/auth`,
-`GET /idauthentication/v1/authTransactions/individualId/{ID}`), distinguished from the public partner
-routes only by not having the `{MISP-LK}/{Auth-Partner-ID}/{API-Key}` path variables.
-`helm/ida-auth/values.yaml` (`istio.match`) carries the old `/idauthentication/v1/internal` and
-`/idauthentication/v1/otp` prefixes forward from the removed `ida-internal`/`ida-otp` charts, still
-restricted to `gateways: [istio-system/internal]` as they were on their original standalone charts
-(neither was ever on the public gateway). Note `/idauthentication/v1/internal` no longer matches any
-real route post-merge — the internal controllers dropped that path segment and now listen on plain
-paths like `/auth`, `/otp`, `/authTransactions` directly under `/idauthentication/v1` (see above);
-those bare paths are covered by the public `/idauthentication/v1/auth` prefix entry, not the
-internal-only one, so this consolidation preserves the old chart-level gateway split but does not by
-itself make the merge's internal-only bare-path routes internal-gateway-only.
+`InternalUpdateAuthTypeController`, ...) carry the `/internal` path segment in their own mappings, under the
+shared `/idauthentication/v1` context path (e.g. `POST /idauthentication/v1/internal/auth`). The kernel
+controllers (key manager, signature, cryptomanager, partner certificate) get the same prefix from
+`InternalKernelControllerPathConfig`. The bare paths without `/internal` (such as `/idauthentication/v1/auth`
+with no path variables) do not exist.
+
+`helm/ida-auth/values.yaml` (`istio.match`) restricts the `/idauthentication/v1/internal` and
+`/idauthentication/v1/otp` prefixes to `gateways: [istio-system/internal]`.
 
 Key endpoints:
 - `POST /idauthentication/v1/auth/{MISP-LicenseKey}/{Auth-Partner-ID}/{Partner-Api-Key}` — public: authenticate via UIN/VID
 - `POST /idauthentication/v1/kyc/{...}` — public: E-KYC request
 - `POST /idauthentication/v1/otp/{MISP-LicenseKey}/{Auth-Partner-ID}/{Partner-Api-Key}` — public: OTP generation
-- `POST /idauthentication/v1/auth` — internal-only: internal authentication (bare path)
-- `POST /idauthentication/v1/otp` — internal-only: internal OTP request (bare path)
-- `GET /idauthentication/v1/authTransactions/individualId/{ID}` — internal-only: auth transaction history
+- `POST /idauthentication/v1/internal/auth` — internal-only: internal authentication
+- `POST /idauthentication/v1/internal/otp` — internal-only: internal OTP request
+- `GET /idauthentication/v1/internal/authTransactions/individualId/{ID}` — internal-only: auth transaction history
+
+The internal APIs need a Keycloak token and are not supported in the local dev setup.
 
 ### Authentication Types
 
@@ -180,4 +177,4 @@ GitHub Actions (`.github/workflows/push-trigger.yml`) triggers on push to `relea
 ### Swagger
 
 When running locally:
-`http://localhost:8080/idauthentication/v1/swagger-ui/index.html?configUrl=/idauthentication/v1/v3/api-docs/swagger-config`
+`http://localhost:8090/idauthentication/v1/swagger-ui/index.html`

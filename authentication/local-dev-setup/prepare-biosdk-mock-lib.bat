@@ -9,7 +9,7 @@ REM Re-run only if you need to refresh the file.
 REM
 REM Requirements: curl (built-in Windows 10+), PowerShell 5.0+ (for Compress-Archive)
 
-setlocal enabledelayedexpansion
+setlocal
 
 set SCRIPT_DIR=%~dp0
 set TARGET_DIR=%SCRIPT_DIR%docker-compose\wiremock\__files
@@ -65,6 +65,6 @@ echo ========================================
 echo  Done! biosdk-service is ready to start.
 echo ========================================
 echo.
-echo Next step:
-echo   cd local-dev-setup\docker-compose
+echo Next step (run from your workspace folder, see README section 4):
+echo   cd id-authentication\authentication\local-dev-setup\docker-compose
 echo   docker compose up -d
