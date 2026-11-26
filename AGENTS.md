@@ -51,7 +51,7 @@ java -jar -Dmodules=auth \
   -Denv.user=api-internal.<env_name> \
   -Denv.endpoint=<base_env> \
   -Denv.testLevel=smokeAndRegression \
-  apitest-auth-1.2.1-jar-with-dependencies.jar
+  apitest-auth-*-jar-with-dependencies.jar
 ```
 
 API test levels: `smoke` (positive only) or `smokeAndRegression` (all).  
@@ -165,7 +165,7 @@ Settings for Spring Boot 4 (config repo):
 # required: keep Jackson 2 for HTTP message conversion (Boot 4 defaults to Jackson 3)
 spring.http.converters.preferred-json-mapper=jackson2
 ```
-Boot 3-era settings that must NOT be carried over: `spring.mvc.pathmatch.matching-strategy=ANT_PATH_MATCHER` (Spring MVC now uses `PathPatternParser`; remove it) and `hibernate.dialect` (Hibernate 7 selects `PostgreSQLDialect` itself and logs HHH90000025 if it is set). Renamed keys: `spring.datasource.initialization-mode` -> `spring.sql.init.mode`, `management.metrics.export.prometheus.enabled` -> `management.prometheus.metrics.export.enabled`; `server.max-http-header-size` is no longer supported, so the 8KB default applies unless `server.max-http-request-header-size` is set (e.g. `10000000` to keep 10MB); `management.endpoint.<id>.enabled` is replaced by `management.endpoint.<id>.access`.
+Boot 3-era setting that must NOT be carried over: `spring.mvc.pathmatch.matching-strategy=ANT_PATH_MATCHER` (Spring MVC now uses `PathPatternParser`; remove it). **Keep** `hibernate.dialect=org.hibernate.dialect.PostgreSQLDialect`: when it is unset, kernel-core's `HibernateDaoConfig` falls back to `org.hibernate.dialect.MySQL5Dialect`, a class Hibernate 7 no longer has, so startup fails with `ClassNotFoundException` (Hibernate 7 only logs a harmless HHH90000025 notice when the dialect is set explicitly). Renamed keys: `spring.datasource.initialization-mode` -> `spring.sql.init.mode`, `management.metrics.export.prometheus.enabled` -> `management.prometheus.metrics.export.enabled`; `server.max-http-header-size` is no longer supported, so the 8KB default applies unless `server.max-http-request-header-size` is set (e.g. `10000000` to keep 10MB); `management.endpoint.<id>.enabled` is replaced by `management.endpoint.<id>.access`.
 
 `bootstrap.properties` ships a placeholder `spring.cloud.config.uri=localhost`; for local runs override it (e.g. `--spring.cloud.config.uri=http://localhost:51000/config`) and add `--spring.cloud.loadbalancer.enabled=false` so `@LoadBalanced` clients treat `localhost` as a host, not a service name.
 

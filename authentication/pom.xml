@@ -46,7 +46,7 @@
         <repository>
             <id>ossrh</id>
             <name>CentralRepository</name>
-            <url>https://central.sonatype.com/repositories/snapshots</url>
+            <url>https://central.sonatype.com/repository/maven-snapshots/</url>
             <layout>default</layout>
             <snapshots>
             <enabled>true</enabled>
@@ -281,12 +281,6 @@
 			<groupId>org.springframework.boot</groupId>
 			<artifactId>spring-boot-configuration-processor</artifactId>
 			<optional>true</optional>
-		</dependency>
-		<dependency>
-			<groupId>io.mosip.kernel</groupId>
-			<artifactId>kernel-auth-adapter</artifactId>
-			<version>${kernel-auth-adapter.version}</version>
-			<scope>provided</scope>
 		</dependency>
 	</dependencies>
 	<build>

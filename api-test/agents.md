@@ -44,8 +44,10 @@ mvn clean install -Dgpg.skip=true -Dmaven.gitcommitid.skip=true
 
 ### Suite Structure
 `testNgXmlFiles/authMasterTestSuite.xml` includes two phases in order:
-- **`authPrerequisiteSuite.xml`** — 17 setup tests: create identity, OIDC client, VID/draft lifecycle, lock state setup. These produce IDs consumed by later tests.
-- **`authSuite.xml`** — 20 core auth tests: BioAuth, OtpAuth, DemoAuth, eKYC variants, KYC exchange, hotlist block/unblock, auth transactions.
+- **`authPrerequisiteSuite.xml`** — 31 `<test>` blocks: create identity, OIDC client, VID/draft lifecycle, lock state setup. These produce IDs consumed by later tests.
+- **`authSuite.xml`** — 40 `<test>` blocks: BioAuth, OtpAuth, DemoAuth, eKYC variants, KYC exchange, hotlist block/unblock, auth transactions.
+
+A block may carry `<parameter name="runMode" value="env" />` or `value="local"`, and a block without `runMode` runs in both modes. `RunModeSuiteFilter` drops the `local` blocks on env runs. On local runs it keeps the `env` blocks and reports their testcases as ignored (so the local total matches the env total), except an `env` block with `localReplacedBy`, which it drops because the named local block stands in for it.
 
 ### YAML-Driven Test Pattern
 Every test scenario is defined entirely in YAML under `src/main/resources/ida/<TestName>/`. Java test classes are generic executors — they read the YAML, build the request, call the API, and validate the response. The mapping between YAML file and Java class is declared in the TestNG XML `<parameter name="ymlFile">` and `<test><classes>` respectively.
@@ -91,6 +93,14 @@ All classes implement TestNG's `ITest`, extend `IdAuthenticationUtil`, and use `
 - `IdAuthConfigManager` — loads and exposes `Ida.properties` values
 - `IdAuthenticationUtil` — shared auth helpers (key generation, request signing, response parsing)
 - `IDAConstants` — module-level constants
+
+## Local Run Mode
+`-DlocalRun=yes` runs the rig against a locally running IDA (`authentication/local-dev-setup`) instead of a deployed environment. It is off by default; with the flag unset the rig behaves as on an environment.
+- `config/Ida-local.properties` is overlaid on `Ida.properties`; `config/local/` holds the seeded IDs and local keys, mirroring `local-dev-setup/docker-compose/init.sql`
+- copy `application-local.properties` over `application.properties` before a local run, and restore it afterwards
+- run with `mvn exec:java` from `api-test/`, not with the jar
+
+See `README.md` → *Running Against a Local IDA (Local Run Mode)* for setup, the run command and troubleshooting.
 
 ## Test Data Organization
 `src/main/resources/ida/` contains 50+ directories, one per API/scenario:

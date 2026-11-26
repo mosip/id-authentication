@@ -36,6 +36,18 @@ BIOMETRIC_OPTIONS = [
 ]
 
 
+def _print_errors(parsed_response: dict) -> None:
+    errors = parsed_response.get("errors") or []
+    if isinstance(errors, list) and errors:
+        print("errors:")
+        for error in errors:
+            error_code = error.get("errorCode")
+            error_message = error.get("errorMessage")
+            print(f"- errorCode: {error_code}, errorMessage: {error_message}")
+    else:
+        print("errors: []")
+
+
 def _print_readable_response(raw_response: str) -> None:
     try:
         parsed_response = json.loads(raw_response)
@@ -66,15 +78,7 @@ def _print_readable_response(raw_response: str) -> None:
     if masked_email is not None:
         print(f"response.maskedEmail: {masked_email}")
 
-    errors = parsed_response.get("errors") or []
-    if isinstance(errors, list) and errors:
-        print("errors:")
-        for error in errors:
-            error_code = error.get("errorCode")
-            error_message = error.get("errorMessage")
-            print(f"- errorCode: {error_code}, errorMessage: {error_message}")
-    else:
-        print("errors: []")
+    _print_errors(parsed_response)
 
 
 def _print_kyc_response(raw_response: str) -> None:
@@ -92,6 +96,7 @@ def _print_kyc_response(raw_response: str) -> None:
     print(f"transactionID: {parsed_response.get('transactionID')}")
     print(f"identity: {response_data.get('identity')}")
     print(f"sessionKey: {response_data.get('sessionKey')}")
+    _print_errors(parsed_response)
 
 
 def _print_kyc_auth_response(raw_response: str, kyc_v2: bool = False) -> None:
@@ -461,9 +466,9 @@ def _run_vci_exchange(mosip_authenticator: MOSIPAuthenticator) -> None:
         print("Transaction Id cannot be empty.")
         return
 
-    vc_auth_token = input("Enter authToken from kyc-auth response (vcAuthToken): ").strip()
+    vc_auth_token = input("Enter kycToken from kyc-auth response (sent as vcAuthToken): ").strip()
     if not vc_auth_token:
-        print("vcAuthToken cannot be empty.")
+        print("kycToken cannot be empty.")
         return
 
     vc_format = input(f"Enter vcFormat [{DEFAULT_VC_FORMAT}]: ").strip() or DEFAULT_VC_FORMAT

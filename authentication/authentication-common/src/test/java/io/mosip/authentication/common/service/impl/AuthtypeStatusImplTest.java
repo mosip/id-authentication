@@ -3,13 +3,14 @@ package io.mosip.authentication.common.service.impl;
 import org.mockito.quality.Strictness;
 import org.mockito.junit.jupiter.MockitoSettings;
 import org.mockito.junit.jupiter.MockitoExtension;
-import java.sql.Timestamp;
+import java.time.Clock;
 import java.time.LocalDateTime;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
+import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
 import org.mockito.InjectMocks;
@@ -46,10 +47,17 @@ public class AuthtypeStatusImplTest {
 		Map<String, Object> value = new HashMap<>();
 		value.put("uin", "9172985031");
 		List<Object[]> valuelist = new ArrayList<>();
-		Object[] authtypeLockStatus = new Object[] { "bio-FMR", "true", Timestamp.valueOf(LocalDateTime.now().plusMinutes(1)) };
+		// Unlock expiry must be on a UTC basis: AuthtypeStatusImpl compares it with DateUtils2.getUTCCurrentDateTime()
+		Object[] authtypeLockStatus = new Object[] { "bio-FMR", "true",
+				LocalDateTime.now(Clock.systemUTC()).plusMinutes(1) };
 		valuelist.add(authtypeLockStatus);
 		Mockito.when(authLockRepository.findByToken(Mockito.anyString())).thenReturn(valuelist);
 		List<AuthtypeStatus> authTypeStatus = authtypeStatusImpl.fetchAuthtypeStatus("");
+		Assertions.assertEquals(1, authTypeStatus.size());
+		Assertions.assertEquals("bio", authTypeStatus.get(0).getAuthType());
+		Assertions.assertEquals("FMR", authTypeStatus.get(0).getAuthSubType());
+		// locked, but temporarily unlocked until the (future) expiry time
+		Assertions.assertEquals(Boolean.FALSE, authTypeStatus.get(0).getLocked());
 	}
 
 	private AuthtypeRequestDto getAuthTypeRequestDto() {

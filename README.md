@@ -20,10 +20,13 @@ The services run on Spring Boot 4.1.1 (Spring Framework 7, Hibernate 7, Spring B
    ```
    spring.http.converters.preferred-json-mapper=jackson2
    ```
-2. Remove the Boot 3-era settings; they are not needed any more:
+2. Remove the Boot 3-era setting; it is not needed any more:
    ```
-   hibernate.dialect=org.hibernate.dialect.PostgreSQLDialect          # Hibernate 7 selects the dialect itself (HHH90000025)
    spring.mvc.pathmatch.matching-strategy=ANT_PATH_MATCHER           # Spring MVC now uses PathPatternParser
+   ```
+   Keep `hibernate.dialect` set to PostgreSQL. If it is missing, `kernel-core` falls back to `org.hibernate.dialect.MySQL5Dialect`, which Hibernate 7 no longer has, and startup fails with `ClassNotFoundException`:
+   ```
+   hibernate.dialect=org.hibernate.dialect.PostgreSQLDialect
    ```
 3. Renamed or changed keys:
    ```
@@ -52,7 +55,7 @@ The services run on Spring Boot 4.1.1 (Spring Framework 7, Hibernate 7, Spring B
    <dependency>
        <groupId>io.mosip.kernel</groupId>
        <artifactId>kernel-auth-adapter</artifactId>
-       <version>${kernel.auth.adapter.version}</version>
+       <version>${kernel-auth-adapter.version}</version>
    </dependency>
    ```
 

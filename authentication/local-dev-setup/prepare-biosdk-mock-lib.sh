@@ -40,7 +40,7 @@ if ! command -v zip &>/dev/null; then
     exit 1
 fi
 
-echo "[1/3] Downloading mock-sdk JAR from Maven Central (~110 MB)..."
+echo "[1/3] Downloading mock-sdk JAR from Maven Central (~171 MB)..."
 curl -L --progress-bar "$JAR_URL" -o "$TEMP_DIR/$JAR_NAME"
 echo "      Download complete."
 echo ""
