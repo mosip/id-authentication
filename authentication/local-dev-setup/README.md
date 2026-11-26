@@ -68,6 +68,14 @@ Update these four URLs to point to the local WireMock mock service (port `8082`)
 | `mosip.kernel.otpmanager.url` | `http://otpmanager.kernel` | `http://localhost:8082` |
 | `mosip.websub.url` | `http://websub.websub` | `http://localhost:8082` |
 
+Also change the internal API URL, which is built with `https` by default:
+
+| Property | Old Value | New Value |
+|----------|-----------|-----------|
+| `mosip.api.internal.url` | `https://${mosip.api.internal.host}` | `http://localhost:8090` |
+
+> The local service runs on plain `http`. Swagger UI builds its server URL from `mosip.api.internal.url`, so with the default value the **Try it out** calls fail. Change it here in `mosip-config`: the value served by the config server takes precedence over `bootstrap.properties`.
+
 ---
 
 ### 3.2 `id-authentication-default.properties`
@@ -207,7 +215,7 @@ All four services (`database`, `config-server`, `mock-service`, `biosdk-service`
 
 ### 5.1 Add the `kernel-auth-adapter` dependency
 
-The authentication service needs `kernel-auth-adapter` at runtime, but the project does not declare it (the Docker image downloads it at container start). For a local run, add it explicitly. Open `authentication-service/pom.xml` and add the following inside the `<dependencies>` block:
+The authentication service needs `kernel-auth-adapter` at runtime, but it is not shipped with the service: in deployed environments it is downloaded from the artifactory when the container starts. For a local run, add it explicitly. Open `authentication-service/pom.xml` and add the following as the **last entry** inside the `<dependencies>` block:
 
 ```xml
 <dependency>
@@ -218,6 +226,8 @@ The authentication service needs `kernel-auth-adapter` at runtime, but the proje
 ```
 
 > The version property `${kernel-auth-adapter.version}` is already defined in the parent `pom.xml`. Do **not** hard-code the version. This is a local-only change, so do not commit it. It applies to all the run options in 5.3, and the adapter is packaged into the jar when you build it.
+>
+> **Keep it last.** The adapter jar contains its own copy of BouncyCastle classes. Declared after the other dependencies, it is loaded after the project's `bcprov-jdk18on`; if the adapter's copy loads first, eKYC responses can return `kycStatus: false`.
 
 ### 5.2 Update `bootstrap.properties`
 
@@ -230,7 +240,7 @@ Open `authentication-service/src/main/resources/bootstrap.properties`. It alread
 Also **add** these four properties (the committed `spring.cloud.config.uri=localhost` is only a placeholder, so the override is mandatory; alternatively pass them as CLI args, e.g. `--spring.cloud.config.uri=http://localhost:51000/config`):
 
 ```properties
-mosip.api.internal.host=http://localhost:8090
+mosip.api.internal.host=localhost:8090
 keycloak.external.url=http://localhost:8082
 keycloak.internal.url=http://localhost:8082
 spring.cloud.loadbalancer.enabled=false
