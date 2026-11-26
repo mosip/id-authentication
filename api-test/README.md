@@ -409,6 +409,7 @@ folder as the working directory.
 | eKYC tests return `kycStatus:false` although the auth passed | the IDA side has the same BouncyCastle problem: see 3b |
 | OTP tests fail with `IDA-OTA-001` | set `otp.request.flooding.max-count=300` (step 3) and restart the service |
 | OTP auth tests fail with an OTP mismatch, and the log says `no generated OTP found in the mock OTP manager log` or `could not read the mock OTP manager log` | `docker` must be on the PATH of the shell that runs the rig, and the WireMock container must be named `master_data_mock_service` (set `local.otpMockContainer` in `Ida-local.properties` if yours differs); see [OTP in local runs](#otp-in-local-runs) |
+| after a rig run, the `local-dev-setup` sample client (or a second rig run) fails with `IDA-MLC-019` (auth type locked) for a seeded UIN | the previous rig run left auth types locked on that UIN (see [Seeded data](#seeded-data)). Reset the database with `docker compose down -v` and `docker compose up -d` (from `authentication/local-dev-setup/docker-compose`), then restart `authentication-service`; or use another seeded UIN |
 | many OTP-based positive tests (OtpAuth, EkycOtp, MultiFactorAuth, OtpAuthDelegated, OtpAuthKycExchange) fail with `IDA-OTA-004` *OTP is invalid*, although the log says `OTP taken from the mock OTP manager log` and an earlier run on the same code passed | the machine is short of memory or CPU, so Docker writes the new OTP to the mock container log late and the rig picks up the previous test's OTP. This depends on the machine, not on the code. Close other heavy applications (check free RAM and Docker Desktop's memory limit), bring the stack down with `docker compose down -v` and run again |
 
 ### What local mode changes
@@ -438,18 +439,23 @@ folder as the working directory.
 ### OTP in local runs
 
 Locally no email or SMS is delivered. IDA asks the mock OTP manager (the
-WireMock container `master_data_mock_service`) for an OTP, and WireMock, started
-with `--verbose`, prints its rendered response, including the generated OTP,
-to the container log. This is the line the
-`authentication/local-dev-setup/README.md` sample client tells you to grep:
+WireMock container `master_data_mock_service`) for an OTP and sends the OTP
+message to the WireMock notifier stub. WireMock, started with `--verbose`,
+writes both to the container log.
+
+To look up an OTP by hand (for example for the sample client), grep the notifier
+message, as `authentication/local-dev-setup/README.md` describes (run from
+`authentication/local-dev-setup/docker-compose`):
 
 ```
-docker compose logs mock-service | grep GENERATION_SUCCESSFUL
+docker compose logs -f mock-service | grep --line-buffered "OTP for"
 ```
 
-The rig reads that line itself: after each send-OTP it runs `docker logs --since
-120s master_data_mock_service` and uses the newest generated OTP
-(`local.otpFromMockLog = true` in `Ida-local.properties`; the container name is
+You do not need this for a rig run: the rig reads the OTP itself. After each
+send-OTP it runs `docker logs --since 120s master_data_mock_service` and takes
+the newest OTP from the OTP manager's rendered response
+(`"otp":"<digits>","status":"GENERATION_SUCCESSFUL"`), with
+`local.otpFromMockLog = true` in `Ida-local.properties` (the container name is
 `local.otpMockContainer`). So the WireMock OTP stub keeps its random OTP, and
 the machine running the rig needs the `docker` command on its PATH. If no OTP
 is found, the rig falls back to `preconfiguredOtp = 111111`. Environment runs
@@ -461,6 +467,14 @@ The values in `config/Ida-local.properties` and `config/local/seed-ids.propertie
 mirror `local-dev-setup/docker-compose/init.sql`. If that file changes, these
 must be updated to match — in particular the partner id, API key, MISP licence
 key and the test UIN.
+
+A local run changes the seeded data. The lock tests (AuthLockNewLocal) lock auth
+types on a seeded UIN, and AuthUnLockNewLocal unlocks only demo and face, so
+finger, iris and the email and SMS OTP stay locked after the run. Reset the
+database (`docker compose down -v`, then `docker compose up -d`, from
+`authentication/local-dev-setup/docker-compose`) and restart
+`authentication-service` before you use the seeded UINs again, with the rig or
+with the `local-dev-setup` sample client.
 
 ### How the local test set differs from an env run
 
