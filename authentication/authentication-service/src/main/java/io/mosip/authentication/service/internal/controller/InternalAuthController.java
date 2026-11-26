@@ -180,6 +180,11 @@ public class InternalAuthController {
 	
 	/**
 	 * Authenticate tsp.
+	 * <p>
+	 * {@code /internal/verifyidentity} is meant to be called only by internal
+	 * services, where encryption of the request is not required. The
+	 * {@code request} block must be sent in plaintext; an encrypted
+	 * {@code request} is not supported.
 	 * 
 	 * @since 1.2.0
 	 *
@@ -191,12 +196,11 @@ public class InternalAuthController {
 	 *                                           exception
 	 * @throws IdAuthenticationDaoException      the id authentication dao exception
 	 * 
-	 * 
 	 */
 	//@PreAuthorize("hasAnyRole('REGISTRATION_PROCESSOR','REGISTRATION_ADMIN','REGISTRATION_OFFICER','REGISTRATION_SUPERVISOR','RESIDENT')")
 	@PreAuthorize("hasAnyRole(@authorizedRoles.getPostverifyidentity())")
 	@PostMapping(path = "/internal/verifyidentity", consumes = MediaType.APPLICATION_JSON_VALUE, produces = MediaType.APPLICATION_JSON_VALUE)
-	@Operation(summary = "Authenticate Internal Request", description = "Authenticate Internal Request", tags = { "internal-auth-controller" })
+	@Operation(summary = "Verify Identity (Internal)", description = "For internal services only, where request encryption is not required. The request block must be sent in plaintext; an encrypted request is not supported.", tags = { "internal-auth-controller" })
 	@SecurityRequirement(name = "Authorization")
 	@ApiResponses(value = {
 			@ApiResponse(responseCode = "200", description = "Request authenticated successfully",
