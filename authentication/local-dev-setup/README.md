@@ -1,8 +1,33 @@
 # IDA Local Development Setup Guide
 
+## Contents
+
+- [Introduction and scope](#introduction-and-scope)
+- [Setup options](#setup-options)
+- [System requirements and prerequisites](#system-requirements-and-prerequisites)
+- [Access, configuration, and secrets](#access-configuration-and-secrets)
+- [Get the source and prepare the environment](#get-the-source-and-prepare-the-environment)
+- [Start and verify the project](#start-and-verify-the-project)
+- [Make a change and run tests](#make-a-change-and-run-tests)
+- [Daily use and stopping services](#daily-use-and-stopping-services)
+- [Data management and reset](#data-management-and-reset)
+- [Troubleshooting](#troubleshooting)
+- [Next steps](#next-steps)
+
+---
+
+## Introduction and scope
+
 This guide walks you through setting up the ID Authentication (IDA) service locally **without** standing up the full MOSIP platform. All external MOSIP dependencies (database, config server, master-data, biometric SDK) are replaced with lightweight Docker containers provided in the `local-dev-setup/docker-compose/` directory.
 
-## Architecture
+This guide is for contributors, developers and testers who want to build, run and test IDA on their own machine. It assumes you are comfortable with a command line, Git, Maven and Docker.
+
+It covers building the repository, running `authentication-service` against local dependencies, trying its APIs with the sample client, and running tests. It does not cover:
+
+- Deploying IDA to a Kubernetes cluster: see [Deployment in the repository README](../../README.md#deployment-in-k8-cluster-with-other-mosip-services).
+- The internal APIs, which are [not supported locally](#55-internal-apis-are-not-supported-locally).
+
+### Architecture
 
 ```mermaid
 flowchart LR
@@ -29,9 +54,55 @@ flowchart LR
 
 `authentication-service`, the sample client and Mock MDS run on your machine. PostgreSQL, Config Server, WireMock and BioSDK Service run in Docker.
 
+### Files in `local-dev-setup/`
+
+| File / Directory | Purpose |
+|------------------|---------|
+| `prepare-biosdk-mock-lib.sh` | Downloads the mock BioSDK JAR and packages it as `mock-sdk.zip` (macOS/Linux) |
+| `prepare-biosdk-mock-lib.bat` | Same as above for Windows |
+| `docker-compose/docker-compose.yml` | Starts all required backing services |
+| `docker-compose/.env.example` | Template for `docker-compose/.env` (set `MOSIP_CONFIG_PATH`); the real `.env` is git-ignored |
+| `docker-compose/init.sql` | Initialises the IDA database schema and seed data (uses the Spring Batch 6 sequence `BATCH_JOB_INSTANCE_SEQ`) |
+| `docker-compose/wiremock/mappings/master-data.json` | WireMock stubs for master-data, notification, OTP manager, and WebSub APIs |
+| `docker-compose/wiremock/__files/mock-sdk.zip` | Mock BioSDK bundle served to the BioSDK service on startup (**generated** — run `prepare-biosdk-mock-lib.sh/.bat` first) |
+| `mosip-ida-ks.p12` | PKCS12 keystore used by the key manager (replaces SoftHSM) |
+| `partner-chain.p12` | Partner certificate chain for local testing |
+| `partner-mosip-signed.p12` | MOSIP-signed partner certificate for local testing |
+
 ---
 
-## Prerequisites
+## Setup options
+
+The backing services always run in Docker Compose. The choices are:
+
+| Choice | Options |
+|--------|---------|
+| Shell | macOS / Linux shells, or [PowerShell on Windows](#running-the-commands-on-windows-powershell) |
+| How to run `authentication-service` | [Maven, JAR, IntelliJ IDEA or VS Code](#53-run-the-authentication-service) |
+| How to try the APIs (optional) | [IDA sample client](#6-ida-sample-client-cli) |
+| Biometric auth (optional) | [Mock MDS](#7-mock-mds-biometric-capture), used with the sample client |
+| API test suites (optional) | [API test rig](#8-run-the-api-test-rig-against-this-setup) |
+
+#### Running the commands on Windows (PowerShell)
+
+The commands in this guide are written for macOS / Linux shells. In PowerShell, change them as follows:
+
+| In this guide | In PowerShell |
+|---------------|---------------|
+| `-Dgpg.skip=true` and any other `-D` argument | Put the whole argument in quotes: `"-Dgpg.skip=true"` |
+| `python3` | `python` or `py` |
+| `./prepare-biosdk-mock-lib.sh` | `.\prepare-biosdk-mock-lib.bat` |
+| `source .venv/bin/activate` | `.venv\Scripts\activate` |
+| `curl` | `curl.exe` (in Windows PowerShell, `curl` is an alias of `Invoke-WebRequest`) |
+| `grep --line-buffered "OTP for"` | `Select-String "OTP for"` |
+
+The commands to run the service are given for PowerShell in [5.3](#53-run-the-authentication-service).
+
+---
+
+## System requirements and prerequisites
+
+### Prerequisites
 
 Install the following tools before proceeding:
 
@@ -68,21 +139,6 @@ The following ports must be free on your machine:
 | `8090` | `authentication-service` |
 | `4501` | Mock MDS (biometric auth only) |
 
-### Running the commands on Windows (PowerShell)
-
-The commands in this guide are written for macOS / Linux shells. In PowerShell, change them as follows:
-
-| In this guide | In PowerShell |
-|---------------|---------------|
-| `-Dgpg.skip=true` and any other `-D` argument | Put the whole argument in quotes: `"-Dgpg.skip=true"` |
-| `python3` | `python` or `py` |
-| `./prepare-biosdk-mock-lib.sh` | `.\prepare-biosdk-mock-lib.bat` |
-| `source .venv/bin/activate` | `.venv\Scripts\activate` |
-| `curl` | `curl.exe` (in Windows PowerShell, `curl` is an alias of `Invoke-WebRequest`) |
-| `grep --line-buffered "OTP for"` | `Select-String "OTP for"` |
-
-The commands to run the service are given for PowerShell in [5.3](#53-run-the-authentication-service).
-
 ### argon2 library on Windows
 
 Windows has no argon2 package. Take the DLL from the `argon2-jvm` jar on Maven Central. Run these PowerShell commands from your workspace folder:
@@ -94,9 +150,35 @@ Expand-Archive argon2-jvm.zip -DestinationPath argon2-jvm
 
 The library is `argon2-jvm\win32-x86-64\argon2.dll`. Pass the full path of that folder in `-Djna.library.path` when you [run the service](#53-run-the-authentication-service).
 
+### Network access
+
+The setup downloads from the internet: the repositories from GitHub, Maven dependencies (including MOSIP `SNAPSHOT` libraries), Docker images, and the BioSDK mock library from Maven Central.
+
 ---
 
-## 1. Clone the Repositories
+## Access, configuration, and secrets
+
+The repositories are cloned over HTTPS in [step 1](#1-clone-the-repositories). Configuration is changed in these places:
+
+| What | Where | Step |
+|------|-------|------|
+| IDA properties and identity mapping | Your `mosip-config` clone | [3](#3-configure-mosip-config) |
+| Path of the `mosip-config` clone | `docker-compose/.env`, copied from `.env.example` | [4](#configure-the-config-server-volume) |
+| Auth adapter dependency | `authentication-service/pom.xml` | [5.1](#51-add-the-kernel-auth-adapter-dependency) |
+| Config server and local hosts | `authentication-service/src/main/resources/bootstrap.properties` | [5.2](#52-update-bootstrapproperties) |
+| Sample client settings | `IDA-sample-client/client/authenticator/authenticator-config-local.toml` | [6.1](#61-review-the-configuration) |
+
+> **Local test values only.** The passwords, secrets, salts, API keys, licence keys and keystores shown in this guide or shipped in `local-dev-setup/` are for this local setup. Never use them in a shared or production environment, and never replace them with real credentials in a file that you might commit.
+>
+> **Do not commit your local changes** to `authentication-service/pom.xml`, `bootstrap.properties` or the `mosip-config` property files. `docker-compose/.env` is git-ignored.
+
+---
+
+## Get the source and prepare the environment
+
+Follow steps 1 to 4 in order.
+
+### 1. Clone the Repositories
 
 Clone both repositories from the MOSIP GitHub organisation. Use the `develop` branch for both.
 
@@ -111,9 +193,7 @@ Run the clone commands from a workspace folder of your choice. **Every `cd` comm
 
 > **Why `master` in section 5.2 but `develop` here?** The service asks the config server for the label `master`, while `mosip-config` is cloned on `develop`. This is fine: the local config server runs in `native` mode and serves the files of the mounted folder, ignoring the label.
 
----
-
-## 2. Build the Project
+### 2. Build the Project
 
 From the root of the `id-authentication` repository, build all modules. The `-Dgpg.skip=true` flag skips GPG signing, which is not required in a local environment. The `-U` flag forces Maven to re-check the snapshot repositories: without it, Maven can reuse an earlier failed lookup of a `SNAPSHOT` dependency (for example `kernel-core:1.4.1-SNAPSHOT`) and fail again even after the cause was fixed.
 
@@ -124,13 +204,11 @@ mvn clean install -U -Dgpg.skip=true
 
 The build runs the unit tests and, on the first run, downloads the dependencies, so it can take 10 minutes or more.
 
----
-
-## 3. Configure `mosip-config`
+### 3. Configure `mosip-config`
 
 Navigate to your cloned `mosip-config` folder and edit the following property files.
 
-### 3.1 `application-default.properties`
+#### 3.1 `application-default.properties`
 
 Update these four URLs to point to the local WireMock mock service (port `8082`):
 
@@ -151,9 +229,9 @@ Also change the internal API URL, which is built with `https` by default:
 
 ---
 
-### 3.2 `id-authentication-default.properties`
+#### 3.2 `id-authentication-default.properties`
 
-#### Add these new properties
+##### Add these new properties
 
 ```properties
 mosip.api.public.host=localhost
@@ -166,7 +244,7 @@ spring.http.converters.preferred-json-mapper=jackson2
 >
 > **Keep** `hibernate.dialect=org.hibernate.dialect.PostgreSQLDialect`. If the property is missing, `kernel-core` falls back to `org.hibernate.dialect.MySQL5Dialect`, which Hibernate 7 no longer contains, and the service fails at startup with `ClassNotFoundException: org.hibernate.dialect.MySQL5Dialect`.
 
-#### Change these existing properties
+##### Change these existing properties
 
 | Property | Old Value | New Value |
 |----------|-----------|-----------|
@@ -196,7 +274,7 @@ spring.http.converters.preferred-json-mapper=jackson2
 
 ---
 
-### 3.3 `id-authentication-external-default.properties`
+#### 3.3 `id-authentication-external-default.properties`
 
 | Property | Old Value | New Value |
 |----------|-----------|-----------|
@@ -204,7 +282,7 @@ spring.http.converters.preferred-json-mapper=jackson2
 
 ---
 
-### 3.4 `id-authentication-otp-default.properties`
+#### 3.4 `id-authentication-otp-default.properties`
 
 > **Required.** The OTP service has been merged into `authentication-service`, but `bootstrap.properties` still loads this file (`spring.cloud.config.name=id-authentication,id-authentication-internal,id-authentication-external,id-authentication-otp`). If you skip this step, the service fails at startup with an unresolved property.
 
@@ -214,15 +292,13 @@ spring.http.converters.preferred-json-mapper=jackson2
 
 ---
 
-### 3.5 `identity-mapping.json`
+#### 3.5 `identity-mapping.json`
 
 | Field | Old Value | New Value |
 |-------|-----------|-----------|
 | `identity.name.value` | `fullName` | `firstName,middleName,lastName` |
 
----
-
-## 4. Start Docker Services
+### 4. Start Docker Services
 
 The `local-dev-setup/docker-compose/` directory contains a Docker Compose file that starts the following services:
 
@@ -233,7 +309,7 @@ The `local-dev-setup/docker-compose/` directory contains a Docker Compose file t
 | WireMock (mock-service) | `8082` | Mocks master-data, notification, OTP manager, and WebSub APIs |
 | BioSDK Service | `8083` | Mock biometric SDK server |
 
-### Prerequisite: prepare the BioSDK mock library
+#### Prerequisite: prepare the BioSDK mock library
 
 The `biosdk-service` downloads a ZIP file containing the mock BioSDK JAR on startup. This file is not stored in the repository (too large for git). Run the provided script **once** before starting Docker services to download the JAR from Maven Central and package it:
 
@@ -252,7 +328,7 @@ cd id-authentication\authentication\local-dev-setup
 
 The script downloads `mock-sdk-1.3.0-beta.1-jar-with-dependencies.jar` (~171 MB) from Maven Central, zips it as `mock-sdk.zip`, and places it in `docker-compose/wiremock/__files/`. You only need to run it once; skip it on subsequent starts unless the file is deleted.
 
-### Configure the Config Server volume
+#### Configure the Config Server volume
 
 The config-server mounts your cloned `mosip-config` directory. Its path is read from `docker-compose/.env`, so no tracked file needs editing:
 
@@ -266,7 +342,7 @@ cp .env.example .env
 
 `.env` is git-ignored. `docker compose up` stops with a clear message if `MOSIP_CONFIG_PATH` is not set.
 
-### Start the services
+#### Start the services
 
 ```bash
 cd id-authentication/authentication/local-dev-setup/docker-compose
@@ -275,7 +351,7 @@ docker compose up -d
 
 The Compose project is named `ida-local`. If you started the stack with an earlier version of this file, see [Troubleshooting](#troubleshooting) before you run this command.
 
-### Verify all services are running
+#### Verify all services are running
 
 ```bash
 docker compose ps
@@ -291,7 +367,7 @@ curl http://localhost:8083/biosdk-service/           # BioSDK:        Service is
 
 BioSDK Service starts after WireMock is healthy and then downloads the mock library, so it can take about a minute to answer.
 
-### Verify the seed data
+#### Verify the seed data
 
 ```bash
 docker compose exec database psql -U postgres -d mosip_ida -c "SELECT 'identity_cache' AS table_name, count(*) FROM ida.identity_cache UNION ALL SELECT 'partner_data', count(*) FROM ida.partner_data UNION ALL SELECT 'oidc_client_data', count(*) FROM ida.oidc_client_data UNION ALL SELECT 'misp_license_data', count(*) FROM ida.misp_license_data;"
@@ -310,11 +386,15 @@ If the tables are missing or the counts differ on a new setup, [reset the databa
 
 ---
 
-## 5. Start the Authentication Service
+## Start and verify the project
+
+Start the service (step 5) and confirm that it is ready. Then, optionally, try the APIs with the sample client (step 6) and Mock MDS (step 7).
+
+### 5. Start the Authentication Service
 
 `authentication-service` is the single consolidated service (public auth/KYC/OTP APIs and the internal APIs). The former `authentication-otp-service` and `authentication-internal-service` no longer exist, so there is only one service to start.
 
-### 5.1 Add the `kernel-auth-adapter` dependency
+#### 5.1 Add the `kernel-auth-adapter` dependency
 
 The authentication service needs `kernel-auth-adapter` at runtime, but it is not shipped with the service: in deployed environments it is downloaded from the artifactory when the container starts. For a local run, add it explicitly. Open `authentication-service/pom.xml` and add the following as the **last entry** inside the `<dependencies>` block:
 
@@ -330,7 +410,7 @@ The authentication service needs `kernel-auth-adapter` at runtime, but it is not
 >
 > **Keep it last.** The adapter jar contains its own copy of BouncyCastle classes. Declared after the other dependencies, it is loaded after the project's `bcprov-jdk18on`; if the adapter's copy loads first, eKYC responses can return `kycStatus: false`.
 
-### 5.2 Update `bootstrap.properties`
+#### 5.2 Update `bootstrap.properties`
 
 Open `authentication-service/src/main/resources/bootstrap.properties`. It already contains `spring.profiles.active=default` and `spring.cloud.config.label=master`, so only this value needs to change:
 
@@ -349,9 +429,9 @@ spring.cloud.loadbalancer.enabled=false
 
 > `spring.cloud.loadbalancer.enabled=false` disables Spring Cloud LoadBalancer so that `@LoadBalanced` clients call `localhost` URLs directly instead of treating `localhost` as a service name (which causes a 503 at startup when the master-data cache is initialised).
 
-### 5.3 Run the Authentication Service
+#### 5.3 Run the Authentication Service
 
-#### Option A — Maven
+##### Option A — Maven
 
 ```bash
 cd id-authentication/authentication/authentication-service
@@ -365,7 +445,7 @@ cd id-authentication\authentication\authentication-service
 mvn spring-boot:run "-Dspring-boot.run.jvmArguments=-Duser.timezone=UTC -Djna.library.path=C:/path/to/argon2-jvm/win32-x86-64"
 ```
 
-#### Option B — JAR
+##### Option B — JAR
 
 Since `bootstrap.properties` and `authentication-service/pom.xml` were modified after the initial build, rebuild the module first to include the updated configuration and the `kernel-auth-adapter` dependency in the JAR:
 
@@ -385,7 +465,7 @@ java "-Duser.timezone=UTC" "-Djna.library.path=C:/path/to/argon2-jvm/win32-x86-6
 
 > Use the exact jar name. A wildcard such as `authentication-service-*.jar` also matches the `-javadoc` and `-sources` jars, and `java` then fails with `no main manifest attribute`. The version in the name differs between branches, so check the `target` folder.
 
-#### Option C — IntelliJ IDEA
+##### Option C — IntelliJ IDEA
 
 1. Open the `id-authentication/authentication` directory as a Maven project (**File → Open**).
 2. Wait for IntelliJ to finish importing and indexing all modules.
@@ -393,7 +473,7 @@ java "-Duser.timezone=UTC" "-Djna.library.path=C:/path/to/argon2-jvm/win32-x86-6
 4. Click the **Run** button (green triangle) next to the class declaration, or right-click the file and choose **Run 'IdAuthenticationApplication'**.
 5. To persist the run configuration, open **Run → Edit Configurations**, select the generated configuration, and verify the **Working directory** is set to the `authentication-service` module root.
 
-#### Option D — VS Code
+##### Option D — VS Code
 
 1. Install the **Extension Pack for Java** (`vscjava.vscode-java-pack`) if not already installed.
 2. Open the `id-authentication/authentication` folder (**File → Open Folder**).
@@ -419,7 +499,7 @@ To save the OpenAPI specification of the running service:
 curl http://localhost:8090/idauthentication/v1/v3/api-docs.yaml -o ida-openapi.yaml
 ```
 
-### 5.4 Verify the service has started
+#### 5.4 Verify the service has started
 
 The service is ready when the log shows `Started IdAuthenticationApplication in ... seconds`, usually within a minute. Then check its health:
 
@@ -429,17 +509,15 @@ curl http://localhost:8090/idauthentication/v1/actuator/health
 
 The response contains `"status":"UP"`. If the log shows `Application run failed` or `APPLICATION FAILED TO START`, the service did not start; see the error above that line and [Troubleshooting](#troubleshooting).
 
-### 5.5 Internal APIs are not supported locally
+#### 5.5 Internal APIs are not supported locally
 
 The internal APIs need a token issued by a full Keycloak setup, which this local setup does not provide (WireMock only returns a dummy token for the service's own outgoing calls). This applies to `/internal/auth`, `/internal/verifyidentity`, `/internal/otp`, `/internal/authTransactions/...` and the key manager APIs under `/internal`. For example, a call without a token returns `IDA-MLC-006` (`Missing Input Parameter - Authorization - header`). Test these APIs in a deployed environment.
 
----
-
-## 6. IDA Sample Client (CLI)
+### 6. IDA Sample Client (CLI)
 
 The `IDA-sample-client` is an interactive Python CLI for testing the OTP, Authentication, KYC and key-binding APIs (all served by the single `authentication-service`) without needing a full MOSIP platform or a UI. It handles request encryption, signing, and all API communication.
 
-### Folder Structure
+#### Folder Structure
 
 ```
 IDA-sample-client/
@@ -466,7 +544,7 @@ IDA-sample-client/
     └── auth-req-*.json                      # Sample auth payloads (UIN/VID, VID variants, infant, ...)
 ```
 
-### Prerequisites
+#### Prerequisites
 
 - Python **3.10** or later (the code uses `list[...]` and `X | Y` type hints which require 3.10+)
 
@@ -478,7 +556,7 @@ python3 --version
 
 > **macOS:** the system `python3` is 3.9, which is too old (the client fails with type errors on `list[...]` and `X | Y`). Install a newer Python, for example `brew install python@3.12`, and use `python3.12` to create the virtual environment in section 6.2.
 
-### 6.1 Review the Configuration
+#### 6.1 Review the Configuration
 
 Open `IDA-sample-client/client/authenticator/authenticator-config-local.toml`. The defaults are pre-configured for the local Docker setup — no changes are needed unless you have customised ports or partner credentials.
 
@@ -498,20 +576,9 @@ Key settings to be aware of:
 | `partner_apikey` | `198833` | Partner API key |
 | `partner_misp_lk` | `vM1BA8RosNt3kemNGpsneYgcelZwNmsOoKJQgMm92DltqtJh4p` | MISP licence key |
 
-> **Partner, API key and OIDC client are pre-seeded.** There is no setup step that creates them: `docker-compose/init.sql` already seeds the auth partner `auth_v1z0816154432` (API key `198833`, MISP licence key above), the OIDC partner `mpartner-default-demo-oidc` and its OIDC client `xedG72yecDpJcQbzn6Q8LDplTVGZPhLRXi1ssAh1oW4` (used with `idp_misp_lk`, `auth_partner_id` and `oidc_client_id` in the TOML file). To use a different partner, API key or OIDC client, add it to `init.sql` and reset the database as described below.
+> **Partner, API key and OIDC client are pre-seeded.** There is no setup step that creates them: `docker-compose/init.sql` already seeds the auth partner `auth_v1z0816154432` (API key `198833`, MISP licence key above), the OIDC partner `mpartner-default-demo-oidc` and its OIDC client `xedG72yecDpJcQbzn6Q8LDplTVGZPhLRXi1ssAh1oW4` (used with `idp_misp_lk`, `auth_partner_id` and `oidc_client_id` in the TOML file). To use a different partner, API key or OIDC client, add it to `init.sql` and [reset the database](#reset-the-database) as described under Data management and reset.
 
-#### Reset the database
-
-To reset the database, for example after changing `init.sql` (run from `docker-compose/`): remove the database container together with its volume, then start it again.
-
-```bash
-docker compose rm -s -f -v database
-docker compose up -d database
-```
-
-`init.sql` runs only when the database data directory is empty, and the database keeps its data in a volume that survives a plain container recreate, so the volume must be removed too. This wipes the local database and re-seeds it from `init.sql`; restart `authentication-service` afterwards so it reconnects.
-
-### 6.2 Set Up a Python Virtual Environment
+#### 6.2 Set Up a Python Virtual Environment
 
 All commands below must be run from the `IDA-sample-client/` directory. The key file paths in the config are relative to this directory.
 
@@ -534,7 +601,7 @@ source .venv/bin/activate
 
 Your prompt will change to show `(.venv)` when the environment is active.
 
-### 6.3 Install Dependencies
+#### 6.3 Install Dependencies
 
 ```bash
 pip install -r client/requirements.txt
@@ -542,7 +609,7 @@ pip install -r client/requirements.txt
 
 > **Python 3.12+ / 3.14 note:** `dynaconf==3.1.9` (the original pinned version) depends on `pkg_resources` which is no longer bundled with Python 3.12+. The `requirements.txt` has been updated to `dynaconf==3.2.4` which resolves this. If you see `ModuleNotFoundError: No module named 'pkg_resources'`, run `pip install "dynaconf==3.2.4"` to fix it.
 
-### 6.4 Run the Client
+#### 6.4 Run the Client
 
 Make sure you are still in the `IDA-sample-client/` directory and the venv is active, then run:
 
@@ -564,7 +631,7 @@ Main Menu:
 
 Each category opens a sub-menu with the auth factors it supports (`0` returns to the main menu).
 
-### 6.5 Menu Options
+#### 6.5 Menu Options
 
 | Main menu | Sub-menu actions |
 |-----------|------------------|
@@ -574,7 +641,7 @@ Each category opens a sub-menu with the auth factors it supports (`0` returns to
 | 4. kyc-auth & kyc-exchange (v2) | Auth factors including **Password** and **Key binded token**, then `kyc-auth` v2 and `kyc-exchange` v2 (returns verified-claims metadata when available) |
 | 5. Identity key binding | Binds a key to the identity; the key + certificate are stored as a `.p12` under `new-keys/bound/` (deleted on a clean exit) |
 
-#### Demo Auth
+##### Demo Auth
 
 Performs a demographic authentication using a sample JSON file.
 
@@ -599,7 +666,7 @@ The sample file format (`samples/auth-req-01.json`):
 
 ---
 
-#### Send OTP Request
+##### Send OTP Request
 
 Sends an OTP to the registered mobile/email for a given UIN/VID.
 
@@ -615,7 +682,7 @@ The matching log line contains the generated OTP, for example `OTP for UIN XXXXX
 
 ---
 
-#### OTP Auth
+##### OTP Auth
 
 Authenticates using an OTP received from *Send OTP Request*.
 
@@ -625,7 +692,7 @@ Authenticates using an OTP received from *Send OTP Request*.
 
 ---
 
-#### Demo + OTP Auth
+##### Demo + OTP Auth
 
 Combines demographic data and an OTP in a single auth request.
 
@@ -636,7 +703,7 @@ Combines demographic data and an OTP in a single auth request.
 
 ---
 
-#### Biometric Auth
+##### Biometric Auth
 
 Authenticates using a biometric captured from the **Mock MDS** (see [Section 7](#7-mock-mds-biometric-capture)).
 
@@ -646,19 +713,19 @@ Authenticates using a biometric captured from the **Mock MDS** (see [Section 7](
 
 ---
 
-#### Password Auth (kyc-auth v2)
+##### Password Auth (kyc-auth v2)
 
 Available under **4. kyc-auth & kyc-exchange (v2)**. Enter the UIN/VID and the password (input is hidden). See the password identities in [Available Identities](#available-identities-uinvid).
 
 ---
 
-#### Key Binded Token Auth (kyc-auth v2)
+##### Key Binded Token Auth (kyc-auth v2)
 
 Available under **4**. Uses the key + certificate stored by *5. Identity key binding* for the same UIN/VID, so run key binding first.
 
 ---
 
-### Available Identities (UIN/VID)
+#### Available Identities (UIN/VID)
 
 The following identities are seeded in the local database. **Not every identity has biometric data**, so pick the identity according to what you want to test (for example, eKYC with face needs face data).
 
@@ -680,7 +747,7 @@ Several `samples/auth-req-*.json` files already reference these (e.g. `auth-req-
 
 ---
 
-### 6.6 Deactivate the Virtual Environment
+#### 6.6 Deactivate the Virtual Environment
 
 When done, deactivate the venv:
 
@@ -688,14 +755,11 @@ When done, deactivate the venv:
 deactivate
 ```
 
-
----
-
-## 7. Mock MDS (Biometric Capture)
+### 7. Mock MDS (Biometric Capture)
 
 Biometric auth from the sample client needs a Mock MDS (Mosip Device Service) that returns captured biometrics. The sample client calls it at `mock_mds_capture_url` (`http://localhost:4501/capture`).
 
-### 7.1 Check out the code
+#### 7.1 Check out the code
 
 Use the `develop` branch of [mosip-mock-services](https://github.com/mosip/mosip-mock-services/tree/develop/MockMDS):
 
@@ -705,7 +769,7 @@ cd mosip-mock-services/MockMDS
 mvn clean install -Dgpg.skip=true -DskipTests
 ```
 
-### 7.2 Configure and run Mock MDS
+#### 7.2 Configure and run Mock MDS
 
 Mock MDS needs two kinds of configuration before it is started: **properties** that you edit in its `application.properties` file, and three **program arguments** that you pass when you start it.
 
@@ -716,7 +780,7 @@ Mock MDS needs two kinds of configuration before it is started: **properties** t
 > | `run.sh` / `run_auth.bat` | `MockMDS/target/`. The build copies `application.properties`, the scripts and the data folders there, next to the jar and `lib/`. `mvn clean` removes this folder, so repeat your edits after a clean build. |
 > | IDE | `MockMDS/` |
 
-#### Step 1 — Edit `application.properties`
+##### Step 1 — Edit `application.properties`
 
 Switch the FTM keystores for **face, finger and iris** to the `ida-local` keystore, so the capture is signed with a key that the local IDA trusts. If any of these three is left unchanged, that modality fails with `IDA-MPA-001 Digital signature verification failed`.
 
@@ -745,7 +809,7 @@ mosip.auth.secretkey=a
 mosip.ida.server.url=http://localhost:8082/idauthentication/v1/internal/getCertificate?applicationId=IDA&referenceId=IDA-FIR
 ```
 
-#### Step 2 — Pass the program arguments when you start Mock MDS
+##### Step 2 — Pass the program arguments when you start Mock MDS
 
 Start the main class `io.mosip.mock.sbi.test.TestMockSBI` with these three **program arguments**, in this order (they are positional, and they are not `-D` options):
 
@@ -772,7 +836,42 @@ Once running, Mock MDS listens on `http://localhost:4501`.
 
 ---
 
-## 8. Run the API Test Rig Against This Setup
+## Make a change and run tests
+
+### See a source change in the local service
+
+This setup has no hot reload. After you change code:
+
+1. Stop `authentication-service` (`Ctrl+C` in its terminal, or the stop button of your IDE).
+2. If you changed a module other than `authentication-service` (for example `authentication-common`) and run the service with Maven or the JAR, install the modules again:
+
+   ```bash
+   cd id-authentication/authentication
+   mvn clean install -Dgpg.skip=true -DskipTests
+   ```
+
+3. Start the service again with one of the [run options](#53-run-the-authentication-service). For the JAR option, rebuild the JAR first.
+4. [Verify that the service has started](#54-verify-the-service-has-started), then exercise your change, for example with the [sample client](#6-ida-sample-client-cli).
+
+### Run unit tests
+
+Unit tests do not need the Docker services or a config server. Run all of them:
+
+```bash
+cd id-authentication/authentication
+mvn test -Dgpg.skip=true
+```
+
+To run one test class, run Maven in the module that contains it, after the [build](#2-build-the-project). For example:
+
+```bash
+cd id-authentication/authentication/authentication-service
+mvn test -Dtest=VciServiceImplTest
+```
+
+A successful run ends with `BUILD SUCCESS`. Some tests exercise failure cases, so `ERROR` log lines alone do not mean that a test failed.
+
+### 8. Run the API Test Rig Against This Setup
 
 With the stack and `authentication-service` from sections 4 and 5 running, the IDA API test rig (`api-test/`) can run its smoke and regression suites against this local IDA. The rig needs a few more local settings on top of this guide (extra `mosip-config` values, a WireMock token with roles, BouncyCastle order in `authentication-service/pom.xml`).
 
@@ -780,7 +879,24 @@ Follow **[api-test/README.md → Running Against a Local IDA (Local Run Mode)](.
 
 ---
 
-## Local Services Reference
+## Daily use and stopping services
+
+Once the setup is complete, start the containers, then [run the service](#53-run-the-authentication-service). Run the `docker compose` commands from `local-dev-setup/docker-compose`.
+
+| Task | Command |
+|------|---------|
+| Start the containers | `docker compose up -d` |
+| Check their status | `docker compose ps` |
+| Follow the logs of a container | `docker compose logs -f <service>` (`database`, `config-server`, `mock-service` or `biosdk-service`) |
+| Stop `authentication-service` | `Ctrl+C` in its terminal, or the stop button of your IDE |
+| Stop the containers and keep the database data | `docker compose stop` |
+| Start stopped containers again | `docker compose start` |
+
+> **`docker compose down` discards your database changes.** It removes the containers, and the next `docker compose up -d` starts with a new database seeded from `init.sql`. Use `docker compose stop` for a routine shutdown.
+
+Restart `authentication-service` after you change a property in `mosip-config`, because it loads its properties at startup.
+
+### Local Services Reference
 
 | Service | URL |
 |---------|-----|
@@ -793,20 +909,22 @@ Follow **[api-test/README.md → Running Against a Local IDA (Local Run Mode)](.
 
 ---
 
-## Files in `local-dev-setup/`
+## Data management and reset
 
-| File / Directory | Purpose |
-|------------------|---------|
-| `prepare-biosdk-mock-lib.sh` | Downloads the mock BioSDK JAR and packages it as `mock-sdk.zip` (macOS/Linux) |
-| `prepare-biosdk-mock-lib.bat` | Same as above for Windows |
-| `docker-compose/docker-compose.yml` | Starts all required backing services |
-| `docker-compose/.env.example` | Template for `docker-compose/.env` (set `MOSIP_CONFIG_PATH`); the real `.env` is git-ignored |
-| `docker-compose/init.sql` | Initialises the IDA database schema and seed data (uses the Spring Batch 6 sequence `BATCH_JOB_INSTANCE_SEQ`) |
-| `docker-compose/wiremock/mappings/master-data.json` | WireMock stubs for master-data, notification, OTP manager, and WebSub APIs |
-| `docker-compose/wiremock/__files/mock-sdk.zip` | Mock BioSDK bundle served to the BioSDK service on startup (**generated** — run `prepare-biosdk-mock-lib.sh/.bat` first) |
-| `mosip-ida-ks.p12` | PKCS12 keystore used by the key manager (replaces SoftHSM) |
-| `partner-chain.p12` | Partner certificate chain for local testing |
-| `partner-mosip-signed.p12` | MOSIP-signed partner certificate for local testing |
+The local database is created and seeded from `docker-compose/init.sql`. See [Verify the seed data](#verify-the-seed-data) for the expected row counts and [Available Identities](#available-identities-uinvid) for the seeded UINs and VIDs.
+
+> **A reset is destructive.** Everything written to the local database since it was seeded is lost, for example locked auth types and transaction records. This guide has no backup procedure, so reset only if you do not need that data.
+
+### Reset the database
+
+To reset the database, for example after changing `init.sql` (run from `docker-compose/`): remove the database container together with its volume, then start it again.
+
+```bash
+docker compose rm -s -f -v database
+docker compose up -d database
+```
+
+`init.sql` runs only when the database data directory is empty, and the database keeps its data in a volume that survives a plain container recreate, so the volume must be removed too. This wipes the local database and re-seeds it from `init.sql`; restart `authentication-service` afterwards so it reconnects.
 
 ---
 
@@ -836,7 +954,12 @@ The `biosdk-service` depends on `mock-service` being healthy. Check that the Wir
 
 ---
 
-## References
+## Next steps
+
+- [Repository README](../../README.md): build, configuration and deployment overview.
+- Questions: [MOSIP Community](https://community.mosip.io/). Bugs: [GitHub issues](https://github.com/mosip/id-authentication/issues). Remove secrets and personal data from logs before you share them.
+
+### References
 
 - [ID Authentication services](https://docs.mosip.io/1.2.0/id-lifecycle-management/identity-verification/id-authentication-services)
 - [ID Authentication service developer guide](https://docs.mosip.io/1.2.0/id-lifecycle-management/identity-verification/id-authentication-services/id-authentication-service-developer-guide)

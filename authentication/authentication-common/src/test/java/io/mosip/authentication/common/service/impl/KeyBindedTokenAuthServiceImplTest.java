@@ -14,7 +14,6 @@ import io.mosip.authentication.core.exception.IdAuthenticationBusinessException;
 import io.mosip.authentication.core.indauth.dto.AuthRequestDTO;
 import io.mosip.authentication.core.indauth.dto.IdentityInfoDTO;
 import io.mosip.authentication.core.spi.indauth.match.MatchOutput;
-import org.apache.commons.collections.map.HashedMap;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
 import org.mockito.InjectMocks;
@@ -23,6 +22,7 @@ import org.springframework.test.context.junit.jupiter.SpringExtension;
 import org.springframework.test.util.ReflectionTestUtils;
 
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
@@ -63,7 +63,7 @@ public class KeyBindedTokenAuthServiceImplTest {
         identityInfoDTO.setLanguage("end");
         List<IdentityInfoDTO> list=new ArrayList<>();
         list.add(identityInfoDTO);
-        Map<String, List<IdentityInfoDTO>> idInfo= new HashedMap();
+        Map<String, List<IdentityInfoDTO>> idInfo= new HashMap<>();
         idInfo.put("key",list);
 
         MatchOutput matchOutput=new MatchOutput(5,true,"fingerpring",null,"end","idName");
