@@ -166,13 +166,25 @@
 							<verbose>true</verbose>
 							<dateFormat>MM/dd/yyyy HH:mm:ss Z</dateFormat>
 							<abbrevLength>8</abbrevLength>
-							<generateGitPropertiesFile>true</generateGitPropertiesFile>
-							<generateGitPropertiesFilename>
-								${project.build.outputDirectory}/git.properties</generateGitPropertiesFilename>
+						</configuration>
+					</execution>
+					<!-- apitest-commons EmailableReport reads git.properties for the report's branch and commit -->
+					<execution>
+						<id>git-properties-for-report</id>
+						<goals>
+							<goal>revision</goal>
+						</goals>
+						<configuration>
+							<dateFormat>MM/dd/yyyy HH:mm:ss Z</dateFormat>
+							<abbrevLength>8</abbrevLength>
+							<generateGitPropertiesFilename>${project.build.outputDirectory}/git.properties</generateGitPropertiesFilename>
 						</configuration>
 					</execution>
 				</executions>
+				<!-- service-git.properties is what the kattu testrig-java25 "commit plugin" build check requires -->
 				<configuration>
+					<generateGitPropertiesFile>true</generateGitPropertiesFile>
+					<generateGitPropertiesFilename>${project.build.outputDirectory}/service-git.properties</generateGitPropertiesFilename>
 					<dotGitDirectory>${project.basedir}/.git</dotGitDirectory>
 				</configuration>
 			</plugin>

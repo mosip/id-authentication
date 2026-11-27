@@ -85,29 +85,33 @@ jobs:
       SLACK_WEBHOOK_URL: ${{ secrets.SLACK_WEBHOOK }}
 
   build-maven-apitest-auth:
-    uses: mosip/kattu/.github/workflows/maven-build.yml@master-java21
+    uses: mosip/kattu/.github/workflows/maven-build.yml@testrig-java25
     with:
       SERVICE_LOCATION: ./api-test
+      JDK_VERSION: '25'
       BUILD_ARTIFACT: apitest-auth
     secrets:
       OSSRH_USER: ${{ secrets.OSSRH_USER }}
       OSSRH_SECRET: ${{ secrets.OSSRH_SECRET }}
       OSSRH_TOKEN: ${{ secrets.OSSRH_TOKEN }}
       GPG_SECRET: ${{ secrets.GPG_SECRET }}
+      GPG_PRIVATE_KEY: ${{ secrets.GPG_PRIVATE_KEY }}
       SLACK_WEBHOOK_URL: ${{ secrets.SLACK_WEBHOOK }}
 
   publish_to_nexus_apitest_auth:
     if: "${{ !contains(github.ref, 'master') && github.event_name != 'pull_request' && github.event_name != 'release' && github.event_name != 'prerelease' && github.event_name != 'publish' }}"
     needs: build-maven-apitest-auth
-    uses: mosip/kattu/.github/workflows/maven-publish-to-nexus.yml@master-java21
+    uses: mosip/kattu/.github/workflows/maven-publish-to-nexus.yml@testrig-java25
     with:
       SERVICE_LOCATION: ./api-test
+      JDK_VERSION: '25'
     secrets:
       OSSRH_USER: ${{ secrets.OSSRH_USER }}
       OSSRH_SECRET: ${{ secrets.OSSRH_SECRET }}
       OSSRH_URL: ${{ secrets.OSSRH_CENTRAL_URL }}
       OSSRH_TOKEN: ${{ secrets.OSSRH_TOKEN }}
       GPG_SECRET: ${{ secrets.GPG_SECRET }}
+      GPG_PRIVATE_KEY: ${{ secrets.GPG_PRIVATE_KEY }}
       SLACK_WEBHOOK_URL: ${{ secrets.SLACK_WEBHOOK }}
 
   build-apitest-auth-local:
@@ -120,11 +124,11 @@ jobs:
       BUILD_ARTIFACT: apitest-auth-local
     steps:
       - uses: actions/checkout@v3
-      - name: Set up JDK 21
+      - name: Set up JDK 25
         uses: actions/setup-java@v3
         with:
           distribution: 'temurin'
-          java-version: 21
+          java-version: 25
           server-id: ossrh # Value of the distributionManagement/repository/id field of the pom.xml
           settings-path: ${{ github.workspace }} # location for the settings.xml file
       - name: Setup the settings file for ossrh server
